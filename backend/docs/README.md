@@ -68,19 +68,19 @@ flowchart TD
 
 ## 3. Lộ trình Đọc Tài liệu theo Vai trò (Reading Roadmap)
 
-### 👨‍💻 3.1. Dành cho Backend Developer (Thành viên mới onboard)
+### 3.1. Dành cho Backend Developer (Thành viên mới onboard)
 1. **Tổng quan yêu cầu:** Đọc [SRS.md](01-requirements/SRS.md) (mục 1, 2) và [Usecase.md](01-requirements/Usecase.md) để nắm phạm vi đồ án.
 2. **Kiến trúc hệ thống:** Đọc [backend-architecture.md](02-architecture/backend-architecture.md) (hiểu cấu trúc Modular Monolith và các module nghiệp vụ).
 3. **Quy chuẩn lập trình:** Đọc [Backend-Conventions.md](02-architecture/Backend-Conventions.md) để tuân thủ coding conventions, quy tắc đặt tên, xử lý exception và luồng git.
 4. **Cơ sở dữ liệu:** Đọc [DatabaseDesign.md](03-database/DatabaseDesign.md) và tham khảo [schema.sql](03-database/schema.sql).
 5. **Hiện thực API:** Đọc [API-Notes.md](04-api/API-Notes.md) và đối chiếu với [openapi.yaml](04-api/openapi.yaml) khi viết Controller/Handler.
 
-### 📱 3.2. Dành cho Frontend / Mobile Developer tích hợp API
+### 3.2. Dành cho Frontend / Mobile Developer tích hợp API
 1. **Hợp đồng API:** Dùng [openapi.yaml](04-api/openapi.yaml) để sinh API client (Android/Next.js) và tra cứu schema.
 2. **Luồng gọi & Mã lỗi:** Đọc [API-Notes.md](04-api/API-Notes.md) để xử lý đúng thứ tự API, mã lỗi (400, 401, 403, 404, 409, 422) và luồng refresh token.
 3. **Phân quyền người dùng:** Đọc [Authorization.md](02-architecture/Authorization.md) để hiểu ma trận quyền hạn giữa Sinh viên, Nhân viên và Quản trị viên.
 
-### 🧪 3.3. Dành cho QA / Tester
+### 3.3. Dành cho QA / Tester
 1. **Kịch bản kiểm thử:** Đọc [Usecase.md](01-requirements/Usecase.md) để viết test cases luồng chính và luồng phụ.
 2. **Kiểm thử logic nghiệp vụ:** Đọc [BusinessRule.md](01-requirements/BusinessRule.md) để kiểm tra các ràng buộc BR-01 đến BR-81.
 3. **Kiểm thử API & Trạng thái:** Tra cứu bảng mã lỗi và máy trạng thái trong [API-Notes.md](04-api/API-Notes.md).

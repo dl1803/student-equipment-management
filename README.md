@@ -5,7 +5,7 @@
 
 ---
 
-## 🏗️ Cấu trúc Thư mục Dự án
+## Cấu trúc Thư mục Dự án
 
 ```text
 student-equipment-management/
@@ -44,7 +44,7 @@ student-equipment-management/
 
 ---
 
-## 📖 Hướng dẫn Truy cập Tài liệu
+## Hướng dẫn Truy cập Tài liệu
 
 Hệ thống tài liệu dự án được xây dựng đầy đủ và phân loại trực quan theo từng phân hệ:
 
