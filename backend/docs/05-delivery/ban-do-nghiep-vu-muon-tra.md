@@ -1,8 +1,8 @@
-# Bản đồ nghiệp vụ MuonTra, kết quả chuẩn và đầu vào quyết định G1, G2 (D01-V)
+# Bản đồ nghiệp vụ MuonTra, kết quả chuẩn và đầu vào quyết định G1, G2
 
-Cập nhật lần đầu: 13/11/2026 · Chủ sở hữu: Nguyễn Đại Vương · Trạng thái: **chưa được code**
+Cập nhật lần đầu: 13/11/2026 · Chủ sở hữu: Nguyễn Đại Vương · Trạng thái: **hợp đồng đã khai báo trong `*.Contracts` và `SharedKernel`, chưa có bản hiện thực**
 
-Quy ước: dữ liệu mẫu do D01-V chọn, kết quả mong đợi suy ra từ công thức trong nguồn (KT 8, BR). Điều nguồn chưa nêu ghi **OPEN**. Thời gian ghi theo giờ Việt Nam (UTC+7), lưu và so sánh bằng UTC.
+Quy ước: dữ liệu mẫu do người lập chọn, kết quả mong đợi suy ra từ công thức trong nguồn (KT 8, BR). Điều nguồn chưa nêu ghi **OPEN**. Thời gian ghi theo giờ Việt Nam (UTC+7), lưu và so sánh bằng UTC.
 
 ## 1. Phân rã MuonTra
 
@@ -79,8 +79,8 @@ Dữ liệu nền cho GC-01 đến GC-03: phòng P, loại X có 7 thiết bị:
 | Mã ca | Thời điểm hiện tại | Kết quả mong đợi |
 |---|---|---|
 | GC-01 | 09:29:59 | `khaDung = 5 − 2 − 1 = 2` |
-| GC-02 | 09:30:00 | `khaDung = 5`: điều kiện `han_giu_cho > now` không còn đúng. Job J4 chọn `han_giu_cho < now` nên chuyển `HET_HAN` ở lần quét sau (O4) |
-| GC-03 | 09:30:01, J4 chưa chạy | `khaDung = 5`; giao theo giữ chỗ cũ trả 409 `GIU_CHO_HET_HAN` |
+| GC-02 | 09:30:00, J4 chưa quét | `khaDung = 2`: Suất giữ chỗ tiếp tục bị phong tỏa trong hàng chờ, không tự do xả về kho tránh request khác cướp chỗ của hàng đợi FIFO |
+| GC-03 | 09:30:01, J4 quét chuyển `HET_HAN` | Kích hoạt cấp lượt FIFO cho người kế tiếp trong cùng giao dịch; nếu hết hàng chờ mới hoàn trả `khaDung = 5` |
 | GC-04 | `khaDung = 1`, hai NV cùng duyệt yêu cầu số lượng 1 | Một thành công, một 409 `SO_LUONG_KHA_DUNG_THAY_DOI`; sau đó `khaDung ≥ 0` |
 | GC-05 | Ba đăng ký `DANG_CHO` của (P, X) lúc 08:00, 08:05, 08:10; một thiết bị X về `SAN_SANG` | Đăng ký 08:00 → `DA_THONG_BAO`, `han_giu_cho` = thời điểm cấp + 30 phút; hai đăng ký còn lại giữ `DANG_CHO`; `khaDung` sau cấp = 0 |
 | GC-06 | Như GC-05, đăng ký 08:00 để quá hạn | `HET_HAN`, một vi phạm `KHONG_DEN_NHAN`, đăng ký 08:05 → `DA_THONG_BAO` ngay trong cùng giao dịch |
