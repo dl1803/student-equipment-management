@@ -1,0 +1,3 @@
+/* CSS toàn cục (FC 4.1, 8.1). Token thiết kế (tokens.css), theme Tailwind thay thế và lớp type-*
+   được thêm ở task Design-System; khi đó mọi giá trị thô chỉ nằm trong tokens.css. */
+@import "tailwindcss";
