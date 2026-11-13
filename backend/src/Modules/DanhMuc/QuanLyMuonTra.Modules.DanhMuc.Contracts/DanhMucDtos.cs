@@ -6,7 +6,7 @@ public sealed record LoaiThietBiDto(
     Guid MaLoai,
     string TenLoai,
     int ChuKyBaoTri,
-    long PhiTreMoiNgay,
+    decimal PhiTreMoiNgay,
     bool NgungSuDung);
 
 public sealed record ThietBiDto(
@@ -14,9 +14,10 @@ public sealed record ThietBiDto(
     Guid MaLoai,
     Guid MaPhong,
     string TenThietBi,
+    DateOnly NgayNhapKho,
     string TinhTrang,
     bool NgungSuDung,
     string? ViTriKe,
     string? ViTriTu,
-    long GiaTriHienHanh);
+    decimal GiaTriHienHanh);
 

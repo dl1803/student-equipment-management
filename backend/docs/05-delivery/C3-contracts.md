@@ -12,7 +12,7 @@ DanhMuc (`danh_muc`), QuyDinh (`quy_dinh`), BaoTri (`bao_tri`), BaoCao (không s
 
 | Cổng | Vị trí | Đầu vào → Đầu ra | Lỗi | Bên dùng | Chốt |
 |---|---|---|---|---|---|
-| `IDanhMucReader.LayThietBiAsync` | `DanhMuc.Contracts` | `maThietBi` → `ThietBiDto?` (`null` = không tồn tại; kèm `GiaTriHienHanh` = bản ghi `lich_su_gia_tri` mới nhất, BR-17) | Không ném; `null` do bên gọi ánh xạ `KHONG_TIM_THAY` | MuonTra (kiểm thiết bị, vị trí kệ/tủ), ViPham (giá trị bồi thường), BaoTri | D04 cài |
+| `IDanhMucReader.LayThietBiAsync` | `DanhMuc.Contracts` | `maThietBi` → `ThietBiDto?` (`null` = không tồn tại; kèm `NgayNhapKho`, `GiaTriHienHanh` = bản ghi `lich_su_gia_tri` mới nhất, BR-17, BR-70) | Không ném; `null` do bên gọi ánh xạ `KHONG_TIM_THAY` | MuonTra (kiểm thiết bị, vị trí kệ/tủ), ViPham (giá trị bồi thường), BaoTri (tính hạn bảo trì) | D04 cài |
 | `IDanhMucReader.LayLoaiAsync` | như trên | `maLoai` → `LoaiThietBiDto?` (có `PhiTreMoiNgay`, `ChuKyBaoTri`, `NgungSuDung`) | như trên | MuonTra (lưu phí lúc giao), BaoTri | D04 |
 | `IDanhMucReader.LayPhongAsync` | như trên | `maPhong` → `PhongThietBiDto?` | như trên | MuonTra, TaiKhoan | D04 |
 | `IDanhMucReader.DsPhongAsync`, `DsLoaiDangSuDungAsync` | như trên | → danh sách phòng; danh sách loại **chưa ngưng sử dụng** (sắp theo tên, khóa phụ mã tăng dần, ĐX-API-28) | Không ném; rỗng hợp lệ | MuonTra (dữ liệu chọn phòng/loại) | D04 |
@@ -24,11 +24,11 @@ Mặc định (đọc từ DB, **không** hard-code ở bên gọi): `SoNgayKhoa
 
 ## 3. Port cập nhật có điều kiện — `IThietBiService` (`DanhMuc.Contracts`)
 
-Giao dịch: chạy **trong giao dịch của bên gọi**, bên gọi đã giữ khóa tư vấn theo cặp (phòng, loại) (C2, KT 8.2). Hiện thực bằng `UPDATE … WHERE ma_thiet_bi = ? AND tinh_trang = <nguồn>`; trả `true` khi **đúng 1 dòng** bị ảnh hưởng, `false` khi 0 dòng. Port không ném lỗi nghiệp vụ; bên gọi hoàn tác và ánh xạ lỗi.
+Giao dịch: chạy **trong giao dịch của bên gọi**, bên gọi đã giữ khóa tư vấn theo cặp (phòng, loại) (C2, KT 8.2). Hiện thực bằng `UPDATE … WHERE ma_thiet_bi = ? AND tinh_trang = <nguồn> AND ngung_su_dung = false`; trả `true` khi **đúng 1 dòng** bị ảnh hưởng, `false` khi 0 dòng. Port không ném lỗi nghiệp vụ; bên gọi hoàn tác và ánh xạ lỗi.
 
 | Phương thức | Chuyển trạng thái | Lỗi bên gọi ánh xạ khi `false` | Bên gọi |
 |---|---|---|---|
-| `DatDangDuocMuonAsync(maThietBi, maPhong, maLoai)` | `SAN_SANG` → `DANG_DUOC_MUON`, thêm điều kiện đúng phòng và loại (KT 8.4) | `THIET_BI_DA_DUOC_GIAO` (409) | MuonTra |
+| `DatDangDuocMuonAsync(maThietBi, maPhong, maLoai)` | `SAN_SANG` → `DANG_DUOC_MUON`, thêm điều kiện đúng phòng, loại và chưa ngưng sử dụng (`ngung_su_dung = false`) (KT 8.4, BR-18) | `THIET_BI_DA_DUOC_GIAO` (409) | MuonTra |
 | `NhanTraNguyenVenAsync` | `DANG_DUOC_MUON` → `SAN_SANG` | `TRANG_THAI_KHONG_HOP_LE` (409) | MuonTra |
 | `NhanTraHuHongAsync` | `DANG_DUOC_MUON` → `DANG_BAO_TRI_SUA_CHUA` (BR-51) | như trên | MuonTra |
 | `DanhDauMatAsync` | `DANG_DUOC_MUON` → `DA_BAO_MAT` | như trên | MuonTra |
