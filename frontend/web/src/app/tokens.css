@@ -1,0 +1,252 @@
+/*
+ * Design token web (Design-System.md mục 4, 5, 11.2; Phụ lục C; FC 8.1 [ĐX-FC-06, ĐX-FC-07]).
+ * Sở hữu: Thịnh (shared core).
+ *
+ * - Giá trị chép nguyên từ Design-System.md; không đổi, không thêm giá trị không có ở DS.
+ * - Tên: tiền tố --ds-, dấu chấm đổi thành gạch ngang (color.blue.600 → --ds-color-blue-600).
+ * - Tầng ngữ nghĩa tham chiếu tầng nguyên thủy bằng var(), không lặp giá trị.
+ * - Đây là nơi DUY NHẤT được chứa giá trị thô (mã màu, px) — TC-01.
+ * - Thành phần và màn hình chỉ dùng màu/kiểu chữ ngữ nghĩa, không dùng màu nguyên thủy trực tiếp.
+ */
+
+:root {
+  /* ===== Tầng nguyên thủy ===== */
+
+  /* 4.1 Màu — xám trung tính */
+  --ds-color-gray-0: #ffffff;
+  --ds-color-gray-50: #f6f7f9;
+  --ds-color-gray-100: #eef0f3;
+  --ds-color-gray-200: #e1e4e9;
+  --ds-color-gray-300: #cbd0d8;
+  --ds-color-gray-400: #808998;
+  --ds-color-gray-500: #6b7482;
+  --ds-color-gray-600: #4f5764;
+  --ds-color-gray-700: #3a414d;
+  --ds-color-gray-900: #161a21;
+
+  /* 4.1 Màu — xanh dương (chủ đạo, tông info) */
+  --ds-color-blue-50: #eef4fb;
+  --ds-color-blue-100: #d6e4f5;
+  --ds-color-blue-500: #2f69b0;
+  --ds-color-blue-600: #1f5499;
+  --ds-color-blue-700: #184380;
+  --ds-color-blue-800: #133466;
+
+  /* 4.1 Màu — xanh lá, hổ phách, đỏ */
+  --ds-color-green-50: #e7f5ec;
+  --ds-color-green-100: #cdebd8;
+  --ds-color-green-600: #1b7a43;
+  --ds-color-green-700: #146236;
+  --ds-color-amber-50: #fff4db;
+  --ds-color-amber-100: #ffe5a8;
+  --ds-color-amber-600: #b45f06;
+  --ds-color-amber-700: #8a4a00;
+  --ds-color-red-50: #fdecec;
+  --ds-color-red-100: #f9d0d0;
+  --ds-color-red-600: #c62f2f;
+  --ds-color-red-700: #a12020;
+  --ds-color-red-800: #7f1818;
+
+  /* 4.2 Kiểu chữ — phông nạp bằng next/font ở app/layout.tsx (FC 8.2 [ĐX-FC-04]) */
+  --ds-font-family-sans:
+    var(--font-roboto), system-ui, "Segoe UI", Arial, sans-serif;
+  --ds-font-family-mono:
+    var(--font-roboto-mono), ui-monospace, Consolas, monospace;
+  --ds-font-weight-regular: 400;
+  --ds-font-weight-medium: 500;
+  --ds-font-weight-bold: 700;
+  --ds-font-size-12: 0.75rem;
+  --ds-font-size-14: 0.875rem;
+  --ds-font-size-16: 1rem;
+  --ds-font-size-20: 1.25rem;
+  --ds-font-size-24: 1.5rem;
+  --ds-font-size-28: 1.75rem;
+  --ds-font-leading-16: 1rem;
+  --ds-font-leading-20: 1.25rem;
+  --ds-font-leading-24: 1.5rem;
+  --ds-font-leading-28: 1.75rem;
+  --ds-font-leading-32: 2rem;
+  --ds-font-leading-36: 2.25rem;
+
+  /* 4.3 Khoảng cách (thang 4) */
+  --ds-space-1: 4px;
+  --ds-space-2: 8px;
+  --ds-space-3: 12px;
+  --ds-space-4: 16px;
+  --ds-space-6: 24px;
+  --ds-space-12: 48px;
+
+  /* 4.4 Bo góc, viền, đổ bóng */
+  --ds-radius-sm: 4px;
+  --ds-radius-md: 8px;
+  --ds-radius-lg: 12px;
+  --ds-radius-full: 9999px;
+  --ds-border-width-default: 1px;
+  --ds-border-width-strong: 2px;
+  --ds-border-width-accent: 4px;
+  --ds-border-focus-offset: 2px;
+  --ds-shadow-menu: 0 4px 12px rgba(22, 26, 33, 0.12);
+  --ds-shadow-dialog: 0 8px 24px rgba(22, 26, 33, 0.16);
+
+  /* 4.5 Chuyển động */
+  --ds-motion-duration-fast: 100ms;
+  --ds-motion-duration-base: 200ms;
+  --ds-motion-easing-standard: cubic-bezier(0.2, 0, 0, 1);
+
+  /* 4.6 Thứ tự lớp [Web] */
+  --ds-z-sticky: 100;
+  --ds-z-dropdown: 200;
+  --ds-z-overlay: 300;
+  --ds-z-modal: 310;
+  --ds-z-viewer: 400;
+
+  /* 4.7 Kích thước điều khiển [Web] */
+  --ds-size-control-sm: 32px;
+  --ds-size-control-md: 40px;
+  --ds-size-control-lg: 48px;
+  --ds-size-table-row: 48px;
+  --ds-size-table-row-sub: 40px;
+  --ds-size-photo-tile: 96px;
+  --ds-size-dialog-sm: 480px;
+  --ds-size-dialog-md: 640px;
+  --ds-size-keyvalue-label: 200px;
+
+  /* 4.7 Kích thước chung */
+  --ds-size-icon-sm: 16px;
+  --ds-size-icon-md: 20px;
+  --ds-size-icon-lg: 24px;
+  --ds-size-badge-height: 24px;
+  --ds-size-state-max: 480px;
+
+  /* 11.2 Khung bố cục web */
+  --ds-layout-web-min-width: 1024px;
+  --ds-layout-web-header-height: 56px;
+  --ds-layout-web-sidebar-width: 240px;
+  --ds-layout-web-content-max: 1440px;
+  --ds-layout-web-form-max: 640px;
+  --ds-layout-web-login-width: 400px;
+
+  /* ===== Tầng ngữ nghĩa ===== */
+
+  /* 5.1 Chữ */
+  --ds-color-text-primary: var(--ds-color-gray-900);
+  --ds-color-text-secondary: var(--ds-color-gray-600);
+  --ds-color-text-placeholder: var(--ds-color-gray-500);
+  --ds-color-text-disabled: var(--ds-color-gray-500);
+  --ds-color-text-inverse: var(--ds-color-gray-0);
+  --ds-color-text-link: var(--ds-color-blue-700);
+  --ds-color-text-link-hover: var(--ds-color-blue-800);
+
+  /* 5.1 Nền */
+  --ds-color-surface-default: var(--ds-color-gray-0);
+  --ds-color-surface-subtle: var(--ds-color-gray-50);
+  --ds-color-surface-muted: var(--ds-color-gray-100);
+  --ds-color-surface-selected: var(--ds-color-blue-50);
+  --ds-color-overlay-scrim: rgba(22, 26, 33, 0.5);
+  --ds-color-overlay-pressed: rgba(22, 26, 33, 0.12);
+
+  /* 5.1 Viền, tiêu điểm, tiến trình */
+  --ds-color-border-subtle: var(--ds-color-gray-200);
+  --ds-color-border-control: var(--ds-color-gray-400);
+  --ds-color-border-control-hover: var(--ds-color-gray-500);
+  --ds-color-border-selected: var(--ds-color-blue-600);
+  --ds-color-border-error: var(--ds-color-red-600);
+  --ds-color-focus-ring: var(--ds-color-blue-500);
+  --ds-color-progress-indicator: var(--ds-color-blue-600);
+  --ds-color-progress-track: var(--ds-color-gray-200);
+
+  /* 5.1 Nút */
+  --ds-color-action-primary-bg: var(--ds-color-blue-600);
+  --ds-color-action-primary-bg-hover: var(--ds-color-blue-700);
+  --ds-color-action-primary-bg-pressed: var(--ds-color-blue-800);
+  --ds-color-action-primary-text: var(--ds-color-gray-0);
+  --ds-color-action-destructive-bg: var(--ds-color-red-600);
+  --ds-color-action-destructive-bg-hover: var(--ds-color-red-700);
+  --ds-color-action-destructive-bg-pressed: var(--ds-color-red-800);
+  --ds-color-action-destructive-text: var(--ds-color-gray-0);
+  --ds-color-action-secondary-bg: var(--ds-color-gray-0);
+  --ds-color-action-secondary-bg-hover: var(--ds-color-gray-50);
+  --ds-color-action-secondary-bg-pressed: var(--ds-color-gray-100);
+  --ds-color-action-secondary-border: var(--ds-color-border-control);
+  --ds-color-action-secondary-text: var(--ds-color-text-primary);
+  --ds-color-action-tertiary-text: var(--ds-color-text-link);
+  --ds-color-action-tertiary-bg-hover: var(--ds-color-blue-50);
+  --ds-color-action-tertiary-bg-pressed: var(--ds-color-blue-100);
+  --ds-color-action-disabled-bg: var(--ds-color-gray-100);
+  --ds-color-action-disabled-text: var(--ds-color-gray-500);
+  --ds-color-action-disabled-border: var(--ds-color-gray-200);
+
+  /* 5.2 Tông phản hồi */
+  --ds-color-tone-info-bg: var(--ds-color-blue-50);
+  --ds-color-tone-info-border: var(--ds-color-blue-100);
+  --ds-color-tone-info-text: var(--ds-color-blue-700);
+  --ds-color-tone-info-icon: var(--ds-color-blue-600);
+  --ds-color-tone-info-solid: var(--ds-color-blue-600);
+  --ds-color-tone-info-on-solid: var(--ds-color-gray-0);
+  --ds-color-tone-success-bg: var(--ds-color-green-50);
+  --ds-color-tone-success-border: var(--ds-color-green-100);
+  --ds-color-tone-success-text: var(--ds-color-green-700);
+  --ds-color-tone-success-icon: var(--ds-color-green-600);
+  --ds-color-tone-success-solid: var(--ds-color-green-600);
+  --ds-color-tone-success-on-solid: var(--ds-color-gray-0);
+  --ds-color-tone-warning-bg: var(--ds-color-amber-50);
+  --ds-color-tone-warning-border: var(--ds-color-amber-100);
+  --ds-color-tone-warning-text: var(--ds-color-amber-700);
+  --ds-color-tone-warning-icon: var(--ds-color-amber-600);
+  --ds-color-tone-warning-solid: var(--ds-color-amber-600);
+  --ds-color-tone-warning-on-solid: var(--ds-color-gray-0);
+  --ds-color-tone-danger-bg: var(--ds-color-red-50);
+  --ds-color-tone-danger-border: var(--ds-color-red-100);
+  --ds-color-tone-danger-text: var(--ds-color-red-700);
+  --ds-color-tone-danger-icon: var(--ds-color-red-600);
+  --ds-color-tone-danger-solid: var(--ds-color-red-600);
+  --ds-color-tone-danger-on-solid: var(--ds-color-gray-0);
+  --ds-color-tone-neutral-bg: var(--ds-color-gray-100);
+  --ds-color-tone-neutral-border: var(--ds-color-gray-300);
+  --ds-color-tone-neutral-text: var(--ds-color-gray-700);
+  --ds-color-tone-neutral-icon: var(--ds-color-gray-600);
+  --ds-color-tone-neutral-solid: var(--ds-color-gray-700);
+  --ds-color-tone-neutral-on-solid: var(--ds-color-gray-0);
+
+  /* 5.3 Vai trò kiểu chữ [Web]: -size, -line, -weight (Phụ lục C) */
+  --ds-type-title-screen-size: var(--ds-font-size-24);
+  --ds-type-title-screen-line: var(--ds-font-leading-32);
+  --ds-type-title-screen-weight: var(--ds-font-weight-bold);
+  --ds-type-title-section-size: var(--ds-font-size-20);
+  --ds-type-title-section-line: var(--ds-font-leading-28);
+  --ds-type-title-section-weight: var(--ds-font-weight-medium);
+  --ds-type-title-card-size: var(--ds-font-size-16);
+  --ds-type-title-card-line: var(--ds-font-leading-24);
+  --ds-type-title-card-weight: var(--ds-font-weight-medium);
+  --ds-type-body-size: var(--ds-font-size-14);
+  --ds-type-body-line: var(--ds-font-leading-20);
+  --ds-type-body-weight: var(--ds-font-weight-regular);
+  --ds-type-body-strong-size: var(--ds-font-size-14);
+  --ds-type-body-strong-line: var(--ds-font-leading-20);
+  --ds-type-body-strong-weight: var(--ds-font-weight-medium);
+  --ds-type-label-size: var(--ds-font-size-14);
+  --ds-type-label-line: var(--ds-font-leading-20);
+  --ds-type-label-weight: var(--ds-font-weight-medium);
+  --ds-type-label-sm-size: var(--ds-font-size-12);
+  --ds-type-label-sm-line: var(--ds-font-leading-16);
+  --ds-type-label-sm-weight: var(--ds-font-weight-medium);
+  --ds-type-caption-size: var(--ds-font-size-12);
+  --ds-type-caption-line: var(--ds-font-leading-16);
+  --ds-type-caption-weight: var(--ds-font-weight-regular);
+  --ds-type-code-size: var(--ds-font-size-14);
+  --ds-type-code-line: var(--ds-font-leading-20);
+  --ds-type-code-weight: var(--ds-font-weight-regular);
+  --ds-type-numeric-lg-size: var(--ds-font-size-28);
+  --ds-type-numeric-lg-line: var(--ds-font-leading-36);
+  --ds-type-numeric-lg-weight: var(--ds-font-weight-bold);
+
+  /* 5.5 Khoảng cách theo vai trò [Web] */
+  --ds-space-gutter: var(--ds-space-6);
+  --ds-space-section: var(--ds-space-6);
+  --ds-space-card: var(--ds-space-4);
+  --ds-space-dialog: var(--ds-space-6);
+  --ds-space-field-label: var(--ds-space-1);
+  --ds-space-field: var(--ds-space-4);
+  --ds-space-actions: var(--ds-space-3);
+  --ds-space-state: var(--ds-space-12);
+}

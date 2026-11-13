@@ -6,17 +6,36 @@ import nextTs from "eslint-config-next/typescript";
 const CAM_IMPORT_CHUNG = [
   { name: "next/image", message: "Dùng thẻ <img> thường (ĐX-FA-11)." },
   { name: "clsx", message: "Dùng classNames ở shared/components (FC 5.7)." },
-  { name: "classnames", message: "Dùng classNames ở shared/components (FC 5.7)." },
+  {
+    name: "classnames",
+    message: "Dùng classNames ở shared/components (FC 5.7).",
+  },
 ];
-const CAM_AXIOS = { name: "axios", message: "Chỉ shared/api/ được dùng axios (FC 4.1)." };
-const CAM_THU_VIEN_UI = {
-  group: ["@mui/*", "@chakra-ui/*", "antd", "@radix-ui/*", "@headlessui/*", "@mantine/*", "react-bootstrap"],
-  message: "Không dùng thư viện thành phần dựng sẵn; dùng shared/components theo Design-System (FA 2.5).",
+const CAM_AXIOS = {
+  name: "axios",
+  message: "Chỉ shared/api/ được dùng axios (FC 4.1).",
 };
-const CAM_IMPORT_APP = { group: ["@/app/*"], message: "Không import từ app/ (FC 4.1)." };
+const CAM_THU_VIEN_UI = {
+  group: [
+    "@mui/*",
+    "@chakra-ui/*",
+    "antd",
+    "@radix-ui/*",
+    "@headlessui/*",
+    "@mantine/*",
+    "react-bootstrap",
+  ],
+  message:
+    "Không dùng thư viện thành phần dựng sẵn; dùng shared/components theo Design-System (FA 2.5).",
+};
+const CAM_IMPORT_APP = {
+  group: ["@/app/*"],
+  message: "Không import từ app/ (FC 4.1).",
+};
 const CAM_IMPORT_FEATURES = {
   group: ["@/features/*"],
-  message: "shared/ không import features/; features không import chéo tính năng khác (FC 4.1).",
+  message:
+    "shared/ không import features/; features không import chéo tính năng khác (FC 4.1).",
 };
 
 function camImport({ choAxios = false, patterns = [] } = {}) {
@@ -48,7 +67,8 @@ function camImportTuongDoiRaNgoaiTinhNang() {
             CAM_IMPORT_FEATURES,
             {
               regex: `^(\\.\\./){${doSau + 1},}`,
-              message: "Import tương đối không được ra khỏi thư mục tính năng (FC 4.1).",
+              message:
+                "Import tương đối không được ra khỏi thư mục tính năng (FC 4.1).",
             },
           ],
         }),
@@ -57,30 +77,59 @@ function camImportTuongDoiRaNgoaiTinhNang() {
   });
 }
 
-const CAM_LOCAL_STORAGE ={ name: "localStorage", message: "Cấm localStorage (FA 4.13, FC 5.11)." };
+const CAM_LOCAL_STORAGE = {
+  name: "localStorage",
+  message: "Cấm localStorage (FA 4.13, FC 5.11).",
+};
 const CAM_SESSION_STORAGE = {
   name: "sessionStorage",
   message: "Chỉ shared/api/session/ được dùng sessionStorage (FC 5.10).",
 };
 const CAM_THUOC_TINH_STORAGE = [
-  { object: "window", property: "localStorage", message: CAM_LOCAL_STORAGE.message },
-  { object: "globalThis", property: "localStorage", message: CAM_LOCAL_STORAGE.message },
+  {
+    object: "window",
+    property: "localStorage",
+    message: CAM_LOCAL_STORAGE.message,
+  },
+  {
+    object: "globalThis",
+    property: "localStorage",
+    message: CAM_LOCAL_STORAGE.message,
+  },
 ];
 
 const eslintConfig = defineConfig([
   ...nextVitals,
   ...nextTs,
-  globalIgnores([".next/**", "out/**", "build/**", "next-env.d.ts", "src/shared/api/schema.d.ts"]),
+  globalIgnores([
+    ".next/**",
+    "out/**",
+    "build/**",
+    "next-env.d.ts",
+    "src/shared/api/schema.d.ts",
+  ]),
   {
     files: ["src/**/*.{ts,tsx}"],
     rules: {
       "no-console": ["error", { allow: ["warn", "error"] }],
-      "no-restricted-globals": ["error", CAM_LOCAL_STORAGE, CAM_SESSION_STORAGE],
+      "no-restricted-globals": [
+        "error",
+        CAM_LOCAL_STORAGE,
+        CAM_SESSION_STORAGE,
+      ],
       "no-restricted-properties": [
         "error",
         ...CAM_THUOC_TINH_STORAGE,
-        { object: "window", property: "sessionStorage", message: CAM_SESSION_STORAGE.message },
-        { object: "globalThis", property: "sessionStorage", message: CAM_SESSION_STORAGE.message },
+        {
+          object: "window",
+          property: "sessionStorage",
+          message: CAM_SESSION_STORAGE.message,
+        },
+        {
+          object: "globalThis",
+          property: "sessionStorage",
+          message: CAM_SESSION_STORAGE.message,
+        },
       ],
       "no-restricted-imports": camImport(),
       "no-restricted-syntax": [
@@ -92,14 +141,25 @@ const eslintConfig = defineConfig([
       ],
       "no-restricted-exports": [
         "error",
-        { restrictDefaultExports: { direct: true, named: true, defaultFrom: true, namedFrom: true, namespaceFrom: true } },
+        {
+          restrictDefaultExports: {
+            direct: true,
+            named: true,
+            defaultFrom: true,
+            namedFrom: true,
+            namespaceFrom: true,
+          },
+        },
       ],
       "react/no-danger": "error",
       "react-hooks/exhaustive-deps": "error",
       "@typescript-eslint/no-explicit-any": "error",
       "@typescript-eslint/no-non-null-assertion": "error",
       "@typescript-eslint/consistent-type-imports": "error",
-      "@typescript-eslint/consistent-type-assertions": ["error", { assertionStyle: "never" }],
+      "@typescript-eslint/consistent-type-assertions": [
+        "error",
+        { assertionStyle: "never" },
+      ],
     },
   },
   {
@@ -108,14 +168,25 @@ const eslintConfig = defineConfig([
   },
   {
     files: ["src/features/**/*.{ts,tsx}"],
-    rules: { "no-restricted-imports": camImport({ patterns: [CAM_IMPORT_APP, CAM_IMPORT_FEATURES] }) },
+    rules: {
+      "no-restricted-imports": camImport({
+        patterns: [CAM_IMPORT_APP, CAM_IMPORT_FEATURES],
+      }),
+    },
   },
   ...camImportTuongDoiRaNgoaiTinhNang(),
   {
     files: ["src/shared/**/*.{ts,tsx}"],
     rules: {
       "no-restricted-imports": camImport({
-        patterns: [CAM_IMPORT_APP, CAM_IMPORT_FEATURES, { group: ["@/providers/*"], message: "shared/ không import providers/ (FC 4.1)." }],
+        patterns: [
+          CAM_IMPORT_APP,
+          CAM_IMPORT_FEATURES,
+          {
+            group: ["@/providers/*"],
+            message: "shared/ không import providers/ (FC 4.1).",
+          },
+        ],
       }),
     },
   },
@@ -124,7 +195,14 @@ const eslintConfig = defineConfig([
     rules: {
       "no-restricted-imports": camImport({
         choAxios: true,
-        patterns: [CAM_IMPORT_APP, CAM_IMPORT_FEATURES, { group: ["@/providers/*"], message: "shared/ không import providers/ (FC 4.1)." }],
+        patterns: [
+          CAM_IMPORT_APP,
+          CAM_IMPORT_FEATURES,
+          {
+            group: ["@/providers/*"],
+            message: "shared/ không import providers/ (FC 4.1).",
+          },
+        ],
       }),
     },
   },

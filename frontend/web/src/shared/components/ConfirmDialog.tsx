@@ -54,7 +54,8 @@ export function ConfirmDialog({
     if (dialog === null) return;
     if (open && !dialog.open) {
       const dangCoTieuDiem = document.activeElement;
-      noiMoRef.current = dangCoTieuDiem instanceof HTMLElement ? dangCoTieuDiem : null;
+      noiMoRef.current =
+        dangCoTieuDiem instanceof HTMLElement ? dangCoTieuDiem : null;
       dialog.showModal();
       nutHuyRef.current?.focus();
     } else if (!open && dialog.open) {
@@ -90,7 +91,12 @@ export function ConfirmDialog({
       <div id={idHeQua}>{heQua}</div>
       {loi ? <div>{loi}</div> : null}
       <div>
-        <button ref={nutHuyRef} type="button" onClick={onDong} disabled={dangXuLy}>
+        <button
+          ref={nutHuyRef}
+          type="button"
+          onClick={onDong}
+          disabled={dangXuLy}
+        >
           Hủy
         </button>
         <button type="button" onClick={onXacNhan} disabled={dangXuLy}>

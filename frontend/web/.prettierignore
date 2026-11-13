@@ -1,0 +1,7 @@
+# Tệp sinh tự động hoặc chép nguyên văn — không định dạng lại
+.next/
+node_modules/
+next-env.d.ts
+package-lock.json
+openapi/
+src/shared/api/schema.d.ts

@@ -1,3 +1,259 @@
-/* CSS toàn cục (FC 4.1, 8.1). Token thiết kế (tokens.css), theme Tailwind thay thế và lớp type-*
-   được thêm ở task Design-System; khi đó mọi giá trị thô chỉ nằm trong tokens.css. */
+/*
+ * CSS toàn cục (FC 4.1, 8.1). Sở hữu: Thịnh (shared core).
+ * Theme Tailwind THAY THẾ bảng mặc định (--*: initial): lớp như bg-blue-500, text-sm, p-5 không còn
+ * tồn tại. Tên lớp suy ra máy móc từ tên token: bỏ nhóm đầu, đổi dấu chấm thành gạch ngang
+ *   color.action.primary.bg → bg-action-primary-bg     space.4 → p-4
+ *   radius.md → rounded-md     shadow.dialog → shadow-dialog     size.control.md → h-control-md
+ * Chỉ màu ngữ nghĩa được ánh xạ; màu nguyên thủy không có lớp tiện ích (DS 3.1).
+ * Kiểu chữ dùng lớp vai trò type-* (DS 5.3), không có lớp cỡ chữ rời.
+ */
 @import "tailwindcss";
+@import "./tokens.css";
+
+@theme inline {
+  --*: initial;
+
+  /* Phông và chuyển động mặc định */
+  --font-sans: var(--ds-font-family-sans);
+  --font-mono: var(--ds-font-family-mono);
+  --default-font-family: var(--ds-font-family-sans);
+  --default-mono-font-family: var(--ds-font-family-mono);
+  --default-transition-duration: var(--ds-motion-duration-fast);
+  --default-transition-timing-function: var(--ds-motion-easing-standard);
+
+  /* Màu ngữ nghĩa — chữ */
+  --color-text-primary: var(--ds-color-text-primary);
+  --color-text-secondary: var(--ds-color-text-secondary);
+  --color-text-placeholder: var(--ds-color-text-placeholder);
+  --color-text-disabled: var(--ds-color-text-disabled);
+  --color-text-inverse: var(--ds-color-text-inverse);
+  --color-text-link: var(--ds-color-text-link);
+  --color-text-link-hover: var(--ds-color-text-link-hover);
+
+  /* Màu ngữ nghĩa — nền, lớp che */
+  --color-surface-default: var(--ds-color-surface-default);
+  --color-surface-subtle: var(--ds-color-surface-subtle);
+  --color-surface-muted: var(--ds-color-surface-muted);
+  --color-surface-selected: var(--ds-color-surface-selected);
+  --color-overlay-scrim: var(--ds-color-overlay-scrim);
+
+  /* Màu ngữ nghĩa — viền, tiêu điểm, tiến trình */
+  --color-border-subtle: var(--ds-color-border-subtle);
+  --color-border-control: var(--ds-color-border-control);
+  --color-border-control-hover: var(--ds-color-border-control-hover);
+  --color-border-selected: var(--ds-color-border-selected);
+  --color-border-error: var(--ds-color-border-error);
+  --color-focus-ring: var(--ds-color-focus-ring);
+  --color-progress-indicator: var(--ds-color-progress-indicator);
+  --color-progress-track: var(--ds-color-progress-track);
+
+  /* Màu ngữ nghĩa — nút */
+  --color-action-primary-bg: var(--ds-color-action-primary-bg);
+  --color-action-primary-bg-hover: var(--ds-color-action-primary-bg-hover);
+  --color-action-primary-bg-pressed: var(--ds-color-action-primary-bg-pressed);
+  --color-action-primary-text: var(--ds-color-action-primary-text);
+  --color-action-destructive-bg: var(--ds-color-action-destructive-bg);
+  --color-action-destructive-bg-hover: var(
+    --ds-color-action-destructive-bg-hover
+  );
+  --color-action-destructive-bg-pressed: var(
+    --ds-color-action-destructive-bg-pressed
+  );
+  --color-action-destructive-text: var(--ds-color-action-destructive-text);
+  --color-action-secondary-bg: var(--ds-color-action-secondary-bg);
+  --color-action-secondary-bg-hover: var(--ds-color-action-secondary-bg-hover);
+  --color-action-secondary-bg-pressed: var(
+    --ds-color-action-secondary-bg-pressed
+  );
+  --color-action-secondary-border: var(--ds-color-action-secondary-border);
+  --color-action-secondary-text: var(--ds-color-action-secondary-text);
+  --color-action-tertiary-text: var(--ds-color-action-tertiary-text);
+  --color-action-tertiary-bg-hover: var(--ds-color-action-tertiary-bg-hover);
+  --color-action-tertiary-bg-pressed: var(
+    --ds-color-action-tertiary-bg-pressed
+  );
+  --color-action-disabled-bg: var(--ds-color-action-disabled-bg);
+  --color-action-disabled-text: var(--ds-color-action-disabled-text);
+  --color-action-disabled-border: var(--ds-color-action-disabled-border);
+
+  /* Màu ngữ nghĩa — tông phản hồi */
+  --color-tone-info-bg: var(--ds-color-tone-info-bg);
+  --color-tone-info-border: var(--ds-color-tone-info-border);
+  --color-tone-info-text: var(--ds-color-tone-info-text);
+  --color-tone-info-icon: var(--ds-color-tone-info-icon);
+  --color-tone-info-solid: var(--ds-color-tone-info-solid);
+  --color-tone-info-on-solid: var(--ds-color-tone-info-on-solid);
+  --color-tone-success-bg: var(--ds-color-tone-success-bg);
+  --color-tone-success-border: var(--ds-color-tone-success-border);
+  --color-tone-success-text: var(--ds-color-tone-success-text);
+  --color-tone-success-icon: var(--ds-color-tone-success-icon);
+  --color-tone-success-solid: var(--ds-color-tone-success-solid);
+  --color-tone-success-on-solid: var(--ds-color-tone-success-on-solid);
+  --color-tone-warning-bg: var(--ds-color-tone-warning-bg);
+  --color-tone-warning-border: var(--ds-color-tone-warning-border);
+  --color-tone-warning-text: var(--ds-color-tone-warning-text);
+  --color-tone-warning-icon: var(--ds-color-tone-warning-icon);
+  --color-tone-warning-solid: var(--ds-color-tone-warning-solid);
+  --color-tone-warning-on-solid: var(--ds-color-tone-warning-on-solid);
+  --color-tone-danger-bg: var(--ds-color-tone-danger-bg);
+  --color-tone-danger-border: var(--ds-color-tone-danger-border);
+  --color-tone-danger-text: var(--ds-color-tone-danger-text);
+  --color-tone-danger-icon: var(--ds-color-tone-danger-icon);
+  --color-tone-danger-solid: var(--ds-color-tone-danger-solid);
+  --color-tone-danger-on-solid: var(--ds-color-tone-danger-on-solid);
+  --color-tone-neutral-bg: var(--ds-color-tone-neutral-bg);
+  --color-tone-neutral-border: var(--ds-color-tone-neutral-border);
+  --color-tone-neutral-text: var(--ds-color-tone-neutral-text);
+  --color-tone-neutral-icon: var(--ds-color-tone-neutral-icon);
+  --color-tone-neutral-solid: var(--ds-color-tone-neutral-solid);
+  --color-tone-neutral-on-solid: var(--ds-color-tone-neutral-on-solid);
+
+  /* Khoảng cách: thang 4.3 và vai trò 5.5 */
+  --spacing-1: var(--ds-space-1);
+  --spacing-2: var(--ds-space-2);
+  --spacing-3: var(--ds-space-3);
+  --spacing-4: var(--ds-space-4);
+  --spacing-6: var(--ds-space-6);
+  --spacing-12: var(--ds-space-12);
+  --spacing-gutter: var(--ds-space-gutter);
+  --spacing-section: var(--ds-space-section);
+  --spacing-card: var(--ds-space-card);
+  --spacing-dialog: var(--ds-space-dialog);
+  --spacing-field-label: var(--ds-space-field-label);
+  --spacing-field: var(--ds-space-field);
+  --spacing-actions: var(--ds-space-actions);
+  --spacing-state: var(--ds-space-state);
+
+  /* Kích thước 4.7 và khung bố cục 11.2 (dùng với h-, w-, size-, min-h-, max-w-) */
+  --spacing-control-sm: var(--ds-size-control-sm);
+  --spacing-control-md: var(--ds-size-control-md);
+  --spacing-control-lg: var(--ds-size-control-lg);
+  --spacing-table-row: var(--ds-size-table-row);
+  --spacing-table-row-sub: var(--ds-size-table-row-sub);
+  --spacing-photo-tile: var(--ds-size-photo-tile);
+  --spacing-dialog-sm: var(--ds-size-dialog-sm);
+  --spacing-dialog-md: var(--ds-size-dialog-md);
+  --spacing-keyvalue-label: var(--ds-size-keyvalue-label);
+  --spacing-icon-sm: var(--ds-size-icon-sm);
+  --spacing-icon-md: var(--ds-size-icon-md);
+  --spacing-icon-lg: var(--ds-size-icon-lg);
+  --spacing-badge-height: var(--ds-size-badge-height);
+  --spacing-state-max: var(--ds-size-state-max);
+  --spacing-web-min-width: var(--ds-layout-web-min-width);
+  --spacing-web-header-height: var(--ds-layout-web-header-height);
+  --spacing-web-sidebar-width: var(--ds-layout-web-sidebar-width);
+  --spacing-web-content-max: var(--ds-layout-web-content-max);
+  --spacing-web-form-max: var(--ds-layout-web-form-max);
+  --spacing-web-login-width: var(--ds-layout-web-login-width);
+
+  /* Bo góc, đổ bóng 4.4 */
+  --radius-sm: var(--ds-radius-sm);
+  --radius-md: var(--ds-radius-md);
+  --radius-lg: var(--ds-radius-lg);
+  --radius-full: var(--ds-radius-full);
+  --shadow-menu: var(--ds-shadow-menu);
+  --shadow-dialog: var(--ds-shadow-dialog);
+}
+
+/* Vai trò kiểu chữ DS 5.3 — lớp type-{vai-tro} (FC 8.1) */
+@utility type-title-screen {
+  font-family: var(--ds-font-family-sans);
+  font-size: var(--ds-type-title-screen-size);
+  line-height: var(--ds-type-title-screen-line);
+  font-weight: var(--ds-type-title-screen-weight);
+}
+@utility type-title-section {
+  font-family: var(--ds-font-family-sans);
+  font-size: var(--ds-type-title-section-size);
+  line-height: var(--ds-type-title-section-line);
+  font-weight: var(--ds-type-title-section-weight);
+}
+@utility type-title-card {
+  font-family: var(--ds-font-family-sans);
+  font-size: var(--ds-type-title-card-size);
+  line-height: var(--ds-type-title-card-line);
+  font-weight: var(--ds-type-title-card-weight);
+}
+@utility type-body {
+  font-family: var(--ds-font-family-sans);
+  font-size: var(--ds-type-body-size);
+  line-height: var(--ds-type-body-line);
+  font-weight: var(--ds-type-body-weight);
+}
+@utility type-body-strong {
+  font-family: var(--ds-font-family-sans);
+  font-size: var(--ds-type-body-strong-size);
+  line-height: var(--ds-type-body-strong-line);
+  font-weight: var(--ds-type-body-strong-weight);
+}
+@utility type-label {
+  font-family: var(--ds-font-family-sans);
+  font-size: var(--ds-type-label-size);
+  line-height: var(--ds-type-label-line);
+  font-weight: var(--ds-type-label-weight);
+}
+@utility type-label-sm {
+  font-family: var(--ds-font-family-sans);
+  font-size: var(--ds-type-label-sm-size);
+  line-height: var(--ds-type-label-sm-line);
+  font-weight: var(--ds-type-label-sm-weight);
+}
+@utility type-caption {
+  font-family: var(--ds-font-family-sans);
+  font-size: var(--ds-type-caption-size);
+  line-height: var(--ds-type-caption-line);
+  font-weight: var(--ds-type-caption-weight);
+}
+@utility type-code {
+  font-family: var(--ds-font-family-mono);
+  font-size: var(--ds-type-code-size);
+  line-height: var(--ds-type-code-line);
+  font-weight: var(--ds-type-code-weight);
+}
+@utility type-numeric-lg {
+  font-family: var(--ds-font-family-sans);
+  font-size: var(--ds-type-numeric-lg-size);
+  line-height: var(--ds-type-numeric-lg-line);
+  font-weight: var(--ds-type-numeric-lg-weight);
+  font-variant-numeric: tabular-nums;
+}
+
+/* Chỉ báo quay (CMP-25, CMP-01). DS không quy định tốc độ quay; 1 vòng/giây là giá trị hiển thị
+   của riêng hiệu ứng này. Vẫn quay khi giảm chuyển động vì là chỉ báo chức năng (DS 4.5). */
+@keyframes ds-quay {
+  to {
+    transform: rotate(360deg);
+  }
+}
+@utility animate-quay {
+  animation: ds-quay 1s linear infinite;
+}
+
+@layer base {
+  html {
+    color: var(--ds-color-text-primary);
+    background: var(--ds-color-surface-subtle);
+  }
+
+  body {
+    min-width: var(--ds-layout-web-min-width);
+    font-family: var(--ds-font-family-sans);
+    font-size: var(--ds-type-body-size);
+    line-height: var(--ds-type-body-line);
+    font-weight: var(--ds-type-body-weight);
+  }
+
+  /* Vòng tiêu điểm bàn phím chung (DS mục 6) */
+  :focus-visible {
+    outline: var(--ds-border-width-strong) solid var(--ds-color-focus-ring);
+    outline-offset: var(--ds-border-focus-offset);
+  }
+
+  /* Giảm chuyển động (DS 4.5, TC-15) */
+  @media (prefers-reduced-motion: reduce) {
+    :root {
+      --ds-motion-duration-fast: 0ms;
+      --ds-motion-duration-base: 0ms;
+    }
+  }
+}
