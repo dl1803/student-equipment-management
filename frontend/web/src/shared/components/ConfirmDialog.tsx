@@ -24,6 +24,12 @@ export type ConfirmDialogProps = {
   onDong: () => void;
 };
 
+function traTieuDiem(noiMoRef: { current: HTMLElement | null }) {
+  const noiMo = noiMoRef.current;
+  noiMoRef.current = null;
+  if (noiMo !== null && noiMo.isConnected) noiMo.focus();
+}
+
 export function ConfirmDialog({
   open,
   tieuDe,
@@ -38,18 +44,27 @@ export function ConfirmDialog({
 }: ConfirmDialogProps) {
   const dialogRef = useRef<HTMLDialogElement>(null);
   const nutHuyRef = useRef<HTMLButtonElement>(null);
+  /** Phần tử có tiêu điểm trước khi mở hộp, để trả tiêu điểm khi đóng (DS CMP-26, WCAG 2.4.3). */
+  const noiMoRef = useRef<HTMLElement | null>(null);
   const idTieuDe = useId();
+  const idHeQua = useId();
 
   useEffect(() => {
     const dialog = dialogRef.current;
     if (dialog === null) return;
     if (open && !dialog.open) {
+      const dangCoTieuDiem = document.activeElement;
+      noiMoRef.current = dangCoTieuDiem instanceof HTMLElement ? dangCoTieuDiem : null;
       dialog.showModal();
       nutHuyRef.current?.focus();
     } else if (!open && dialog.open) {
       dialog.close();
+      traTieuDiem(noiMoRef);
     }
   }, [open]);
+
+  // Hộp bị gỡ khi đang mở (ví dụ rời màn hình) cũng trả tiêu điểm về nơi mở.
+  useEffect(() => () => traTieuDiem(noiMoRef), []);
 
   useEffect(() => {
     const dialog = dialogRef.current;
@@ -64,10 +79,15 @@ export function ConfirmDialog({
   }, [dangXuLy, onDong]);
 
   return (
-    <dialog ref={dialogRef} aria-labelledby={idTieuDe} data-bien-the={bienThe}>
+    <dialog
+      ref={dialogRef}
+      aria-labelledby={idTieuDe}
+      aria-describedby={idHeQua}
+      data-bien-the={bienThe}
+    >
       <h2 id={idTieuDe}>{tieuDe}</h2>
       {tomTat ? <div>{tomTat}</div> : null}
-      <div>{heQua}</div>
+      <div id={idHeQua}>{heQua}</div>
       {loi ? <div>{loi}</div> : null}
       <div>
         <button ref={nutHuyRef} type="button" onClick={onDong} disabled={dangXuLy}>

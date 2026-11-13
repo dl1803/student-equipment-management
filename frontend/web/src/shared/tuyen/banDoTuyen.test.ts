@@ -1,9 +1,11 @@
 import { existsSync, readdirSync, statSync } from "node:fs";
 import { join, relative, sep } from "node:path";
+import { fileURLToPath } from "node:url";
 import { describe, expect, it } from "vitest";
 import { BAN_DO_TUYEN, type MaManHinhWeb } from "./banDoTuyen";
 
-const THU_MUC_APP = join(process.cwd(), "src", "app");
+// Tính theo vị trí tệp kiểm thử, không theo thư mục chạy lệnh.
+const THU_MUC_APP = fileURLToPath(new URL("../../app", import.meta.url));
 
 function tepPageCuaTuyen(tuyen: string): string {
   return join(THU_MUC_APP, ...tuyen.split("/").filter(Boolean), "page.tsx");

@@ -29,7 +29,35 @@ function camImport({ choAxios = false, patterns = [] } = {}) {
   ];
 }
 
-const CAM_LOCAL_STORAGE = { name: "localStorage", message: "Cấm localStorage (FA 4.13, FC 5.11)." };
+// Gốc tính năng: features/xac-thuc, features/quay/<tính năng>, features/quan-tri/<tính năng>.
+// Import tương đối chỉ trong cùng thư mục tính năng (FC 4.1): tệp nằm sâu d cấp dưới gốc tính năng
+// không được leo quá d cấp "../". Luật ghi đè theo tệp nên mỗi độ sâu là một khối cấu hình.
+const DO_SAU_TOI_DA = 4;
+function camImportTuongDoiRaNgoaiTinhNang() {
+  return Array.from({ length: DO_SAU_TOI_DA }, (_, doSau) => {
+    const thuMucCon = "*/".repeat(doSau);
+    return {
+      files: [
+        `src/features/xac-thuc/${thuMucCon}*.{ts,tsx}`,
+        `src/features/{quay,quan-tri}/*/${thuMucCon}*.{ts,tsx}`,
+      ],
+      rules: {
+        "no-restricted-imports": camImport({
+          patterns: [
+            CAM_IMPORT_APP,
+            CAM_IMPORT_FEATURES,
+            {
+              regex: `^(\\.\\./){${doSau + 1},}`,
+              message: "Import tương đối không được ra khỏi thư mục tính năng (FC 4.1).",
+            },
+          ],
+        }),
+      },
+    };
+  });
+}
+
+const CAM_LOCAL_STORAGE ={ name: "localStorage", message: "Cấm localStorage (FA 4.13, FC 5.11)." };
 const CAM_SESSION_STORAGE = {
   name: "sessionStorage",
   message: "Chỉ shared/api/session/ được dùng sessionStorage (FC 5.10).",
@@ -82,6 +110,7 @@ const eslintConfig = defineConfig([
     files: ["src/features/**/*.{ts,tsx}"],
     rules: { "no-restricted-imports": camImport({ patterns: [CAM_IMPORT_APP, CAM_IMPORT_FEATURES] }) },
   },
+  ...camImportTuongDoiRaNgoaiTinhNang(),
   {
     files: ["src/shared/**/*.{ts,tsx}"],
     rules: {

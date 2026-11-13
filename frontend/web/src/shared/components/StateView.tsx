@@ -1,6 +1,7 @@
 // StateView (CMP-25) — trạng thái đang tải, rỗng, lỗi của một vùng dữ liệu (DS 8.5, FC 3.4, 5.5).
 // Sở hữu: Thịnh (shared core). D01-T: chốt hợp đồng props và chữ chuẩn (DS 9.8);
 // biểu tượng, kiểu dáng token và thông điệp "Hệ thống đang khởi động" sau 8 giây thuộc task sau.
+import type { JSX } from "react";
 
 export type HanhDongStateView = {
   nhan: string;
@@ -20,7 +21,7 @@ export type StateViewProps =
   | { loai: "LOI_MANG"; onThuLai: () => void }
   | { loai: "LOI_HE_THONG"; traceId?: string; onThuLai: () => void };
 
-export function StateView(props: StateViewProps) {
+export function StateView(props: StateViewProps): JSX.Element {
   switch (props.loai) {
     case "DANG_TAI":
       return (
@@ -62,5 +63,10 @@ export function StateView(props: StateViewProps) {
           </button>
         </div>
       );
+    default: {
+      // Thêm loại mới vào StateViewProps mà chưa xử lý ở trên thì tsc báo lỗi tại đây.
+      const chuaXuLy: never = props;
+      return chuaXuLy;
+    }
   }
 }

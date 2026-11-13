@@ -2,6 +2,7 @@
 // Providers (TanStack Query, AuthProvider) và AuthGate được thêm ở task phiên/khung ứng dụng.
 import type { Metadata } from "next";
 import { Roboto, Roboto_Mono } from "next/font/google";
+import type { ReactNode } from "react";
 import "./globals.css";
 
 const roboto = Roboto({
@@ -23,7 +24,7 @@ export const metadata: Metadata = {
   description: "Web dành cho nhân viên và quản trị viên",
 };
 
-export default function RootLayout({ children }: LayoutProps<"/">) {
+export default function RootLayout({ children }: { children: ReactNode }) {
   return (
     <html lang="vi" className={`${roboto.variable} ${robotoMono.variable}`}>
       <body>{children}</body>
