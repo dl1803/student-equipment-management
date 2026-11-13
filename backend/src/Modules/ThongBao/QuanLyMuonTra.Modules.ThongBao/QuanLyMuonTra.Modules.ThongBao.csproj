@@ -1,0 +1,16 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <ItemGroup>
+    <ProjectReference Include="..\..\..\QuanLyMuonTra.SharedKernel\QuanLyMuonTra.SharedKernel.csproj" />
+    <ProjectReference Include="..\QuanLyMuonTra.Modules.ThongBao.Contracts\QuanLyMuonTra.Modules.ThongBao.Contracts.csproj" />
+    <ProjectReference Include="..\..\SinhVien\QuanLyMuonTra.Modules.SinhVien.Contracts\QuanLyMuonTra.Modules.SinhVien.Contracts.csproj" />
+    <ProjectReference Include="..\..\TaiKhoan\QuanLyMuonTra.Modules.TaiKhoan.Contracts\QuanLyMuonTra.Modules.TaiKhoan.Contracts.csproj" />
+  </ItemGroup>
+
+  <PropertyGroup>
+    <TargetFramework>net9.0</TargetFramework>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <Nullable>enable</Nullable>
+  </PropertyGroup>
+
+</Project>

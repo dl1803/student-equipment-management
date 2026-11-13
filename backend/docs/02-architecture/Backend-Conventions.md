@@ -9,7 +9,7 @@
 | Nhóm | Nhóm 13 |
 | Phiên bản | 1.1 – nhóm đã duyệt các đề xuất ĐX-CV |
 | Ngày lập | 24/10/2026 |
-| Cập nhật gần nhất | 06/11/2026 (khắc phục không nhất quán xuyên tài liệu, đồng bộ với backend-architecture.md v1.3: mục 1.1, 6.1, 6.3, 6.7, 8.2, 8.3, 8.5, 10.4, 12.2, 13.2, 16, 17.1, 17.2, 18.1, 21) |
+| Cập nhật gần nhất | 13/11/2026 (đồng bộ quyết định nhóm: .NET 9, nhánh nền `develop`, kiểm thử tích hợp trên PostgreSQL Supabase thay cho Testcontainers ở mục 2.1, 16, 17.1, 17.3, 18.1, 18.3); trước đó 06/11/2026 (khắc phục không nhất quán xuyên tài liệu, đồng bộ với backend-architecture.md v1.3: mục 1.1, 6.1, 6.3, 6.7, 8.2, 8.3, 8.5, 10.4, 12.2, 13.2, 16, 17.1, 17.2, 18.1, 21) |
 | Căn cứ lập tài liệu | backend-architecture.md (v1.3, 06/11/2026); SRS.md (22/10/2026); Usecase.md v1.2; BusinessRule.md (BR-01 … BR-81); Authorization.md (ĐX-PQ-01 … ĐX-PQ-11) |
 
 > Tài liệu quy định **cách viết mã và cách phối hợp** khi hiện thực backend, để mọi thành viên làm theo cùng một chuẩn. Tài liệu **không thêm yêu cầu nghiệp vụ mới** và không lặp lại toàn bộ thiết kế: kiến trúc, danh sách endpoint chi tiết và lược đồ dữ liệu xem `backend-architecture.md` (viết tắt **KT** khi dẫn mục, ví dụ "KT 6.4"). Nội dung nào không có trong năm tài liệu căn cứ được gắn nhãn **[ĐX-CV-xx]** và tổng hợp ở mục 21; nhóm đã duyệt toàn bộ các đề xuất này. Nhãn **[Đã chốt]**, **[ĐX-KT-xx]**, **[ĐX-xx]**, **[ĐX-PQ-xx]** giữ nguyên nghĩa như ở các tài liệu căn cứ.
@@ -76,7 +76,7 @@ Quy tắc: không hiện thực use case ngoài phạm vi khi chưa được nh�
 
 | Lớp | Công nghệ | Nguồn |
 |---|---|---|
-| Runtime, framework | ASP.NET Core, Minimal API, .NET LTS mới nhất tại thời điểm hiện thực (.NET 10) | KT-01, KT-13, KT-14 |
+| Runtime, framework | ASP.NET Core, Minimal API, .NET 9 (nhóm chốt ngày 13/11/2026) | KT-01, KT-13, KT-14 |
 | Kiến trúc | Modular monolith; trong mỗi module theo hướng clean architecture | KT-02 |
 | CSDL | PostgreSQL trên Supabase; EF Core + Npgsql; truy vấn báo cáo và tra cứu nặng dùng SQL thuần (Dapper hoặc `FromSql`) | KT-03, KT-15 |
 | Xử lý use case | Mỗi use case là một handler đăng ký DI; **không dùng thư viện mediator** | KT-16 |
@@ -88,7 +88,7 @@ Quy tắc: không hiện thực use case ngoài phạm vi khi chưa được nh�
 | API | REST + OpenAPI (thành phần có sẵn của ASP.NET Core); client Android sinh bằng openapi-generator (Java, Retrofit) | KT-04, KT-18 |
 | Log | Serilog, JSON ra stdout | KT-19 |
 | Xuất báo cáo | `.xlsx` (ClosedXML) và `.csv` | KT-21, ĐX-KT-09 |
-| Kiểm thử | xUnit, Testcontainers (PostgreSQL), `WebApplicationFactory`, NetArchTest, k6 | KT 17 |
+| Kiểm thử | xUnit, PostgreSQL trên Supabase (môi trường `test`), `WebApplicationFactory`, NetArchTest, k6 | KT 17 |
 | Đóng gói, triển khai | Docker; web trên Vercel; backend trên Render gói miễn phí | KT-12 |
 
 Ghi chú: các mã KT-13 đến KT-22 trong bảng trên (phiên bản .NET, Minimal API, truy cập dữ liệu, handler, FluentValidation, OpenAPI, Serilog, email HTTP API, xuất báo cáo) là lựa chọn nhóm ủy quyền, nhóm đã duyệt theo KT 2.2; nếu nhóm đổi lựa chọn nào thì cập nhật bảng này.
@@ -975,6 +975,7 @@ Bí mật chỉ nằm trong biến môi trường của Render (và `dotnet user
 | Biến môi trường | Ý nghĩa |
 |---|---|
 | `ConnectionStrings__Default` | Chuỗi kết nối PostgreSQL qua connection pooler của Supabase, SSL bắt buộc, `Maximum Pool Size` khoảng 10 |
+| `ConnectionStrings__Test` | Chuỗi kết nối PostgreSQL của môi trường `test` cho kiểm thử tích hợp và đồng thời; dạng connection pooler, SSL bắt buộc; chỉ đặt ở máy dev (`dotnet user-secrets`) và GitHub secret của CI |
 | `Jwt__Secret`, `Jwt__Issuer`, `Jwt__Audience` | Khóa ký và thông tin token |
 | `Supabase__Url`, `Supabase__ServiceRoleKey` | Gọi Storage (chỉ backend giữ) |
 | `Email__Provider`, `Email__ApiKey`, `Email__From` | Gửi email (`Log` cho dev, `Http` cho production) |
@@ -983,7 +984,7 @@ Bí mật chỉ nằm trong biến môi trường của Render (và `dotnet user
 | `ASPNETCORE_ENVIRONMENT` | `Development` hoặc `Production` |
 | `PORT` | Render truyền cổng lắng nghe; ứng dụng đọc biến này |
 
-Môi trường: `dev` (máy cá nhân, PostgreSQL chạy bằng Docker Compose, `LogEmailSender`, `truong_gia_lap` có dữ liệu mẫu) và `prod` (Render + Supabase); có thể thêm `staging` bằng dự án Supabase miễn phí thứ hai.
+Môi trường: `dev` (máy cá nhân kết nối PostgreSQL trên Supabase, không dùng PostgreSQL cục bộ; `LogEmailSender`, `truong_gia_lap` có dữ liệu mẫu), `test` (PostgreSQL trên Supabase dành cho kiểm thử tích hợp và đồng thời, dùng được từ máy dev và CI) và `prod` (Render + Supabase). Gói miễn phí của Supabase cho phép hai dự án hoạt động cùng lúc; nhóm bố trí các môi trường trên các dự án đó.
 
 ---
 
@@ -994,7 +995,7 @@ Môi trường: `dev` (máy cá nhân, PostgreSQL chạy bằng Docker Compose, 
 | Loại | Phạm vi | Công cụ |
 |---|---|---|
 | Đơn vị | Quy tắc miền: máy trạng thái, công thức phí và bồi thường, số ngày trễ, tính hạn trả, đếm vi phạm | xUnit, `IClock` giả lập |
-| Tích hợp | Handler cùng EF Core trên PostgreSQL thật: ràng buộc duy nhất, chỉ mục duy nhất có điều kiện, trigger nhật ký, giao dịch, tiêu chí xóa cứng (mục 6.3) | Testcontainers (PostgreSQL) |
+| Tích hợp | Handler cùng EF Core trên PostgreSQL thật: ràng buộc duy nhất, chỉ mục duy nhất có điều kiện, trigger nhật ký, giao dịch, tiêu chí xóa cứng (mục 6.3) | PostgreSQL trên Supabase (môi trường `test`) |
 | API | Ma trận phân quyền (vai trò × endpoint), phạm vi SV và phòng của NV, định dạng lỗi | `WebApplicationFactory` |
 | Đồng thời | Hai giao dịch cùng giao một thiết bị chỉ một thành công; hai giao dịch duyệt cho số lượng cuối cùng; giao trực tiếp song song với giao trực tiếp cho hai thiết bị khác nhau khi khả dụng chỉ đủ một; duyệt song song với giao trực tiếp ở đơn vị khả dụng cuối cùng; duyệt song song với lập lịch bảo trì ở đơn vị khả dụng cuối cùng; chuyển lượt hoặc giữ chỗ cho đăng ký chờ song song với giao trực tiếp; duyệt song song với xóa cứng thiết bị ở đơn vị khả dụng cuối cùng (ĐX-KT-13); không vượt giữ chỗ | Chạy song song trên PostgreSQL thật |
 | Job | Chạy lại không tạo trùng (FR-41); chạy bù sau gián đoạn; khóa tư vấn | Tích hợp với đồng hồ giả lập |
@@ -1021,7 +1022,7 @@ Môi trường: `dev` (máy cá nhân, PostgreSQL chạy bằng Docker Compose, 
 |---|---|
 | Truy vết | Tên kiểm thử của kịch bản UC ghi mã UC (ví dụ `UC07`), theo yêu cầu của KT 17 |
 | Thời gian | Không dùng đồng hồ thật; dùng `IClock` giả lập |
-| CSDL | Kiểm thử tích hợp và đồng thời chạy trên PostgreSQL thật qua Testcontainers, không dùng CSDL trong bộ nhớ thay thế |
+| CSDL | Kiểm thử tích hợp và đồng thời chạy trên PostgreSQL thật của môi trường `test` (Supabase), không dùng CSDL trong bộ nhớ thay thế |
 | Định dạng tên **[ĐX-CV-05]** | `{MaUC}_{TinhHuong}_{KetQuaMongDoi}`, ví dụ `UC07_HaiNVGiaoCungThietBi_ChiMotThanhCong` |
 | Ngưỡng coverage **[ĐX-CV-04]** | Nguồn không đặt ngưỡng phần trăm; tài liệu này cũng **không đặt số cứng**. Tiêu chí đạt là: mỗi UC giai đoạn 1 có kịch bản kiểm thử, các ca bắt buộc ở 17.2 đều đạt, mọi quy tắc ở mục 9.2 đều có kiểm thử đơn vị. Nhóm có thể bổ sung ngưỡng sau |
 
@@ -1033,7 +1034,7 @@ Môi trường: `dev` (máy cá nhân, PostgreSQL chạy bằng Docker Compose, 
 
 | Bước | Nội dung |
 |---|---|
-| 1. Build và kiểm thử | Kiểm tra định dạng (`dotnet format --verify-no-changes`), `dotnet build`, kiểm thử đơn vị, kiểm thử kiến trúc, kiểm thử tích hợp (Testcontainers cần Docker, có sẵn trên runner GitHub) |
+| 1. Build và kiểm thử | Kiểm tra định dạng (`dotnet format --verify-no-changes`), `dotnet build`, kiểm thử đơn vị, kiểm thử kiến trúc, kiểm thử tích hợp (chạy trên PostgreSQL của môi trường `test` trên Supabase; chuỗi kết nối lấy từ GitHub secret `ConnectionStrings__Test`, dùng chuỗi của connection pooler vì runner GitHub dùng IPv4) |
 | 2. OpenAPI | Xuất `openapi.json` làm artifact để sinh client Android; so sánh với `openapi.yaml`, báo lỗi nếu lệch (ĐX-API-30) |
 | 3. Migration | Tạo gói migration (`dotnet ef migrations bundle`) và chạy vào Supabase **trước khi** triển khai, dùng chuỗi kết nối của connection pooler (kết nối trực tiếp mặc định chỉ có IPv6, runner GitHub dùng IPv4) |
 | 4. Triển khai | Render tự triển khai khi có commit vào nhánh chính (`autoDeploy`) **sau khi CI xanh** |
@@ -1058,11 +1059,12 @@ Nguồn không có quy ước Git ngoài việc "commit vào nhánh chính kích
 | Nội dung | Quy ước |
 |---|---|
 | Nhánh chính | `main`; luôn triển khai được; **không commit trực tiếp** vào `main` |
-| Nhánh làm việc | Tách từ `main`, đặt tên `{loai}/{ma-uc}-{mo-ta-ngan}`; `loai` thuộc `feature`, `fix`, `refactor`, `test`, `docs`, `chore`. Ví dụ `feature/uc-07-giao-thiet-bi` |
+| Nhánh nền | `develop`; nơi tích hợp các nhánh làm việc; **không commit trực tiếp** vào `develop` |
+| Nhánh làm việc | Tách từ `develop`, đặt tên `{loai}/{ma-uc}-{mo-ta-ngan}`; `loai` thuộc `feature`, `fix`, `refactor`, `test`, `docs`, `chore`. Ví dụ `feature/uc-07-giao-thiet-bi` |
 | Commit | Theo Conventional Commits: `{loai}({module}): {mô tả}`, `module` là tên module viết thường. Ví dụ `feat(muontra): giao thiết bị nguyên tử`. Mô tả viết tiếng Việt |
 | Pull request | Một PR một mục tiêu; tiêu đề có mã UC hoặc BR liên quan; yêu cầu **CI xanh** và ít nhất **một** thành viên khác duyệt trước khi gộp; dùng danh sách ở mục 20 để review |
-| Gộp | Squash merge vào `main`, để mỗi PR là một commit trên `main` |
-| Migration | Mỗi thay đổi lược đồ đi cùng migration trong cùng PR; không sửa migration đã gộp vào `main` |
+| Gộp | Squash merge nhánh làm việc vào `develop`, để mỗi PR là một commit trên `develop`; `main` nhận thay đổi từ `develop` |
+| Migration | Mỗi thay đổi lược đồ đi cùng migration trong cùng PR; không sửa migration đã gộp vào `develop` hoặc `main` |
 
 ---
 

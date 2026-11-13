@@ -2,7 +2,7 @@
 
 ## Hệ thống Quản lý Mượn Trả Thiết bị Học tập cho Sinh viên
 > **Đồ án:** Phát triển phần mềm hướng đối tượng (SE100) — Nhóm 13  
-> **Công nghệ cốt lõi:** ASP.NET Core (.NET 8), Modular Monolith, PostgreSQL (Supabase), OpenAPI 3.0.3
+> **Công nghệ cốt lõi:** ASP.NET Core (.NET 9), Modular Monolith, PostgreSQL (Supabase), OpenAPI 3.0.3
 
 ---
 
