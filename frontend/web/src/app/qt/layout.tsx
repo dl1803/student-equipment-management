@@ -1,0 +1,5 @@
+// Layout /qt. Khung quản trị viên: chỉ cho QUAN_TRI (FA 4.4). Sở hữu: Thịnh (shared core).
+// D01-T: chỉ chuyển tiếp children; hiện thực ở task sau.
+export default function Layout({ children }: LayoutProps<"/qt">) {
+  return children;
+}
