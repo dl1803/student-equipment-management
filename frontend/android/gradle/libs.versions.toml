@@ -1,0 +1,10 @@
+# D01-L: nơi khóa phiên bản tập trung của dự án Android (FC 10.2).
+# Chỉ khóa những gì bản dựng hiện tại dùng. Phiên bản thư viện khác (Material Components,
+# Navigation, Retrofit, OkHttp, Glide, JUnit, MockWebServer, openapi-generator...) được khóa
+# khi task đầu tiên dùng đến thư viện đó và phải được nhóm duyệt trước (FC 1.4).
+[versions]
+# AGP 8.13.2 đi cùng Gradle 8.13, JDK 17 trở lên, hỗ trợ compileSdk 36.
+agp = "8.13.2"
+
+[plugins]
+android-application = { id = "com.android.application", version.ref = "agp" }

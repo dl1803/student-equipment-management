@@ -1,0 +1,15 @@
+# Gradle
+.gradle/
+build/
+
+# Cấu hình cục bộ và bí mật, không commit (FC 10.1)
+local.properties
+*.jks
+*.keystore
+
+# Android Studio
+.idea/
+*.iml
+captures/
+.externalNativeBuild/
+.cxx/

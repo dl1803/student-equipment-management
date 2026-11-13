@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+<manifest xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <!--
+        D01-L: manifest tối thiểu để dự án trống biên dịch được.
+        Activity thuộc D06-L; quyền mạng thuộc D04-L; cấu hình sao lưu và loại tệp phiên thuộc D03-L.
+    -->
+    <application />
+
+</manifest>
