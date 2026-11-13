@@ -1,0 +1,20 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <ItemGroup>
+    <ProjectReference Include="..\..\..\QuanLyMuonTra.SharedKernel\QuanLyMuonTra.SharedKernel.csproj" />
+    <ProjectReference Include="..\QuanLyMuonTra.Modules.ViPham.Contracts\QuanLyMuonTra.Modules.ViPham.Contracts.csproj" />
+    <ProjectReference Include="..\..\MuonTra\QuanLyMuonTra.Modules.MuonTra.Contracts\QuanLyMuonTra.Modules.MuonTra.Contracts.csproj" />
+    <ProjectReference Include="..\..\SinhVien\QuanLyMuonTra.Modules.SinhVien.Contracts\QuanLyMuonTra.Modules.SinhVien.Contracts.csproj" />
+    <ProjectReference Include="..\..\QuyDinh\QuanLyMuonTra.Modules.QuyDinh.Contracts\QuanLyMuonTra.Modules.QuyDinh.Contracts.csproj" />
+    <ProjectReference Include="..\..\DanhMuc\QuanLyMuonTra.Modules.DanhMuc.Contracts\QuanLyMuonTra.Modules.DanhMuc.Contracts.csproj" />
+    <ProjectReference Include="..\..\ThongBao\QuanLyMuonTra.Modules.ThongBao.Contracts\QuanLyMuonTra.Modules.ThongBao.Contracts.csproj" />
+    <ProjectReference Include="..\..\TaiKhoan\QuanLyMuonTra.Modules.TaiKhoan.Contracts\QuanLyMuonTra.Modules.TaiKhoan.Contracts.csproj" />
+  </ItemGroup>
+
+  <PropertyGroup>
+    <TargetFramework>net9.0</TargetFramework>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <Nullable>enable</Nullable>
+  </PropertyGroup>
+
+</Project>

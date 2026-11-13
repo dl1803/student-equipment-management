@@ -1,0 +1,25 @@
+﻿<Project Sdk="Microsoft.NET.Sdk.Web">
+
+  <ItemGroup>
+    <ProjectReference Include="..\QuanLyMuonTra.Infrastructure\QuanLyMuonTra.Infrastructure.csproj" />
+    <ProjectReference Include="..\QuanLyMuonTra.SharedKernel\QuanLyMuonTra.SharedKernel.csproj" />
+    <ProjectReference Include="..\Modules\TaiKhoan\QuanLyMuonTra.Modules.TaiKhoan\QuanLyMuonTra.Modules.TaiKhoan.csproj" />
+    <ProjectReference Include="..\Modules\SinhVien\QuanLyMuonTra.Modules.SinhVien\QuanLyMuonTra.Modules.SinhVien.csproj" />
+    <ProjectReference Include="..\Modules\DanhMuc\QuanLyMuonTra.Modules.DanhMuc\QuanLyMuonTra.Modules.DanhMuc.csproj" />
+    <ProjectReference Include="..\Modules\QuyDinh\QuanLyMuonTra.Modules.QuyDinh\QuanLyMuonTra.Modules.QuyDinh.csproj" />
+    <ProjectReference Include="..\Modules\MuonTra\QuanLyMuonTra.Modules.MuonTra\QuanLyMuonTra.Modules.MuonTra.csproj" />
+    <ProjectReference Include="..\Modules\ViPham\QuanLyMuonTra.Modules.ViPham\QuanLyMuonTra.Modules.ViPham.csproj" />
+    <ProjectReference Include="..\Modules\BaoTri\QuanLyMuonTra.Modules.BaoTri\QuanLyMuonTra.Modules.BaoTri.csproj" />
+    <ProjectReference Include="..\Modules\ThongBao\QuanLyMuonTra.Modules.ThongBao\QuanLyMuonTra.Modules.ThongBao.csproj" />
+    <ProjectReference Include="..\Modules\NhatKy\QuanLyMuonTra.Modules.NhatKy\QuanLyMuonTra.Modules.NhatKy.csproj" />
+    <ProjectReference Include="..\Modules\BaoCao\QuanLyMuonTra.Modules.BaoCao\QuanLyMuonTra.Modules.BaoCao.csproj" />
+  </ItemGroup>
+
+  <PropertyGroup>
+    <TargetFramework>net9.0</TargetFramework>
+    <Nullable>enable</Nullable>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <UserSecretsId>7a4535b8-6186-46ee-96a6-ff3f0896b486</UserSecretsId>
+  </PropertyGroup>
+
+</Project>
