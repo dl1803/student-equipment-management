@@ -9,7 +9,7 @@
 | Nhóm | Nhóm 13 |
 | Phiên bản | 1.3 – nhóm đã duyệt; đồng bộ với Backend-Conventions.md |
 | Ngày lập | 24/10/2026 |
-| Cập nhật gần nhất | 07/11/2026 (mục 1.4, 8.2, 9.2: chốt bước giữ chỗ cho đăng ký chờ chạy đồng bộ, chỉ định `Usecase.md` là nơi thẩm quyền của luồng use case); trước đó 06/11/2026 (khắc phục không nhất quán xuyên tài liệu, đồng bộ với Backend-Conventions.md: mục 1.4, 2.1, 2.2, 6.1, 6.3, 6.4, 6.5, 6.6, 7.4, 8.2, 8.4, 8.6, 9.2, 10.2, 13, 15, 16.4, 17, 19.1, 19.2); trước đó 25/10/2026 (mục 4.2, 4.6, 5.1, 6.1, 6.2, 6.5, 6.6, 7.3, 7.4, 8.3, 8.4, 14, 16.4) |
+| Cập nhật gần nhất | 13/11/2026 (đồng bộ quyết định nhóm: .NET 9 ở KT-13; môi trường dev không dùng PostgreSQL cục bộ, kiểm thử tích hợp chạy trên PostgreSQL Supabase thay cho Testcontainers ở mục 15, 16.4, 17); trước đó 07/11/2026 (mục 1.4, 8.2, 9.2: chốt bước giữ chỗ cho đăng ký chờ chạy đồng bộ, chỉ định `Usecase.md` là nơi thẩm quyền của luồng use case); trước đó 06/11/2026 (khắc phục không nhất quán xuyên tài liệu, đồng bộ với Backend-Conventions.md: mục 1.4, 2.1, 2.2, 6.1, 6.3, 6.4, 6.5, 6.6, 7.4, 8.2, 8.4, 8.6, 9.2, 10.2, 13, 15, 16.4, 17, 19.1, 19.2); trước đó 25/10/2026 (mục 4.2, 4.6, 5.1, 6.1, 6.2, 6.5, 6.6, 7.3, 7.4, 8.3, 8.4, 14, 16.4) |
 | Căn cứ lập tài liệu | SRS.md (22/10/2026); Usecase.md v1.2; BusinessRule.md (BR-01 … BR-81); Authorization.md (ĐX-PQ-01 … ĐX-PQ-11) |
 
 > Tài liệu mô tả **cách hiện thực backend** cho các yêu cầu đã chốt ở bốn tài liệu căn cứ; không thêm yêu cầu nghiệp vụ mới. Các quyết định kỹ thuật do nhóm chốt được ghi **[Đã chốt]**. Các điểm tài liệu này tự đề xuất (nguồn chưa nêu hoặc nhóm ủy quyền) được ghi **[ĐX-KT-xx]** và tổng hợp ở mục 19; nhóm đã duyệt toàn bộ. Số liệu về giới hạn gói miễn phí của Render và Supabase được kiểm tra ngày 24/10/2026; nhóm cần kiểm tra lại trên trang giá hiện hành trước khi triển khai.
@@ -115,7 +115,7 @@ Mỗi loại thông tin có một tài liệu thẩm quyền; các tài liệu c
 
 | Mã | Chủ đề | Lựa chọn | Lý do |
 |---|---|---|---|
-| KT-13 | Phiên bản .NET | Bản LTS mới nhất tại thời điểm hiện thực (.NET 10) | Các bản .NET 8 và 9 hết hỗ trợ sớm; nhóm đổi sang bản khác nếu đang dùng, không ảnh hưởng thiết kế |
+| KT-13 | Phiên bản .NET | .NET 9 (nhóm chốt ngày 13/11/2026) | Trước đó tài liệu chọn bản LTS mới nhất (.NET 10). Bản .NET 9 hết hỗ trợ sớm hơn bản LTS; nhóm đã chốt .NET 9, không ảnh hưởng thiết kế |
 | KT-14 | Kiểu endpoint | Minimal API, nhóm theo module (`MapXxxEndpoints`) | Hỗ trợ OpenAPI sẵn có; gọn cho mô hình mỗi use case một handler |
 | KT-15 | Truy cập dữ liệu | EF Core + Npgsql; truy vấn báo cáo và tra cứu nặng dùng SQL thuần (Dapper hoặc `FromSql`) | Giao dịch, migration, concurrency token; báo cáo cần SQL tối ưu |
 | KT-16 | Xử lý use case | Mỗi use case là một handler được đăng ký DI, không dùng thư viện mediator | Giảm phụ thuộc, dễ truy vết use case sang mã |
@@ -188,7 +188,7 @@ flowchart TB
 
 | Lớp | Công nghệ | Nguồn quyết định |
 |---|---|---|
-| Runtime / framework | ASP.NET Core (Minimal API), .NET LTS | KT-01, KT-13, KT-14 |
+| Runtime / framework | ASP.NET Core (Minimal API), .NET 9 | KT-01, KT-13, KT-14 |
 | Kiến trúc | Modular monolith, clean architecture trong từng module | KT-02 |
 | ORM / CSDL | EF Core, Npgsql, PostgreSQL (Supabase) | KT-03, KT-15 |
 | Xác thực | JWT Bearer (access và refresh token) | KT-06 |
@@ -197,7 +197,7 @@ flowchart TB
 | Lưu ảnh | Supabase Storage | KT-09 |
 | Tài liệu API | OpenAPI | KT-04, KT-18 |
 | Log | Serilog (JSON, stdout) | KT-19 |
-| Kiểm thử | xUnit, Testcontainers (PostgreSQL), WebApplicationFactory, NetArchTest, k6 | Mục 17 |
+| Kiểm thử | xUnit, PostgreSQL trên Supabase (môi trường `test`), WebApplicationFactory, NetArchTest, k6 | Mục 17 |
 | Đóng gói | Docker (Render không có runtime .NET gốc, cần Dockerfile) | KT-12 |
 
 ### 3.4 Giới hạn của gói miễn phí và hệ quả thiết kế
@@ -1129,6 +1129,7 @@ Bí mật chỉ nằm trong biến môi trường của Render (và `dotnet user
 | Biến môi trường | Ý nghĩa |
 |---|---|
 | `ConnectionStrings__Default` | Chuỗi kết nối PostgreSQL qua connection pooler của Supabase, SSL bắt buộc, `Maximum Pool Size` nhỏ (khoảng 10) để không cạn kết nối của gói miễn phí |
+| `ConnectionStrings__Test` | Chuỗi kết nối PostgreSQL của môi trường `test` cho kiểm thử tích hợp và đồng thời; dạng connection pooler, SSL bắt buộc; chỉ đặt ở máy dev (`dotnet user-secrets`) và GitHub secret của CI |
 | `Jwt__Secret`, `Jwt__Issuer`, `Jwt__Audience` | Khóa ký và thông tin token |
 | `Supabase__Url`, `Supabase__ServiceRoleKey` | Gọi Storage (chỉ backend giữ) |
 | `Email__Provider`, `Email__ApiKey`, `Email__From` | Gửi email (`Log` cho dev, `Http` cho production) |
@@ -1137,7 +1138,7 @@ Bí mật chỉ nằm trong biến môi trường của Render (và `dotnet user
 | `ASPNETCORE_ENVIRONMENT` | `Development` hoặc `Production`. Bản `Production` không bật trang lỗi chi tiết |
 | `PORT` | Render truyền cổng lắng nghe; ứng dụng đọc biến này |
 
-**Môi trường:** `dev` (máy cá nhân: PostgreSQL chạy bằng Docker Compose, `LogEmailSender`, schema `truong_gia_lap` có dữ liệu mẫu) và `prod` (Render + Supabase). Có thể thêm `staging` bằng một dự án Supabase miễn phí thứ hai, vì gói miễn phí cho phép hai dự án.
+**Môi trường:** `dev` (máy cá nhân kết nối PostgreSQL trên Supabase, không dùng PostgreSQL cục bộ; `LogEmailSender`, schema `truong_gia_lap` có dữ liệu mẫu), `test` (PostgreSQL trên Supabase dành cho kiểm thử tích hợp và đồng thời, dùng được từ máy dev và CI) và `prod` (Render + Supabase). Gói miễn phí của Supabase cho phép hai dự án hoạt động cùng lúc; nhóm bố trí các môi trường trên các dự án đó.
 
 ---
 
@@ -1191,7 +1192,7 @@ Web NV và QT triển khai trên Vercel, gọi API qua HTTPS. Địa chỉ API �
 
 | Bước | Nội dung |
 |---|---|
-| 1. Build và kiểm thử | Kiểm tra định dạng (`dotnet format --verify-no-changes`), `dotnet build`, kiểm thử đơn vị, kiểm thử kiến trúc, kiểm thử tích hợp (Testcontainers cần Docker, có sẵn trên runner) |
+| 1. Build và kiểm thử | Kiểm tra định dạng (`dotnet format --verify-no-changes`), `dotnet build`, kiểm thử đơn vị, kiểm thử kiến trúc, kiểm thử tích hợp (chạy trên PostgreSQL của môi trường `test` trên Supabase; chuỗi kết nối lấy từ GitHub secret `ConnectionStrings__Test`, dùng chuỗi của connection pooler vì runner GitHub dùng IPv4) |
 | 2. OpenAPI | Xuất `openapi.json` làm artifact để sinh client Android; so sánh với `openapi.yaml`, báo lỗi nếu lệch (ĐX-API-30) |
 | 3. Migration | Tạo gói migration (`dotnet ef migrations bundle`) và chạy vào Supabase **trước khi** triển khai. Dùng chuỗi kết nối của connection pooler (kết nối trực tiếp của Supabase mặc định chỉ có IPv6, runner GitHub dùng IPv4; kiểm tra trên bảng điều khiển) |
 | 4. Triển khai | Render tự triển khai khi có commit vào nhánh chính (`autoDeploy`) sau khi CI xanh |
@@ -1237,7 +1238,7 @@ jobs:
 | Loại | Phạm vi | Công cụ |
 |---|---|---|
 | Đơn vị | Quy tắc miền: máy trạng thái, công thức phí và bồi thường, số ngày trễ, tính hạn trả, đếm vi phạm | xUnit, `IClock` giả lập |
-| Tích hợp | Handler cùng EF Core trên PostgreSQL thật: ràng buộc duy nhất, chỉ mục duy nhất có điều kiện, trigger nhật ký, giao dịch | Testcontainers (PostgreSQL) |
+| Tích hợp | Handler cùng EF Core trên PostgreSQL thật: ràng buộc duy nhất, chỉ mục duy nhất có điều kiện, trigger nhật ký, giao dịch | PostgreSQL trên Supabase (môi trường `test`) |
 | API | Ma trận phân quyền (vai trò × endpoint), phạm vi SV và phòng của NV, định dạng lỗi | `WebApplicationFactory` |
 | Đồng thời | Hai giao dịch cùng giao một thiết bị chỉ một thành công; hai giao dịch duyệt cho số lượng cuối cùng; giao trực tiếp song song với giao trực tiếp cho hai thiết bị khác nhau khi khả dụng chỉ đủ một; duyệt song song với giao trực tiếp ở đơn vị khả dụng cuối cùng; duyệt song song với lập lịch bảo trì ở đơn vị khả dụng cuối cùng; chuyển lượt hoặc giữ chỗ cho đăng ký chờ song song với giao trực tiếp; duyệt song song với xóa cứng thiết bị ở đơn vị khả dụng cuối cùng (ĐX-KT-13); không vượt giữ chỗ | Chạy song song trên PostgreSQL thật |
 | Job | Chạy lại không tạo trùng (FR-41); chạy bù sau gián đoạn; khóa tư vấn | Tích hợp với đồng hồ giả lập |
