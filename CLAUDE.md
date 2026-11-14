@@ -64,3 +64,4 @@ Trong `frontend/web/`: `npm run gen:api` (không làm lệch `schema.d.ts`) → 
 
 - Commit theo Conventional Commits, mô tả tiếng Việt: `{loai}({pham-vi}): {mô tả}`, ví dụ `feat(web): …`, `chore(android): …`.
 - Không commit `.env*` thật (chỉ `.env.example`), `local.properties`, keystore, token, `node_modules/`, `.next/`, `build/`, `.idea/`.
+- Khi tạo git commit, tuyệt đối KHÔNG thêm dòng `Co-Authored-By: Claude` vào commit message.
