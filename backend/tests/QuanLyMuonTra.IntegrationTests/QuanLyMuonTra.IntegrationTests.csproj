@@ -23,6 +23,7 @@
   <ItemGroup>
     <ProjectReference Include="..\..\src\QuanLyMuonTra.Api\QuanLyMuonTra.Api.csproj" />
     <ProjectReference Include="..\..\src\QuanLyMuonTra.Infrastructure\QuanLyMuonTra.Infrastructure.csproj" />
+    <ProjectReference Include="..\..\src\Modules\MuonTra\QuanLyMuonTra.Modules.MuonTra\QuanLyMuonTra.Modules.MuonTra.csproj" />
   </ItemGroup>
 
   <ItemGroup>
