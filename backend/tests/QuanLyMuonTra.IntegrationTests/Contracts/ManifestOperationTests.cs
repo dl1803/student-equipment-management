@@ -1,4 +1,5 @@
 using System.Text.RegularExpressions;
+using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc.Testing;
 using Microsoft.AspNetCore.Routing;
@@ -43,33 +44,33 @@ public class ManifestOperationTests(ITestOutputHelper output)
 
     private static HashSet<string> LayThaoTacTrongMa()
     {
-        const string ten = "ConnectionStrings__Default";
-        var giaTriCu = Environment.GetEnvironmentVariable(ten);
-        Environment.SetEnvironmentVariable(ten, "Host=localhost;Database=khong-dung;Username=khong-dung;Password=khong-dung");
-
-        try
-        {
-            using var factory = new WebApplicationFactory<Program>();
-            var nguon = factory.Services.GetRequiredService<EndpointDataSource>();
-            var ketQua = new HashSet<string>();
-
-            foreach (var endpoint in nguon.Endpoints.OfType<RouteEndpoint>())
+        using var factory = new WebApplicationFactory<Program>()
+            .WithWebHostBuilder(builder =>
             {
-                var duongDan = Regex.Replace(endpoint.RoutePattern.RawText ?? string.Empty, @"\{([^}:?]+)[^}]*\}", "{$1}");
-                var phuongThuc = endpoint.Metadata.GetMetadata<HttpMethodMetadata>()?.HttpMethods ?? ["GET"];
+                builder.UseSetting("ConnectionStrings:Default", "Host=localhost;Database=khong-dung;Username=khong-dung;Password=khong-dung");
+            });
 
-                foreach (var method in phuongThuc)
-                {
-                    ketQua.Add($"{method.ToUpperInvariant()} {duongDan}");
-                }
+        var nguon = factory.Services.GetRequiredService<EndpointDataSource>();
+        var ketQua = new HashSet<string>();
+
+        foreach (var endpoint in nguon.Endpoints.OfType<RouteEndpoint>())
+        {
+            var duongDan = "/" + Regex.Replace(endpoint.RoutePattern.RawText ?? string.Empty, @"\{([^}:?]+)[^}]*\}", "{$1}").TrimStart('/');
+            if (duongDan.StartsWith("/swagger", StringComparison.OrdinalIgnoreCase) ||
+                duongDan.StartsWith("/openapi", StringComparison.OrdinalIgnoreCase))
+            {
+                continue;
             }
 
-            return ketQua;
+            var phuongThuc = endpoint.Metadata.GetMetadata<HttpMethodMetadata>()?.HttpMethods ?? ["GET"];
+
+            foreach (var method in phuongThuc)
+            {
+                ketQua.Add($"{method.ToUpperInvariant()} {duongDan}");
+            }
         }
-        finally
-        {
-            Environment.SetEnvironmentVariable(ten, giaTriCu);
-        }
+
+        return ketQua;
     }
 }
 

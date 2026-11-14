@@ -12,13 +12,24 @@ public static class DependencyInjection
     public static IServiceCollection AddInfrastructure(
         this IServiceCollection services,
         string chuoiKetNoi,
-        IReadOnlyCollection<Assembly> assemblyCauHinhEf)
+        IReadOnlyCollection<Assembly>? assemblyCauHinhEf = null)
     {
-        services.AddSingleton(new EfConfigurationAssemblies(assemblyCauHinhEf));
+        if (assemblyCauHinhEf is { Count: > 0 })
+        {
+            services.AddSingleton(new EfConfigurationAssemblies(assemblyCauHinhEf));
+        }
+
         services.AddDbContext<AppDbContext>(options => options.UseNpgsql(chuoiKetNoi));
         services.AddSingleton<IClock, SystemClock>();
 
         return services;
     }
-}
 
+    public static IServiceCollection AddEfConfigurationsFromAssembly(
+        this IServiceCollection services,
+        Assembly assembly)
+    {
+        services.AddSingleton(new EfConfigurationAssemblies([assembly]));
+        return services;
+    }
+}

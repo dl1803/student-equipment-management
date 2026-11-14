@@ -4,14 +4,16 @@ namespace QuanLyMuonTra.Infrastructure.Persistence;
 
 public class AppDbContext(
     DbContextOptions<AppDbContext> options,
-    EfConfigurationAssemblies cauHinh) : DbContext(options)
+    IEnumerable<EfConfigurationAssemblies> danhSachCauHinh) : DbContext(options)
 {
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
-        foreach (var assembly in cauHinh.Assemblies)
+        foreach (var cauHinh in danhSachCauHinh)
         {
-            modelBuilder.ApplyConfigurationsFromAssembly(assembly);
+            foreach (var assembly in cauHinh.Assemblies)
+            {
+                modelBuilder.ApplyConfigurationsFromAssembly(assembly);
+            }
         }
     }
 }
-
