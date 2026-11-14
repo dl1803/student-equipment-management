@@ -18,7 +18,8 @@
 | JDK dùng để build | 17 đến 24 (khuyến nghị 17) | Như trên | AGP cần JDK 17 trở lên; Gradle 8.13 chạy được đến JDK 24 |
 | Mức ngôn ngữ Java | 17 | Như trên | Khớp JDK tối thiểu của AGP |
 | Cách khai báo Gradle | Kotlin DSL, `gradle/libs.versions.toml` | Như trên | FC 10.2: khai báo tập trung, khóa phiên bản |
-| Phiên bản thư viện khác | Chưa khóa | OPEN | FC 1.4: khóa khi task đầu tiên dùng và phải được nhóm duyệt |
+| Phiên bản thư viện (D02-L) | Plugin `org.openapi.generator` 7.25.0, Retrofit 3.0.0, OkHttp 4.12.0, Gson 2.13.2, gson-fire 1.9.0, `lifecycle-viewmodel` 2.10.0, `androidx.annotation` 1.9.1, JUnit 4.13.2; khóa trong `gradle/libs.versions.toml` | Đề xuất của Architect, chờ nhóm xác nhận | FC 1.4, FC 10.2; Gson, gson-fire, `androidx.annotation` ngoài danh sách FC 1.4 nên cần nhóm duyệt và cập nhật `Frontend-Architecture.md` |
+| Phiên bản thư viện khác | Chưa khóa (Material Components, Navigation, Glide, MockWebServer...) | OPEN | FC 1.4: khóa khi task đầu tiên dùng và phải được nhóm duyệt |
 
 Lý do chọn AGP 8.13.2 thay vì dòng 9.x: AGP 9 đổi mô hình DSL và bỏ API cũ mà một số plugin còn dùng. Plugin sinh client (D02-L) và Safe Args (D06-L) chưa được kiểm chứng với AGP 9 trong tài liệu này. Chuyển lên AGP 9 là một quyết định riêng của nhóm.
 
@@ -165,3 +166,27 @@ Trạng thái chung: **OPEN**. Định nghĩa gốc của G1–G7 nằm trong `K
 - D02-K, bước 3 ghi sẽ "Chốt G1/G2/G3/G5/G7 từ phương án đã chuẩn bị".
 - Ngoài D01-L, không task Android (cột L) nào trong `BANG_THEO_DOI_40_NGAY.md` nhắc G1–G3. Điều này cần xác nhận lại khi có `KE_HOACH_CHI_TIET_40_NGAY.md`.
 - Quy tắc: Android không tự đặt chính sách cho G1–G3. Khi một task Android cần kết quả của chúng, giữ gate OPEN theo `BANG_THEO_DOI_40_NGAY.md` cho đến khi có quyết định được duyệt.
+
+## 8. Quyết định D02-L
+
+| # | Quyết định | Lý do và căn cứ |
+|---|---|---|
+| 1 | Sinh cả 21 thao tác của hai tag, gồm `authDangNhapNhanVien` và `authToi` dù Android không gọi | ĐX-FA-16 định nghĩa phạm vi theo tag; lọc theo `operationId` phải bảo trì danh sách khi hợp đồng đổi |
+| 2 | Lọc bằng quy tắc normalizer `FILTER` giá trị `tag:XacThuc\|SinhVien` | Cơ chế chính thức của openapi-generator: thao tác không khớp bị đánh `x-internal` và không sinh |
+| 3 | Bản hợp đồng Android `app/build/openapi/openapi-android.yaml` do task `taoHopDongAndroid` tạo; `app/openapi/openapi.yaml` không bị sửa | Giữ nguyên hợp đồng nguồn |
+| 4 | Bản Android bỏ khóa `enum` trong `components.schemas`: mọi mã trạng thái, loại, kết quả, vai trò, `maLoi` là `String` | Enum Java do bộ sinh tạo ném lỗi (hoặc trả `null` nếu trường nullable) khi gặp mã lạ; `enumUnknownDefaultCase` làm mất mã gốc. FA 5.5 và ĐX-FC-21 yêu cầu hiển thị nguyên mã |
+| 5 | Đổi tag `Xác thực` thành `XacThuc`, `Sinh viên` thành `SinhVien` trong bản Android | Lớp API sinh ra có tên ASCII: `XacThucApi`, `SinhVienApi` |
+| 6 | Chỉ sinh tệp hỗ trợ `JSON.java`; không sinh `ApiClient` và lớp xác thực sinh sẵn | `Retrofit` và `OkHttpClient` do `AppContainer` dựng ở D04-L (FA 5.5) |
+| 7 | `schemaMappings` loại 3 schema `discriminator` (`KiemTraNguonRequest`, `LapPhieuMuonRequest`, `BaoCaoJson`) | ĐX-FA-16 |
+| 8 | Sinh kiểu thời gian `java.time` (`dateLibrary=java8`), Gson | FC 6.4 |
+| 9 | `ApiCallback`, `ApiError`, `UiState`, `Event`, `AppContainer`, `UngDung`, `AppViewModelFactory` đã có; chưa có `Repository` cụ thể | Repository đầu tiên là `XacThucRepository` ở D06-L; cần Retrofit và bộ chuẩn hóa lỗi của D04-L |
+
+Cảnh báo cho D04-L (mâu thuẫn M1, chưa giải quyết): FA 3.2 và FC 6.4 coi `/api/v1` là hằng số của `data/api` còn `API_BASE_URL` không có `/api/v1`; nhưng mỗi `path` trong `openapi.yaml` đã chứa `/api/v1`. Dòng chú thích do bộ sinh tạo, quan sát được ngày D02-L:
+
+- @GET("api/v1/sv/phieu-muon/{ma}")
+- @GET("api/v1/sv/phieu-yeu-cau-muon/{ma}")
+- @POST("api/v1/sv/dang-ky-cho")
+
+Không thêm hằng số `/api/v1` vào địa chỉ gốc khi dựng Retrofit nếu các dòng trên đã bắt đầu bằng `api/v1/` hoặc `/api/v1/`; cần nhóm xác nhận cách xử lý trước khi cài D04-L.
+
+Chưa có trong D02-L: `NhomLoi` (FA 3.4, FC 7.4) và `LoiTruong` (FC 9.3) không nằm trong task nào của `BANG_THEO_DOI_40_NGAY.md`, cần người dùng giao việc; chuẩn hóa lỗi (`ApiErrorParser`) thuộc D04-L bước 2.
