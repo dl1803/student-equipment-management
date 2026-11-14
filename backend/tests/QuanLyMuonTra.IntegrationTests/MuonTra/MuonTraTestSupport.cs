@@ -46,9 +46,9 @@ public sealed class GiaoDichTestRollback : IAsyncDisposable
         return new GiaoDichTestRollback(ketNoi, giaoDich, db);
     }
 
-    public async Task NapDuLieuThuAsync()
+    public async Task NapDuLieuThuAsync(string tenTep = "D02-V-du-lieu-thu.sql")
     {
-        var duongDan = Path.Combine(AppContext.BaseDirectory, "MuonTra", "D02-V-du-lieu-thu.sql");
+        var duongDan = Path.Combine(AppContext.BaseDirectory, "MuonTra", tenTep);
         var sql = await File.ReadAllTextAsync(duongDan);
         await using var lenh = new NpgsqlCommand(sql, KetNoi, GiaoDich);
         await lenh.ExecuteNonQueryAsync();
@@ -56,7 +56,7 @@ public sealed class GiaoDichTestRollback : IAsyncDisposable
 
     public async ValueTask DisposeAsync()
     {
-        await GiaoDich.RollbackAsync();
+        await GiaoDich.DisposeAsync();
         await Db.DisposeAsync();
         await KetNoi.DisposeAsync();
     }
