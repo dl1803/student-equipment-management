@@ -3,8 +3,9 @@
 
     <!--
         D01-L: manifest tối thiểu để dự án trống biên dịch được.
+        D02-L: khai báo lớp Application (UngDung) tạo AppContainer.
         Activity thuộc D06-L; quyền mạng thuộc D04-L; cấu hình sao lưu và loại tệp phiên thuộc D03-L.
     -->
-    <application />
+    <application android:name=".UngDung" />
 
 </manifest>
