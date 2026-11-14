@@ -280,7 +280,7 @@ CREATE TABLE quy_dinh.quy_dinh_muon (
 -- Schema muon_tra: Module MuonTra: yêu cầu, danh sách chờ, phiếu mượn, nhận trả
 -- DM-13 muon_tra.phieu_yeu_cau_muon
 CREATE TABLE muon_tra.phieu_yeu_cau_muon (
-    ma_yeu_cau text NOT NULL DEFAULT ('YC-' || to_char(now() AT TIME ZONE 'Asia/Ho_Chi_Minh', 'YYMMDD') || '-' || lpad(nextval('muon_tra.seq_ma_yeu_cau')::text, 6, '0')),
+    ma_yeu_cau text NOT NULL DEFAULT ('YC-' || to_char(now() AT TIME ZONE 'Asia/Ho_Chi_Minh', 'YYMMDD') || '-' || to_char(nextval('muon_tra.seq_ma_yeu_cau'), 'FM999999000000')),
     ma_sv text NOT NULL,
     ma_phong uuid NOT NULL,
     ma_nv_duyet uuid,
@@ -316,7 +316,7 @@ CREATE TABLE muon_tra.chi_tiet_yeu_cau_muon (
 
 -- DM-15 muon_tra.dang_ky_cho
 CREATE TABLE muon_tra.dang_ky_cho (
-    ma_dang_ky text NOT NULL DEFAULT ('DK-' || to_char(now() AT TIME ZONE 'Asia/Ho_Chi_Minh', 'YYMMDD') || '-' || lpad(nextval('muon_tra.seq_ma_dang_ky')::text, 6, '0')),
+    ma_dang_ky text NOT NULL DEFAULT ('DK-' || to_char(now() AT TIME ZONE 'Asia/Ho_Chi_Minh', 'YYMMDD') || '-' || to_char(nextval('muon_tra.seq_ma_dang_ky'), 'FM999999000000')),
     ma_sv text NOT NULL,
     ma_phong uuid NOT NULL,
     ma_loai uuid NOT NULL,
@@ -335,7 +335,7 @@ CREATE TABLE muon_tra.dang_ky_cho (
 
 -- DM-16 muon_tra.phieu_muon
 CREATE TABLE muon_tra.phieu_muon (
-    ma_phieu text NOT NULL DEFAULT ('PM-' || to_char(now() AT TIME ZONE 'Asia/Ho_Chi_Minh', 'YYMMDD') || '-' || lpad(nextval('muon_tra.seq_ma_phieu')::text, 6, '0')),
+    ma_phieu text NOT NULL DEFAULT ('PM-' || to_char(now() AT TIME ZONE 'Asia/Ho_Chi_Minh', 'YYMMDD') || '-' || to_char(nextval('muon_tra.seq_ma_phieu'), 'FM999999000000')),
     ma_sv text NOT NULL,
     ma_nv_lap uuid NOT NULL,
     ma_yeu_cau text,
@@ -392,7 +392,7 @@ CREATE TABLE muon_tra.phan_hoi_tinh_trang (
 -- Schema vi_pham: Module ViPham: vi phạm, biên bản, chi tiết biên bản
 -- DM-19 vi_pham.bien_ban_vi_pham
 CREATE TABLE vi_pham.bien_ban_vi_pham (
-    ma_bien_ban text NOT NULL DEFAULT ('BB-' || to_char(now() AT TIME ZONE 'Asia/Ho_Chi_Minh', 'YYMMDD') || '-' || lpad(nextval('vi_pham.seq_ma_bien_ban')::text, 6, '0')),
+    ma_bien_ban text NOT NULL DEFAULT ('BB-' || to_char(now() AT TIME ZONE 'Asia/Ho_Chi_Minh', 'YYMMDD') || '-' || to_char(nextval('vi_pham.seq_ma_bien_ban'), 'FM999999000000')),
     ma_phieu_muon text NOT NULL,
     ma_nv_lap uuid NOT NULL,
     ngay_lap timestamptz NOT NULL DEFAULT now(),
@@ -468,7 +468,7 @@ CREATE TABLE bao_tri.bao_tri_sua_chua (
 
 -- DM-23 bao_tri.quyet_dinh_thanh_ly
 CREATE TABLE bao_tri.quyet_dinh_thanh_ly (
-    ma_quyet_dinh text NOT NULL DEFAULT ('QD-' || to_char(now() AT TIME ZONE 'Asia/Ho_Chi_Minh', 'YYMMDD') || '-' || lpad(nextval('bao_tri.seq_ma_quyet_dinh')::text, 6, '0')),
+    ma_quyet_dinh text NOT NULL DEFAULT ('QD-' || to_char(now() AT TIME ZONE 'Asia/Ho_Chi_Minh', 'YYMMDD') || '-' || to_char(nextval('bao_tri.seq_ma_quyet_dinh'), 'FM999999000000')),
     ma_qt_lap uuid NOT NULL,
     ngay_thanh_ly date NOT NULL,
     CONSTRAINT pk_quyet_dinh_thanh_ly PRIMARY KEY (ma_quyet_dinh),
