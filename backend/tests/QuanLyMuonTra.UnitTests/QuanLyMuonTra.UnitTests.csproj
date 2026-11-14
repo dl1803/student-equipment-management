@@ -23,6 +23,7 @@
     <ProjectReference Include="..\..\src\QuanLyMuonTra.SharedKernel\QuanLyMuonTra.SharedKernel.csproj" />
     <ProjectReference Include="..\..\src\Modules\MuonTra\QuanLyMuonTra.Modules.MuonTra\QuanLyMuonTra.Modules.MuonTra.csproj" />
     <ProjectReference Include="..\..\src\Modules\DanhMuc\QuanLyMuonTra.Modules.DanhMuc\QuanLyMuonTra.Modules.DanhMuc.csproj" />
+    <ProjectReference Include="..\..\src\Modules\QuyDinh\QuanLyMuonTra.Modules.QuyDinh\QuanLyMuonTra.Modules.QuyDinh.csproj" />
   </ItemGroup>
 
 </Project>
