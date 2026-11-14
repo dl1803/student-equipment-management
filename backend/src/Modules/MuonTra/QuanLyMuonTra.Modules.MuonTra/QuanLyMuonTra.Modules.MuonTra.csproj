@@ -10,6 +10,10 @@
     <ProjectReference Include="..\..\TaiKhoan\QuanLyMuonTra.Modules.TaiKhoan.Contracts\QuanLyMuonTra.Modules.TaiKhoan.Contracts.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <InternalsVisibleTo Include="QuanLyMuonTra.UnitTests" />
+  </ItemGroup>
+
   <PropertyGroup>
     <TargetFramework>net9.0</TargetFramework>
     <ImplicitUsings>enable</ImplicitUsings>
