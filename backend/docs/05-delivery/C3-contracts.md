@@ -49,7 +49,7 @@ Nhật ký: người gọi/DanhMuc dùng thành phần ghi nhật ký của Khô
 
 ## 5. Mã dữ liệu thử đã khóa
 
-Tệp: `backend/db/seed-demo/C3-du-lieu-thu.sql` (idempotent). Chạy sau `schema.sql`. Không dùng trên production.
+Tệp: `backend/db/seed-demo/C3-du-lieu-thu.sql`, sau đó `backend/db/seed-demo/C3-du-lieu-thu-ncc.sql` (idempotent). Chạy sau `schema.sql`. Không dùng trên production.
 
 | Đối tượng | Mã |
 |---|---|
@@ -61,6 +61,9 @@ Tệp: `backend/db/seed-demo/C3-du-lieu-thu.sql` (idempotent). Chạy sau `schem
 | Ngoại lệ thời gian | `DAI_HOC` × Máy chiếu = 3 giờ (`…0301`) |
 | Khung phạt thử | `…0401` 12,50% đang dùng; `…0402` 5,00% đã tắt |
 | Giờ quầy | `NULL` (chưa cấu hình, ĐX-03) |
+| Nhà cung cấp thử | `019c0000-0000-7000-8000-000000000101` / `…0102` / `…0103` (tệp `C3-du-lieu-thu-ncc.sql`, chạy sau `C3-du-lieu-thu.sql`) |
+| Gán NCC cho thiết bị | `TEST-LAP-001` ↔ 101, 102; `TEST-LAP-002` ↔ 101; `TEST-MC-001` ↔ 102, 103; thiết bị còn lại không có NCC |
+| Ảnh danh mục | Không có dòng nào trong `luu_tru.anh_tai_len`; mọi thiết bị thử có `dsAnh` rỗng |
 
 Lưu ý: tình trạng `DANG_DUOC_MUON` trong dữ liệu thử đặt trực tiếp, chưa gắn phiếu mượn (phiếu thuộc dữ liệu thử của MuonTra).
 
@@ -85,4 +88,20 @@ Lưu ý: tình trạng `DANG_DUOC_MUON` trong dữ liệu thử đặt trực ti
 |---|---|
 | `dotnet build -c Release`, `dotnet format --verify-no-changes` | Đạt (0 warning, 0 error), 13/11/2026, .NET SDK 9.0.305 |
 | Dữ liệu thử + oracle trên PostgreSQL | Chưa kiểm chứng trên PostgreSQL thật — BLOCKED bởi môi trường test (K-1 còn OPEN) |
+| Test mô hình EF `MoHinhEf` (không kết nối DB) | Đạt 29/29 (22 DanhMuc + 7 QuyDinh) — 14/11/2026 — .NET SDK 9.0.305 |
+| Seed bắt buộc tách riêng, seed NCC trên PostgreSQL | Chưa kiểm chứng — BLOCKED bởi K-1 |
+
+## 9. Bàn giao ánh xạ EF cho tích hợp (D02-N)
+
+| Mục | Nội dung |
+|---|---|
+| Hàm đăng ký (đề xuất, chờ Khôi) | `ApplyDanhMucConfigurations(this ModelBuilder)` trong `QuanLyMuonTra.Modules.DanhMuc.Infrastructure`; `ApplyQuyDinhConfigurations(this ModelBuilder)` trong `QuanLyMuonTra.Modules.QuyDinh.Infrastructure` |
+| Bảng đã ánh xạ | `danh_muc`: `phong_thiet_bi`, `loai_thiet_bi`, `nha_cung_cap`, `thiet_bi`, `lich_su_gia_tri`, `thiet_bi_nha_cung_cap`, `loai_thiet_bi_nha_cung_cap`; `quy_dinh`: `tham_so_he_thong`, `khung_phat`, `quy_dinh_muon` |
+| Chưa ánh xạ | `bao_tri.*` (ngày BaoTri của N) |
+| Gói | Hai module thêm `Microsoft.EntityFrameworkCore`; phiên bản phải trùng `Infrastructure` |
+| Có trong ánh xạ | Tên schema/bảng/cột, khóa chính, FK trong cùng module (tên và `ON DELETE` như DDL), CHECK, chỉ mục (kể cả có điều kiện), mặc định, `xmin` của `thiet_bi`, chuyển đổi chuỗi của `tinh_trang` |
+| **Không** có trong ánh xạ | FK liên module `fk_qdm_nhom`, `fk_qdm_loai`; trigger hoãn `trg_tb_co_gia_tri`; `COMMENT`; `GRANT`/`REVOKE`/RLS; seed |
+| Seed | Bắt buộc: `backend/db/seed-required/quy-dinh-bat-buoc.sql` (phụ thuộc nhóm SV đã có). Demo: `backend/db/seed-demo/` |
+| OPEN | Q-A (phiên bản gói), Q-B (tên hàm, K-4), Q-C (FK liên module vào migration bằng SQL thô), Q-D (nguồn seed bắt buộc trong đường migration) |
+| Chưa kiểm chứng | Migration sinh từ ánh xạ so với `schema.sql` (`pg_dump --schema-only`); mọi thứ trên PostgreSQL/Supabase thật (K-1) |
 
