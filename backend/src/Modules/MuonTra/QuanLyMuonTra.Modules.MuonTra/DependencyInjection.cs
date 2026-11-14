@@ -17,6 +17,7 @@ public static class DependencyInjection
         services.AddScoped<IThamChieuDanhMucProvider>(sp => sp.GetRequiredService<ThamChieuMuonTraProvider>());
         services.AddScoped<IThamChieuKhungPhatProvider>(sp => sp.GetRequiredService<ThamChieuMuonTraProvider>());
         services.AddScoped<IAdvisoryLockService, AdvisoryLockService>();
+        services.AddScoped<IAvailabilityService, AvailabilityService>();
         return services;
     }
 }
