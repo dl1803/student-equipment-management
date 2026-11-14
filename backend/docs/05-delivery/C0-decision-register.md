@@ -1,6 +1,6 @@
 # C0 — Sổ quyết định và xác nhận phạm vi (D01-K)
 
-Cập nhật lần đầu: 13/11/2026 · Người lập: Đinh Nhật Khôi · Trạng thái chung: **OPEN**
+Cập nhật lần đầu: 13/11/2026 · Cập nhật ngày 02: 14/11/2026 (D02-K) · Người lập: Đinh Nhật Khôi · Trạng thái chung: **OPEN**
 
 ## 1. Xác nhận phạm vi (D01-K, việc 1)
 
