@@ -9,6 +9,20 @@ on:
 jobs:
   build-test:
     runs-on: ubuntu-latest
+    services:
+      postgres:
+        image: postgres:16-alpine
+        env:
+          POSTGRES_DB: quanly_test
+          POSTGRES_USER: postgres
+          POSTGRES_PASSWORD: postgrespassword
+        ports:
+          - 5432:5432
+        options: >-
+          --health-cmd pg_isready
+          --health-interval 5s
+          --health-timeout 5s
+          --health-retries 5
     defaults:
       run:
         working-directory: backend
@@ -20,4 +34,12 @@ jobs:
       - run: dotnet restore
       - run: dotnet format --verify-no-changes --no-restore
       - run: dotnet build -c Release --no-restore
+      - name: Initialize test database schema
+        run: |
+          if ! command -v psql &> /dev/null; then
+            sudo apt-get update && sudo apt-get install -y postgresql-client
+          fi
+          PGPASSWORD=postgrespassword psql -h 127.0.0.1 -U postgres -d quanly_test -f docs/03-database/schema.sql
       - run: dotnet test -c Release --no-build
+        env:
+          ConnectionStrings__Test: ${{ secrets.ConnectionStrings__Test || 'Host=127.0.0.1;Port=5432;Database=quanly_test;Username=postgres;Password=postgrespassword' }}
