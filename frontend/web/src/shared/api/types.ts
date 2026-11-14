@@ -15,6 +15,22 @@ export type LamMoiRequest = Schemas["LamMoiRequest"];
 export type DangXuatRequest = Schemas["DangXuatRequest"];
 export type PhongThietBi = Schemas["PhongThietBi"];
 
+// Mã trạng thái (họ trạng thái theo DS 7.2, FC 3.5)
+export type TinhTrangThietBi = Schemas["TinhTrangThietBi"];
+export type TrangThaiPhieuYeuCauMuon = Schemas["TrangThaiPhieuYeuCauMuon"];
+export type TrangThaiPhieuMuon = Schemas["TrangThaiPhieuMuon"];
+export type TrangThaiDangKyCho = Schemas["TrangThaiDangKyCho"];
+export type KetQuaKiemTra = Schemas["KetQuaKiemTra"];
+export type TrangThaiBienBan = Schemas["TrangThaiBienBan"];
+export type LoaiViPham = Schemas["LoaiViPham"];
+export type TrangThaiHoc = Schemas["TrangThaiHoc"];
+export type TrangThaiQuyenMuon = Schemas["TrangThaiQuyenMuon"];
+export type TrangThaiKhoa = Schemas["TrangThaiKhoa"];
+export type LoaiThucHienBaoTri = Schemas["LoaiThucHienBaoTri"];
+export type KetQuaBaoTri = Schemas["KetQuaBaoTri"];
+export type NguonGiao = Schemas["LapPhieuMuonRequest"]["nguon"];
+export type LoaiThongBao = Schemas["LoaiThongBao"];
+
 // Lỗi
 export type MaLoi = Schemas["MaLoi"];
 export type ProblemDetails = Schemas["ProblemDetails"];

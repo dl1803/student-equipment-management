@@ -1,0 +1,3 @@
+# Prettier (ĐX-FC-08) yêu cầu LF; buộc LF khi checkout kể cả máy bật core.autocrlf.
+* text=auto eol=lf
+*.ico binary

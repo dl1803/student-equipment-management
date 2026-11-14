@@ -1,6 +1,7 @@
-// FormField — nhãn, ô nhập và lỗi gắn đúng ô (FA 4.2, FC 5.6, DS 9.1). Sở hữu: Thịnh (shared core).
-// D01-T: chốt hợp đồng props và ngữ nghĩa tiếp cận; kiểu dáng theo token thuộc task Design-System.
+// FormField — nhãn, ô nhập và lỗi gắn đúng ô; bao quanh CMP-04/06/07 (FA 4.2, FC 5.6, DS CMP-04, 9.1).
+// Sở hữu: Thịnh (shared core).
 import type { ReactNode } from "react";
+import { IconError } from "./icons/IconError";
 
 /** Thuộc tính FormField truyền xuống điều khiển bên trong để liên kết nhãn và lỗi. */
 export type ThuocTinhDieuKhien = {
@@ -15,25 +16,31 @@ export type FormFieldProps = {
   id: string;
   nhan: string;
   batBuoc?: boolean;
-  /** Ghi chú nhìn thấy dưới nhãn; không dùng placeholder thay nhãn (DS 10). */
+  /** Chú thích nhìn thấy dưới ô (gợi ý); không dùng placeholder thay nhãn (DS 10). */
   moTa?: string;
   /** Thông báo lỗi của trường (từ React Hook Form hoặc errors của máy chủ). */
   loi?: string;
   children: (thuocTinh: ThuocTinhDieuKhien) => ReactNode;
 };
 
-export function FormField({ id, nhan, batBuoc = false, moTa, loi, children }: FormFieldProps) {
+export function FormField({
+  id,
+  nhan,
+  batBuoc = false,
+  moTa,
+  loi,
+  children,
+}: FormFieldProps) {
   const idMoTa = moTa ? `${id}-mo-ta` : undefined;
   const idLoi = loi ? `${id}-loi` : undefined;
-  const describedBy = [idMoTa, idLoi].filter(Boolean).join(" ") || undefined;
+  const describedBy = [idLoi, idMoTa].filter(Boolean).join(" ") || undefined;
 
   return (
-    <div>
-      <label htmlFor={id}>
+    <div className="flex flex-col gap-field-label">
+      <label htmlFor={id} className="type-label text-text-primary">
         {nhan}
         {batBuoc ? <span aria-hidden="true"> *</span> : null}
       </label>
-      {moTa ? <p id={idMoTa}>{moTa}</p> : null}
       {children({
         id,
         required: batBuoc,
@@ -41,8 +48,18 @@ export function FormField({ id, nhan, batBuoc = false, moTa, loi, children }: Fo
         "aria-describedby": describedBy,
       })}
       {loi ? (
-        <p id={idLoi} role="alert">
-          {loi}
+        <p
+          id={idLoi}
+          role="alert"
+          className="flex items-start gap-1 type-caption text-tone-danger-text"
+        >
+          <IconError kichThuoc="sm" />
+          <span>{loi}</span>
+        </p>
+      ) : null}
+      {moTa ? (
+        <p id={idMoTa} className="type-caption text-text-secondary">
+          {moTa}
         </p>
       ) : null}
     </div>
