@@ -1,6 +1,6 @@
 "Method","Path","TrangThai"
-"GET","/health","CHUA_CAI"
-"GET","/health/ready","CHUA_CAI"
+"GET","/health","DA_CAI"
+"GET","/health/ready","DA_CAI"
 "POST","/api/v1/auth/sinh-vien/dang-nhap","CHUA_CAI"
 "POST","/api/v1/auth/nhan-vien/dang-nhap","CHUA_CAI"
 "POST","/api/v1/auth/lam-moi","CHUA_CAI"

@@ -1,14 +1,16 @@
-﻿<Project Sdk="Microsoft.NET.Sdk">
+<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
     <TargetFramework>net9.0</TargetFramework>
     <ImplicitUsings>enable</ImplicitUsings>
     <Nullable>enable</Nullable>
     <IsPackable>false</IsPackable>
+    <UserSecretsId>f5e1160e-0269-4b91-81d3-42f0db0499cc</UserSecretsId>
   </PropertyGroup>
 
   <ItemGroup>
     <PackageReference Include="coverlet.collector" Version="6.0.2" />
+    <PackageReference Include="Microsoft.AspNetCore.Mvc.Testing" Version="9.0.2" />
     <PackageReference Include="Microsoft.NET.Test.Sdk" Version="17.12.0" />
     <PackageReference Include="xunit" Version="2.9.2" />
     <PackageReference Include="xunit.runner.visualstudio" Version="2.8.2" />
@@ -16,6 +18,15 @@
 
   <ItemGroup>
     <Using Include="Xunit" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\..\src\QuanLyMuonTra.Api\QuanLyMuonTra.Api.csproj" />
+    <ProjectReference Include="..\..\src\QuanLyMuonTra.Infrastructure\QuanLyMuonTra.Infrastructure.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Include="..\..\docs\05-delivery\C0-manifest-operation.csv" Link="C0-manifest-operation.csv" CopyToOutputDirectory="PreserveNewest" />
   </ItemGroup>
 
 </Project>
