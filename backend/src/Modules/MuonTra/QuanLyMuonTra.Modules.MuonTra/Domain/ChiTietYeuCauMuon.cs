@@ -1,3 +1,5 @@
+using QuanLyMuonTra.SharedKernel;
+
 namespace QuanLyMuonTra.Modules.MuonTra.Domain;
 
 public class ChiTietYeuCauMuon
@@ -9,6 +11,11 @@ public class ChiTietYeuCauMuon
 
     internal ChiTietYeuCauMuon(string maYeuCau, Guid maLoai, int soLuong)
     {
+        if (soLuong <= 0)
+        {
+            throw new NghiepVuException(MaLoi.DuLieuKhongHopLe, "Số lượng yêu cầu phải lớn hơn 0.");
+        }
+
         MaYeuCau = maYeuCau;
         MaLoai = maLoai;
         SoLuong = soLuong;

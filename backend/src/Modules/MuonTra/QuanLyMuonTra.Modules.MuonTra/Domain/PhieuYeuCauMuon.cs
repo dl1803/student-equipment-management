@@ -1,3 +1,5 @@
+using QuanLyMuonTra.SharedKernel;
+
 namespace QuanLyMuonTra.Modules.MuonTra.Domain;
 
 public class PhieuYeuCauMuon
@@ -10,14 +12,29 @@ public class PhieuYeuCauMuon
         MaSv = string.Empty;
     }
 
-    internal PhieuYeuCauMuon(string maYeuCau, string maSv, Guid maPhong, int thoiGianMuonDuKienGio, DateTimeOffset thoiGianGui)
+    internal PhieuYeuCauMuon(
+        string maYeuCau,
+        string maSv,
+        Guid maPhong,
+        int thoiGianMuonDuKienGio,
+        DateTimeOffset thoiGianGui,
+        IEnumerable<ChiTietYeuCauMuon>? chiTiet = null)
     {
+        if (thoiGianMuonDuKienGio <= 0)
+        {
+            throw new NghiepVuException(MaLoi.DuLieuKhongHopLe, "Thời gian mượn dự kiến phải lớn hơn 0.");
+        }
+
         MaYeuCau = maYeuCau;
         MaSv = maSv;
         MaPhong = maPhong;
         ThoiGianMuonDuKienGio = thoiGianMuonDuKienGio;
         ThoiGianGui = thoiGianGui;
         TrangThai = TrangThaiYeuCauMuon.ChoDuyet;
+        if (chiTiet != null)
+        {
+            _chiTiet.AddRange(chiTiet);
+        }
     }
 
     public string MaYeuCau { get; private set; }
@@ -41,6 +58,12 @@ public class PhieuYeuCauMuon
     public DateTimeOffset? HanGiuCho { get; private set; }
 
     public IReadOnlyCollection<ChiTietYeuCauMuon> ChiTiet => _chiTiet;
+
+    public void ThemChiTiet(Guid maLoai, int soLuong)
+    {
+        YeuCauTrangThai(TrangThaiYeuCauMuon.ChoDuyet);
+        _chiTiet.Add(new ChiTietYeuCauMuon(MaYeuCau, maLoai, soLuong));
+    }
 
     public void Duyet(Guid maNvDuyet, DateTimeOffset thoiDiemDuyet, DateTimeOffset hanGiuCho)
     {

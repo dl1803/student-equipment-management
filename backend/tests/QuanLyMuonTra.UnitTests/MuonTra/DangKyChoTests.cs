@@ -1,4 +1,5 @@
 using QuanLyMuonTra.Modules.MuonTra.Domain;
+using QuanLyMuonTra.SharedKernel;
 
 namespace QuanLyMuonTra.UnitTests.MuonTra;
 
@@ -22,6 +23,22 @@ public class DangKyChoTests
         var dangKy = TaoDangCho();
         dangKy.ThongBaoDenLuot(HanGiuCho);
         return dangKy;
+    }
+
+    [Theory]
+    [InlineData(0)]
+    [InlineData(-1)]
+    public void KhoiTao_SoThuTuChoKhongHopLe_NemDuLieuKhongHopLe(int soThuTu)
+    {
+        var loi = Assert.Throws<NghiepVuException>(() => new DangKyCho(
+            "DK-261116-000001",
+            "SV001",
+            Guid.Parse("019c0000-0000-7000-8000-000000000001"),
+            Guid.Parse("019c0000-0000-7000-8000-000000000011"),
+            new DateTimeOffset(2026, 11, 16, 1, 0, 0, TimeSpan.Zero),
+            soThuTu));
+
+        Assert.Equal("DU_LIEU_KHONG_HOP_LE", loi.MaLoi);
     }
 
     [Fact]

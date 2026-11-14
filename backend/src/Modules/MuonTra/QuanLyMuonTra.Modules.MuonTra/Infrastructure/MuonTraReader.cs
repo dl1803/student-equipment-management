@@ -17,7 +17,7 @@ public sealed class MuonTraReader : IMuonTraReader
     {
         return _db.Set<PhieuMuon>()
             .AsNoTracking()
-            .Where(p => p.MaSv == maSv)
+            .Where(p => p.MaSv == maSv && p.TrangThai != TrangThaiPhieuMuon.DaTra)
             .SelectMany(p => p.ChiTiet)
             .CountAsync(c => c.KetQuaKiemTra == null, ct);
     }

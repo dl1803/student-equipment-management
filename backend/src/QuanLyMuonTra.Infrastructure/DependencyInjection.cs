@@ -20,6 +20,7 @@ public static class DependencyInjection
         }
 
         services.AddDbContext<AppDbContext>(options => options.UseNpgsql(chuoiKetNoi));
+        services.AddScoped<DbContext>(sp => sp.GetRequiredService<AppDbContext>());
         services.AddSingleton<IClock, SystemClock>();
 
         return services;

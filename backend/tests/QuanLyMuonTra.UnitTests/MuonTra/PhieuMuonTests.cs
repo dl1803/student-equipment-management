@@ -1,4 +1,5 @@
 using QuanLyMuonTra.Modules.MuonTra.Domain;
+using QuanLyMuonTra.SharedKernel;
 
 namespace QuanLyMuonTra.UnitTests.MuonTra;
 
@@ -19,6 +20,22 @@ public class PhieuMuonTests
             ngayGioMuon,
             ngayGioMuon.AddHours(2),
             chiTiet);
+    }
+
+    [Fact]
+    public void KhoiTao_HanTraKhongSauGioMuon_NemDuLieuKhongHopLe()
+    {
+        var ngayGioMuon = new DateTimeOffset(2026, 11, 16, 2, 0, 0, TimeSpan.Zero);
+
+        var loi = Assert.Throws<NghiepVuException>(() => new PhieuMuon(
+            "PM-261116-000001",
+            "SV001",
+            Guid.Parse("019c0000-0000-7000-8000-0000000000a1"),
+            ngayGioMuon,
+            ngayGioMuon,
+            []));
+
+        Assert.Equal("DU_LIEU_KHONG_HOP_LE", loi.MaLoi);
     }
 
     [Fact]
@@ -64,13 +81,13 @@ public class PhieuMuonTests
     }
 
     [Fact]
-    public void TT09_XetDaTra_KhongCoChiTiet_GiuNguyenDangMuon()
+    public void TT09_XetDaTra_KhongCoChiTiet_NemDuLieuKhongHopLe()
     {
         var phieu = TaoPhieu();
 
-        phieu.XetDaTra();
+        var loi = Assert.Throws<NghiepVuException>(() => phieu.XetDaTra());
 
-        Assert.Equal(TrangThaiPhieuMuon.DangMuon, phieu.TrangThai);
+        Assert.Equal("DU_LIEU_KHONG_HOP_LE", loi.MaLoi);
     }
 
     [Fact]

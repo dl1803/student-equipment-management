@@ -1,6 +1,6 @@
-namespace QuanLyMuonTra.Modules.MuonTra.Domain;
+namespace QuanLyMuonTra.SharedKernel;
 
-public sealed class NghiepVuException : Exception
+public class NghiepVuException : Exception
 {
     public NghiepVuException(string maLoi, string message)
         : base(message)

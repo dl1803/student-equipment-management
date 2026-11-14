@@ -1,4 +1,5 @@
 using QuanLyMuonTra.Modules.MuonTra.Domain;
+using QuanLyMuonTra.SharedKernel;
 
 namespace QuanLyMuonTra.UnitTests.MuonTra;
 
@@ -23,6 +24,56 @@ public class PhieuYeuCauMuonTests
         var phieu = TaoChoDuyet();
         phieu.Duyet(MaNv, ThoiDiemDuyet, HanGiuCho);
         return phieu;
+    }
+
+    [Theory]
+    [InlineData(0)]
+    [InlineData(-1)]
+    public void KhoiTao_ThoiGianMuonKhongHopLe_NemDuLieuKhongHopLe(int thoiGian)
+    {
+        var loi = Assert.Throws<NghiepVuException>(() => new PhieuYeuCauMuon(
+            "YC-261116-000001",
+            "SV001",
+            Guid.Parse("019c0000-0000-7000-8000-000000000001"),
+            thoiGian,
+            ThoiDiemDuyet.AddHours(-1)));
+
+        Assert.Equal("DU_LIEU_KHONG_HOP_LE", loi.MaLoi);
+    }
+
+    [Fact]
+    public void ThemChiTiet_ChoDuyet_ThemThanhCong()
+    {
+        var phieu = TaoChoDuyet();
+        var maLoai = Guid.Parse("019c0000-0000-7000-8000-000000000011");
+
+        phieu.ThemChiTiet(maLoai, 2);
+
+        Assert.Single(phieu.ChiTiet);
+        Assert.Equal(maLoai, phieu.ChiTiet.Single().MaLoai);
+        Assert.Equal(2, phieu.ChiTiet.Single().SoLuong);
+    }
+
+    [Theory]
+    [InlineData(0)]
+    [InlineData(-1)]
+    public void ThemChiTiet_SoLuongKhongHopLe_NemDuLieuKhongHopLe(int soLuong)
+    {
+        var phieu = TaoChoDuyet();
+
+        var loi = Assert.Throws<NghiepVuException>(() => phieu.ThemChiTiet(Guid.NewGuid(), soLuong));
+
+        Assert.Equal("DU_LIEU_KHONG_HOP_LE", loi.MaLoi);
+    }
+
+    [Fact]
+    public void ThemChiTiet_DaDuyet_NemTrangThaiKhongHopLe()
+    {
+        var phieu = TaoDaDuyet();
+
+        var loi = Assert.Throws<NghiepVuException>(() => phieu.ThemChiTiet(Guid.NewGuid(), 1));
+
+        Assert.Equal("TRANG_THAI_KHONG_HOP_LE", loi.MaLoi);
     }
 
     [Fact]

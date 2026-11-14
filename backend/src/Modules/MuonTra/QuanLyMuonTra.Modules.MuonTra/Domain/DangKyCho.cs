@@ -1,3 +1,5 @@
+using QuanLyMuonTra.SharedKernel;
+
 namespace QuanLyMuonTra.Modules.MuonTra.Domain;
 
 public class DangKyCho
@@ -10,6 +12,11 @@ public class DangKyCho
 
     internal DangKyCho(string maDangKy, string maSv, Guid maPhong, Guid maLoai, DateTimeOffset thoiDiemDangKy, int soThuTuCho)
     {
+        if (soThuTuCho <= 0)
+        {
+            throw new NghiepVuException(MaLoi.DuLieuKhongHopLe, "Số thứ tự chờ phải lớn hơn 0.");
+        }
+
         MaDangKy = maDangKy;
         MaSv = maSv;
         MaPhong = maPhong;
