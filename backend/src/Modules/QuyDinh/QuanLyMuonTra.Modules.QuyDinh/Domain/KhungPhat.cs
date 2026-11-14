@@ -12,5 +12,5 @@ public sealed class KhungPhat
 
     public decimal TyLePhanTram { get; private set; }
 
-    public bool DangSuDung { get; private set; }
+    public bool DangSuDung { get; private set; } = true;
 }

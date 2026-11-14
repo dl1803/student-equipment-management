@@ -10,6 +10,7 @@ WHERE NOT EXISTS (SELECT 1 FROM quy_dinh.khung_phat k WHERE k.ten_khung = v.ten)
 INSERT INTO quy_dinh.quy_dinh_muon (ma_quy_dinh, ma_nhom, ma_loai, so_thiet_bi_toi_da, thoi_gian_muon_toi_da_gio)
 SELECT gen_random_uuid(), v.ma_nhom, NULL::uuid, v.so_tb, v.gio
 FROM (VALUES ('DAI_HOC', 2, 5), ('CAO_HOC', 3, 10), ('DO_AN_TOT_NGHIEP', 3, 10)) AS v(ma_nhom, so_tb, gio)
-WHERE NOT EXISTS (SELECT 1 FROM quy_dinh.quy_dinh_muon q WHERE q.ma_nhom = v.ma_nhom AND q.ma_loai IS NULL);
+WHERE NOT EXISTS (SELECT 1 FROM quy_dinh.quy_dinh_muon q WHERE q.ma_nhom = v.ma_nhom AND q.ma_loai IS NULL)
+  AND EXISTS (SELECT 1 FROM sinh_vien.nhom_sinh_vien n WHERE n.ma_nhom = v.ma_nhom);
 
 COMMIT;

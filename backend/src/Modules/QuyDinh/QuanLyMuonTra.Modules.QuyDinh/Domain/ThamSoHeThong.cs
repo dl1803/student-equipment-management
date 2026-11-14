@@ -6,7 +6,7 @@ public sealed class ThamSoHeThong
     {
     }
 
-    public short Id { get; private set; }
+    public short Id { get; private set; } = 1;
 
     public int SoNgayKhoa { get; private set; }
 
