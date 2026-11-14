@@ -28,6 +28,9 @@
 
   <ItemGroup>
     <None Include="..\..\docs\05-delivery\C0-manifest-operation.csv" Link="C0-manifest-operation.csv" CopyToOutputDirectory="PreserveNewest" />
+    <None Update="MuonTra\D02-V-du-lieu-thu.sql">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
   </ItemGroup>
 
 </Project>
