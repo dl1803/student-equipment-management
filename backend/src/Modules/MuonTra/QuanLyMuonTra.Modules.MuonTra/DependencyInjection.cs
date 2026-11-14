@@ -3,6 +3,7 @@ using QuanLyMuonTra.Modules.DanhMuc.Contracts;
 using QuanLyMuonTra.Modules.MuonTra.Contracts;
 using QuanLyMuonTra.Modules.MuonTra.Infrastructure;
 using QuanLyMuonTra.Modules.QuyDinh.Contracts;
+using QuanLyMuonTra.SharedKernel.Contracts;
 
 namespace QuanLyMuonTra.Modules.MuonTra;
 
@@ -15,6 +16,7 @@ public static class DependencyInjection
         services.AddScoped<IThamChieuMuonTraProvider>(sp => sp.GetRequiredService<ThamChieuMuonTraProvider>());
         services.AddScoped<IThamChieuDanhMucProvider>(sp => sp.GetRequiredService<ThamChieuMuonTraProvider>());
         services.AddScoped<IThamChieuKhungPhatProvider>(sp => sp.GetRequiredService<ThamChieuMuonTraProvider>());
+        services.AddScoped<IAdvisoryLockService, AdvisoryLockService>();
         return services;
     }
 }
