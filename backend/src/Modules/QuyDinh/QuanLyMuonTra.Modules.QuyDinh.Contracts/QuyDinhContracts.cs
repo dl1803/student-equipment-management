@@ -6,7 +6,27 @@ public sealed record QuyDinhNhomDto(
     string MaNhom,
     int SoThietBiToiDa,
     int ThoiGianMuonToiDaGio,
-    IReadOnlyList<NgoaiLeTheoLoaiDto> DsNgoaiLeTheoLoai);
+    IReadOnlyList<NgoaiLeTheoLoaiDto> DsNgoaiLeTheoLoai)
+{
+    public bool VuotGioiHanSoThietBi(int soDangCam, int soMuonThem)
+    {
+        return soDangCam + soMuonThem > SoThietBiToiDa;
+    }
+
+    public int ThoiGianToiDaGio(IEnumerable<Guid> dsMaLoai)
+    {
+        return dsMaLoai
+            .Select(MucToiDaCuaLoai)
+            .DefaultIfEmpty(ThoiGianMuonToiDaGio)
+            .Min();
+    }
+
+    private int MucToiDaCuaLoai(Guid maLoai)
+    {
+        var ngoaiLe = DsNgoaiLeTheoLoai.FirstOrDefault(x => x.MaLoai == maLoai);
+        return ngoaiLe?.ThoiGianMuonToiDaGio ?? ThoiGianMuonToiDaGio;
+    }
+}
 
 public sealed record ThamSoHeThongDto(
     int SoNgayKhoa,
