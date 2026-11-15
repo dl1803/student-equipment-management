@@ -1,8 +1,9 @@
 // Layout gốc: Server Component chỉ khai báo metadata, phông và <html lang="vi"> (FC 4.1, 5.8, 8.2).
-// Providers (TanStack Query, AuthProvider) và AuthGate được thêm ở task phiên/khung ứng dụng.
+// Providers (Client Component) bọc toàn bộ ứng dụng; AuthProvider và AuthGate thêm ở task sau.
 import type { Metadata } from "next";
 import { Roboto, Roboto_Mono } from "next/font/google";
 import type { ReactNode } from "react";
+import { Providers } from "@/providers/Providers";
 import "./globals.css";
 
 const roboto = Roboto({
@@ -27,7 +28,9 @@ export const metadata: Metadata = {
 export default function RootLayout({ children }: { children: ReactNode }) {
   return (
     <html lang="vi" className={`${roboto.variable} ${robotoMono.variable}`}>
-      <body>{children}</body>
+      <body>
+        <Providers>{children}</Providers>
+      </body>
     </html>
   );
 }
