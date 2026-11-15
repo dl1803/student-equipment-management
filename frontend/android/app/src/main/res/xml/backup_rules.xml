@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+    D03-L (FA 5.4, FC 6.5, ĐX-FA-14): loại tệp SharedPreferences chứa token khỏi sao lưu tự động
+    (Android 11 trở xuống). Tên tệp phải trùng TokenStore.TEN_TEP cộng đuôi .xml.
+-->
+<full-backup-content>
+    <exclude domain="sharedpref" path="phien_dang_nhap.xml" />
+</full-backup-content>
