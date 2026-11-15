@@ -90,6 +90,8 @@ Lưu ý: tình trạng `DANG_DUOC_MUON` trong dữ liệu thử đặt trực ti
 | Dữ liệu thử + oracle trên PostgreSQL | Chưa kiểm chứng trên PostgreSQL thật — BLOCKED bởi môi trường test (K-1 còn OPEN) |
 | Test mô hình EF `MoHinhEf` (không kết nối DB) | Đạt 29/29 (22 DanhMuc + 7 QuyDinh) — 14/11/2026 — .NET SDK 9.0.305 |
 | Seed bắt buộc tách riêng, seed NCC trên PostgreSQL | Chưa kiểm chứng — BLOCKED bởi K-1 |
+| Test đơn vị D03-N (`UnitTests.QuyDinh` 58 ca, `UnitTests.Di` 2 ca) | Đạt 60/60 (58 QuyDinh + 2 Di) — 15/11/2026 — .NET SDK 9.0.305 |
+| Test tích hợp D03-N (`IntegrationTests.QuyDinh` 5 ca) trên PostgreSQL | Chưa kiểm chứng — BLOCKED bởi K-1 |
 
 ## 9. Bàn giao ánh xạ EF cho tích hợp (D02-N)
 
@@ -105,3 +107,14 @@ Lưu ý: tình trạng `DANG_DUOC_MUON` trong dữ liệu thử đặt trực ti
 | OPEN | Q-A (phiên bản gói), Q-B (tên hàm, K-4), Q-C (FK liên module vào migration bằng SQL thô), Q-D (nguồn seed bắt buộc trong đường migration) |
 | Chưa kiểm chứng | Migration sinh từ ánh xạ so với `schema.sql` (`pg_dump --schema-only`); mọi thứ trên PostgreSQL/Supabase thật (K-1) |
 
+## 10. Bàn giao D03-N cho D04-N và tích hợp
+
+| Mục | Nội dung |
+|---|---|
+| Ràng buộc miền | `KhungPhat`, `ThamSoHeThong`, `QuyDinhMuon` (`QuyDinh.Domain`) ném `NghiepVuException` mã `GIA_TRI_CAU_HINH_KHONG_HOP_LE` (ĐX-API-15). Phương thức tạo/đổi giá trị là `internal` (handler D06-N cùng project; `UnitTests` qua `InternalsVisibleTo`) |
+| Quy tắc mượn dùng chung | `QuyDinhNhomDto.VuotGioiHanSoThietBi(soDangCam, soMuonThem)` (BR-24); `QuyDinhNhomDto.ThoiGianToiDaGio(dsMaLoai)` (BR-25: ngoại lệ theo loại ghi đè mức chung, lấy nhỏ nhất theo các loại trong phiếu, danh sách rỗng trả mức chung). Bên dùng: MuonTra. Đề xuất D03-N, chờ Vương xác nhận |
+| Provider tham chiếu | `ThamChieuQuyDinhProvider` (`quy_dinh_muon.ma_loai`), `ThamChieuBaoTriProvider` (`bao_tri_sua_chua`, `chi_tiet_thanh_ly`, SQL thuần). Phần không có bảng tham chiếu (QuyDinh với thiết bị, BaoTri với loại) trả `false` cố định theo `schema.sql` |
+| Hàm đăng ký DI | `AddQuyDinhModule()` (`QuanLyMuonTra.Modules.QuyDinh`), `AddBaoTriModule()` (`QuanLyMuonTra.Modules.BaoTri`). Cùng `AddMuonTraModule()` đăng ký nhiều bản hiện thực cho `IThamChieuDanhMucProvider`: handler xóa (D08-N) phải nhận `IEnumerable<IThamChieuDanhMucProvider>`. Provider `ViPham` (K03) chưa có |
+| Việc cho D04-N | Cài `IQuyDinhReader` (4 phương thức) từ entity `QuyDinh` đã có, ánh xạ sang DTO, đăng ký trong `AddQuyDinhModule()`; cài `IDanhMucReader` |
+| Việc cho Host (Khôi) | Gọi `AddQuyDinhModule()`, `AddBaoTriModule()` và `ApplyQuyDinhConfigurations()`; ánh xạ `GIA_TRI_CAU_HINH_KHONG_HOP_LE` sang HTTP 422 (API-Notes mục 8) |
+| Chưa làm | Ánh xạ EF và domain `bao_tri.*` (D13-N) |
