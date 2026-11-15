@@ -1,6 +1,8 @@
 using System.Reflection;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.DependencyInjection.Extensions;
+using QuanLyMuonTra.Infrastructure.Auditing;
 using QuanLyMuonTra.Infrastructure.Persistence;
 using QuanLyMuonTra.Infrastructure.Time;
 using QuanLyMuonTra.SharedKernel;
@@ -19,9 +21,14 @@ public static class DependencyInjection
             services.AddSingleton(new EfConfigurationAssemblies(assemblyCauHinhEf));
         }
 
-        services.AddDbContext<AppDbContext>(options => options.UseNpgsql(chuoiKetNoi));
-        services.AddScoped<DbContext>(sp => sp.GetRequiredService<AppDbContext>());
         services.AddSingleton<IClock, SystemClock>();
+        services.TryAddSingleton<ICurrentUser, TacNhanHeThong>();
+        services.AddSingleton<NhatKyInterceptor>();
+        services.AddDbContext<AppDbContext>((dichVu, options) => options
+            .UseNpgsql(chuoiKetNoi)
+            .AddInterceptors(dichVu.GetRequiredService<NhatKyInterceptor>()));
+        services.AddScoped<DbContext>(sp => sp.GetRequiredService<AppDbContext>());
+        services.AddScoped<IAuditLogger, AuditLogger>();
 
         return services;
     }

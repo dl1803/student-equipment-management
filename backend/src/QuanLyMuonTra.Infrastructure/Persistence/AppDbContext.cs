@@ -8,6 +8,8 @@ public class AppDbContext(
 {
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
+        modelBuilder.ApplyConfigurationsFromAssembly(typeof(AppDbContext).Assembly);
+
         foreach (var cauHinh in danhSachCauHinh)
         {
             foreach (var assembly in cauHinh.Assemblies)
