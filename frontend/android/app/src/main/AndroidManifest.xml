@@ -6,12 +6,17 @@
         D02-L: khai báo lớp Application (UngDung) tạo AppContainer.
         D03-L: tắt sao lưu và khai báo quy tắc loại tệp phiên khỏi sao lưu đám mây và chuyển thiết
         bị (FA 5.4, FC 6.5, ĐX-FA-14).
-        Activity thuộc D06-L; quyền mạng thuộc D04-L.
+        D04-L: khai báo quyền mạng và cấm lưu lượng không mã hóa (FA 5.5, FC 6.8). Bản debug cần
+        gọi máy chủ HTTP thường (nếu có) phải ghi đè ở src/debug khi có địa chỉ dev (D06-L).
+        Activity thuộc D06-L.
     -->
+    <uses-permission android:name="android.permission.INTERNET" />
+
     <application
         android:name=".UngDung"
         android:allowBackup="false"
         android:dataExtractionRules="@xml/data_extraction_rules"
-        android:fullBackupContent="@xml/backup_rules" />
+        android:fullBackupContent="@xml/backup_rules"
+        android:usesCleartextTraffic="false" />
 
 </manifest>

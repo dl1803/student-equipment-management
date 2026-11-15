@@ -184,4 +184,5 @@ dependencies {
     compileOnly(libs.findbugs.jsr305)
 
     testImplementation(libs.junit)
+    testImplementation(libs.mockwebserver)
 }
