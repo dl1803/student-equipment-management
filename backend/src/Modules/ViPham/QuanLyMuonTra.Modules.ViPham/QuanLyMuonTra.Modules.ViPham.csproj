@@ -1,4 +1,4 @@
-﻿<Project Sdk="Microsoft.NET.Sdk">
+<Project Sdk="Microsoft.NET.Sdk">
 
   <ItemGroup>
     <ProjectReference Include="..\..\..\QuanLyMuonTra.SharedKernel\QuanLyMuonTra.SharedKernel.csproj" />
@@ -9,6 +9,10 @@
     <ProjectReference Include="..\..\DanhMuc\QuanLyMuonTra.Modules.DanhMuc.Contracts\QuanLyMuonTra.Modules.DanhMuc.Contracts.csproj" />
     <ProjectReference Include="..\..\ThongBao\QuanLyMuonTra.Modules.ThongBao.Contracts\QuanLyMuonTra.Modules.ThongBao.Contracts.csproj" />
     <ProjectReference Include="..\..\TaiKhoan\QuanLyMuonTra.Modules.TaiKhoan.Contracts\QuanLyMuonTra.Modules.TaiKhoan.Contracts.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Microsoft.EntityFrameworkCore.Relational" Version="9.0.4" />
   </ItemGroup>
 
   <PropertyGroup>

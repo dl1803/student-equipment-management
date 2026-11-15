@@ -45,6 +45,14 @@ Mọi dòng dưới đây đang **OPEN**. Một quyết định OPEN chặn đú
 | K-4 | Hướng tham chiếu `Infrastructure` ↔ module (nạp cấu hình EF, runner job) | Khôi | D02 |
 | K-5 | Dòng Dockerfile `10.0` (KT 16.1, CV 18.2) và cách triển khai Render khi nhóm không muốn đụng Docker | Nhóm | Khi nhóm quyết định |
 
+### Quyết định D03-K cho K-2, K-3, K-4
+
+| Mã | Quyết định | Trạng thái | Ngày |
+|---|---|---|---|
+| K-2 | `ICurrentUser`, `IAuditable`, `IAuditLogger`, `LoiNghiepVuException`, `MaLoiNghiepVu` đặt trong SharedKernel; `HttpContextCurrentUser` ở Api; interceptor, entity nhật ký, `AuditLogger` ở Infrastructure | Khôi đề xuất, chờ nhóm xác nhận | 2026-11-15 |
+| K-3 | `IBienBanChuaNopReader` và `BienBanChuaNopDto` ở SinhVien.Contracts; ViPham hiện thực | Khôi đề xuất, chờ Vương xác nhận | 2026-11-15 |
+| K-4 | Module không phụ thuộc Infrastructure; dùng DbContext trừu tượng qua DI container, loại bỏ hoàn toàn nguy cơ phụ thuộc vòng | Đã chốt theo review của Vương | 2026-11-15 |
+
 ## 5. Mâu thuẫn giữa các nguồn đã phát hiện
 
 | # | Nội dung | Nguồn A | Nguồn B | Cách xử lý |
