@@ -1,20 +1,26 @@
 using Microsoft.EntityFrameworkCore;
-using QuanLyMuonTra.Infrastructure.Persistence;
 using QuanLyMuonTra.Modules.SinhVien.Contracts;
 
 namespace QuanLyMuonTra.Modules.ViPham.Infrastructure;
 
-public sealed class BienBanChuaNopReader(AppDbContext db) : IBienBanChuaNopReader
+public sealed class BienBanChuaNopReader(DbContext db) : IBienBanChuaNopReader
 {
     public async Task<IReadOnlyList<BienBanChuaNopDto>> LayDsChuaNopAsync(string maSv, CancellationToken ct)
     {
+        if (string.IsNullOrWhiteSpace(maSv))
+        {
+            return [];
+        }
+
+        var maSvChuan = maSv.Trim().ToUpperInvariant();
+
         var cacDong = await db.Database.SqlQuery<DongBienBan>($"""
                 SELECT bb.ma_bien_ban AS "MaBienBan", bb.tong_tien::bigint AS "TongTien", bb.ngay_lap AS "NgayLap"
                 FROM vi_pham.bien_ban_vi_pham bb
                 WHERE bb.trang_thai = 'CHUA_NOP'
                   AND EXISTS (
                       SELECT 1 FROM vi_pham.vi_pham vp
-                      WHERE vp.ma_bien_ban = bb.ma_bien_ban AND vp.ma_sv = {maSv})
+                      WHERE vp.ma_bien_ban = bb.ma_bien_ban AND UPPER(vp.ma_sv) = {maSvChuan})
                 """)
             .OrderBy(dong => dong.NgayLap)
             .ThenBy(dong => dong.MaBienBan)
@@ -32,4 +38,3 @@ public sealed class BienBanChuaNopReader(AppDbContext db) : IBienBanChuaNopReade
         public DateTimeOffset NgayLap { get; set; }
     }
 }
-

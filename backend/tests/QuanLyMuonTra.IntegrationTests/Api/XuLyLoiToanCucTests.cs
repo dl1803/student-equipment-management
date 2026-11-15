@@ -2,6 +2,7 @@ using System.Text.Json;
 using FluentValidation;
 using FluentValidation.Results;
 using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Http.Features;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging.Abstractions;
 using QuanLyMuonTra.Api.Loi;
@@ -57,6 +58,52 @@ public class XuLyLoiToanCucTests
 
         Assert.Equal(409, maHttp);
         Assert.Equal("XUNG_DOT_CAP_NHAT", noiDung.GetProperty("maLoi").GetString());
+    }
+
+    [Fact]
+    public async Task KT14_ValidationException_PropertyNameRongHoacNull_KhongNemNullReferenceException()
+    {
+        var loi = new ValidationException(
+        [
+            new ValidationFailure(string.Empty, "Lỗi toàn cục trên model."),
+            new ValidationFailure(null!, "Lỗi không gắn với thuộc tính cụ thể.")
+        ]);
+
+        var (maHttp, _, noiDung) = await XuLyAsync(loi);
+
+        Assert.Equal(400, maHttp);
+        Assert.Equal("DU_LIEU_KHONG_HOP_LE", noiDung.GetProperty("maLoi").GetString());
+        Assert.True(noiDung.GetProperty("errors").TryGetProperty(string.Empty, out var danhSachLoi));
+        Assert.Equal(2, danhSachLoi.GetArrayLength());
+    }
+
+    [Fact]
+    public async Task KT14_ResponseDaBatDau_TraFalseVaKhongGhiDe()
+    {
+        var httpContext = new DefaultHttpContext();
+        httpContext.Features.Set<IHttpResponseFeature>(new ResponseDaBatDauFeature());
+        var xuLy = new XuLyLoiToanCuc(NullLogger<XuLyLoiToanCuc>.Instance);
+
+        var daXuLy = await xuLy.TryHandleAsync(httpContext, new Exception("loi"), CancellationToken.None);
+
+        Assert.False(daXuLy);
+    }
+
+    private sealed class ResponseDaBatDauFeature : IHttpResponseFeature
+    {
+        public int StatusCode { get; set; } = 200;
+
+        public string? ReasonPhrase { get; set; }
+
+        public IHeaderDictionary Headers { get; set; } = new HeaderDictionary();
+
+        public Stream Body { get; set; } = Stream.Null;
+
+        public bool HasStarted => true;
+
+        public void OnStarting(Func<object, Task> callback, object state) { }
+
+        public void OnCompleted(Func<object, Task> callback, object state) { }
     }
 
     [Fact]

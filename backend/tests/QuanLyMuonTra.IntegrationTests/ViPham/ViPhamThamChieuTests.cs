@@ -34,6 +34,22 @@ public class ViPhamThamChieuTests
     }
 
     [Fact]
+    public async Task UC09_ReaderNo_MaSvChuaChuanHoa_VanTimRaNo()
+    {
+        await using var dichVu = TaoDichVu();
+        await using var phamVi = dichVu.CreateAsyncScope();
+        var db = phamVi.ServiceProvider.GetRequiredService<AppDbContext>();
+        await using var giaoDich = await db.Database.BeginTransactionAsync();
+        var du = await TaoBienBanAsync(db);
+        var reader = new BienBanChuaNopReader(db);
+
+        var cuaSv = await reader.LayDsChuaNopAsync($"  {du.MaSv.ToLowerInvariant()}  ", CancellationToken.None);
+
+        var bienBan = Assert.Single(cuaSv);
+        Assert.Equal(du.MaBienBan, bienBan.MaBienBan);
+    }
+
+    [Fact]
     public async Task UC09_ReaderNo_BienBanDaNopHoacDaHuy_KhongTinhLaNo()
     {
         await using var dichVu = TaoDichVu();

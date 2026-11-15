@@ -51,7 +51,7 @@ Mọi dòng dưới đây đang **OPEN**. Một quyết định OPEN chặn đú
 |---|---|---|---|
 | K-2 | `ICurrentUser`, `IAuditable`, `IAuditLogger`, `LoiNghiepVuException`, `MaLoiNghiepVu` đặt trong SharedKernel; `HttpContextCurrentUser` ở Api; interceptor, entity nhật ký, `AuditLogger` ở Infrastructure | Khôi đề xuất, chờ nhóm xác nhận | 2026-11-15 |
 | K-3 | `IBienBanChuaNopReader` và `BienBanChuaNopDto` ở SinhVien.Contracts; ViPham hiện thực | Khôi đề xuất, chờ Vương xác nhận | 2026-11-15 |
-| K-4 | Module tham chiếu một chiều project Infrastructure để dùng AppDbContext; Infrastructure không tham chiếu module | Khôi đề xuất, chờ nhóm xác nhận | 2026-11-15 |
+| K-4 | Module không phụ thuộc Infrastructure; dùng DbContext trừu tượng qua DI container, loại bỏ hoàn toàn nguy cơ phụ thuộc vòng | Đã chốt theo review của Vương | 2026-11-15 |
 
 ## 5. Mâu thuẫn giữa các nguồn đã phát hiện
 

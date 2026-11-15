@@ -11,6 +11,12 @@ public sealed class XuLyLoiToanCuc(ILogger<XuLyLoiToanCuc> nhatKy) : IExceptionH
 {
     public async ValueTask<bool> TryHandleAsync(HttpContext httpContext, Exception exception, CancellationToken cancellationToken)
     {
+        if (httpContext.Response.HasStarted)
+        {
+            nhatKy.LogWarning(exception, "Phản hồi đã bắt đầu gửi, không thể ghi đè ProblemDetails.");
+            return false;
+        }
+
         var problem = TaoProblem(httpContext, exception);
         httpContext.Response.StatusCode = problem.Status ?? StatusCodes.Status500InternalServerError;
 
@@ -24,9 +30,16 @@ public sealed class XuLyLoiToanCuc(ILogger<XuLyLoiToanCuc> nhatKy) : IExceptionH
         return true;
     }
 
-    private static string ChuyenCamelCase(string tenTruong) =>
-        string.Join('.', tenTruong.Split('.').Select(doan =>
+    private static string ChuyenCamelCase(string? tenTruong)
+    {
+        if (string.IsNullOrEmpty(tenTruong))
+        {
+            return string.Empty;
+        }
+
+        return string.Join('.', tenTruong.Split('.').Select(doan =>
             doan.Length == 0 ? doan : char.ToLowerInvariant(doan[0]) + doan[1..]));
+    }
 
     private static string TieuDe(int maHttp) => maHttp switch
     {

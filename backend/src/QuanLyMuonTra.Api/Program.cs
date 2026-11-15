@@ -17,9 +17,9 @@ if (string.IsNullOrWhiteSpace(chuoiKetNoi))
 
 IReadOnlyCollection<Assembly> assemblyCauHinhEf = [];
 
-builder.Services.AddInfrastructure(chuoiKetNoi, assemblyCauHinhEf);
 builder.Services.AddHttpContextAccessor();
 builder.Services.AddSingleton<ICurrentUser, HttpContextCurrentUser>();
+builder.Services.AddInfrastructure(chuoiKetNoi, assemblyCauHinhEf);
 builder.Services.AddExceptionHandler<XuLyLoiToanCuc>();
 builder.Services.AddViPhamModule();
 builder.Services.AddHealthChecks()

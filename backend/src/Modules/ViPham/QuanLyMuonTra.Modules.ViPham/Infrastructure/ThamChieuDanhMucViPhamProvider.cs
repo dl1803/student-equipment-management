@@ -1,10 +1,9 @@
 using Microsoft.EntityFrameworkCore;
-using QuanLyMuonTra.Infrastructure.Persistence;
 using QuanLyMuonTra.Modules.DanhMuc.Contracts;
 
 namespace QuanLyMuonTra.Modules.ViPham.Infrastructure;
 
-public sealed class ThamChieuDanhMucViPhamProvider(AppDbContext db) : IThamChieuDanhMucProvider
+public sealed class ThamChieuDanhMucViPhamProvider(DbContext db) : IThamChieuDanhMucProvider
 {
     public Task<bool> CoThamChieuThietBiAsync(string maThietBi, CancellationToken ct) =>
         db.Database.SqlQuery<bool>($"""
@@ -13,4 +12,3 @@ public sealed class ThamChieuDanhMucViPhamProvider(AppDbContext db) : IThamChieu
 
     public Task<bool> CoThamChieuLoaiAsync(Guid maLoai, CancellationToken ct) => Task.FromResult(false);
 }
-
