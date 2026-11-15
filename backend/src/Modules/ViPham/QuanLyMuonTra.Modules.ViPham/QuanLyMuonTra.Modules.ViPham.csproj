@@ -1,6 +1,7 @@
-﻿<Project Sdk="Microsoft.NET.Sdk">
+<Project Sdk="Microsoft.NET.Sdk">
 
   <ItemGroup>
+    <ProjectReference Include="..\..\..\QuanLyMuonTra.Infrastructure\QuanLyMuonTra.Infrastructure.csproj" />
     <ProjectReference Include="..\..\..\QuanLyMuonTra.SharedKernel\QuanLyMuonTra.SharedKernel.csproj" />
     <ProjectReference Include="..\QuanLyMuonTra.Modules.ViPham.Contracts\QuanLyMuonTra.Modules.ViPham.Contracts.csproj" />
     <ProjectReference Include="..\..\MuonTra\QuanLyMuonTra.Modules.MuonTra.Contracts\QuanLyMuonTra.Modules.MuonTra.Contracts.csproj" />
