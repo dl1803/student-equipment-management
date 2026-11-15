@@ -4,6 +4,8 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
+import com.nhom13.quanlymuontra.data.model.ApiError;
+import com.nhom13.quanlymuontra.data.model.Event;
 
 /**
  * Lớp duy nhất giữ token trong bộ nhớ và phát {@link LiveData} trạng thái phiên (FA 5.1, FC 6.5).
@@ -13,6 +15,10 @@ import androidx.lifecycle.MutableLiveData;
  * tuần tự hóa, còn {@link #getTokenPair()} đọc không khóa. Trạng thái phát bằng {@code postValue},
  * nên người quan sát nhận ở luồng chính và có thể gộp các thay đổi liên tiếp; mã cần token mới nhất
  * phải gọi {@link #getTokenPair()}, không đọc từ {@link LiveData}.
+ *
+ * <p>Phiên kết thúc do làm mới thất bại (D04-L, FA 5.4, ĐX-FA-23) đi qua {@link
+ * #ketThucPhien(ApiError)}: ngoài trạng thái {@link TrangThaiPhien#KHONG_CO_PHIEN}, lý do được phát
+ * một lần qua {@link #getLyDoKetThucPhien()} để màn hình đăng nhập báo đúng nguyên nhân.
  */
 public final class SessionManager {
 
@@ -21,6 +27,9 @@ public final class SessionManager {
     @NonNull
     private final MutableLiveData<TrangThaiPhien> trangThaiPhien =
             new MutableLiveData<>(TrangThaiPhien.CHUA_KHOI_PHUC);
+
+    @NonNull
+    private final MutableLiveData<Event<ApiError>> lyDoKetThucPhien = new MutableLiveData<>();
 
     @Nullable private volatile TokenPair capToken;
 
@@ -32,6 +41,16 @@ public final class SessionManager {
     @NonNull
     public LiveData<TrangThaiPhien> getTrangThaiPhien() {
         return trangThaiPhien;
+    }
+
+    /**
+     * Lý do phiên bị kết thúc do lần làm mới thất bại, giữ nguyên status, maLoi, traceId của lần
+     * làm mới (FA 5.4). Chưa có sự kiện nào cho tới khi {@link #ketThucPhien(ApiError)} được gọi;
+     * đăng xuất chủ động qua {@link #clear()} không phát sự kiện này.
+     */
+    @NonNull
+    public LiveData<Event<ApiError>> getLyDoKetThucPhien() {
+        return lyDoKetThucPhien;
     }
 
     /** Cặp token hiện tại, hoặc {@code null} khi không có phiên. */
@@ -71,5 +90,15 @@ public final class SessionManager {
         tokenStore.clear();
         capToken = null;
         trangThaiPhien.postValue(TrangThaiPhien.KHONG_CO_PHIEN);
+    }
+
+    /**
+     * Kết thúc phiên vì lần làm mới token thất bại: phát {@code lyDo} một lần rồi xóa phiên như
+     * {@link #clear()}. Lý do được phát trước trạng thái để người quan sát trạng thái đọc được
+     * lý do khi điều hướng về đăng nhập (FA 5.4, ĐX-FA-23).
+     */
+    public synchronized void ketThucPhien(@NonNull ApiError lyDo) {
+        lyDoKetThucPhien.postValue(new Event<>(lyDo));
+        clear();
     }
 }

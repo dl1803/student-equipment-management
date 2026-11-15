@@ -9,7 +9,7 @@ import javax.crypto.AEADBadTagException;
  * byte kiểm tra để phát hiện bản mã bị sửa. Không an toàn và không chứng minh gì về Android
  * Keystore thật.
  */
-final class FakeTokenCipher implements TokenCipher {
+public final class FakeTokenCipher implements TokenCipher {
 
     private static final int MAT_NA = 0x5A;
     private static final int MAT_NA_KIEM_TRA = 0x33;
