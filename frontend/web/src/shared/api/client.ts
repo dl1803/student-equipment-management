@@ -24,8 +24,10 @@ const DUONG_DAN_KHONG_XAC_THUC = new Set([
   "/auth/dang-xuat",
 ]);
 
+/** Chuẩn hóa: bỏ query và dấu / cuối, thêm / đầu nếu thiếu ("auth/x/" → "/auth/x"). */
 function laKhongXacThuc(config: InternalAxiosRequestConfig): boolean {
-  const duongDan = (config.url ?? "").split("?")[0] ?? "";
+  const tho = ((config.url ?? "").split("?")[0] ?? "").replace(/\/+$/, "");
+  const duongDan = tho.startsWith("/") ? tho : `/${tho}`;
   return DUONG_DAN_KHONG_XAC_THUC.has(duongDan);
 }
 
@@ -35,7 +37,9 @@ apiClient.interceptors.request.use((config) => {
   if (laKhongXacThuc(config)) return config;
   const token = layAccessToken();
   config._tokenDaGui = token;
+  // Khi gọi lại, config còn tiêu đề của lần gửi trước; phiên đã bị xóa thì bỏ token cũ đi.
   if (token !== null) config.headers.set("Authorization", `Bearer ${token}`);
+  else config.headers.delete("Authorization");
   return config;
 });
 

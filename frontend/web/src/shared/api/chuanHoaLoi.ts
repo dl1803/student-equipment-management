@@ -52,18 +52,19 @@ async function docProblem(
   phanHoi: AxiosResponse,
 ): Promise<Record<string, unknown> | null> {
   if (!layKieuNoiDung(phanHoi).includes(KIEU_PROBLEM_JSON)) return null;
-  let than: unknown = phanHoi.data;
-  if (typeof Blob !== "undefined" && than instanceof Blob) {
-    than = await than.text();
-  }
-  if (typeof than === "string") {
-    try {
-      than = JSON.parse(than);
-    } catch {
-      return null; // Khai báo problem+json nhưng thân hỏng: xử lý như lỗi hệ thống chung.
+  try {
+    let than: unknown = phanHoi.data;
+    if (typeof Blob !== "undefined" && than instanceof Blob) {
+      than = await than.text();
     }
+    if (typeof than === "string") {
+      than = JSON.parse(than);
+    }
+    return laDoiTuong(than) ? than : null;
+  } catch {
+    // Không đọc được Blob hoặc thân hỏng: xử lý như lỗi hệ thống chung; chuanHoaLoi không ném.
+    return null;
   }
-  return laDoiTuong(than) ? than : null;
 }
 
 /**

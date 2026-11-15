@@ -43,6 +43,13 @@ describe("chuyenKhoaLoiTruong", () => {
     expect(chuyenKhoaLoiTruong("a[1].b[12].c")).toBe("a.1.b.12.c");
     expect(chuyenKhoaLoiTruong("ghiChu")).toBe("ghiChu");
   });
+
+  it("FC 5.6: bỏ tiền tố JSON path '$.' và dấu chấm thừa ở đầu", () => {
+    expect(chuyenKhoaLoiTruong("$.dsLoaiVaSoLuong[0].soLuong")).toBe(
+      "dsLoaiVaSoLuong.0.soLuong",
+    );
+    expect(chuyenKhoaLoiTruong("[0].soLuong")).toBe("0.soLuong");
+  });
 });
 
 describe("ganLoiMayChu", () => {

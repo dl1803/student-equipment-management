@@ -38,12 +38,24 @@ export function layRefreshToken(): string | null {
 /**
  * Ghi cặp token mới. Refresh token xuống sessionStorage TRƯỚC, rồi mới đặt access token, để mọi
  * yêu cầu được gọi lại sau đó đều thấy cặp token mới (FA 3.5, mục Ghi token mới).
+ *
+ * sessionStorage không ghi được (hết hạn ngạch, trình duyệt chặn lưu trữ): phiên vẫn dùng được
+ * trong bộ nhớ của tab cho tới khi tải lại trang, và refresh token CŨ bị xóa khỏi sessionStorage —
+ * token đó đã bị máy chủ xoay vòng, dùng lại sẽ làm thu hồi cả chuỗi (KT 7.3).
  */
 export function ghiCapToken(cap: {
   accessToken: string;
   refreshToken: string;
 }): void {
-  sessionStorage.setItem(KHOA_REFRESH_TOKEN, cap.refreshToken);
+  try {
+    sessionStorage.setItem(KHOA_REFRESH_TOKEN, cap.refreshToken);
+  } catch {
+    try {
+      sessionStorage.removeItem(KHOA_REFRESH_TOKEN);
+    } catch {
+      // Không truy cập được sessionStorage thì cũng không còn token cũ nào để dùng lại.
+    }
+  }
   accessToken = cap.accessToken;
 }
 
@@ -61,7 +73,14 @@ export function xoaPhien(lyDo?: LyDoKetThucPhien, loi?: ApiError): void {
   const suKien: SuKienKetThucPhien = {};
   if (lyDo !== undefined) suKien.lyDo = lyDo;
   if (loi !== undefined) suKien.loi = loi;
-  for (const langNghe of [...dsLangNghe]) langNghe(suKien);
+  // Một người lắng nghe lỗi không được chặn những người sau (ví dụ xóa bộ nhớ đệm truy vấn).
+  for (const langNghe of [...dsLangNghe]) {
+    try {
+      langNghe(suKien);
+    } catch (e) {
+      console.error(e);
+    }
+  }
 }
 
 /** Đăng ký lắng nghe phiên kết thúc; trả hàm hủy để gọi trong hàm dọn của useEffect (FC 5.3). */

@@ -19,7 +19,11 @@ export function layDiaChiGocApi(): string {
       "Thiếu biến môi trường NEXT_PUBLIC_API_BASE_URL (FA 4.14, xem .env.example)",
     );
   }
-  return giaTri.trim().replace(/\/+$/, "");
+  // Phòng cấu hình nhầm "…/api/v1" (biến không được chứa tiền tố này) để không thành /api/v1/api/v1.
+  return giaTri
+    .trim()
+    .replace(/\/+$/, "")
+    .replace(/\/api\/v1$/, "");
 }
 
 /**

@@ -101,6 +101,15 @@ describe("chuanHoaLoi", () => {
     });
   });
 
+  it("FA 4.11: đọc thân Blob thất bại → HTTP không có maLoi, không ném", async () => {
+    const blob = new Blob(["x"]);
+    blob.text = () => Promise.reject(new Error("luồng bị hủy"));
+
+    const loi = await chuanHoaLoi(loiHttp(500, blob));
+
+    expect(loi).toEqual({ loai: "HTTP", status: 500 });
+  });
+
   it("FA 3.3: problem+json hỏng → HTTP không có maLoi, không ném", async () => {
     const loi = await chuanHoaLoi(loiHttp(500, "{khong-phai-json"));
     expect(loi).toEqual({ loai: "HTTP", status: 500 });

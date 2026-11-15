@@ -125,6 +125,36 @@ describe("apiClient — gắn token", () => {
 
     expect(adapter.mock.calls[0]?.[0].headers.get("Authorization")).toBeFalsy();
   });
+
+  it.each(["auth/nhan-vien/dang-nhap", "/auth/nhan-vien/dang-nhap/"])(
+    "UI-Screens 4.5: đường dẫn đăng nhập viết '%s' vẫn là endpoint không xác thực — không gắn token, TAI_KHOAN_BI_KHOA không kết thúc phiên",
+    async (duongDan) => {
+      const suKien = ghiSuKien();
+      const adapter = vi.fn<AxiosAdapter>((config) =>
+        traVe(config, 403, { maLoi: "TAI_KHOAN_BI_KHOA" }),
+      );
+      apiClient.defaults.adapter = adapter;
+
+      await expect(apiClient.post(duongDan, {})).rejects.toMatchObject({
+        maLoi: "TAI_KHOAN_BI_KHOA",
+      });
+      expect(
+        adapter.mock.calls[0]?.[0].headers.get("Authorization"),
+      ).toBeFalsy();
+      expect(suKien).toHaveLength(0);
+      expect(layRefreshToken()).toBe(RT_CU);
+    },
+  );
+
+  it("FA 4.14: NEXT_PUBLIC_API_BASE_URL lỡ chứa /api/v1 → không bị lặp tiền tố", async () => {
+    vi.stubEnv("NEXT_PUBLIC_API_BASE_URL", "https://api.test/api/v1/");
+    const adapter = vi.fn<AxiosAdapter>((config) => traVe(config, 200));
+    apiClient.defaults.adapter = adapter;
+
+    await apiClient.get("/sv/toi");
+
+    expect(adapter.mock.calls[0]?.[0].baseURL).toBe("https://api.test/api/v1");
+  });
 });
 
 describe("apiClient — làm mới single-flight", () => {

@@ -22,8 +22,8 @@ export type ThaoTacGhi<TBien> = {
   xacNhanDaKiemTra: () => void;
 };
 
-export function useThaoTacGhi<TData, TBien>(
-  mutation: UseMutationResult<TData, ApiError, TBien>,
+export function useThaoTacGhi<TData, TBien, TLoi extends ApiError = ApiError>(
+  mutation: UseMutationResult<TData, TLoi, TBien>,
 ): ThaoTacGhi<TBien> {
   const khoaRef = useRef(false);
   const [chuaBietKetQua, setChuaBietKetQua] = useState(false);

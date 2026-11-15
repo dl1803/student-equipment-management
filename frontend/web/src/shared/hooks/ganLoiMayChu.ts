@@ -3,9 +3,15 @@
 import type { FieldValues, Path, UseFormReturn } from "react-hook-form";
 import type { ApiError } from "@/shared/api/apiError";
 
-/** `dsLoaiVaSoLuong[0].soLuong` (khóa errors của máy chủ) → `dsLoaiVaSoLuong.0.soLuong` (RHF). */
+/**
+ * `dsLoaiVaSoLuong[0].soLuong` (khóa errors của máy chủ) → `dsLoaiVaSoLuong.0.soLuong` (RHF).
+ * Bỏ tiền tố JSON path `$.` (ASP.NET Core dùng khi lỗi giải mã thân yêu cầu) và dấu chấm thừa ở đầu.
+ */
 export function chuyenKhoaLoiTruong(khoa: string): string {
-  return khoa.replace(/\[(\d+)\]/g, ".$1");
+  return khoa
+    .replace(/^\$\.?/, "")
+    .replace(/\[(\d+)\]/g, ".$1")
+    .replace(/^\./, "");
 }
 
 /** Đường dẫn có tồn tại trong giá trị hiện tại của biểu mẫu không (theo defaultValues). */
