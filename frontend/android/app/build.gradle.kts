@@ -178,6 +178,7 @@ dependencies {
     implementation(libs.gson)
     implementation(libs.gson.fire)
     implementation(libs.androidx.lifecycle.viewmodel)
+    implementation(libs.androidx.lifecycle.livedata)
     implementation(libs.androidx.annotation)
     implementation(libs.jakarta.annotation)
     compileOnly(libs.findbugs.jsr305)

@@ -4,6 +4,8 @@
 # được nhóm duyệt trước (FC 1.4).
 # D02-L: khóa plugin sinh client, Retrofit/OkHttp, Gson, gson-fire, lifecycle-viewmodel,
 # androidx.annotation và JUnit. Các phiên bản này là đề xuất của Architect, chờ nhóm xác nhận.
+# D03-L: khóa thêm lifecycle-livedata (cùng phiên bản lifecycle, để SessionManager phát LiveData).
+# Đề xuất của Architect, chờ nhóm xác nhận.
 [versions]
 # AGP 8.13.2 đi cùng Gradle 8.13, JDK 17 trở lên, hỗ trợ compileSdk 36.
 agp = "8.13.2"
@@ -24,6 +26,7 @@ okhttp = { module = "com.squareup.okhttp3:okhttp", version.ref = "okhttp" }
 gson = { module = "com.google.code.gson:gson", version.ref = "gson" }
 gson-fire = { module = "io.gsonfire:gson-fire", version.ref = "gsonFire" }
 androidx-lifecycle-viewmodel = { module = "androidx.lifecycle:lifecycle-viewmodel", version.ref = "lifecycle" }
+androidx-lifecycle-livedata = { module = "androidx.lifecycle:lifecycle-livedata", version.ref = "lifecycle" }
 androidx-annotation = { module = "androidx.annotation:annotation", version.ref = "annotation" }
 jakarta-annotation = { module = "jakarta.annotation:jakarta.annotation-api", version.ref = "jakartaAnnotation" }
 findbugs-jsr305 = { module = "com.google.code.findbugs:jsr305", version.ref = "findbugsJsr305" }
