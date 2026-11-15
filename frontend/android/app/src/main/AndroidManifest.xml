@@ -4,8 +4,14 @@
     <!--
         D01-L: manifest tối thiểu để dự án trống biên dịch được.
         D02-L: khai báo lớp Application (UngDung) tạo AppContainer.
-        Activity thuộc D06-L; quyền mạng thuộc D04-L; cấu hình sao lưu và loại tệp phiên thuộc D03-L.
+        D03-L: tắt sao lưu và khai báo quy tắc loại tệp phiên khỏi sao lưu đám mây và chuyển thiết
+        bị (FA 5.4, FC 6.5, ĐX-FA-14).
+        Activity thuộc D06-L; quyền mạng thuộc D04-L.
     -->
-    <application android:name=".UngDung" />
+    <application
+        android:name=".UngDung"
+        android:allowBackup="false"
+        android:dataExtractionRules="@xml/data_extraction_rules"
+        android:fullBackupContent="@xml/backup_rules" />
 
 </manifest>

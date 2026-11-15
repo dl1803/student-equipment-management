@@ -19,6 +19,7 @@
 | Mức ngôn ngữ Java | 17 | Như trên | Khớp JDK tối thiểu của AGP |
 | Cách khai báo Gradle | Kotlin DSL, `gradle/libs.versions.toml` | Như trên | FC 10.2: khai báo tập trung, khóa phiên bản |
 | Phiên bản thư viện (D02-L) | Plugin `org.openapi.generator` 7.25.0, Retrofit 3.0.0, OkHttp 4.12.0, Gson 2.13.2, gson-fire 1.9.0, `lifecycle-viewmodel` 2.10.0, `androidx.annotation` 1.9.1, JUnit 4.13.2; khóa trong `gradle/libs.versions.toml` | Đề xuất của Architect, chờ nhóm xác nhận | FC 1.4, FC 10.2; Gson, gson-fire, `androidx.annotation` ngoài danh sách FC 1.4 nên cần nhóm duyệt và cập nhật `Frontend-Architecture.md` |
+| Phiên bản thư viện (D03-L) | `androidx.lifecycle:lifecycle-livedata` 2.10.0, dùng chung khóa `lifecycle` trong `gradle/libs.versions.toml` | Đề xuất của Architect, chờ nhóm xác nhận | FC 1.4, FC 10.2; LiveData thuộc ĐX-FA-12 nhưng artifact chưa nằm trong danh sách đã khóa |
 | Phiên bản thư viện khác | Chưa khóa (Material Components, Navigation, Glide, MockWebServer...) | OPEN | FC 1.4: khóa khi task đầu tiên dùng và phải được nhóm duyệt |
 
 Lý do chọn AGP 8.13.2 thay vì dòng 9.x: AGP 9 đổi mô hình DSL và bỏ API cũ mà một số plugin còn dùng. Plugin sinh client (D02-L) và Safe Args (D06-L) chưa được kiểm chứng với AGP 9 trong tài liệu này. Chuyển lên AGP 9 là một quyết định riêng của nhóm.
@@ -190,3 +191,20 @@ Cảnh báo cho D04-L (mâu thuẫn M1, chưa giải quyết): FA 3.2 và FC 6.4
 Không thêm hằng số `/api/v1` vào địa chỉ gốc khi dựng Retrofit nếu các dòng trên đã bắt đầu bằng `api/v1/` hoặc `/api/v1/`; cần nhóm xác nhận cách xử lý trước khi cài D04-L.
 
 Chưa có trong D02-L: `NhomLoi` (FA 3.4, FC 7.4) và `LoiTruong` (FC 9.3) không nằm trong task nào của `BANG_THEO_DOI_40_NGAY.md`, cần người dùng giao việc; chuẩn hóa lỗi (`ApiErrorParser`) thuộc D04-L bước 2.
+
+## 9. Quyết định D03-L
+
+Nguồn: FA 5.4, 5.10; FC 6.5, 6.8, 9.1–9.4; ĐX-FA-13, ĐX-FA-14. Mọi quyết định dưới đây là đề xuất của Architect, chờ nhóm xác nhận.
+
+| # | Quyết định | Lý do và căn cứ |
+|---|---|---|
+| 1 | Mỗi token mã hóa riêng; chuỗi lưu là `Base64(IV)` + `:` + `Base64(bản mã)` bằng `java.util.Base64`; hai giá trị ghi trong một `commit()` | FA 5.4; `java.util.Base64` có từ API 26 (ĐX-FA-13); `commit()` để cặp token mới xuống đĩa trước khi replay (FA 3.5) |
+| 2 | Ranh giới mã hóa `TokenCipher`, lỗi là `GeneralSecurityException`; bản thật `KeystoreCipher` | Kế hoạch D03-L; FC 9.1 (boundary mã hóa giả khi kiểm thử JVM) |
+| 3 | Tệp `SharedPreferences` tên `phien_dang_nhap`; `allowBackup="false"` cùng `backup_rules.xml` và `data_extraction_rules.xml` loại tệp này; `CauHinhSaoLuuPhienTest` kiểm sự trùng khớp | FA 5.4, FC 6.5, ĐX-FA-14 |
+| 4 | `SessionManager` phát `TrangThaiPhien` (`CHUA_KHOI_PHUC`, `CO_PHIEN`, `KHONG_CO_PHIEN`) bằng `postValue`; token lấy qua `getTokenPair()` | FA 5.1, 5.3 quy tắc 5; D04-L gọi từ luồng mạng |
+| 5 | Chưa nối `SessionManager` vào `AppContainer`; `TokenStore.create(Context)` sẵn để nối ở D04-L | `AppContainer` cần `Context`; người dùng đầu tiên là `AuthInterceptor` (D04-L) |
+| 6 | Test `SessionManager` thay bộ thực thi của `LiveData` bằng `ArchTaskExecutor.setDelegate`, không thêm `core-testing` | FC 9.1 cấm thêm thư viện kiểm thử |
+
+Phạm vi kiểm chứng của D03-L: test trong `src/test` chạy trên JVM với boundary mã hóa giả; **không** chứng minh Android Keystore thật và **không** chứng minh hệ điều hành loại tệp khỏi sao lưu. Kiểm tra trên thiết bị/emulator theo FC 9.4 thuộc D18-L: **chưa chạy**.
+
+Chưa có trong D03-L (thuộc ngày sau): kiểm hạn `exp` của JWT khi khởi động và điều hướng theo `TrangThaiPhien` (D06-L), `AuthInterceptor`/`TokenAuthenticator` và lý do `ApiError` khi kết thúc phiên (D04-L).
