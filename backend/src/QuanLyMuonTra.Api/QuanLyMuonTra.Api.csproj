@@ -15,6 +15,10 @@
     <ProjectReference Include="..\Modules\BaoCao\QuanLyMuonTra.Modules.BaoCao\QuanLyMuonTra.Modules.BaoCao.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <PackageReference Include="FluentValidation" Version="12.2.0" />
+  </ItemGroup>
+
   <PropertyGroup>
     <TargetFramework>net9.0</TargetFramework>
     <Nullable>enable</Nullable>
