@@ -26,4 +26,8 @@
     <ProjectReference Include="..\..\src\Modules\QuyDinh\QuanLyMuonTra.Modules.QuyDinh\QuanLyMuonTra.Modules.QuyDinh.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <None Include="..\..\docs\04-api\openapi.yaml" Link="openapi.yaml" CopyToOutputDirectory="PreserveNewest" />
+  </ItemGroup>
+
 </Project>
