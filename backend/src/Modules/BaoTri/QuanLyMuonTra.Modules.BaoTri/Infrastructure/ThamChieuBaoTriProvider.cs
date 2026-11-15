@@ -14,8 +14,14 @@ public sealed class ThamChieuBaoTriProvider : IThamChieuDanhMucProvider
 
     public Task<bool> CoThamChieuThietBiAsync(string maThietBi, CancellationToken ct)
     {
+        if (string.IsNullOrWhiteSpace(maThietBi))
+        {
+            return Task.FromResult(false);
+        }
+
+        var maChuanHoa = maThietBi.Trim();
         return _db.Database
-            .SqlQuery<bool>($"SELECT EXISTS (SELECT 1 FROM bao_tri.bao_tri_sua_chua WHERE ma_thiet_bi = {maThietBi}) OR EXISTS (SELECT 1 FROM bao_tri.chi_tiet_thanh_ly WHERE ma_thiet_bi = {maThietBi}) AS \"Value\"")
+            .SqlQuery<bool>($"SELECT (EXISTS (SELECT 1 FROM bao_tri.bao_tri_sua_chua WHERE ma_thiet_bi = {maChuanHoa}) OR EXISTS (SELECT 1 FROM bao_tri.chi_tiet_thanh_ly WHERE ma_thiet_bi = {maChuanHoa})) AS \"Value\"")
             .SingleAsync(ct);
     }
 

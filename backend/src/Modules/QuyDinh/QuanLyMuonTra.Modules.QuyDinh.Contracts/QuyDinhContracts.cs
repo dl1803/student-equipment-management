@@ -15,6 +15,8 @@ public sealed record QuyDinhNhomDto(
 
     public int ThoiGianToiDaGio(IEnumerable<Guid> dsMaLoai)
     {
+        ArgumentNullException.ThrowIfNull(dsMaLoai);
+
         return dsMaLoai
             .Select(MucToiDaCuaLoai)
             .DefaultIfEmpty(ThoiGianMuonToiDaGio)
@@ -24,7 +26,9 @@ public sealed record QuyDinhNhomDto(
     private int MucToiDaCuaLoai(Guid maLoai)
     {
         var ngoaiLe = DsNgoaiLeTheoLoai.FirstOrDefault(x => x.MaLoai == maLoai);
-        return ngoaiLe?.ThoiGianMuonToiDaGio ?? ThoiGianMuonToiDaGio;
+        return ngoaiLe is not null
+            ? Math.Min(ngoaiLe.ThoiGianMuonToiDaGio, ThoiGianMuonToiDaGio)
+            : ThoiGianMuonToiDaGio;
     }
 }
 

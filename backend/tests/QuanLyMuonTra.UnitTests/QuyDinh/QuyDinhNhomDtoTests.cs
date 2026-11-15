@@ -86,12 +86,20 @@ public sealed class QuyDinhNhomDtoTests
     }
 
     [Fact]
-    public void BR25_NgoaiLeLonHonMucChung_LoaiDoDuocMuonTheoNgoaiLeNhungPhieuCoLoaiKhacVanBiMucChungChan()
+    public void BR25_NgoaiLeLonHonMucChung_BiChanBoiMucToiDaCuaNhom()
     {
         var quyDinh = DaiHoc(new NgoaiLeTheoLoaiDto(Laptop, 8));
 
-        Assert.Equal(8, quyDinh.ThoiGianToiDaGio([Laptop]));
+        Assert.Equal(5, quyDinh.ThoiGianToiDaGio([Laptop]));
         Assert.Equal(5, quyDinh.ThoiGianToiDaGio([Laptop, MayChieu]));
+    }
+
+    [Fact]
+    public void BR25_DanhSachLoaiNull_NemArgumentNullException()
+    {
+        var quyDinh = DaiHoc();
+
+        Assert.Throws<ArgumentNullException>(() => quyDinh.ThoiGianToiDaGio(null!));
     }
 
     [Fact]
