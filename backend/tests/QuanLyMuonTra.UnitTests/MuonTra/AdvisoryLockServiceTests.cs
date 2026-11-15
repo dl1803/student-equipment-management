@@ -50,4 +50,10 @@ public class AdvisoryLockServiceTests
     {
         Assert.Empty(AdvisoryLockService.SapXepCacCap(Array.Empty<(Guid MaPhong, Guid MaLoai)>()));
     }
+
+    [Fact]
+    public void NFR06_SapXepCacCap_DanhSachNull_NemLoi()
+    {
+        Assert.Throws<ArgumentNullException>(() => AdvisoryLockService.SapXepCacCap(null!));
+    }
 }

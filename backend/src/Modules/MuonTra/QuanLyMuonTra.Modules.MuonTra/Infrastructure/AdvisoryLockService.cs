@@ -27,6 +27,8 @@ public sealed class AdvisoryLockService : IAdvisoryLockService
 
     public async Task LockDanhSachPhongLoaiAsync(IEnumerable<(Guid MaPhong, Guid MaLoai)> danhSach, CancellationToken ct)
     {
+        ArgumentNullException.ThrowIfNull(danhSach);
+
         foreach (var (maPhong, maLoai) in SapXepCacCap(danhSach))
         {
             await LockPhongLoaiAsync(maPhong, maLoai, ct);
@@ -47,6 +49,8 @@ public sealed class AdvisoryLockService : IAdvisoryLockService
 
     internal static IReadOnlyList<(Guid MaPhong, Guid MaLoai)> SapXepCacCap(IEnumerable<(Guid MaPhong, Guid MaLoai)> danhSach)
     {
+        ArgumentNullException.ThrowIfNull(danhSach);
+
         return danhSach
             .Distinct()
             .OrderBy(cap => cap.MaPhong)

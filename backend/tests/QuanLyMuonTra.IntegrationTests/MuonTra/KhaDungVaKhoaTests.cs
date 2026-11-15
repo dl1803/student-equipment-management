@@ -50,6 +50,18 @@ public class KhaDungVaKhoaTests
         Assert.Equal(0, await TinhAsync(gd, HanGiuCho, Guid.NewGuid(), Guid.NewGuid()));
     }
 
+    [CanKetNoiTestFact]
+    public async Task BR16_TinhKhaDung_GiuChoVuotSoLuongSanSang_ChanDuoiBangKhong()
+    {
+        await using var gd = await GiaoDichTestRollback.BatDauAsync();
+        await gd.NapDuLieuThuAsync(FileDuLieu);
+
+        await gd.Db.Database.ExecuteSqlAsync(
+            $"UPDATE danh_muc.thiet_bi SET ngung_su_dung = true WHERE ma_phong = {P1} AND ma_loai = {X}");
+
+        Assert.Equal(0, await TinhAsync(gd, HanGiuCho.AddSeconds(-1), P1, X));
+    }
+
     [Fact]
     public async Task NFR06_LockPhongLoai_ChuaCoGiaoDich_NemLoi()
     {
@@ -61,6 +73,19 @@ public class KhaDungVaKhoaTests
 
         await Assert.ThrowsAsync<InvalidOperationException>(
             () => dichVu.LockPhongLoaiAsync(Guid.NewGuid(), Guid.NewGuid(), CancellationToken.None));
+    }
+
+    [Fact]
+    public async Task NFR06_LockDanhSachPhongLoai_DanhSachNull_NemLoi()
+    {
+        var options = new DbContextOptionsBuilder<MuonTraTestContext>()
+            .UseNpgsql("Host=localhost;Database=khong_ket_noi")
+            .Options;
+        await using var db = new MuonTraTestContext(options);
+        var dichVu = new AdvisoryLockService(db);
+
+        await Assert.ThrowsAsync<ArgumentNullException>(
+            () => dichVu.LockDanhSachPhongLoaiAsync(null!, CancellationToken.None));
     }
 
     [CanKetNoiTestFact]

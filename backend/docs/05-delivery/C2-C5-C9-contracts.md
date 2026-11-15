@@ -23,7 +23,7 @@ Quy tắc dùng cho bên gọi (MuonTra, DanhMuc, BaoTri):
 2. Thứ tự lấy khóa: khóa dòng `sinh_vien` trước (chưa có cổng, thuộc C4), sau đó khóa các cặp (phòng, loại). Cần nhiều cặp thì gọi một lần `LockDanhSachPhongLoaiAsync`, không tự sắp xếp riêng.
 3. Lấy khóa trước, rồi mới gọi `TinhKhaDungAsync` và kiểm tra điều kiện trong cùng giao dịch.
 4. Khóa là `pg_advisory_xact_lock`: tự nhả khi giao dịch kết thúc; không dùng khóa mức phiên.
-5. `TinhKhaDungAsync` dùng `IClock.UtcNow` và điều kiện `han_giu_cho > now`; kết quả không bị chặn ở 0.
+5. `TinhKhaDungAsync` dùng `IClock.UtcNow` và điều kiện `han_giu_cho > now`; luôn bảo đảm bất biến `khaDung ≥ 0` bằng `GREATEST(0, ...)` để không làm sai lệch điều kiện xét danh sách chờ (`khaDung == 0`).
 
 Thao tác bắt buộc đi qua C2 (danh sách của ĐX-KT-13, KT 8.2):
 

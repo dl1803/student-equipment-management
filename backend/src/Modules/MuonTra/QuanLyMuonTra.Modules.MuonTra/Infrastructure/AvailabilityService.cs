@@ -21,7 +21,7 @@ public sealed class AvailabilityService : IAvailabilityService
 
         return _db.Database
             .SqlQuery<int>($"""
-                SELECT (
+                SELECT GREATEST(0, (
                     (SELECT count(*)
                      FROM danh_muc.thiet_bi
                      WHERE ma_phong = {maPhong} AND ma_loai = {maLoai}
@@ -35,7 +35,7 @@ public sealed class AvailabilityService : IAvailabilityService
                      FROM muon_tra.dang_ky_cho
                      WHERE ma_phong = {maPhong} AND ma_loai = {maLoai}
                        AND trang_thai = 'DA_THONG_BAO' AND han_giu_cho > {thoiDiemHienTai})
-                )::integer AS "Value"
+                ))::integer AS "Value"
                 """)
             .SingleAsync(ct);
     }
