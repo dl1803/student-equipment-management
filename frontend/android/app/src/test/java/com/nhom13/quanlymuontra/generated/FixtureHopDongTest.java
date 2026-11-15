@@ -37,6 +37,7 @@ public class FixtureHopDongTest {
         {"loi/409-so-luong-kha-dung-thay-doi.json", ProblemDetails.class},
         {"loi/422-sv-bi-khoa-quyen-muon.json", ProblemDetails.class},
         {"loi/429-qua-nhieu-yeu-cau.json", ProblemDetails.class},
+        {"loi/500-loi-he-thong.json", ProblemDetails.class},
     };
 
     // Giải mã rồi mã hóa lại: trường nào không có trong mô hình sinh từ hợp đồng sẽ biến mất nên
