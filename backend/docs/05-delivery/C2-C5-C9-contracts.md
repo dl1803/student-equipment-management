@@ -1,6 +1,6 @@
 # Gói hợp đồng C2, C5, C9
 
-Cập nhật lần đầu: 13/11/2026 · Chủ sở hữu: Nguyễn Đại Vương · Trạng thái: **hợp đồng đã khai báo trong `*.Contracts` và `SharedKernel`, chưa có bản hiện thực**
+Cập nhật lần đầu: 13/11/2026 · Chủ sở hữu: Nguyễn Đại Vương · Trạng thái: **hợp đồng đã khai báo trong `*.Contracts` và `SharedKernel`; C2 đã có bản hiện thực (D03-V); C5 và C9 chưa có bản hiện thực**
 
 Quy ước: "Đã có trong nguồn" là điều tài liệu dự án nêu. Mọi bản giả chỉ dùng trong `tests/`, không đăng ký trên runtime. Mã C2, C5, C9 là mã artifact của kế hoạch. Mọi phương thức bất đồng bộ có hậu tố `Async` và tham số cuối `CancellationToken ct` (CV 19.1). Toàn bộ port chạy trong giao dịch và `AppDbContext` của bên gọi.
 
@@ -14,6 +14,16 @@ Quy ước: "Đã có trong nguồn" là điều tài liệu dự án nêu. Mọ
 | `IAdvisoryLockService.LockPhongLoaiAsync` | `SharedKernel.Contracts` | `(Guid maPhong, Guid maLoai)` → `Task`: Lấy `pg_advisory_xact_lock` theo cặp (phòng, loại) | Sau `BEGIN` và sau khóa dòng `sinh_vien` (nếu có), trước bước kiểm tra điều kiện | Lỗi giao dịch làm hoàn tác | MuonTra, DanhMuc, BaoTri |
 | `IAdvisoryLockService.LockDanhSachPhongLoaiAsync` | `SharedKernel.Contracts` | `IEnumerable<(Guid, Guid)>` → `Task`: Sắp xếp tăng dần theo cặp `(MaPhong, MaLoai)` trước khi lấy khóa để chống deadlock | Cùng giao dịch | Lỗi giao dịch làm hoàn tác | MuonTra, DanhMuc |
 | `IBoTinhHanTra.TinhHanTra` | `SharedKernel.Contracts` | `(DateTimeOffset gioGiao, int thoiGianMuonGio, TimeOnly? gioDongCua)` → `DateTimeOffset`: `min(gioGiao + thoiGianMuon, gioDongCuaCungNgay)`. Tách độc lập khỏi Fee Engine của ViPham vì MuonTra không tham chiếu ViPham | Hàm thuần, không giao dịch | `GIAO_SAU_GIO_DONG_CUA` (422), `CHUA_CAU_HINH_GIO_QUAY` (409) | MuonTra |
+
+**Bản hiện thực C2 (D03-V, 14/11/2026):** `AvailabilityService` và `AdvisoryLockService` nằm ở `QuanLyMuonTra.Modules.MuonTra.Infrastructure`, đăng ký Scoped trong `AddMuonTraModule`; `IBoTinhHanTra` chưa có bản hiện thực (D04).
+
+Quy tắc dùng cho bên gọi (MuonTra, DanhMuc, BaoTri):
+
+1. Chỉ gọi `LockPhongLoaiAsync` và `LockDanhSachPhongLoaiAsync` sau khi đã mở giao dịch; nếu không có giao dịch, hai phương thức ném `InvalidOperationException`.
+2. Thứ tự lấy khóa: khóa dòng `sinh_vien` trước (chưa có cổng, thuộc C4), sau đó khóa các cặp (phòng, loại). Cần nhiều cặp thì gọi một lần `LockDanhSachPhongLoaiAsync`, không tự sắp xếp riêng.
+3. Lấy khóa trước, rồi mới gọi `TinhKhaDungAsync` và kiểm tra điều kiện trong cùng giao dịch.
+4. Khóa là `pg_advisory_xact_lock`: tự nhả khi giao dịch kết thúc; không dùng khóa mức phiên.
+5. `TinhKhaDungAsync` dùng `IClock.UtcNow` và điều kiện `han_giu_cho > now`; luôn bảo đảm bất biến `khaDung ≥ 0` bằng `GREATEST(0, ...)` để không làm sai lệch điều kiện xét danh sách chờ (`khaDung == 0`).
 
 Thao tác bắt buộc đi qua C2 (danh sách của ĐX-KT-13, KT 8.2):
 
