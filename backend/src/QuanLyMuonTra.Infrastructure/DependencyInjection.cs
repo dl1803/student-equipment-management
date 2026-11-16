@@ -26,6 +26,7 @@ public static class DependencyInjection
         services.AddSingleton<NhatKyInterceptor>();
         services.AddDbContext<AppDbContext>((dichVu, options) => options
             .UseNpgsql(chuoiKetNoi)
+            .ReplaceService<Microsoft.EntityFrameworkCore.Infrastructure.IModelCacheKeyFactory, AppDbContextModelCacheKeyFactory>()
             .AddInterceptors(dichVu.GetRequiredService<NhatKyInterceptor>()));
         services.AddScoped<DbContext>(sp => sp.GetRequiredService<AppDbContext>());
         services.AddScoped<IAuditLogger, AuditLogger>();

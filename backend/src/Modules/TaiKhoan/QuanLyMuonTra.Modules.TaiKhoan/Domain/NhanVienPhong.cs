@@ -9,5 +9,12 @@ public sealed class NhanVienPhong
     public Guid MaNguoiDung { get; private set; }
 
     public Guid MaPhong { get; private set; }
+
+    public static NhanVienPhong Tao(Guid maNguoiDung, Guid maPhong) =>
+        new()
+        {
+            MaNguoiDung = maNguoiDung,
+            MaPhong = maPhong
+        };
 }
 

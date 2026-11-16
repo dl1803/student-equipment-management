@@ -29,13 +29,22 @@ public sealed class DangNhapNhanVienHandler(
         if (ketQua == PasswordVerificationResult.Failed)
         {
             var thamSo = await quyDinh.LayThamSoAsync(ct);
-            nguoiDung.GhiNhanDangNhapSai(thamSo.SoLanDangNhapSaiToiDa);
-            await db.SaveChangesAsync(ct);
+            await db.Database.ExecuteSqlInterpolatedAsync($"""
+                UPDATE tai_khoan.nguoi_dung_he_thong
+                SET so_lan_dang_nhap_sai = so_lan_dang_nhap_sai + 1,
+                    trang_thai_khoa = CASE 
+                        WHEN so_lan_dang_nhap_sai + 1 >= {thamSo.SoLanDangNhapSaiToiDa} THEN {MaTrangThaiKhoa.TamKhoaDangNhap}
+                        ELSE trang_thai_khoa 
+                    END
+                WHERE ma_nguoi_dung = {nguoiDung.MaNguoiDung} AND trang_thai_khoa = {MaTrangThaiKhoa.HoatDong}
+                """, ct);
+            db.Entry(nguoiDung).State = EntityState.Detached;
 
             throw new LoiNghiepVuException("DANG_NHAP_SAI", "Thông tin đăng nhập không đúng.");
         }
 
         nguoiDung.GhiNhanDangNhapDung();
+        db.Entry(nguoiDung).Property(x => x.SoLanDangNhapSai).IsModified = true;
         var (banGhi, tokenGoc) = RefreshToken.TaoMoi(nguoiDung.VaiTro, nguoiDung.MaNguoiDung.ToString(), dongHo.UtcNow);
         db.Set<RefreshToken>().Add(banGhi);
         await db.SaveChangesAsync(ct);

@@ -24,7 +24,7 @@ public sealed class QuanTriVienSeeder(
             throw new InvalidOperationException($"Seed:AdminPassword phải có tối thiểu {DoDaiMatKhauToiThieu} ký tự.");
         }
 
-        if (await db.Set<QuanTriVien>().AnyAsync(ct))
+        if (await db.Set<QuanTriVien>().AnyAsync(q => q.TenDangNhap == tenDangNhap, ct))
         {
             return;
         }
@@ -45,7 +45,7 @@ public sealed class QuanTriVienSeeder(
         catch (DbUpdateException)
         {
             db.ChangeTracker.Clear();
-            if (await db.Set<QuanTriVien>().AnyAsync(ct))
+            if (await db.Set<QuanTriVien>().AnyAsync(q => q.TenDangNhap == tenDangNhap, ct))
             {
                 return;
             }
