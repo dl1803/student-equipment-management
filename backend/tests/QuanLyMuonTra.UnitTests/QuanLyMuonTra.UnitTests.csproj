@@ -25,6 +25,7 @@
     <ProjectReference Include="..\..\src\Modules\DanhMuc\QuanLyMuonTra.Modules.DanhMuc\QuanLyMuonTra.Modules.DanhMuc.csproj" />
     <ProjectReference Include="..\..\src\Modules\QuyDinh\QuanLyMuonTra.Modules.QuyDinh\QuanLyMuonTra.Modules.QuyDinh.csproj" />
     <ProjectReference Include="..\..\src\Modules\BaoTri\QuanLyMuonTra.Modules.BaoTri\QuanLyMuonTra.Modules.BaoTri.csproj" />
+    <ProjectReference Include="..\..\src\Modules\TaiKhoan\QuanLyMuonTra.Modules.TaiKhoan\QuanLyMuonTra.Modules.TaiKhoan.csproj" />
   </ItemGroup>
 
   <ItemGroup>
