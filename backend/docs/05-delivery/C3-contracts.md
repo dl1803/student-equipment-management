@@ -79,7 +79,7 @@ Lưu ý: tình trạng `DANG_DUOC_MUON` trong dữ liệu thử đặt trực ti
 | O2 | Hậu tố `Async` (nguồn ví dụ `DatDangDuocMuon`) | Vương | D02 |
 | O3 | Mã lỗi khi nhóm chưa có quy định chung | Nhóm | D04 |
 | O4 | Báo cáo kho có tính thiết bị `ngung_su_dung = true` vào `soSanSang`/`tong` hay không | Nhóm | D17 |
-| O5 | TaiKhoan cần `SoLanDangNhapSaiToiDa` nhưng chưa có cạnh phụ thuộc tới QuyDinh.Contracts (KT 4.2) | Khôi | D05 |
+| O5 | TaiKhoan cần `SoLanDangNhapSaiToiDa` — đã giải quyết bằng quyết định K-6: thêm cạnh `TaiKhoan → QuyDinh.Contracts` (D04-K) | Khôi | Đã giải quyết (D04-K) |
 | O6 | Dữ liệu thử chưa kiểm chứng trên PostgreSQL thật (phụ thuộc K-1) | Khôi, Lợi | D02 |
 
 ## 8. Trạng thái kiểm chứng
