@@ -40,6 +40,18 @@ public class BoTinhHanTraTests
     }
 
     [Theory]
+    [InlineData(0)]
+    [InlineData(-1)]
+    [InlineData(-5)]
+    public void UC07_ThoiGianMuonKhongHopLe_NemDuLieuKhongHopLe(int thoiGianMuonGio)
+    {
+        var loi = Assert.Throws<LoiNghiepVuException>(() => _boTinhHanTra.TinhHanTra(Vn(16, 10, 0), thoiGianMuonGio, GioDongCua));
+
+        Assert.Equal("DU_LIEU_KHONG_HOP_LE", loi.MaLoi);
+        Assert.Equal(400, loi.MaHttp);
+    }
+
+    [Theory]
     [InlineData(21, 0)]
     [InlineData(21, 1)]
     [InlineData(22, 30)]

@@ -1,4 +1,3 @@
-using QuanLyMuonTra.Modules.MuonTra.Domain;
 using QuanLyMuonTra.Modules.ViPham.Domain;
 
 namespace QuanLyMuonTra.UnitTests.ViPham;
@@ -104,9 +103,9 @@ public class TinhPhiTests
     public void NFR09_DoiPhiLoaiSauKhiGiao_PhiTinhTheoPhiLuuTrongChiTietPhieu()
     {
         const decimal phiLoaiSauKhiDoi = 70000m;
-        var chiTiet = new ChiTietPhieuMuon(Guid.NewGuid(), "PM-261116-000001", "TB-1", "Tốt", 50000m);
+        const decimal phiSnapshotLucGiao = 50000m;
 
-        var phi = TinhPhi.PhiTre(3, chiTiet.PhiTreMoiNgay, 10000000m);
+        var phi = TinhPhi.PhiTre(3, phiSnapshotLucGiao, 10000000m);
 
         Assert.Equal(150000m, phi);
         Assert.NotEqual(TinhPhi.PhiTre(3, phiLoaiSauKhiDoi, 10000000m), phi);
@@ -143,5 +142,30 @@ public class TinhPhiTests
     public void UC09_BoiThuongMat_BangTronGiaTriHienHanh()
     {
         Assert.Equal(8000000m, TinhPhi.BoiThuongMat(8000000m));
+    }
+
+    [Theory]
+    [InlineData(-1, 50000, 1000000)]
+    [InlineData(3, -50000, 1000000)]
+    [InlineData(3, 50000, -1000000)]
+    [InlineData(0, 50000, 1000000)]
+    public void UC09_ThamSoPhiTreKhongDuong_TraVeKhongDong(int soNgayTre, decimal phiMoiNgay, decimal giaTriHienHanh)
+    {
+        Assert.Equal(0m, TinhPhi.PhiTre(soNgayTre, phiMoiNgay, giaTriHienHanh));
+    }
+
+    [Theory]
+    [InlineData(-1000000, 15)]
+    [InlineData(1000000, -15)]
+    [InlineData(0, 15)]
+    public void UC09_ThamSoBoiThuongHuHongKhongDuong_TraVeKhongDong(decimal giaTriHienHanh, decimal tyLePhanTram)
+    {
+        Assert.Equal(0m, TinhPhi.BoiThuongHuHong(giaTriHienHanh, tyLePhanTram));
+    }
+
+    [Fact]
+    public void UC09_BoiThuongMatGiaTriAm_TraVeKhongDong()
+    {
+        Assert.Equal(0m, TinhPhi.BoiThuongMat(-500000m));
     }
 }

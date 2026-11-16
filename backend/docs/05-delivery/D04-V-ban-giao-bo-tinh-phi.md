@@ -20,7 +20,7 @@ Người lập: Nguyễn Đại Vương · Ngày: 15/11/2026 · Trạng thái: b
 
 - Vị trí: `QuanLyMuonTra.Modules.MuonTra.Domain.BoTinhHanTra` (`src/Modules/MuonTra/QuanLyMuonTra.Modules.MuonTra/Domain/BoTinhHanTra.cs`), hiện thực `IBoTinhHanTra`; đăng ký Scoped trong `AddMuonTraModule`.
 - Quy tắc: `hanTra = min(gioGiao + thoiGianMuonGio, giờ đóng cửa cùng ngày lịch VN)`; kết quả ở UTC.
-- Lỗi: `gioDongCua` null → 409 `CHUA_CAU_HINH_GIO_QUAY`; giờ giao từ giờ đóng cửa trở đi → 422 `GIAO_SAU_GIO_DONG_CUA`. Cả hai ném `LoiNghiepVuException`.
+- Lỗi: `gioDongCua` null → 409 `CHUA_CAU_HINH_GIO_QUAY`; `thoiGianMuonGio <= 0` → 400 `DU_LIEU_KHONG_HOP_LE`; giờ giao từ giờ đóng cửa trở đi → 422 `GIAO_SAU_GIO_DONG_CUA`. Cả ba ném `LoiNghiepVuException`.
 - Việc chọn `thoiGianMuonGio` (giờ dự kiến của yêu cầu; tối đa nhóm cho mượn trực tiếp/danh sách chờ; mức nhỏ nhất theo loại) thuộc handler D09-V.
 
 ## 3. Thay đổi kèm theo
