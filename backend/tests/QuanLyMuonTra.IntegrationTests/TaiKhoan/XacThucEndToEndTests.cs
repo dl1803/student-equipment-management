@@ -11,6 +11,7 @@ using QuanLyMuonTra.Infrastructure.Persistence;
 using QuanLyMuonTra.IntegrationTests.Database;
 using QuanLyMuonTra.IntegrationTests.MuonTra;
 using QuanLyMuonTra.Modules.TaiKhoan.Domain;
+using QuanLyMuonTra.Modules.TaiKhoan.Infrastructure;
 
 namespace QuanLyMuonTra.IntegrationTests.TaiKhoan;
 
@@ -23,7 +24,7 @@ public sealed class XacThucEndToEndTests : IAsyncLifetime
     private WebApplicationFactory<Program> _factory = null!;
     private HttpClient _client = null!;
 
-    public Task InitializeAsync()
+    public async Task InitializeAsync()
     {
         _factory = new WebApplicationFactory<Program>()
             .WithWebHostBuilder(builder =>
@@ -39,7 +40,10 @@ public sealed class XacThucEndToEndTests : IAsyncLifetime
             });
 
         _client = _factory.CreateClient();
-        return Task.CompletedTask;
+
+        using var scope = _factory.Services.CreateScope();
+        var seeder = scope.ServiceProvider.GetRequiredService<QuanTriVienSeeder>();
+        await seeder.ChayAsync(TenAdminSeed, MatKhauAdminSeed, CancellationToken.None);
     }
 
     public async Task DisposeAsync()
@@ -49,12 +53,15 @@ public sealed class XacThucEndToEndTests : IAsyncLifetime
         {
             using var scope = _factory.Services.CreateScope();
             var db = scope.ServiceProvider.GetRequiredService<AppDbContext>();
+            await db.Database.ExecuteSqlInterpolatedAsync($"""
+                UPDATE tai_khoan.nguoi_dung_he_thong
+                SET so_lan_dang_nhap_sai = 0, trang_thai_khoa = 'HOAT_DONG'
+                WHERE ten_dang_nhap = {TenAdminSeed}
+                """);
             var admin = await db.Set<QuanTriVien>().FirstOrDefaultAsync(q => q.TenDangNhap == TenAdminSeed);
             if (admin != null)
             {
                 await db.Database.ExecuteSqlInterpolatedAsync($"DELETE FROM tai_khoan.refresh_token WHERE chu_so_huu_ma = {admin.MaNguoiDung.ToString()}");
-                await db.Database.ExecuteSqlInterpolatedAsync($"DELETE FROM tai_khoan.quan_tri_vien WHERE ma_nguoi_dung = {admin.MaNguoiDung}");
-                await db.Database.ExecuteSqlInterpolatedAsync($"DELETE FROM tai_khoan.nguoi_dung_he_thong WHERE ma_nguoi_dung = {admin.MaNguoiDung}");
             }
         }
         catch

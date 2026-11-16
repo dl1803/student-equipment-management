@@ -57,13 +57,9 @@ public class QuyenPhongTests
         var tenDangNhap = $"nv-kt-{ma:N}";
         var maNv = $"NV-KT-{ma:N}";
         var bam = new PasswordHasher<NguoiDungHeThong>().HashPassword(null!, "MatKhauKiemThu-1");
-        await db.Database.ExecuteSqlInterpolatedAsync($"""
-            INSERT INTO tai_khoan.nguoi_dung_he_thong (ma_nguoi_dung, ten_dang_nhap, mat_khau_bam, ho_ten, trang_thai_khoa)
-            VALUES ({ma}, {tenDangNhap}, {bam}, 'Nhan vien kiem thu', {trangThaiKhoa})
-            """);
-        await db.Database.ExecuteSqlInterpolatedAsync($"""
-            INSERT INTO tai_khoan.nhan_vien_quan_ly (ma_nguoi_dung, ma_nv) VALUES ({ma}, {maNv})
-            """);
+        var nv = NhanVienQuanLy.Tao(ma, tenDangNhap, bam, "Nhan vien kiem thu", maNv, null, trangThaiKhoa);
+        db.Set<NhanVienQuanLy>().Add(nv);
+        await db.SaveChangesAsync();
         return ma;
     }
 
@@ -77,10 +73,12 @@ public class QuyenPhongTests
         return ma;
     }
 
-    private static Task<int> CapQuyenAsync(AppDbContext db, Guid maNv, Guid maPhong) =>
-        db.Database.ExecuteSqlInterpolatedAsync($"""
-            INSERT INTO tai_khoan.nhan_vien_phong (ma_nguoi_dung, ma_phong) VALUES ({maNv}, {maPhong})
-            """);
+    private static async Task CapQuyenAsync(AppDbContext db, Guid maNv, Guid maPhong)
+    {
+        var nvPhong = NhanVienPhong.Tao(maNv, maPhong);
+        db.Set<NhanVienPhong>().Add(nvPhong);
+        await db.SaveChangesAsync();
+    }
 
     private static ServiceProvider TaoDichVu() =>
         new ServiceCollection()

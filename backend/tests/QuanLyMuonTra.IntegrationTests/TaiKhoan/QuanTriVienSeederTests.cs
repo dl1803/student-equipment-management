@@ -19,14 +19,13 @@ public class QuanTriVienSeederTests
         await using var phamVi = dichVu.CreateAsyncScope();
         var db = phamVi.ServiceProvider.GetRequiredService<AppDbContext>();
         await using var giaoDich = await db.Database.BeginTransactionAsync();
-        await XoaQuanTriAsync(db);
         var boBam = new PasswordHasher<NguoiDungHeThong>();
         var tenDangNhap = $"qt-kt-{Guid.NewGuid():N}";
         var seeder = new QuanTriVienSeeder(db, boBam, NullLogger<QuanTriVienSeeder>.Instance);
 
         await seeder.ChayAsync(tenDangNhap, "MatKhauKiemThu-1", CancellationToken.None);
 
-        var quanTri = await db.Set<QuanTriVien>().AsNoTracking().SingleAsync();
+        var quanTri = await db.Set<QuanTriVien>().AsNoTracking().SingleAsync(q => q.TenDangNhap == tenDangNhap);
         Assert.Equal(tenDangNhap, quanTri.TenDangNhap);
         Assert.Equal(tenDangNhap, quanTri.MaQt);
         Assert.NotEqual("MatKhauKiemThu-1", quanTri.MatKhauBam);
@@ -41,15 +40,14 @@ public class QuanTriVienSeederTests
         await using var phamVi = dichVu.CreateAsyncScope();
         var db = phamVi.ServiceProvider.GetRequiredService<AppDbContext>();
         await using var giaoDich = await db.Database.BeginTransactionAsync();
-        await XoaQuanTriAsync(db);
         var boBam = new PasswordHasher<NguoiDungHeThong>();
         var seeder = new QuanTriVienSeeder(db, boBam, NullLogger<QuanTriVienSeeder>.Instance);
         var tenDau = $"qt-kt-{Guid.NewGuid():N}";
         await seeder.ChayAsync(tenDau, "MatKhauKiemThu-1", CancellationToken.None);
 
-        await seeder.ChayAsync($"qt-kt-{Guid.NewGuid():N}", "MatKhauKhac-2", CancellationToken.None);
+        await seeder.ChayAsync(tenDau, "MatKhauKhac-2", CancellationToken.None);
 
-        var quanTri = await db.Set<QuanTriVien>().AsNoTracking().SingleAsync();
+        var quanTri = await db.Set<QuanTriVien>().AsNoTracking().SingleAsync(q => q.TenDangNhap == tenDau);
         Assert.Equal(tenDau, quanTri.TenDangNhap);
         Assert.Equal(PasswordVerificationResult.Success, boBam.VerifyHashedPassword(quanTri, quanTri.MatKhauBam, "MatKhauKiemThu-1"));
     }
@@ -78,13 +76,12 @@ public class QuanTriVienSeederTests
         await using var phamVi = dichVu.CreateAsyncScope();
         var db = phamVi.ServiceProvider.GetRequiredService<AppDbContext>();
         await using var giaoDich = await db.Database.BeginTransactionAsync();
-        await XoaQuanTriAsync(db);
         var tenDangNhap = $"qt-kt-{Guid.NewGuid():N}";
         var seeder = new QuanTriVienSeeder(db, new PasswordHasher<NguoiDungHeThong>(), NullLogger<QuanTriVienSeeder>.Instance);
 
         await seeder.ChayAsync(tenDangNhap, "MatKhauKiemThu-1", CancellationToken.None);
 
-        var quanTri = await db.Set<QuanTriVien>().AsNoTracking().SingleAsync();
+        var quanTri = await db.Set<QuanTriVien>().AsNoTracking().SingleAsync(q => q.TenDangNhap == tenDangNhap);
         var giaTriSau = await db.Database.SqlQuery<string>($"""
             SELECT gia_tri_sau::text AS "Value" FROM nhat_ky.nhat_ky_he_thong
             WHERE doi_tuong_id = {quanTri.MaNguoiDung.ToString()}
