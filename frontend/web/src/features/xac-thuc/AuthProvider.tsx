@@ -22,12 +22,7 @@ import type { ThongTinToi } from "@/shared/api/types";
 import { AuthContext, type GiaTriAuth } from "@/shared/hooks/useAuth";
 import { laVaiTroWeb } from "@/shared/tuyen/menuTheoVaiTro";
 import { authToi } from "./api";
-
-const LOI_SAI_VAI_TRO: ApiError = {
-  loai: "HTTP",
-  status: 403,
-  maLoi: "KHONG_DU_QUYEN",
-};
+import { LOI_SAI_VAI_TRO } from "./hooks";
 
 function thanhApiError(e: unknown): ApiError {
   return laApiError(e) ? e : { loai: "HTTP" };

@@ -52,7 +52,21 @@ describe("Card", () => {
         Tạm khóa
       </Card>,
     );
-    const the = screen.getByText("Quyền mượn").closest("section");
+    const the = screen.getByText("Quyền mượn").closest("div");
     expect(the?.className).toContain("bg-tone-warning-bg");
+  });
+
+  it("HTML: thẻ Tĩnh và Tông không dựng <section> không tên", () => {
+    const { container } = render(
+      <>
+        <Card bienThe="TINH" tieuDe="Tóm tắt phiếu">
+          Nội dung
+        </Card>
+        <Card bienThe="TONG" tong="info">
+          Thông tin
+        </Card>
+      </>,
+    );
+    expect(container.querySelector("section")).toBeNull();
   });
 });

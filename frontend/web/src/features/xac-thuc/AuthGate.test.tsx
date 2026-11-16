@@ -197,6 +197,28 @@ describe("AuthProvider + AuthGate", () => {
     expect(await screen.findByText("Nội dung được bảo vệ")).toBeTruthy();
   });
 
+  it("SCR-CM-03: GET /auth/toi lỗi kéo dài → người dùng chủ động Đăng xuất được, về /dang-nhap", async () => {
+    ghiCapToken({ accessToken: "at-cu", refreshToken: "rt-cu" });
+    const phien = vi.fn<BoChuyenDoi>((config) =>
+      traVe(config, config.url === "/auth/dang-xuat" ? 204 : 200, TOKEN_MOI),
+    );
+    khachPhien.defaults.adapter = phien;
+    apiClient.defaults.adapter = vi.fn<BoChuyenDoi>((config) =>
+      traVe(config, 500, { status: 500, traceId: "trace-500" }),
+    );
+    dieuHuong.tuyen = "/nv";
+
+    dungUngDung();
+
+    await screen.findByText("trace-500");
+    fireEvent.click(screen.getByRole("button", { name: "Đăng xuất" }));
+
+    await waitFor(() =>
+      expect(dieuHuong.replace).toHaveBeenCalledWith("/dang-nhap"),
+    );
+    expect(phien.mock.calls.map((c) => c[0].url)).toContain("/auth/dang-xuat");
+  });
+
   it("NFR-01: vai trò không dùng web (SINH_VIEN) → đăng xuất, không vào nội dung", async () => {
     ghiCapToken({ accessToken: "at-cu", refreshToken: "rt-cu" });
     khachPhien.defaults.adapter = vi.fn<BoChuyenDoi>((config) =>

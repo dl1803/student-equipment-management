@@ -24,6 +24,20 @@ describe("Header", () => {
     expect(document.querySelector("dialog")).toBeNull();
   });
 
+  it("Wireframes 2.3: khung QT không có tên hệ thống → không sinh thẻ văn bản rỗng", () => {
+    render(
+      <Header
+        hoTen="Trần Văn An"
+        nhanVaiTro="Quản trị viên"
+        onDangXuat={vi.fn()}
+      />,
+    );
+    const thanh = screen.getByRole("banner");
+    expect(
+      [...thanh.querySelectorAll("p")].some((p) => p.textContent === ""),
+    ).toBe(false);
+  });
+
   it("CMP-30: đang đăng xuất → nút vô hiệu, hiện 'Đang xử lý'", () => {
     render(
       <Header

@@ -95,6 +95,9 @@ export function thongBaoLoiDangNhap(loi: ApiError): ThongBao {
         tong: "warning",
         noiDung: THONG_DIEP_DANG_NHAP.QUA_NHIEU_YEU_CAU,
       };
+    case "KHONG_DU_QUYEN":
+      // Tài khoản đăng nhập được nhưng không thuộc vai trò dùng web (NFR-01).
+      return { tong: "danger", noiDung: THONG_DIEP_LOI_CHUNG.KHONG_DU_QUYEN };
     default:
       return kemTraceId(
         { tong: "danger", noiDung: THONG_DIEP_LOI_CHUNG.HE_THONG },

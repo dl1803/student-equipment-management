@@ -43,10 +43,30 @@ describe("Sidebar", () => {
   });
 
   it("CMP-29: tuyến con của một mục vẫn đánh dấu mục đó", () => {
-    expect(laMucDangChon("/nv/bien-ban", "/nv/bien-ban/lap", "/nv")).toBe(true);
-    expect(laMucDangChon("/nv", "/nv/bien-ban", "/nv")).toBe(false);
-    expect(laMucDangChon("/nv/bien-ban", "/nv/bien-ban-khac", "/nv")).toBe(
-      false,
-    );
+    const bienBan = { nhan: "Biên bản", href: "/nv/bien-ban" };
+    const trangChu = { nhan: "Trang chủ", href: "/nv" };
+    expect(laMucDangChon(bienBan, "/nv/bien-ban/lap", "/nv")).toBe(true);
+    expect(laMucDangChon(trangChu, "/nv/bien-ban", "/nv")).toBe(false);
+    expect(laMucDangChon(bienBan, "/nv/bien-ban-khac", "/nv")).toBe(false);
   });
+
+  it.each([
+    "/nv/giao-thiet-bi/the",
+    "/nv/giao-thiet-bi/nguon",
+    "/nv/giao-thiet-bi/thiet-bi",
+    "/nv/giao-thiet-bi/phieu",
+  ])(
+    "ĐX-FA-19: luồng nhiều bước — mục Giao thiết bị vẫn đang chọn ở %s",
+    (tuyen) => {
+      const giaoThietBi = {
+        nhan: "Giao thiết bị",
+        href: "/nv/giao-thiet-bi/the",
+        tienToNhom: "/nv/giao-thiet-bi",
+      };
+      expect(laMucDangChon(giaoThietBi, tuyen, "/nv")).toBe(true);
+      expect(laMucDangChon(giaoThietBi, "/nv/giao-thiet-bi-khac", "/nv")).toBe(
+        false,
+      );
+    },
+  );
 });

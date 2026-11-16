@@ -7,7 +7,12 @@ import { BAN_DO_TUYEN, type MaManHinhWeb } from "./banDoTuyen";
 
 export type VaiTroWeb = "NHAN_VIEN" | "QUAN_TRI";
 
-type MucCauHinh = { nhan: string; ma: MaManHinhWeb };
+type MucCauHinh = {
+  nhan: string;
+  ma: MaManHinhWeb;
+  /** Mục mở đầu một luồng nhiều bước: đánh dấu đang chọn ở mọi bước cùng thư mục cha. */
+  laLuongNhieuBuoc?: true;
+};
 type NhomCauHinh = { tieuDe?: string; dsMuc: ReadonlyArray<MucCauHinh> };
 
 const MENU: Record<VaiTroWeb, ReadonlyArray<NhomCauHinh>> = {
@@ -17,7 +22,7 @@ const MENU: Record<VaiTroWeb, ReadonlyArray<NhomCauHinh>> = {
       dsMuc: [
         { nhan: "Trang chủ", ma: "SCR-NV-01" },
         { nhan: "Phiếu yêu cầu chờ duyệt", ma: "SCR-NV-02" },
-        { nhan: "Giao thiết bị", ma: "SCR-NV-04" },
+        { nhan: "Giao thiết bị", ma: "SCR-NV-04", laLuongNhieuBuoc: true },
         { nhan: "Nhận trả thiết bị", ma: "SCR-NV-08" },
         { nhan: "Biên bản và thu phạt", ma: "SCR-NV-11" },
         { nhan: "Phiếu chưa trả quá 30 ngày", ma: "SCR-NV-12" },
@@ -62,6 +67,11 @@ const TRANG_CHU: Record<VaiTroWeb, MaManHinhWeb> = {
   QUAN_TRI: "SCR-QT-01",
 };
 
+/** "/nv/giao-thiet-bi/the" → "/nv/giao-thiet-bi" (tiền tố chung của bốn bước SCR-NV-04..07). */
+function thuMucCha(tuyen: string): string {
+  return tuyen.slice(0, tuyen.lastIndexOf("/"));
+}
+
 export function laVaiTroWeb(vaiTro: string): vaiTro is VaiTroWeb {
   return vaiTro === "NHAN_VIEN" || vaiTro === "QUAN_TRI";
 }
@@ -74,10 +84,12 @@ export function tuyenTrangChu(vaiTro: VaiTroWeb): string {
 export function menuCua(vaiTro: VaiTroWeb): NhomMenu[] {
   return MENU[vaiTro].map((nhom) => ({
     ...(nhom.tieuDe !== undefined ? { tieuDe: nhom.tieuDe } : {}),
-    dsMuc: nhom.dsMuc.map((muc) => ({
-      nhan: muc.nhan,
-      href: BAN_DO_TUYEN[muc.ma].tuyen,
-    })),
+    dsMuc: nhom.dsMuc.map((muc) => {
+      const href = BAN_DO_TUYEN[muc.ma].tuyen;
+      return muc.laLuongNhieuBuoc === true
+        ? { nhan: muc.nhan, href, tienToNhom: thuMucCha(href) }
+        : { nhan: muc.nhan, href };
+    }),
   }));
 }
 

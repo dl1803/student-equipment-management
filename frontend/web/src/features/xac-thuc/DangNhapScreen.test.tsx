@@ -9,7 +9,8 @@ import {
   type CauHinhYeuCau,
   type PhanHoiHttp,
 } from "@/shared/api/giaLapHttp";
-import { xoaPhien } from "@/shared/api/session/phien";
+import { khachPhien } from "@/shared/api/session/lamMoi";
+import { layRefreshToken, xoaPhien } from "@/shared/api/session/phien";
 import type { TrangThaiPhien } from "@/shared/api/session/trangThaiPhien";
 import {
   hienThiVoiNguCanh,
@@ -237,6 +238,34 @@ describe("DangNhapScreen", () => {
       trangThai: { loai: "CHUA_DANG_NHAP", lyDo: "HET_PHIEN", loi: LOI_429 },
     });
     expect(screen.getByText("trace-429")).toBeTruthy();
+  });
+
+  it("NFR-01: tài khoản không thuộc vai trò web (SINH_VIEN) → báo không đủ quyền, thu hồi phiên vừa tạo", async () => {
+    apiClient.defaults.adapter = vi.fn<BoChuyenDoi>((config) =>
+      config.url === "/auth/toi"
+        ? traVe(config, 200, { ...NHAN_VIEN_MAU, vaiTro: "SINH_VIEN" })
+        : traVe(config, 200, TOKEN),
+    );
+    const dangXuatApi = vi.fn<BoChuyenDoi>((config) => traVe(config, 204));
+    khachPhien.defaults.adapter = dangXuatApi;
+    const hoanTatDangNhap = vi.fn();
+    hienThiVoiNguCanh(<DangNhapScreen />, {
+      trangThai: CHUA_DANG_NHAP,
+      auth: { hoanTatDangNhap },
+    });
+
+    nhapVaGui("sv.23520001", MAT_KHAU);
+
+    const thongBao = await screen.findByText(
+      "Bạn không có quyền thực hiện thao tác này",
+    );
+    expect(thongBao.closest("[data-tong]")?.getAttribute("data-tong")).toBe(
+      "danger",
+    );
+    expect(hoanTatDangNhap).not.toHaveBeenCalled();
+    expect(dangXuatApi.mock.calls[0]?.[0].url).toBe("/auth/dang-xuat");
+    expect(layRefreshToken()).toBeNull();
+    await waitFor(() => expect(oMatKhau().value).toBe(""));
   });
 
   it("UF-CM-03: đăng xuất chủ động → không hiện thông báo nào", () => {

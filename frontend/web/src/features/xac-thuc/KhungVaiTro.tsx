@@ -51,6 +51,18 @@ export function KhungVaiTro({ vaiTro, children }: KhungVaiTroProps) {
     router.replace(tuyenChuyenVe);
   }, [tuyenChuyenVe, baoKhongDuQuyen, router]);
 
+  // Banner chỉ dành cho lần đến tuyến đích ngay sau khi bị chuyển về; rời tuyến đó thì xóa dấu để
+  // lần sau quay lại trang chủ không hiện lại. Khung đang chuyển hướng không xóa (chưa tới đích).
+  useEffect(() => {
+    if (
+      tuyenChuyenVe === null &&
+      tuyenBaoKhongDuQuyen !== null &&
+      tuyen !== tuyenBaoKhongDuQuyen
+    ) {
+      baoKhongDuQuyen(null);
+    }
+  }, [tuyenChuyenVe, tuyenBaoKhongDuQuyen, tuyen, baoKhongDuQuyen]);
+
   // AuthGate đã chặn trạng thái khác; ở đây chỉ còn chờ chuyển tuyến khi sai vai trò.
   if (nguoiDung === null || tuyenChuyenVe !== null) return null;
 

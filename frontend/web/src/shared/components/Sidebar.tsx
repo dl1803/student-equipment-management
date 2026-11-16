@@ -6,6 +6,11 @@ import { classNames } from "./classNames";
 export type MucMenu = {
   nhan: string;
   href: string;
+  /**
+   * Tiền tố nhóm tuyến của luồng nhiều bước: mục được đánh dấu ở mọi tuyến dưới tiền tố này,
+   * ví dụ "Giao thiết bị" trỏ /nv/giao-thiet-bi/the nhưng sáng ở cả bốn bước /nv/giao-thiet-bi/*.
+   */
+  tienToNhom?: string;
 };
 
 export type NhomMenu = {
@@ -22,14 +27,19 @@ export type SidebarProps = {
   tuyenTrangChu: string;
 };
 
-/** Mục đang chọn: trùng tuyến, hoặc tuyến hiện tại là tuyến con của mục (trừ trang chủ). */
+/**
+ * Mục đang chọn: trùng tuyến; hoặc tuyến hiện tại nằm dưới tiền tố nhóm (nếu có) hay dưới tuyến
+ * của mục. Trang chủ chỉ khớp chính xác để không sáng ở mọi tuyến con.
+ */
 export function laMucDangChon(
-  href: string,
+  muc: MucMenu,
   tuyenHienTai: string,
   tuyenTrangChu: string,
 ): boolean {
-  if (href === tuyenHienTai) return true;
-  return href !== tuyenTrangChu && tuyenHienTai.startsWith(`${href}/`);
+  if (muc.href === tuyenHienTai) return true;
+  if (muc.href === tuyenTrangChu) return false;
+  const goc = muc.tienToNhom ?? muc.href;
+  return tuyenHienTai === goc || tuyenHienTai.startsWith(`${goc}/`);
 }
 
 export function Sidebar({ dsNhom, tuyenHienTai, tuyenTrangChu }: SidebarProps) {
@@ -50,11 +60,7 @@ export function Sidebar({ dsNhom, tuyenHienTai, tuyenTrangChu }: SidebarProps) {
           ) : null}
           <ul className="flex flex-col">
             {nhom.dsMuc.map((muc) => {
-              const dangChon = laMucDangChon(
-                muc.href,
-                tuyenHienTai,
-                tuyenTrangChu,
-              );
+              const dangChon = laMucDangChon(muc, tuyenHienTai, tuyenTrangChu);
               return (
                 <li key={muc.href}>
                   <Link

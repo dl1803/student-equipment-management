@@ -97,8 +97,8 @@ export function Banner({
         ) : null}
         {dsLyDo !== undefined && dsLyDo.length > 0 ? (
           <ul className="list-disc pl-6 type-body text-text-primary">
-            {dsLyDo.map((lyDo) => (
-              <li key={lyDo}>{lyDo}</li>
+            {dsLyDo.map((lyDo, chiSo) => (
+              <li key={`${chiSo}-${lyDo}`}>{lyDo}</li>
             ))}
           </ul>
         ) : null}

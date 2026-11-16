@@ -26,8 +26,8 @@ export type GiaTriAuth = {
    * về trang chủ vì sai vai trò (FA 4.4); null khi không có.
    */
   tuyenBaoKhongDuQuyen: string | null;
-  /** Đánh dấu banner không đủ quyền cho tuyến đích sắp chuyển tới. */
-  baoKhongDuQuyen: (tuyenDich: string) => void;
+  /** Đánh dấu banner không đủ quyền cho tuyến đích sắp chuyển tới; null để xóa dấu khi rời tuyến. */
+  baoKhongDuQuyen: (tuyenDich: string | null) => void;
 };
 
 export const AuthContext = createContext<GiaTriAuth | null>(null);

@@ -64,7 +64,7 @@ export function Card(props: CardProps) {
   switch (props.bienThe) {
     case "TINH":
       return (
-        <section
+        <div
           className={classNames(
             KHUNG,
             "border-border-subtle bg-surface-default",
@@ -72,7 +72,7 @@ export function Card(props: CardProps) {
         >
           {props.tieuDe !== undefined ? <TieuDe>{props.tieuDe}</TieuDe> : null}
           {props.children}
-        </section>
+        </div>
       );
     case "TUONG_TAC":
       return (
@@ -120,7 +120,7 @@ export function Card(props: CardProps) {
     case "TONG": {
       const Icon = ICON_TONG[props.tong];
       return (
-        <section className={classNames(KHUNG, LOP_TONG[props.tong])}>
+        <div className={classNames(KHUNG, LOP_TONG[props.tong])}>
           <span className="flex items-center gap-2">
             <Icon kichThuoc="md" className={LOP_ICON_TONG[props.tong]} />
             {props.tieuDe !== undefined ? (
@@ -128,7 +128,7 @@ export function Card(props: CardProps) {
             ) : null}
           </span>
           {props.children}
-        </section>
+        </div>
       );
     }
     default: {

@@ -70,6 +70,39 @@ describe("KhungVaiTro", () => {
     );
   });
 
+  it("FA 4.4: rời trang chủ đích → xóa dấu banner, quay lại trang chủ không hiện lại", () => {
+    dieuHuong.tuyen = "/nv/phieu-yeu-cau";
+    const baoKhongDuQuyen = vi.fn();
+    hienThiVoiNguCanh(
+      <KhungVaiTro vaiTro="NHAN_VIEN">
+        <p>Phiếu yêu cầu</p>
+      </KhungVaiTro>,
+      {
+        nguoiDung: NHAN_VIEN_MAU,
+        auth: { tuyenBaoKhongDuQuyen: "/nv", baoKhongDuQuyen },
+      },
+    );
+
+    expect(screen.queryByRole("alert")).toBeNull();
+    expect(baoKhongDuQuyen).toHaveBeenCalledWith(null);
+  });
+
+  it("FA 4.4: khung đang chuyển hướng vì sai vai trò không xóa dấu của tuyến đích", () => {
+    dieuHuong.tuyen = "/qt/bao-cao";
+    const baoKhongDuQuyen = vi.fn();
+    hienThiVoiNguCanh(
+      <KhungVaiTro vaiTro="QUAN_TRI">
+        <p>Báo cáo QT</p>
+      </KhungVaiTro>,
+      {
+        nguoiDung: NHAN_VIEN_MAU,
+        auth: { tuyenBaoKhongDuQuyen: "/nv", baoKhongDuQuyen },
+      },
+    );
+
+    expect(baoKhongDuQuyen).not.toHaveBeenCalledWith(null);
+  });
+
   it("UF-CM-03: bấm Đăng xuất gọi dangXuat, không có hộp xác nhận", () => {
     dieuHuong.tuyen = "/qt";
     const dangXuat = vi.fn(async () => undefined);

@@ -18,16 +18,8 @@ export function TrangChuQuanTriScreen() {
           {trangThai.nguoiDung.hoTen}
         </p>
       </div>
-      {loiVaoCua("QUAN_TRI").map((nhom, chiSo) => (
-        <section
-          key={nhom.tieuDe ?? `khac-${chiSo}`}
-          className="flex flex-col gap-3"
-        >
-          {nhom.tieuDe !== undefined ? (
-            <h2 className="type-title-section text-text-primary">
-              {nhom.tieuDe}
-            </h2>
-          ) : null}
+      {loiVaoCua("QUAN_TRI").map((nhom, chiSo) => {
+        const luoi = (
           <div className="grid grid-cols-3 gap-4">
             {nhom.dsMuc.map((muc) => (
               <Card
@@ -38,8 +30,29 @@ export function TrangChuQuanTriScreen() {
               />
             ))}
           </div>
-        </section>
-      ))}
+        );
+        // Nhóm có tiêu đề là một khu vực có tên; nhóm không tiêu đề chỉ là khối bố cục.
+        if (nhom.tieuDe === undefined) {
+          return (
+            <div key={`khac-${chiSo}`} className="flex flex-col gap-3">
+              {luoi}
+            </div>
+          );
+        }
+        const idTieuDe = `nhom-loi-vao-${chiSo}`;
+        return (
+          <section
+            key={nhom.tieuDe}
+            aria-labelledby={idTieuDe}
+            className="flex flex-col gap-3"
+          >
+            <h2 id={idTieuDe} className="type-title-section text-text-primary">
+              {nhom.tieuDe}
+            </h2>
+            {luoi}
+          </section>
+        );
+      })}
     </main>
   );
 }

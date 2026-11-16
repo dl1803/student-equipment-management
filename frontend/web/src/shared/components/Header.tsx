@@ -22,7 +22,11 @@ export function Header({
 }: HeaderProps) {
   return (
     <header className="sticky top-0 z-[var(--ds-z-sticky)] flex h-web-header-height shrink-0 items-center justify-between border-b border-border-subtle bg-surface-default px-gutter">
-      <p className="type-title-card text-text-primary">{tenHeThong}</p>
+      {tenHeThong !== undefined ? (
+        <p className="type-title-card text-text-primary">{tenHeThong}</p>
+      ) : (
+        <div />
+      )}
       <div className="flex items-center gap-4">
         <div className="flex flex-col items-end">
           <span className="type-body-strong text-text-primary">{hoTen}</span>

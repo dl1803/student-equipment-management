@@ -47,6 +47,18 @@ describe("menuTheoVaiTro", () => {
     expect(hrefQt.every((h) => h === "/qt" || h.startsWith("/qt/"))).toBe(true);
   });
 
+  it("ĐX-FA-19: mục Giao thiết bị mang tiền tố nhóm của bốn bước, mục khác thì không", () => {
+    const dsMuc = menuCua("NHAN_VIEN").flatMap((n) => n.dsMuc);
+    const giaoThietBi = dsMuc.find((m) => m.nhan === "Giao thiết bị");
+    expect(giaoThietBi?.tienToNhom).toBe("/nv/giao-thiet-bi");
+    for (const ma of ["SCR-NV-05", "SCR-NV-06", "SCR-NV-07"] as const) {
+      expect(BAN_DO_TUYEN[ma].tuyen.startsWith("/nv/giao-thiet-bi/")).toBe(
+        true,
+      );
+    }
+    expect(dsMuc.filter((m) => m.tienToNhom !== undefined)).toHaveLength(1);
+  });
+
   it("UI-Screens 6.1, 7.1: lối vào ở trang chủ là menu trừ chính trang chủ", () => {
     expect(tuyenTrangChu("NHAN_VIEN")).toBe("/nv");
     expect(tuyenTrangChu("QUAN_TRI")).toBe("/qt");

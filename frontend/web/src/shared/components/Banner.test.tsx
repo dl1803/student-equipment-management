@@ -22,6 +22,21 @@ describe("Banner", () => {
     },
   );
 
+  it("CMP-24: lý do trùng chữ vẫn hiện đủ, không cảnh báo trùng key", () => {
+    const ghiLoi = vi
+      .spyOn(console, "error")
+      .mockImplementation(() => undefined);
+    render(
+      <Banner
+        tong="danger"
+        dsLyDo={["Không được để trống.", "Không được để trống."]}
+      />,
+    );
+    expect(screen.getAllByRole("listitem")).toHaveLength(2);
+    expect(ghiLoi).not.toHaveBeenCalled();
+    ghiLoi.mockRestore();
+  });
+
   it("DS 9.4: lỗi hệ thống kèm mã theo dõi bằng type.code", () => {
     render(
       <Banner tong="danger" traceId="00-abc-01">
