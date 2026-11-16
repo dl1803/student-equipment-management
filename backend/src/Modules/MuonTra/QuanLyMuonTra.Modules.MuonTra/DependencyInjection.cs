@@ -1,6 +1,7 @@
 using Microsoft.Extensions.DependencyInjection;
 using QuanLyMuonTra.Modules.DanhMuc.Contracts;
 using QuanLyMuonTra.Modules.MuonTra.Contracts;
+using QuanLyMuonTra.Modules.MuonTra.Domain;
 using QuanLyMuonTra.Modules.MuonTra.Infrastructure;
 using QuanLyMuonTra.Modules.QuyDinh.Contracts;
 using QuanLyMuonTra.SharedKernel.Contracts;
@@ -18,6 +19,7 @@ public static class DependencyInjection
         services.AddScoped<IThamChieuKhungPhatProvider>(sp => sp.GetRequiredService<ThamChieuMuonTraProvider>());
         services.AddScoped<IAdvisoryLockService, AdvisoryLockService>();
         services.AddScoped<IAvailabilityService, AvailabilityService>();
+        services.AddScoped<IBoTinhHanTra, BoTinhHanTra>();
         return services;
     }
 }
