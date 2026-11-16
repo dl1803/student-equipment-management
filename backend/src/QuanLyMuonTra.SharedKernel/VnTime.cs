@@ -17,4 +17,16 @@ public static class VnTime
         var gioVietNam = TimeZoneInfo.ConvertTime(thoiDiem, MuiGio);
         return DateOnly.FromDateTime(gioVietNam.DateTime);
     }
+
+    public static TimeOnly GioLich(DateTimeOffset thoiDiem)
+    {
+        var gioVietNam = TimeZoneInfo.ConvertTime(thoiDiem, MuiGio);
+        return TimeOnly.FromDateTime(gioVietNam.DateTime);
+    }
+
+    public static DateTimeOffset ThoiDiem(DateOnly ngay, TimeOnly gio)
+    {
+        var gioVietNam = ngay.ToDateTime(gio);
+        return new DateTimeOffset(gioVietNam, MuiGio.GetUtcOffset(gioVietNam));
+    }
 }
