@@ -12,7 +12,7 @@ import java.util.Set;
  * {@link SharedPreferences} trong bộ nhớ cho kiểm thử JVM. Đếm số lần {@code commit} và {@code
  * apply} để kiểm tra cách {@link TokenStore} ghi; {@code commitThanhCong} giả lập lỗi ghi đĩa.
  */
-final class FakeSharedPreferences implements SharedPreferences {
+public final class FakeSharedPreferences implements SharedPreferences {
 
     private final Map<String, String> duLieu = new HashMap<>();
     boolean commitThanhCong = true;

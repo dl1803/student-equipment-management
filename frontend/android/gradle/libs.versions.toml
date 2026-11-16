@@ -5,6 +5,7 @@
 # D02-L: khóa plugin sinh client, Retrofit/OkHttp, Gson, gson-fire, lifecycle-viewmodel,
 # androidx.annotation và JUnit. Các phiên bản này là đề xuất của Architect, chờ nhóm xác nhận.
 # D03-L: khóa thêm lifecycle-livedata (cùng phiên bản lifecycle, để SessionManager phát LiveData).
+# D04-L: khóa thêm mockwebserver (chỉ cho kiểm thử), dùng chung khóa phiên bản `okhttp`.
 # Đề xuất của Architect, chờ nhóm xác nhận.
 [versions]
 # AGP 8.13.2 đi cùng Gradle 8.13, JDK 17 trở lên, hỗ trợ compileSdk 36.
@@ -31,6 +32,7 @@ androidx-annotation = { module = "androidx.annotation:annotation", version.ref =
 jakarta-annotation = { module = "jakarta.annotation:jakarta.annotation-api", version.ref = "jakartaAnnotation" }
 findbugs-jsr305 = { module = "com.google.code.findbugs:jsr305", version.ref = "findbugsJsr305" }
 junit = { module = "junit:junit", version.ref = "junit" }
+mockwebserver = { module = "com.squareup.okhttp3:mockwebserver", version.ref = "okhttp" }
 
 [plugins]
 android-application = { id = "com.android.application", version.ref = "agp" }

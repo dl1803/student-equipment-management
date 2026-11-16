@@ -13,6 +13,7 @@ import com.nhom13.quanlymuontra.Fixtures;
 import com.nhom13.quanlymuontra.generated.model.PhieuMuonTomTatPage;
 import com.nhom13.quanlymuontra.generated.model.ProblemDetails;
 import com.nhom13.quanlymuontra.generated.model.SinhVienTheInfo;
+import com.nhom13.quanlymuontra.generated.model.TokenResponse;
 import com.nhom13.quanlymuontra.generated.model.ValidationProblemDetails;
 import java.util.Map;
 import org.junit.Test;
@@ -30,6 +31,7 @@ public class FixtureHopDongTest {
     private static final Object[][] CAC_FIXTURE_JSON = {
         {"thanh-cong/sv-toi-bi-chan.json", SinhVienTheInfo.class},
         {"thanh-cong/sv-ds-phieu-muon.json", PhieuMuonTomTatPage.class},
+        {"thanh-cong/auth-lam-moi.json", TokenResponse.class},
         {"rong/sv-ds-phieu-muon.json", PhieuMuonTomTatPage.class},
         {"loi/400-validation.json", ValidationProblemDetails.class},
         {"loi/401-chua-xac-thuc.json", ProblemDetails.class},
@@ -37,6 +39,7 @@ public class FixtureHopDongTest {
         {"loi/409-so-luong-kha-dung-thay-doi.json", ProblemDetails.class},
         {"loi/422-sv-bi-khoa-quyen-muon.json", ProblemDetails.class},
         {"loi/429-qua-nhieu-yeu-cau.json", ProblemDetails.class},
+        {"loi/500-loi-he-thong.json", ProblemDetails.class},
     };
 
     // Giải mã rồi mã hóa lại: trường nào không có trong mô hình sinh từ hợp đồng sẽ biến mất nên

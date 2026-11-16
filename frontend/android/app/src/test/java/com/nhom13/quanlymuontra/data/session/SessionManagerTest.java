@@ -4,10 +4,13 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
+import static org.junit.Assert.assertSame;
 import static org.junit.Assert.assertTrue;
 
 import androidx.arch.core.executor.ArchTaskExecutor;
 import androidx.arch.core.executor.TaskExecutor;
+import com.nhom13.quanlymuontra.data.model.ApiError;
+import com.nhom13.quanlymuontra.data.model.Event;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
@@ -139,5 +142,31 @@ public class SessionManagerTest {
         assertEquals(TrangThaiPhien.KHONG_CO_PHIEN, phien.getTrangThaiPhien().getValue());
         assertNull(phien.getTokenPair());
         assertTrue(prefs.saoChepDuLieu().isEmpty());
+    }
+
+    @Test
+    public void DXFA23_KetThucPhien_XoaPhienVaPhatLyDoGiuNguyenApiErrorDungMotLan() {
+        phien.save(new TokenPair("access-1", "refresh-1"));
+        ApiError lyDo = ApiError.http(429, "QUA_NHIEU_YEU_CAU", null, "trace-1", null);
+
+        phien.ketThucPhien(lyDo);
+
+        assertEquals(TrangThaiPhien.KHONG_CO_PHIEN, phien.getTrangThaiPhien().getValue());
+        assertNull(phien.getTokenPair());
+        assertTrue(prefs.saoChepDuLieu().isEmpty());
+        Event<ApiError> suKien = phien.getLyDoKetThucPhien().getValue();
+        assertNotNull(suKien);
+        assertSame(lyDo, suKien.getContentIfNotHandled());
+        assertNull(suKien.getContentIfNotHandled());
+    }
+
+    @Test
+    public void DXFA23_VuaTaoVaDangXuatChuDong_KhongCoLyDoKetThuc() {
+        assertNull(phien.getLyDoKetThucPhien().getValue());
+
+        phien.save(new TokenPair("access-1", "refresh-1"));
+        phien.clear();
+
+        assertNull(phien.getLyDoKetThucPhien().getValue());
     }
 }
