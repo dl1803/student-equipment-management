@@ -6,6 +6,8 @@ public class AppDbContext(
     DbContextOptions<AppDbContext> options,
     IEnumerable<EfConfigurationAssemblies> danhSachCauHinh) : DbContext(options)
 {
+    public IEnumerable<EfConfigurationAssemblies> DanhSachCauHinh => danhSachCauHinh;
+
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
         modelBuilder.ApplyConfigurationsFromAssembly(typeof(AppDbContext).Assembly);

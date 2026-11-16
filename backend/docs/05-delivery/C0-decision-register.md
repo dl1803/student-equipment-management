@@ -53,6 +53,14 @@ Mọi dòng dưới đây đang **OPEN**. Một quyết định OPEN chặn đú
 | K-3 | `IBienBanChuaNopReader` và `BienBanChuaNopDto` ở SinhVien.Contracts; ViPham hiện thực | Khôi đề xuất, chờ Vương xác nhận | 2026-11-15 |
 | K-4 | Module không phụ thuộc Infrastructure; dùng DbContext trừu tượng qua DI container, loại bỏ hoàn toàn nguy cơ phụ thuộc vòng | Đã chốt theo review của Vương | 2026-11-15 |
 
+### Quyết định D04-K cho K-6, K-7, K-8
+
+| Mã | Quyết định | Trạng thái | Ngày |
+|---|---|---|---|
+| K-6 | Thêm tham chiếu `TaiKhoan → QuyDinh.Contracts` để đọc `SoLanDangNhapSaiToiDa` qua `IQuyDinhReader.LayThamSoAsync`; không tạo chu trình phụ thuộc | Đã chốt theo D04-K | 2026-11-16 |
+| K-7 | Ở D04-K làm nửa phát hành refresh token (sinh token ngẫu nhiên, lưu băm SHA-256 hạn 7 ngày vào `tai_khoan.refresh_token`). D05-K làm phần xoay vòng, thu hồi, làm mới và đăng xuất | Đã chốt theo D04-K | 2026-11-16 |
+| K-8 | Dùng giá trị `Seed:AdminUser` cho cả `ten_dang_nhap`, `ma_qt` và `ho_ten` của quản trị viên khởi tạo; mật khẩu tối thiểu 8 ký tự | Đã chốt theo D04-K | 2026-11-16 |
+
 ## 5. Mâu thuẫn giữa các nguồn đã phát hiện
 
 | # | Nội dung | Nguồn A | Nguồn B | Cách xử lý |

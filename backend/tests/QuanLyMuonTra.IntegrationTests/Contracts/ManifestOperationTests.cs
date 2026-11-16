@@ -48,6 +48,9 @@ public class ManifestOperationTests(ITestOutputHelper output)
             .WithWebHostBuilder(builder =>
             {
                 builder.UseSetting("ConnectionStrings:Default", "Host=localhost;Database=khong-dung;Username=khong-dung;Password=khong-dung");
+                builder.UseSetting("Jwt:Secret", "khoa-kiem-thu-khong-phai-bi-mat-0123456789");
+                builder.UseSetting("Jwt:Issuer", "kiem-thu");
+                builder.UseSetting("Jwt:Audience", "kiem-thu");
             });
 
         var nguon = factory.Services.GetRequiredService<EndpointDataSource>();
