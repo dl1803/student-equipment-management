@@ -34,20 +34,31 @@ public sealed class DsLoaiThietBiHandler
             return PhanTrang.Rong<LoaiThietBiQuanTriDto>(tongSo, trang, kichThuoc);
         }
 
-        var danhSach = await goc
+        var cacDong = await goc
             .OrderBy(l => l.TenLoai)
             .ThenBy(l => l.MaLoai)
             .Skip((int)batDau)
             .Take(kichThuoc)
-            .Select(l => new LoaiThietBiQuanTriDto(
+            .Select(l => new
+            {
                 l.MaLoai,
                 l.TenLoai,
                 l.MoTa,
                 l.HangSanXuat,
                 l.ChuKyBaoTri,
-                (long)l.PhiTreMoiNgay,
-                l.NgungSuDung))
+                l.PhiTreMoiNgay,
+                l.NgungSuDung,
+            })
             .ToListAsync(ct);
+
+        var danhSach = cacDong.Select(l => new LoaiThietBiQuanTriDto(
+            l.MaLoai,
+            l.TenLoai,
+            l.MoTa,
+            l.HangSanXuat,
+            l.ChuKyBaoTri,
+            Convert.ToInt64(Math.Round(l.PhiTreMoiNgay)),
+            l.NgungSuDung)).ToList();
 
         return new KetQuaPhanTrang<LoaiThietBiQuanTriDto>(tongSo, trang, kichThuoc, danhSach);
     }

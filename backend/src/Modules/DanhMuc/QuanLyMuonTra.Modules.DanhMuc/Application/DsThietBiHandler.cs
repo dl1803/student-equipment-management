@@ -28,7 +28,7 @@ public sealed class DsThietBiHandler
         IQueryable<ThietBi> goc = _db.Set<ThietBi>().AsNoTracking();
         if (!string.IsNullOrWhiteSpace(ten))
         {
-            var mau = ten.Trim().ToLowerInvariant();
+            var mau = ten.Trim().ToLower();
             goc = goc.Where(t => t.TenThietBi.ToLower().Contains(mau));
         }
 
@@ -99,33 +99,25 @@ public sealed class DsThietBiHandler
             .ToListAsync(ct);
         var nccTheoThietBi = cacNcc.ToLookup(x => x.MaThietBi);
 
-        var danhSach = cacDong.Select(d =>
-        {
-            if (d.GiaTri is null)
-            {
-                throw new InvalidOperationException($"Thiết bị {d.MaThietBi} chưa có bản ghi lịch sử giá trị.");
-            }
-
-            return new ThietBiQuanTriDto(
-                d.MaThietBi,
-                d.MaLoai,
-                d.TenLoai,
-                d.MaPhong,
-                d.TenPhong,
-                d.TenThietBi,
-                d.MoTa,
-                d.ThongSoKyThuat,
-                d.NgayNhapKho,
-                d.ThoiHanBaoHanh,
-                TinhTrangThietBiMa.ToMa(d.TinhTrang),
-                d.ViTriKe,
-                d.ViTriTu,
-                d.NgungSuDung,
-                (long)d.GiaTri.Value,
-                nccTheoThietBi[d.MaThietBi]
-                    .Select(n => new NhaCungCapQuanTriDto(n.MaNCC, n.TenNCC, n.ThongTinLienHe))
-                    .ToList());
-        }).ToList();
+        var danhSach = cacDong.Select(d => new ThietBiQuanTriDto(
+            d.MaThietBi,
+            d.MaLoai,
+            d.TenLoai,
+            d.MaPhong,
+            d.TenPhong,
+            d.TenThietBi,
+            d.MoTa,
+            d.ThongSoKyThuat,
+            d.NgayNhapKho,
+            d.ThoiHanBaoHanh,
+            TinhTrangThietBiMa.ToMa(d.TinhTrang),
+            d.ViTriKe,
+            d.ViTriTu,
+            d.NgungSuDung,
+            (long)(d.GiaTri ?? 0m),
+            nccTheoThietBi[d.MaThietBi]
+                .Select(n => new NhaCungCapQuanTriDto(n.MaNCC, n.TenNCC, n.ThongTinLienHe))
+                .ToList())).ToList();
 
         return new KetQuaPhanTrang<ThietBiQuanTriDto>(tongSo, trang, kichThuoc, danhSach);
     }
