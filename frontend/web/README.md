@@ -35,5 +35,7 @@ Dự án buộc ký tự xuống dòng LF qua `.gitattributes`, kể cả máy W
 - `src/features/`: `xac-thuc`, `quay` (NV), `quan-tri` (QT).
 - `src/shared/`: phần dùng chung (`api`, `components`, `format`, `hooks`, `labels`, `tuyen`).
 - `src/app/tokens.css`: design token của Design-System (nơi duy nhất có giá trị thô); `src/app/globals.css` ánh xạ token vào theme Tailwind (thay thế bảng mặc định) và lớp kiểu chữ `type-*`.
-- `src/shared/components/contracts.ts`: hợp đồng props của các thành phần chưa hiện thực (Select, Checkbox, Radio, Card, KeyValueList, Banner, DataTable, Pagination, Menu, Sidebar, Header).
+- `src/shared/components/contracts.ts`: props đã công bố của các thành phần hoàn thành ở ngày 5–6 (Select, Checkbox, RadioGroup, KeyValueList, DataTable, Pagination, Menu).
+- `src/shared/testing/nguCanhKiemThu.tsx`, `src/shared/api/giaLapHttp.ts`: bộ dựng ngữ cảnh và giả lập HTTP cho kiểm thử màn hình.
+- [BAN_GIAO_CORE.md](BAN_GIAO_CORE.md): bàn giao shared core và cách viết màn hình (D04-T).
 - `src/shared/tuyen/banDoTuyen.ts`: bản đồ 28 tuyến giai đoạn 1 kèm chủ sở hữu; kiểm thử đi kèm chặn tuyến thiếu hoặc thừa.
