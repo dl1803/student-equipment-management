@@ -1,5 +1,5 @@
 // Button — CMP-01 Nút (DS 8.2, mục 6). Sở hữu: Thịnh (shared core).
-import type { ButtonHTMLAttributes, ReactNode } from "react";
+import type { ButtonHTMLAttributes, ReactNode, Ref } from "react";
 import { ChiBaoQuay } from "./ChiBaoQuay";
 import { classNames } from "./classNames";
 
@@ -22,6 +22,8 @@ export type ButtonProps = Omit<
   /** Đang chờ phản hồi: vô hiệu, chữ đổi thành "Đang xử lý" kèm chỉ báo quay (DS mục 6). */
   dangXuLy?: boolean;
   type?: "button" | "submit" | "reset";
+  /** React 19 nhận ref như prop thường; dùng để đặt tiêu điểm (ví dụ nút Hủy của hộp xác nhận). */
+  ref?: Ref<HTMLButtonElement>;
 };
 
 const LOP_BIEN_THE: Record<BienTheButton, string> = {

@@ -1,9 +1,12 @@
 "use client";
 
 // ConfirmDialog — CMP-26 loại Xác nhận (UI-Screens 3.5, DS 9.2, FC 5.8 [ĐX-FC-18]).
-// Sở hữu: Thịnh (shared core). D01-T: chốt hợp đồng props và hành vi <dialog> gốc;
-// kiểu dáng token, ErrorBanner trong hộp và kiểm thử component thuộc task sau.
-import { useEffect, useId, useRef, type ReactNode } from "react";
+// Sở hữu: Thịnh (shared core). Mọi thao tác thuộc DS 9.2 đi qua hộp này (TC-09).
+// - Tiêu điểm ban đầu ở nút Hủy; mọi nút type="button", không có <form>: Enter không xác nhận.
+// - Đang xử lý: nút xác nhận vô hiệu, hiện "Đang xử lý"; Hủy và Esc bị khóa.
+import { useId, useRef, type ReactNode } from "react";
+import { Button } from "./Button";
+import { Dialog } from "./Dialog";
 
 export type ConfirmDialogProps = {
   open: boolean;
@@ -13,28 +16,25 @@ export type ConfirmDialogProps = {
   tomTat?: ReactNode;
   /** Điều sẽ xảy ra và không đổi được. */
   heQua: ReactNode;
+  /** Nhấn mạnh hệ quả quan trọng, thường là <Banner tong="warning" /> (DS CMP-26). */
+  nhanManh?: ReactNode;
   /** Nút xác nhận mang tên hành động (DS 9.2), không dùng "OK" hay "Đồng ý". */
   nhanXacNhan: string;
   bienThe: "primary" | "destructive";
   /** Đang chờ phản hồi: nút xác nhận vô hiệu, hiện "Đang xử lý"; Hủy và Esc bị khóa. */
   dangXuLy: boolean;
-  /** Lỗi trả về khi xác nhận, hiển thị trong hộp (ErrorBanner ở task sau). */
+  /** Lỗi trả về khi xác nhận, thường là <Banner tong="danger" /> (DS CMP-26, 9.4). */
   loi?: ReactNode;
   onXacNhan: () => void;
   onDong: () => void;
 };
-
-function traTieuDiem(noiMoRef: { current: HTMLElement | null }) {
-  const noiMo = noiMoRef.current;
-  noiMoRef.current = null;
-  if (noiMo !== null && noiMo.isConnected) noiMo.focus();
-}
 
 export function ConfirmDialog({
   open,
   tieuDe,
   tomTat,
   heQua,
+  nhanManh,
   nhanXacNhan,
   bienThe,
   dangXuLy,
@@ -42,67 +42,34 @@ export function ConfirmDialog({
   onXacNhan,
   onDong,
 }: ConfirmDialogProps) {
-  const dialogRef = useRef<HTMLDialogElement>(null);
   const nutHuyRef = useRef<HTMLButtonElement>(null);
-  /** Phần tử có tiêu điểm trước khi mở hộp, để trả tiêu điểm khi đóng (DS CMP-26, WCAG 2.4.3). */
-  const noiMoRef = useRef<HTMLElement | null>(null);
-  const idTieuDe = useId();
   const idHeQua = useId();
 
-  useEffect(() => {
-    const dialog = dialogRef.current;
-    if (dialog === null) return;
-    if (open && !dialog.open) {
-      const dangCoTieuDiem = document.activeElement;
-      noiMoRef.current =
-        dangCoTieuDiem instanceof HTMLElement ? dangCoTieuDiem : null;
-      dialog.showModal();
-      nutHuyRef.current?.focus();
-    } else if (!open && dialog.open) {
-      dialog.close();
-      traTieuDiem(noiMoRef);
-    }
-  }, [open]);
-
-  // Hộp bị gỡ khi đang mở (ví dụ rời màn hình) cũng trả tiêu điểm về nơi mở.
-  useEffect(() => () => traTieuDiem(noiMoRef), []);
-
-  useEffect(() => {
-    const dialog = dialogRef.current;
-    if (dialog === null) return;
-    const handleCancel = (event: Event) => {
-      // Esc: luôn tự xử lý để trạng thái open do component cha quyết định.
-      event.preventDefault();
-      if (!dangXuLy) onDong();
-    };
-    dialog.addEventListener("cancel", handleCancel);
-    return () => dialog.removeEventListener("cancel", handleCancel);
-  }, [dangXuLy, onDong]);
-
   return (
-    <dialog
-      ref={dialogRef}
-      aria-labelledby={idTieuDe}
-      aria-describedby={idHeQua}
-      data-bien-the={bienThe}
+    <Dialog
+      open={open}
+      tieuDe={tieuDe}
+      tieuDiemBanDauRef={nutHuyRef}
+      khoaDong={dangXuLy}
+      onDong={onDong}
+      idMoTa={idHeQua}
+      hangNut={
+        <>
+          <Button ref={nutHuyRef} onClick={onDong} disabled={dangXuLy}>
+            Hủy
+          </Button>
+          <Button bienThe={bienThe} onClick={onXacNhan} dangXuLy={dangXuLy}>
+            {nhanXacNhan}
+          </Button>
+        </>
+      }
     >
-      <h2 id={idTieuDe}>{tieuDe}</h2>
-      {tomTat ? <div>{tomTat}</div> : null}
-      <div id={idHeQua}>{heQua}</div>
-      {loi ? <div>{loi}</div> : null}
-      <div>
-        <button
-          ref={nutHuyRef}
-          type="button"
-          onClick={onDong}
-          disabled={dangXuLy}
-        >
-          Hủy
-        </button>
-        <button type="button" onClick={onXacNhan} disabled={dangXuLy}>
-          {dangXuLy ? "Đang xử lý" : nhanXacNhan}
-        </button>
+      {tomTat !== undefined ? <div className="type-body">{tomTat}</div> : null}
+      <div id={idHeQua} className="type-body">
+        {heQua}
       </div>
-    </dialog>
+      {nhanManh}
+      {loi}
+    </Dialog>
   );
 }

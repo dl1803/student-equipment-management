@@ -1,7 +1,7 @@
-// Layout /nv. Khung nhân viên: chỉ cho NHAN_VIEN (FA 4.4). Sở hữu: Thịnh.
-// D01-T: chỉ chuyển tiếp children; hiện thực ở task sau.
+// Layout /nv: khung nhân viên, chỉ cho NHAN_VIEN (FA 4.4; UI-Screens 4.2). Sở hữu: Thịnh.
 import type { ReactNode } from "react";
+import { KhungVaiTro } from "@/features/xac-thuc/KhungVaiTro";
 
 export default function Layout({ children }: { children: ReactNode }) {
-  return children;
+  return <KhungVaiTro vaiTro="NHAN_VIEN">{children}</KhungVaiTro>;
 }

@@ -1,13 +1,10 @@
-// Hợp đồng props cho nhóm thành phần Ngày 4–6. Sở hữu: Thịnh (shared core).
+// Hợp đồng props ĐÃ CÔNG BỐ cho nhóm thành phần Ngày 5–6 (chốt ở D04-T). Sở hữu: Thịnh (shared core).
+// Đổi chữ ký sau ngày 4 phải báo người dùng theo hợp đồng (BAN_GIAO_CORE.md).
 // CHỈ KHAI BÁO KIỂU — CHƯA HIỆN THỰC. Không import các kiểu này vào màn hình như thể thành phần đã có.
 // Khi hiện thực: tạo shared/components/{Ten}.tsx, chuyển kiểu Props sang tệp đó, xóa khỏi đây.
 // Mọi giá trị theo Design-System.md mục 8; chữ chuẩn theo DS 9.8.
 import type { ReactNode } from "react";
-import type {
-  HoTrangThai,
-  NhanPhatSinh,
-  Tong,
-} from "@/shared/labels/trangThai";
+import type { HoTrangThai, NhanPhatSinh } from "@/shared/labels/trangThai";
 
 // ---------- CMP-06 Ô chọn (Select) ----------
 
@@ -74,32 +71,6 @@ export type RadioGroupProps<T extends string = string> = {
   "aria-describedby"?: string;
 };
 
-// ---------- CMP-15 Thẻ (Card) ----------
-
-export type CardProps =
-  | { bienThe: "TINH"; tieuDe?: string; children: ReactNode }
-  | {
-      /** Cả thẻ bấm được; có chevron_right khi chuyển màn hình (lối vào ở trang chủ). */
-      bienThe: "TUONG_TAC";
-      tieuDe: string;
-      href: string;
-      children?: ReactNode;
-    }
-  | {
-      /** Chọn một trong nhiều (ba thẻ nguồn giao ở SCR-NV-05); là nhóm nút chọn. */
-      bienThe: "CHON_DUOC";
-      tieuDe: string;
-      duocChon: boolean;
-      onChon: () => void;
-      children?: ReactNode;
-    }
-  | {
-      bienThe: "TONG";
-      tong: Exclude<Tong, "neutral">;
-      tieuDe?: string;
-      children: ReactNode;
-    };
-
 // ---------- CMP-14 Danh sách thông tin (KeyValueList) ----------
 
 export type DongKeyValue = {
@@ -113,25 +84,6 @@ export type DongKeyValue = {
 
 export type KeyValueListProps = {
   dsDong: ReadonlyArray<DongKeyValue>;
-};
-
-// ---------- CMP-24 Khối thông báo (Banner) ----------
-
-export type BannerProps = {
-  /** neutral không dùng cho khối thông báo (DS CMP-24). */
-  tong: Exclude<Tong, "neutral">;
-  tieuDe?: string;
-  children?: ReactNode;
-  /** Danh sách lý do, mỗi lý do một dòng (biến thể Kết luận dùng thongDiep của API). */
-  dsLyDo?: ReadonlyArray<string>;
-  /** Tiêu đề là nhãn phát sinh Hợp lệ/Không hợp lệ/Được duyệt/Không được duyệt (DS 7.3). */
-  ketLuan?: Extract<
-    NhanPhatSinh,
-    "HOP_LE" | "KHONG_HOP_LE" | "DUOC_DUYET" | "KHONG_DUOC_DUYET"
-  >;
-  hanhDong?: { nhan: string; onClick: () => void };
-  /** Mã theo dõi khi lỗi hệ thống lúc thao tác (DS 9.4). */
-  traceId?: string;
 };
 
 // ---------- CMP-18 Bảng dữ liệu (DataTable) ----------
@@ -201,41 +153,6 @@ export type MenuProps = {
   /** Nút kích hoạt là Button tertiary sm chữ "Thao tác" (DS 9.8). */
   nhanNutKichHoat?: string;
   dsMuc: ReadonlyArray<HanhDongDong>;
-};
-
-// ---------- Khung ứng dụng: CMP-29 Thanh menu bên, CMP-30 Thanh đầu trang ----------
-// "Shell" không phải CMP mới: là layout ghép Header + Sidebar quanh nội dung (DS 11.2, FA 4.4).
-
-export type MucMenu = {
-  nhan: string;
-  href: string;
-};
-
-export type NhomMenu = {
-  /** QT có nhóm "Danh mục", "Cấu hình"; NV không có tiêu đề nhóm. */
-  tieuDe?: string;
-  dsMuc: ReadonlyArray<MucMenu>;
-};
-
-export type SidebarProps = {
-  /** Lấy từ cấu hình menu theo vai trò ở features/xac-thuc (FA 4.4). */
-  dsNhom: ReadonlyArray<NhomMenu>;
-  /** Tuyến hiện tại để đánh dấu aria-current="page". */
-  tuyenHienTai: string;
-};
-
-export type HeaderProps = {
-  hoTen: string;
-  /** Chữ thường, không dùng StatusBadge (DS 7.1). */
-  nhanVaiTro: string;
-  onDangXuat: () => void;
-  dangDangXuat?: boolean;
-};
-
-export type ShellProps = {
-  header: HeaderProps;
-  sidebar: SidebarProps;
-  children: ReactNode;
 };
 
 // ---------- Nhắc lại cho StatusBadge trong bảng ----------
