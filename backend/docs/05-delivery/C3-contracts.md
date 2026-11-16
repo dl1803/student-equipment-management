@@ -118,3 +118,26 @@ Lưu ý: tình trạng `DANG_DUOC_MUON` trong dữ liệu thử đặt trực ti
 | Việc cho D04-N | Cài `IQuyDinhReader` (4 phương thức) từ entity `QuyDinh` đã có, ánh xạ sang DTO, đăng ký trong `AddQuyDinhModule()`; cài `IDanhMucReader` |
 | Việc cho Host (Khôi) | Gọi `AddQuyDinhModule()`, `AddBaoTriModule()` và `ApplyQuyDinhConfigurations()`; ánh xạ `GIA_TRI_CAU_HINH_KHONG_HOP_LE` sang HTTP 422 (API-Notes mục 8) |
 | Chưa làm | Ánh xạ EF và domain `bao_tri.*` (D13-N) |
+
+## 11. Bàn giao D04-N cho Vương, Khôi và tích hợp
+
+| Mục | Nội dung |
+|---|---|
+| Bộ đọc danh mục | `DanhMucReader` (`QuanLyMuonTra.Modules.DanhMuc.Infrastructure`) hiện thực `IDanhMucReader`; nhận `DbContext` trừu tượng, `AsNoTracking`. `null` khi không tồn tại; `GiaTriHienHanh` = dòng `lich_su_gia_tri` mới nhất. Thiết bị không có lịch sử giá trị ném `InvalidOperationException` (dữ liệu hỏng, đề xuất D04-N, chờ xác nhận) |
+| Bộ đọc quy định | `QuyDinhReader` (`QuanLyMuonTra.Modules.QuyDinh.Infrastructure`) hiện thực `IQuyDinhReader`. Nhóm không có quy định chung trả `null` (O3 còn OPEN); thiếu dòng `tham_so_he_thong (id = 1)` ném `InvalidOperationException` (đề xuất D04-N, chờ xác nhận) |
+| Hàm đăng ký DI | `AddDanhMucModule()` (`QuanLyMuonTra.Modules.DanhMuc`): `IDanhMucReader` và 4 handler danh sách; `AddQuyDinhModule()` thêm `IQuyDinhReader` |
+| Truy vấn quản trị chỉ đọc | `DsPhongThietBiHandler`, `DsLoaiThietBiHandler`, `DsThietBiHandler`, `DsNhaCungCapHandler` (`QuanLyMuonTra.Modules.DanhMuc.Application`), phương thức `XuLyAsync(...)` trả `KetQuaPhanTrang<T>` (`TongSo`, `Trang`, `KichThuoc`, `DanhSach`). Chưa có endpoint, chưa có kiểm quyền |
+| Quy ước | `trang >= 1`, `kichThuoc` 1..100 ngoài khoảng ném `LoiNghiepVuException("DU_LIEU_KHONG_HOP_LE")` (400); mặc định `trang = 1`, `kichThuoc = 20` do tầng endpoint đặt. Sắp xếp theo ĐX-API-28. `maNCC`, `tenNCC` giữ chữ hoa NCC. Tiền là `long` |
+| Việc cho Host (Khôi) | Gọi `AddDanhMucModule()`; nạp `ApplyDanhMucConfigurations()` và `ApplyQuyDinhConfigurations()` qua `assemblyCauHinhEf`; ghi nhận tên hàm là đề xuất (Q-B/K-4) |
+| Việc cho D05 (Vương/Khôi) | Bọc 4 handler bằng endpoint `GET /quan-tri/phong-thiet-bi`, `/loai-thiet-bi`, `/thiet-bi`, `/nha-cung-cap` với policy `QuanTri` thật; bổ sung `dsAnh` cho thiết bị (O7); `GET /quay/khung-phat` cần phân trang ở bên dùng vì `DsKhungPhatDangSuDungAsync` không phân trang (O8) |
+| Quyền | D04-N không cài và không giả quyền. **Chưa kiểm phân quyền thật**: nối khi policy của D04-K có |
+| OPEN mới | O7: ai trả `dsAnh` của thiết bị (`luu_tru.anh_tai_len`, chưa có module). O8: phân trang cho `GET /quay/khung-phat` |
+| Chưa làm | Endpoint, policy, `dsAnh`, ghi danh mục (D06–D08), `BaoTri`, `BaoCao` |
+
+| Hạng mục kiểm chứng (D04-N) | Trạng thái |
+|---|---|
+| `dotnet format --verify-no-changes`, `dotnet build -c Release` | Đạt (0 warning, 0 error) — 16/11/2026 — .NET SDK 9.0.305 |
+| `UnitTests.DanhMuc` (12 ca), `UnitTests.QuyDinh` (ca mới 3), `UnitTests.Di` | Đạt 17/17 (12 DanhMuc + 3 QuyDinh mới + 2 Di) — 16/11/2026 |
+| `IntegrationTests.DanhMuc` (14 ca), `IntegrationTests.QuyDinh` (ca mới 5) trên PostgreSQL | Chưa kiểm chứng — BLOCKED bởi K-1 (Skipped) |
+| Host nối module (D03-K) | Chưa nối tại commit 38af4b5 |
+| Truy vấn qua HTTP thật | Chưa làm (không có endpoint trong D04-N) |
