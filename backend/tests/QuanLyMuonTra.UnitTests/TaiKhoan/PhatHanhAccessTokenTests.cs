@@ -29,6 +29,18 @@ public sealed class PhatHanhAccessTokenTests
     }
 
     [Fact]
+    public void UC19_Tao_ChoSinhVien_SubLaMssvVaRoleSinhVien()
+    {
+        var phatHanh = new PhatHanhAccessToken(TuyChon, new DongHoCoDinh(new DateTimeOffset(2026, 11, 16, 3, 0, 0, TimeSpan.Zero)));
+
+        var token = new JwtSecurityTokenHandler().ReadJwtToken(phatHanh.Tao("SV-001", "SINH_VIEN"));
+
+        Assert.Equal("SV-001", token.Claims.Single(c => c.Type == "sub").Value);
+        Assert.Equal("SINH_VIEN", token.Claims.Single(c => c.Type == "role").Value);
+        Assert.Equal(TimeSpan.FromMinutes(15), token.ValidTo - token.ValidFrom);
+    }
+
+    [Fact]
     public void UC19_Tao_ChuKyHopLeVoiKhoaDungVaSaiVoiKhoaKhac()
     {
         var phatHanh = new PhatHanhAccessToken(TuyChon, new DongHoCoDinh(new DateTimeOffset(2026, 11, 16, 3, 0, 0, TimeSpan.Zero)));

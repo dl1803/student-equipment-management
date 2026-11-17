@@ -11,14 +11,16 @@ public sealed class PhatHanhAccessToken(JwtOptions tuyChon, IClock dongHo) : IPh
 {
     public const int ThoiHanPhut = 15;
 
-    public string Tao(Guid maNguoiDung, string vaiTro)
+    public string Tao(Guid maNguoiDung, string vaiTro) => Tao(maNguoiDung.ToString(), vaiTro);
+
+    public string Tao(string maDinhDanh, string vaiTro)
     {
         var bayGio = dongHo.UtcNow.UtcDateTime;
         var khoa = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(tuyChon.Secret));
         var thongTinKy = new SigningCredentials(khoa, SecurityAlgorithms.HmacSha256);
         var cacClaim = new[]
         {
-            new Claim("sub", maNguoiDung.ToString()),
+            new Claim("sub", maDinhDanh),
             new Claim("role", vaiTro),
             new Claim("jti", Guid.NewGuid().ToString())
         };

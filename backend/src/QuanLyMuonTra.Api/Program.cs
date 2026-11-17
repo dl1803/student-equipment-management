@@ -8,6 +8,7 @@ using QuanLyMuonTra.Modules.DanhMuc;
 using QuanLyMuonTra.Modules.DanhMuc.Infrastructure;
 using QuanLyMuonTra.Modules.QuyDinh;
 using QuanLyMuonTra.Modules.QuyDinh.Infrastructure;
+using QuanLyMuonTra.Modules.SinhVien;
 using QuanLyMuonTra.Modules.TaiKhoan;
 using QuanLyMuonTra.Modules.TaiKhoan.Domain;
 using QuanLyMuonTra.Modules.TaiKhoan.Infrastructure;
@@ -34,6 +35,7 @@ builder.Services.AddHttpContextAccessor();
 builder.Services.AddSingleton<ICurrentUser, HttpContextCurrentUser>();
 builder.Services.AddInfrastructure(chuoiKetNoi, assemblyCauHinhEf);
 builder.Services.AddTaiKhoanModule(jwt);
+builder.Services.AddSinhVienModule();
 builder.Services.AddDanhMucModule();
 builder.Services.AddQuyDinhModule();
 builder.Services.AddXacThucJwt(jwt);
@@ -43,6 +45,9 @@ builder.Services.AddViPhamModule();
 builder.Services.AddHealthChecks()
     .AddCheck<CsdlHealthCheck>("csdl", tags: ["ready"]);
 builder.Services.AddScoped<FluentValidation.IValidator<DangNhapNhanVienRequest>, DangNhapNhanVienValidator>();
+builder.Services.AddScoped<FluentValidation.IValidator<DangNhapSinhVienRequest>, DangNhapSinhVienValidator>();
+builder.Services.AddScoped<FluentValidation.IValidator<LamMoiRequest>, LamMoiValidator>();
+builder.Services.AddScoped<FluentValidation.IValidator<DangXuatRequest>, DangXuatValidator>();
 
 var app = builder.Build();
 
