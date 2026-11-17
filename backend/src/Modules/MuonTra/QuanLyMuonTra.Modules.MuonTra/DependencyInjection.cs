@@ -23,6 +23,9 @@ public static class DependencyInjection
         services.AddScoped<IBoTinhHanTra, BoTinhHanTra>();
         services.AddScoped<TraCuuThietBiHandler>();
         services.AddScoped<TraCuuThietBiChiTietHandler>();
+        services.AddScoped<DsPhongThietBiSvHandler>();
+        services.AddScoped<DsLoaiThietBiSvHandler>();
+        services.AddScoped<QuayDsLoaiThietBiHandler>();
         return services;
     }
 }
