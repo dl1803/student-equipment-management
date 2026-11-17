@@ -15,6 +15,14 @@ export type LamMoiRequest = Schemas["LamMoiRequest"];
 export type DangXuatRequest = Schemas["DangXuatRequest"];
 export type PhongThietBi = Schemas["PhongThietBi"];
 
+// Danh mục (SCR-QT-02, QT-03)
+export type PhongThietBiRequest = Schemas["PhongThietBiRequest"];
+export type PhongThietBiPage = Schemas["PhongThietBiPage"];
+export type LoaiThietBi = Schemas["LoaiThietBi"];
+export type LoaiThietBiTaoMoiRequest = Schemas["LoaiThietBiTaoMoiRequest"];
+export type LoaiThietBiCapNhatRequest = Schemas["LoaiThietBiCapNhatRequest"];
+export type LoaiThietBiPage = Schemas["LoaiThietBiPage"];
+
 // Mã trạng thái (họ trạng thái theo DS 7.2, FC 3.5)
 export type TinhTrangThietBi = Schemas["TinhTrangThietBi"];
 export type TrangThaiPhieuYeuCauMuon = Schemas["TrangThaiPhieuYeuCauMuon"];

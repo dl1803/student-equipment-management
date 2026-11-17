@@ -1,4 +1,4 @@
-# Bàn giao shared core web (D04-T)
+# Bàn giao shared core web (D04-T, cập nhật D05-T)
 
 Người nhận: Long, phụ trách SCR-QT-05..09 (`features/quan-tri/cau-hinh/`, `features/quan-tri/tai-khoan-nhan-vien/`) từ ngày làm việc 20.
 Từ cuối D04-T, các interface dưới đây là **public và ổn định**. Muốn đổi chữ ký, Thịnh báo trước và cập nhật tài liệu này trong cùng PR. Cần thêm gì thì tạo issue hoặc nhắn Thịnh, không sửa thẳng `src/shared/**`.
@@ -77,12 +77,18 @@ export function useLuuThamSoMutation() {
 | `shared/hooks/ganLoiMayChu`  | `ganLoiMayChu(loi, form)`, `chuyenKhoaLoiTruong`                                                  | `ds[0].x` → `ds.0.x`                                                                                                              |
 | `shared/format/*`            | `formatNgayGio`, `formatNgay`, `formatGio`, `thanhChuoiGioVn`, `formatTien`, `formatTyLePhanTram` | FC 7.2                                                                                                                            |
 | `shared/labels/trangThai`    | `thongTinTrangThai`, `nhanTrangThai`, `thongTinNhanPhatSinh`                                      | DS 7.2, 7.3                                                                                                                       |
-| `shared/labels/thongDiepLoi` | `THONG_DIEP_LOI_CHUNG`, `thongDiepTheoNhom`                                                       | Thông điệp riêng của màn hình đặt ở `features/.../thongDiep.ts`                                                                   |
+| `shared/labels/thongDiepLoi` | `THONG_DIEP_LOI_CHUNG`, `thongDiepTheoNhom`, `thongBaoTheoLoi(loi)` → `ThongBao`                  | Thông điệp riêng của màn hình đặt ở `features/.../thongDiep.ts`; `ThongBao` = `{ tong, noiDung, traceId? }` cho `Banner`          |
+| `shared/api/phanTrang`       | `KICH_THUOC_TRANG_MAC_DINH` (= 20)                                                                | Tham số `kichThuoc` của danh sách phân trang                                                                                      |
+| `shared/format/docSo`        | `docSoNguyen(chuoi)` → `number \| null`                                                           | Đọc ô số nguyên không âm (chỉ chữ số); kiểm tra giới hạn ở biểu mẫu                                                               |
 | `shared/tuyen/banDoTuyen`    | `BAN_DO_TUYEN`, `tuyenCua`                                                                        | Không thêm tuyến ngoài 28 màn hình                                                                                                |
 
-**Thành phần đã hiện thực** (`shared/components/`): `Button` (CMP-01), `IconButton` (02), `TextLink` (03), `TextField` + `FormField` (04), `Card` (15), `StatusBadge` (13), `Banner` (24), `StateView` (25), `Dialog` + `ConfirmDialog` (26), `Sidebar` (29), `Header` (30).
+**Thành phần đã hiện thực** (`shared/components/`): `Button` (CMP-01), `IconButton` (02), `TextLink` (03), `TextField` + `FormField` (04), `Select` (06, chọn một), `StatusBadge` (13), `KeyValueList` (14), `Card` (15), `DataTable` (18, mức cơ bản), `Pagination` (19), `Banner` (24), `StateView` (25), `Dialog` + `ConfirmDialog` (26), `Sidebar` (29), `Header` (30). Ví dụ dùng đầy đủ: `features/quan-tri/danh-muc/` (SCR-QT-02, QT-03).
 
-**Props đã công bố, chưa hiện thực** (`shared/components/contracts.ts`, hoàn thành ở ngày 5–6): `Select`, `Checkbox`, `RadioGroup`, `KeyValueList`, `DataTable`, `Pagination`, `Menu`. Có thể viết `Screen` theo các props này ngay; thành phần thật sẽ khớp chữ ký.
+- `Select` là `<select>` gốc: `{ id, dsLuaChon: LuaChon<T>[], giaTri: T | null, onChange(T | null), coMucTatCa?, ... }`. **Khác hợp đồng ngày 4:** bỏ prop `cheDo`; chọn nhiều tách sang `SelectNhieuProps`.
+- `DataTable`: `{ tieuDe, dsCot: CotBang<T>[], dsDong, khoaDong, trangThaiThan?, hanhDongDong?, dangTaiLai? }`. Tối đa 2 hành động mỗi dòng (`SO_HANH_DONG_TRUC_TIEP_TOI_DA`); từ 3 trở lên sẽ báo lỗi cho tới khi có `Menu`. Trạng thái tải/rỗng/lỗi truyền qua `trangThaiThan`.
+- `Pagination`: `{ trang, kichThuoc, tongSo, onDoiTrang, dangTai? }`; tự ẩn khi chỉ có một trang.
+
+**Props đã công bố, chưa hiện thực** (`shared/components/contracts.ts`): `SelectNhieu`, `Checkbox`, `RadioGroup`, `Menu` và phần mở rộng `DataTableMoRongProps` (chọn dòng, mở rộng dòng, làm nổi bật). Có thể viết `Screen` theo các props này ngay; thành phần thật sẽ khớp chữ ký.
 
 ## 3. Kiểm thử màn hình bằng fixture
 
