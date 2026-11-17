@@ -148,7 +148,7 @@ Lưu ý: tình trạng `DANG_DUOC_MUON` trong dữ liệu thử đặt trực ti
 |---|---|
 | Ràng buộc miền | `PhongThietBi`, `LoaiThietBi` (`DanhMuc.Domain`) ném `LoiNghiepVuException("DU_LIEU_KHONG_HOP_LE")` (400) khi tên/cơ sở rỗng, chu kỳ ≤ 0, phí < 0. Tạo/sửa là `internal` (`UnitTests` qua `InternalsVisibleTo`). Hai entity là `IAuditable` nên nhật ký ghi cùng `SaveChanges` |
 | Request | `PhongThietBiRequest`, `LoaiThietBiTaoMoiRequest`, `LoaiThietBiCapNhatRequest` (`DanhMuc.Application`). Sửa loại **không** có phí, `ngungSuDung`, tình trạng. Không `Trim`; không giới hạn độ dài |
-| Kiểm dữ liệu vào | Validator `internal` đăng ký `IValidator<T>` (singleton) trong `AddDanhMucModule()`. Thêm gói `FluentValidation 12.2.0` vào `DanhMuc.csproj` (đề xuất D05-N, chờ xác nhận) |
+| Kiểm dữ liệu vào | Validator `internal` đăng ký `IValidator<T>` (scoped) trong `AddDanhMucModule()`. Thêm gói `FluentValidation 12.2.0` vào `DanhMuc.csproj` (đề xuất D05-N, chờ xác nhận) |
 | Handler | `TaoPhongThietBiHandler.XuLyAsync(yeuCau, ct)` → `PhongThietBiDto`; `SuaPhongThietBiHandler.XuLyAsync(ma, yeuCau, ct)` → `PhongThietBiDto`; `TaoLoaiThietBiHandler.XuLyAsync(yeuCau, ct)` và `SuaLoaiThietBiHandler.XuLyAsync(ma, yeuCau, ct)` → `LoaiThietBiQuanTriDto`. Không tìm thấy → `LoiNghiepVuException("KHONG_TIM_THAY")` (404). Nhận `DbContext` trừu tượng, một `SaveChangesAsync` |
 | Hàm đăng ký DI | `AddDanhMucModule()` đăng ký thêm 4 handler và 3 validator |
 | Việc cho Host | Bọc 4 handler bằng `POST/PUT /quan-tri/phong-thiet-bi` và `POST/PUT /quan-tri/loai-thiet-bi` với policy `QuanTri` thật và `KiemTraDuLieuFilter<T>`; POST trả 201, PUT trả 200 theo `openapi.yaml` |
@@ -159,6 +159,6 @@ Lưu ý: tình trạng `DANG_DUOC_MUON` trong dữ liệu thử đặt trực ti
 | Hạng mục kiểm chứng (D05-N) | Trạng thái |
 |---|---|
 | `dotnet format --verify-no-changes`, `dotnet build -c Release` | Đạt (0 warning, 0 error) — 17/11/2026 — .NET SDK 9.0.305 |
-| `UnitTests.DanhMuc` (ca mới D05-N) | Đạt 47/47 (19 miền + 12 phòng + 16 loại) — 17/11/2026 — .NET SDK 9.0.305 |
+| `UnitTests.DanhMuc` (ca mới D05-N) | Đạt 49/49 (20 miền + 12 phòng + 17 loại) — 17/11/2026 — .NET SDK 9.0.305 |
 | `IntegrationTests.DanhMuc` (9 ca mới) trên PostgreSQL | Chưa kiểm chứng — BLOCKED bởi K-1 (Skipped) |
 | Quyền `QuanTri` thật qua HTTP | Chưa kiểm chứng — BLOCKED (chờ endpoint D05-N) |

@@ -8,12 +8,17 @@ public sealed class LoaiThietBi : IAuditable
     {
     }
 
-    internal LoaiThietBi(string tenLoai, string? moTa, string? hangSanXuat, int chuKyBaoTri, long phiTreMoiNgay)
+    internal LoaiThietBi(string tenLoai, string? moTa, string? hangSanXuat, int chuKyBaoTri, decimal phiTreMoiNgay)
     {
         KiemTra(tenLoai, chuKyBaoTri);
         if (phiTreMoiNgay < 0)
         {
             throw new LoiNghiepVuException("DU_LIEU_KHONG_HOP_LE", "Phí trả trễ mỗi ngày không được âm.");
+        }
+
+        if (phiTreMoiNgay % 1 != 0)
+        {
+            throw new LoiNghiepVuException("DU_LIEU_KHONG_HOP_LE", "Phí trả trễ mỗi ngày phải là số nguyên.");
         }
 
         MaLoai = Guid.CreateVersion7();

@@ -101,6 +101,15 @@ public sealed class PhongLoaiMienTests
     }
 
     [Fact]
+    public void UC12_TaoLoai_PhiCoPhanThapPhan_Nem400()
+    {
+        var loi = Assert.Throws<LoiNghiepVuException>(() => new LoaiThietBi("Laptop", null, null, 30, 10.5m));
+
+        Assert.Equal("DU_LIEU_KHONG_HOP_LE", loi.MaLoi);
+        Assert.Equal(400, loi.MaHttp);
+    }
+
+    [Fact]
     public void UC12_SuaLoai_KhongDoiPhiVaTrangThaiNgungSuDung()
     {
         var loai = new LoaiThietBi("Laptop", null, null, 180, 50000);

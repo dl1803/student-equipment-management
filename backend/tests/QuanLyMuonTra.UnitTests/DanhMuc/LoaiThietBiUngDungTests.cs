@@ -4,6 +4,7 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
 using QuanLyMuonTra.Modules.DanhMuc;
 using QuanLyMuonTra.Modules.DanhMuc.Application;
+using QuanLyMuonTra.Modules.DanhMuc.Domain;
 using QuanLyMuonTra.SharedKernel;
 
 namespace QuanLyMuonTra.UnitTests.DanhMuc;
@@ -113,6 +114,19 @@ public sealed class LoaiThietBiUngDungTests
 
         Assert.Equal(new[] { "ChuKyBaoTri", "HangSanXuat", "MoTa", "PhiTreMoiNgay", "TenLoai" }, taoMoi);
         Assert.Equal(new[] { "ChuKyBaoTri", "HangSanXuat", "MoTa", "TenLoai" }, capNhat);
+    }
+
+    [Fact]
+    public void UC12_AnhXaLoaiThietBi_PhiCoPhanThapPhan_Nem400()
+    {
+        var loai = new LoaiThietBi("Laptop", null, null, 30, 0);
+        typeof(LoaiThietBi).GetProperty(nameof(LoaiThietBi.PhiTreMoiNgay))!
+            .SetValue(loai, 10.5m);
+
+        var loi = Assert.Throws<LoiNghiepVuException>(() => AnhXaLoaiThietBi.SangDto(loai));
+
+        Assert.Equal("DU_LIEU_KHONG_HOP_LE", loi.MaLoi);
+        Assert.Equal(400, loi.MaHttp);
     }
 
     [Fact]
