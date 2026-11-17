@@ -357,4 +357,101 @@ describe("LoaiThietBiScreen", () => {
     fireEvent.click(hop.getByRole("button", { name: "Kiểm tra lại" }));
     await waitFor(() => expect(document.querySelector("dialog")).toBeNull());
   });
+
+  it("Review D05-T: Kiểm tra lại mà tải danh sách thất bại → giữ trạng thái chưa xác định, hộp vẫn mở", async () => {
+    let lanGet = 0;
+    mayChu({
+      get: (cfg) =>
+        lanGet++ === 0
+          ? traVe(cfg, 200, trangLoai([LAPTOP, MAY_CHIEU]))
+          : traVe(cfg, 503, { status: 503 }),
+      delete: (cfg) =>
+        Promise.reject(
+          Object.assign(new Error("Network Error"), {
+            isAxiosError: true,
+            code: "ERR_NETWORK",
+            config: cfg,
+          }),
+        ),
+    });
+    hienThi();
+    await screen.findByText("Laptop");
+
+    fireEvent.click(nutCuaDong("Laptop", "Xóa"));
+    const hop = within(hopThoai());
+    fireEvent.click(hop.getByRole("button", { name: "Xóa" }));
+    expect(await hop.findByText(/Chưa xác định được kết quả/)).toBeTruthy();
+
+    fireEvent.click(hop.getByRole("button", { name: "Kiểm tra lại" }));
+
+    await waitFor(() => expect(lanGet).toBe(2));
+    await waitFor(() =>
+      expect(hop.getByRole("button", { name: "Kiểm tra lại" })).toBeTruthy(),
+    );
+    expect(document.querySelector("dialog")).not.toBeNull();
+    expect(hop.getByText(/Chưa xác định được kết quả/)).toBeTruthy();
+  });
+
+  it("Review D05-T: xóa dòng duy nhất ở trang cuối → tự lùi về trang trước, không kẹt ở trang rỗng", async () => {
+    let daXoa = false;
+    const goi = mayChu({
+      get: (cfg) => {
+        const tongSo = daXoa ? 20 : 21;
+        const danhSach =
+          cfg.params?.trang === 2 ? (daXoa ? [] : [LAPTOP]) : [MAY_CHIEU];
+        return traVe(cfg, 200, {
+          tongSo,
+          trang: cfg.params?.trang,
+          kichThuoc: 20,
+          danhSach,
+        });
+      },
+      delete: (cfg) => {
+        daXoa = true;
+        return traVe(cfg, 204);
+      },
+    });
+    hienThi();
+    await screen.findByText("Máy chiếu");
+    fireEvent.click(screen.getByRole("button", { name: "Sau" }));
+    await screen.findByText("Laptop");
+
+    fireEvent.click(nutCuaDong("Laptop", "Xóa"));
+    fireEvent.click(within(hopThoai()).getByRole("button", { name: "Xóa" }));
+
+    expect(await screen.findByText("Máy chiếu")).toBeTruthy();
+    expect(goiTheo(goi, "get").at(-1)?.params).toEqual({
+      trang: 1,
+      kichThuoc: 20,
+    });
+    expect(screen.queryByText("Chưa có loại thiết bị")).toBeNull();
+  });
+
+  it("Review D05-T: Sửa nhận 409 → ô phí chỉ đọc hiển thị phí của bản mới nhất", async () => {
+    let lanGet = 0;
+    mayChu({
+      get: (cfg) =>
+        traVe(
+          cfg,
+          200,
+          trangLoai([
+            lanGet++ === 0 ? LAPTOP : { ...LAPTOP, phiTreMoiNgay: 30000 },
+          ]),
+        ),
+      put: (cfg) =>
+        traVe(cfg, 409, { status: 409, maLoi: "XUNG_DOT_CAP_NHAT" }),
+    });
+    hienThi();
+    await screen.findByText("Laptop");
+
+    fireEvent.click(nutCuaDong("Laptop", "Sửa"));
+    const hop = within(hopThoai());
+    fireEvent.click(hop.getByRole("button", { name: "Lưu" }));
+
+    await waitFor(() =>
+      expect(
+        (hop.getByLabelText(/Phí trả trễ/) as HTMLInputElement).value,
+      ).toBe("30.000 VNĐ"),
+    );
+  });
 });

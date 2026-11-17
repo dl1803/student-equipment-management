@@ -97,9 +97,14 @@ export function DataTable<TDong>({
                 (hd) => hd.an !== true,
               );
               if (dsHanhDong.length > SO_HANH_DONG_TRUC_TIEP_TOI_DA) {
-                throw new Error(
-                  "DataTable: từ 3 hành động trở lên phải gom vào Menu (CMP-20, ĐX-DS-14) — chưa hiện thực",
-                );
+                // Lỗi lập trình: báo ngay ở dev/test; production chỉ ghi log và vẫn hiện đủ nút
+                // (không làm sập màn hình, không âm thầm bỏ hành động).
+                const thongDiep =
+                  "DataTable: từ 3 hành động trở lên phải gom vào Menu (CMP-20, ĐX-DS-14) — chưa hiện thực";
+                if (process.env.NODE_ENV !== "production") {
+                  throw new Error(thongDiep);
+                }
+                console.error(thongDiep);
               }
               return (
                 <tr

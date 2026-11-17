@@ -5,6 +5,8 @@ export const THONG_DIEP_DANH_MUC = {
   LOAI_RONG_BO_LOC: "Không có loại thiết bị phù hợp bộ lọc",
   XUNG_DOT:
     "Dữ liệu vừa được người khác thay đổi. Biểu mẫu đã nạp giá trị mới nhất, vui lòng sửa lại rồi lưu.",
+  XUNG_DOT_KHONG_NAP:
+    "Dữ liệu vừa được người khác thay đổi. Danh sách đã được tải lại; kiểm tra giá trị hiện tại trước khi lưu lại.",
   CHUA_BIET_KET_QUA:
     "Chưa xác định được kết quả. Bấm Kiểm tra lại để tải danh sách mới nhất trước khi lưu lại.",
   KHONG_CON_TON_TAI:

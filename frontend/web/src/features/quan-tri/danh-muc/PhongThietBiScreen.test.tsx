@@ -267,4 +267,33 @@ describe("PhongThietBiScreen", () => {
 
     await waitFor(() => expect(document.querySelector("dialog")).toBeNull());
   });
+
+  it("Review D05-T: 409 mà phòng không còn trong trang hiện tại → giữ hộp và dữ liệu đang nhập, không báo đã xóa", async () => {
+    let lanGet = 0;
+    mayChu({
+      get: (cfg) =>
+        traVe(cfg, 200, trangPhong(lanGet++ === 0 ? [A1, B2] : [B2])),
+      put: (cfg) =>
+        traVe(cfg, 409, { status: 409, maLoi: "XUNG_DOT_CAP_NHAT" }),
+    });
+    hienThi();
+    await screen.findByText("Phòng thiết bị A1");
+
+    fireEvent.click(
+      screen.getAllByRole("button", { name: "Sửa" })[0] ?? document.body,
+    );
+    const hop = within(hopThoai());
+    fireEvent.change(hop.getByLabelText(/Cơ sở/), {
+      target: { value: "Cơ sở mới" },
+    });
+    fireEvent.click(hop.getByRole("button", { name: "Lưu" }));
+
+    expect(
+      await hop.findByText(/kiểm tra giá trị hiện tại trước khi lưu lại/),
+    ).toBeTruthy();
+    expect((hop.getByLabelText(/Cơ sở/) as HTMLInputElement).value).toBe(
+      "Cơ sở mới",
+    );
+    expect(screen.queryByText(/Không tìm thấy/)).toBeNull();
+  });
 });

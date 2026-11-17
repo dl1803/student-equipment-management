@@ -3,7 +3,10 @@
 // SCR-QT-02 Phòng thiết bị (UI-Screens 7.2; UF-QT-01; Wireframes 7). Sở hữu: Thịnh.
 // Xem, thêm, sửa phòng; KHÔNG có Xóa. Bảng phân trang: tên phòng, cơ sở.
 import { useState } from "react";
-import { KICH_THUOC_TRANG_MAC_DINH } from "@/shared/api/phanTrang";
+import {
+  KICH_THUOC_TRANG_MAC_DINH,
+  trangCanLuiVe,
+} from "@/shared/api/phanTrang";
 import type { PhongThietBi } from "@/shared/api/types";
 import { Banner } from "@/shared/components/Banner";
 import { Button } from "@/shared/components/Button";
@@ -28,15 +31,24 @@ export function PhongThietBiScreen() {
   const [hop, setHop] = useState<HopBieuMau | null>(null);
   const [thongBao, setThongBao] = useState<ThongBao | null>(null);
 
+  // Tổng số giảm làm trang hiện tại vượt quá số trang → lùi về trang cuối (điều chỉnh khi render).
+  if (truyVan.data !== undefined && !truyVan.isPlaceholderData) {
+    const luiVe = trangCanLuiVe(
+      trang,
+      truyVan.data.tongSo,
+      KICH_THUOC_TRANG_MAC_DINH,
+    );
+    if (luiVe !== null) setTrang(luiVe);
+  }
+
   const moHop = (phong: PhongThietBi | null) => {
     setThongBao(null);
     setHop({ phong });
   };
 
-  const taiLaiDanhSach = async () => {
-    await truyVan.refetch();
-  };
+  const taiLaiDanhSach = async () => (await truyVan.refetch()).isSuccess;
 
+  // API không có GET theo mã nên chỉ tìm được trong trang hiện tại; null không có nghĩa là đã xóa.
   const layBanMoiNhat = async (maPhong: string) => {
     const ketQua = await truyVan.refetch();
     return ketQua.data?.danhSach.find((p) => p.maPhong === maPhong) ?? null;

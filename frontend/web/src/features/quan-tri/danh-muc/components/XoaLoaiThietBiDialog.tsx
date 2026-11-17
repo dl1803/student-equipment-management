@@ -21,7 +21,8 @@ export type XoaLoaiThietBiDialogProps = {
   onDong: () => void;
   /** Kết thúc với thông báo hiển thị ở màn hình (thành công hoặc lý do không xóa được). */
   onXong: (thongBao: ThongBao) => void;
-  taiLaiDanhSach: () => Promise<void>;
+  /** Tải lại danh sách; true nếu tải thành công. */
+  taiLaiDanhSach: () => Promise<boolean>;
 };
 
 export function XoaLoaiThietBiDialog({
@@ -76,8 +77,9 @@ export function XoaLoaiThietBiDialog({
   );
   const thaoTac = buoc === "XOA" ? xoa : ngung;
 
+  // Tải lại thất bại thì giữ trạng thái chưa biết kết quả, hộp vẫn mở để kiểm tra lại sau.
   const kiemTraLai = async () => {
-    await taiLaiDanhSach();
+    if (!(await taiLaiDanhSach())) return;
     thaoTac.xacNhanDaKiemTra();
     onDong(); // Danh sách mới nhất cho biết thao tác đã có hiệu lực hay chưa.
   };

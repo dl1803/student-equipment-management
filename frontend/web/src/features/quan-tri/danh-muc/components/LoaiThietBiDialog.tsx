@@ -39,7 +39,8 @@ export type LoaiThietBiDialogProps = {
   loai: LoaiThietBi | null;
   onDong: () => void;
   layBanMoiNhat: (maLoai: string) => Promise<LoaiThietBi | null>;
-  taiLaiDanhSach: () => Promise<void>;
+  /** Tải lại danh sách; true nếu tải thành công. */
+  taiLaiDanhSach: () => Promise<boolean>;
   onKhongConTonTai: () => void;
 };
 
@@ -73,6 +74,8 @@ export function LoaiThietBiDialog({
   const { register, formState } = form;
   const [thongBao, setThongBao] = useState<ThongBao | null>(null);
   const [loiKhongGan, setLoiKhongGan] = useState<string[]>([]);
+  // Phí chỉ đọc khi sửa: lấy theo bản mới nhất sau xung đột 409, không theo prop ban đầu.
+  const [phiHienTai, setPhiHienTai] = useState(loai?.phiTreMoiNgay ?? null);
 
   async function xuLyLoi(loi: ApiError) {
     if (laChuaBietKetQua(loi)) return;
@@ -83,10 +86,15 @@ export function LoaiThietBiDialog({
     if (loi.maLoi === "XUNG_DOT_CAP_NHAT" && loai !== null) {
       const banMoi = await layBanMoiNhat(loai.maLoai);
       if (banMoi === null) {
-        onKhongConTonTai();
+        // Không thấy trong trang hiện tại chưa chắc đã bị xóa: giữ dữ liệu đang nhập (xem PhongDialog).
+        setThongBao({
+          tong: "warning",
+          noiDung: THONG_DIEP_DANH_MUC.XUNG_DOT_KHONG_NAP,
+        });
         return;
       }
       form.reset(giaTriBanDau(banMoi));
+      setPhiHienTai(banMoi.phiTreMoiNgay);
       setThongBao({ tong: "warning", noiDung: THONG_DIEP_DANH_MUC.XUNG_DOT });
       return;
     }
@@ -125,9 +133,9 @@ export function LoaiThietBiDialog({
     })();
   };
 
+  // Tải lại thất bại thì giữ trạng thái chưa biết kết quả để người dùng kiểm tra lại sau.
   const kiemTraLai = async () => {
-    await taiLaiDanhSach();
-    thaoTac.xacNhanDaKiemTra();
+    if (await taiLaiDanhSach()) thaoTac.xacNhanDaKiemTra();
   };
 
   const loiCua = (truong: keyof GiaTriLoai) => {
@@ -251,11 +259,7 @@ export function LoaiThietBiDialog({
           <div className="flex flex-col gap-field-label">
             <FormField id="phiTreMoiNgay" nhan="Phí trả trễ mỗi ngày">
               {(tt) => (
-                <TextField
-                  {...tt}
-                  readOnly
-                  value={formatTien(loai.phiTreMoiNgay)}
-                />
+                <TextField {...tt} readOnly value={formatTien(phiHienTai)} />
               )}
             </FormField>
             <div>

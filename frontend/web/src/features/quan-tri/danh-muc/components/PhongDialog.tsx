@@ -24,10 +24,11 @@ export type PhongDialogProps = {
   /** null: thêm phòng mới. */
   phong: PhongThietBi | null;
   onDong: () => void;
-  /** Tải lại danh sách và trả bản mới nhất của phòng (null nếu không còn trong trang). */
+  /** Tải lại danh sách và trả bản mới nhất của phòng (null nếu không thấy trong trang hiện tại). */
   layBanMoiNhat: (maPhong: string) => Promise<PhongThietBi | null>;
-  taiLaiDanhSach: () => Promise<void>;
-  /** Phòng không còn tồn tại (404 hoặc không thấy sau khi tải lại): màn hình báo và đóng hộp. */
+  /** Tải lại danh sách; true nếu tải thành công. */
+  taiLaiDanhSach: () => Promise<boolean>;
+  /** Máy chủ trả 404: màn hình báo và đóng hộp. */
   onKhongConTonTai: () => void;
 };
 
@@ -63,7 +64,12 @@ export function PhongDialog({
     if (loi.maLoi === "XUNG_DOT_CAP_NHAT" && phong !== null) {
       const banMoi = await layBanMoiNhat(phong.maPhong);
       if (banMoi === null) {
-        onKhongConTonTai();
+        // Không thấy trong trang hiện tại (đổi thứ tự/trang) chưa chắc đã bị xóa: giữ dữ liệu đang
+        // nhập; nếu thật sự không còn, lần lưu sau nhận 404.
+        setThongBao({
+          tong: "warning",
+          noiDung: THONG_DIEP_DANH_MUC.XUNG_DOT_KHONG_NAP,
+        });
         return;
       }
       form.reset(giaTriBanDau(banMoi));
@@ -94,9 +100,9 @@ export function PhongDialog({
     })();
   };
 
+  // Tải lại thất bại thì giữ trạng thái chưa biết kết quả để người dùng kiểm tra lại sau.
   const kiemTraLai = async () => {
-    await taiLaiDanhSach();
-    thaoTac.xacNhanDaKiemTra();
+    if (await taiLaiDanhSach()) thaoTac.xacNhanDaKiemTra();
   };
 
   return (

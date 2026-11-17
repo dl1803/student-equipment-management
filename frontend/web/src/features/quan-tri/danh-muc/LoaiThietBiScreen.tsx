@@ -4,7 +4,10 @@
 // Xem, thêm, sửa, xóa hoặc ngưng sử dụng loại. Bộ lọc Ngưng sử dụng (Tất cả / Đang sử dụng /
 // Đã ngưng sử dụng); đổi bộ lọc tải lại từ trang 1 (FA 3.10).
 import { useState } from "react";
-import { KICH_THUOC_TRANG_MAC_DINH } from "@/shared/api/phanTrang";
+import {
+  KICH_THUOC_TRANG_MAC_DINH,
+  trangCanLuiVe,
+} from "@/shared/api/phanTrang";
 import type { LoaiThietBi } from "@/shared/api/types";
 import { Banner } from "@/shared/components/Banner";
 import { Button } from "@/shared/components/Button";
@@ -46,15 +49,24 @@ export function LoaiThietBiScreen() {
   const [hop, setHop] = useState<HopDangMo | null>(null);
   const [thongBao, setThongBao] = useState<ThongBao | null>(null);
 
+  // Xóa dòng cuối của trang cuối làm trang vượt quá số trang → lùi về trang cuối (điều chỉnh khi render).
+  if (truyVan.data !== undefined && !truyVan.isPlaceholderData) {
+    const luiVe = trangCanLuiVe(
+      trang,
+      truyVan.data.tongSo,
+      KICH_THUOC_TRANG_MAC_DINH,
+    );
+    if (luiVe !== null) setTrang(luiVe);
+  }
+
   const doiLoc = (giaTri: LocNgungSuDung | null) => {
     setLoc(giaTri);
     setTrang(1);
   };
 
-  const taiLaiDanhSach = async () => {
-    await truyVan.refetch();
-  };
+  const taiLaiDanhSach = async () => (await truyVan.refetch()).isSuccess;
 
+  // API không có GET theo mã nên chỉ tìm được trong trang hiện tại; null không có nghĩa là đã xóa.
   const layBanMoiNhat = async (maLoai: string) => {
     const ketQua = await truyVan.refetch();
     return ketQua.data?.danhSach.find((l) => l.maLoai === maLoai) ?? null;
@@ -131,12 +143,12 @@ export function LoaiThietBiScreen() {
           {
             khoa: "hangSanXuat",
             tieuDe: "Hãng sản xuất",
-            hienThi: (l) => l.hangSanXuat ?? GIA_TRI_THIEU,
+            hienThi: (l) => l.hangSanXuat?.trim() || GIA_TRI_THIEU,
           },
           {
             khoa: "moTa",
             tieuDe: "Mô tả",
-            hienThi: (l) => l.moTa ?? GIA_TRI_THIEU,
+            hienThi: (l) => l.moTa?.trim() || GIA_TRI_THIEU,
           },
           {
             khoa: "chuKyBaoTri",

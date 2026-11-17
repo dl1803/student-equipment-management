@@ -135,6 +135,21 @@ describe("Pagination", () => {
     );
     expect(container.innerHTML).toBe("");
   });
+
+  it("CMP-19: tổng giảm còn một trang nhưng đang ở trang 2 → vẫn hiện, Trước dùng được", () => {
+    const onDoiTrang = vi.fn();
+    render(
+      <Pagination
+        trang={2}
+        kichThuoc={20}
+        tongSo={20}
+        onDoiTrang={onDoiTrang}
+      />,
+    );
+    expect(screen.getByText("Trang 2 / 1")).toBeTruthy();
+    fireEvent.click(screen.getByRole("button", { name: "Trước" }));
+    expect(onDoiTrang).toHaveBeenCalledWith(1);
+  });
 });
 
 describe("Select", () => {
@@ -166,6 +181,25 @@ describe("Select", () => {
     expect(onChange).toHaveBeenLastCalledWith("true");
     fireEvent.change(o, { target: { value: "" } });
     expect(onChange).toHaveBeenLastCalledWith(null);
+  });
+
+  it("CMP-06: không có mục Tất cả và chưa chọn → hiện gợi ý (không chọn lại được), không tự hiện lựa chọn đầu", () => {
+    render(
+      <>
+        <label htmlFor="coSo">Cơ sở</label>
+        <Select
+          id="coSo"
+          dsLuaChon={[{ giaTri: "A", nhan: "Cơ sở A" }]}
+          giaTri={null}
+          onChange={vi.fn()}
+          goiY="Chọn cơ sở"
+        />
+      </>,
+    );
+    const o = screen.getByLabelText("Cơ sở") as HTMLSelectElement;
+    expect(o.value).toBe("");
+    expect(o.selectedOptions[0]?.textContent).toBe("Chọn cơ sở");
+    expect(o.options[0]?.disabled).toBe(true);
   });
 });
 
