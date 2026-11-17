@@ -18,6 +18,10 @@ public static class DependencyInjection
         services.AddScoped<TaoPhongThietBiHandler>();
         services.AddScoped<SuaPhongThietBiHandler>();
         services.AddSingleton<IValidator<PhongThietBiRequest>, PhongThietBiRequestValidator>();
+        services.AddScoped<TaoLoaiThietBiHandler>();
+        services.AddScoped<SuaLoaiThietBiHandler>();
+        services.AddSingleton<IValidator<LoaiThietBiTaoMoiRequest>, LoaiThietBiTaoMoiRequestValidator>();
+        services.AddSingleton<IValidator<LoaiThietBiCapNhatRequest>, LoaiThietBiCapNhatRequestValidator>();
         return services;
     }
 }
