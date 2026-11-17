@@ -61,6 +61,14 @@ Mọi dòng dưới đây đang **OPEN**. Một quyết định OPEN chặn đú
 | K-7 | Ở D04-K làm nửa phát hành refresh token (sinh token ngẫu nhiên, lưu băm SHA-256 hạn 7 ngày vào `tai_khoan.refresh_token`). D05-K làm phần xoay vòng, thu hồi, làm mới và đăng xuất | Đã chốt theo D04-K | 2026-11-16 |
 | K-8 | Dùng giá trị `Seed:AdminUser` cho cả `ten_dang_nhap`, `ma_qt` và `ho_ten` của quản trị viên khởi tạo; mật khẩu tối thiểu 8 ký tự | Đã chốt theo D04-K | 2026-11-16 |
 
+### Quyết định D05-K cho K-9, K-10, K-11
+
+| Mã | Quyết định | Trạng thái | Ngày |
+|---|---|---|---|
+| K-9 | Handler đăng nhập SV đặt ở `TaiKhoan` (phát hành JWT và refresh token). `ISchoolDirectory` ở `SinhVien.Application` (KT 7.1). Hai module nối bằng `IXacThucSinhVien` ở `SinhVien.Contracts`; thêm tham chiếu `TaiKhoan → SinhVien.Contracts`, không tạo chu trình | Khôi đề xuất, chờ nhóm xác nhận | 2026-11-16 |
+| K-10 | `ISchoolDirectory` ở D05 chỉ có `XacThucAsync` (trả kèm thông tin SV); `LayTheoMssvAsync`, `LayThayDoiTuAsync` thêm ở D11-K. Đăng nhập SV thành công làm mới hồ sơ bằng một câu upsert 9 cột, không ghi `trang_thai_quyen_muon`, không upsert `nhom_sinh_vien` (nhóm phải có ở cả hai phía, đã seed ở `schema.sql` mục 10.4). `MockSchoolDirectory` là bản giả lập đọc `truong_gia_lap` (KT-05) | Khôi đề xuất, chờ nhóm xác nhận | 2026-11-16 |
+| K-11 | `lam-moi`: mọi lỗi (không thấy, hết hạn, đã thu hồi, tài khoản NV/QT không `HOAT_DONG`) trả 401 `CHUA_XAC_THUC`, vì OpenAPI `authLamMoi` không khai báo 403. Dùng lại token đã xoay vòng: thu hồi các token phía sau theo `thay_the_boi` rồi trả 401. Làm mới đồng thời cùng token: một thành công, một 401 và chuỗi bị thu hồi. `dang-xuat`: token không tồn tại trả 401; tồn tại thì thu hồi token và các token phía sau, trả 204 (lặp lại vẫn 204). Việc thu hồi refresh token ngay khi QT khóa tài khoản thuộc D06-K | Khôi đề xuất, chờ nhóm xác nhận | 2026-11-16 |
+
 ## 5. Mâu thuẫn giữa các nguồn đã phát hiện
 
 | # | Nội dung | Nguồn A | Nguồn B | Cách xử lý |
