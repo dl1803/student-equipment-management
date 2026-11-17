@@ -37,6 +37,9 @@
     <None Update="MuonTra\D03-V-du-lieu-thu.sql">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
+    <None Update="MuonTra\D05-V-du-lieu-thu.sql">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
   </ItemGroup>
 
 </Project>
