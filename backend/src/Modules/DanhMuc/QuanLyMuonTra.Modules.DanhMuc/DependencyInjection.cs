@@ -1,3 +1,4 @@
+using FluentValidation;
 using Microsoft.Extensions.DependencyInjection;
 using QuanLyMuonTra.Modules.DanhMuc.Application;
 using QuanLyMuonTra.Modules.DanhMuc.Contracts;
@@ -14,6 +15,13 @@ public static class DependencyInjection
         services.AddScoped<DsLoaiThietBiHandler>();
         services.AddScoped<DsThietBiHandler>();
         services.AddScoped<DsNhaCungCapHandler>();
+        services.AddScoped<TaoPhongThietBiHandler>();
+        services.AddScoped<SuaPhongThietBiHandler>();
+        services.AddScoped<IValidator<PhongThietBiRequest>, PhongThietBiRequestValidator>();
+        services.AddScoped<TaoLoaiThietBiHandler>();
+        services.AddScoped<SuaLoaiThietBiHandler>();
+        services.AddScoped<IValidator<LoaiThietBiTaoMoiRequest>, LoaiThietBiTaoMoiRequestValidator>();
+        services.AddScoped<IValidator<LoaiThietBiCapNhatRequest>, LoaiThietBiCapNhatRequestValidator>();
         return services;
     }
 }
