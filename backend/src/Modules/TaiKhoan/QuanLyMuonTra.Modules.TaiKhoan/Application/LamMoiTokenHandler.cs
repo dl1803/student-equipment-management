@@ -55,6 +55,7 @@ public sealed class LamMoiTokenHandler(
         {
             await giaoDich.RollbackAsync(ct);
             db.ChangeTracker.Clear();
+            await ThuHoiChuoiRefreshToken.ThucHienAsync(db, cu.Ma, ct);
             throw TokenKhongHopLe();
         }
 
@@ -62,6 +63,7 @@ public sealed class LamMoiTokenHandler(
         {
             await giaoDich.RollbackAsync(ct);
             db.ChangeTracker.Clear();
+            await ThuHoiChuoiRefreshToken.ThucHienAsync(db, cu.Ma, ct);
             throw TokenKhongHopLe();
         }
 

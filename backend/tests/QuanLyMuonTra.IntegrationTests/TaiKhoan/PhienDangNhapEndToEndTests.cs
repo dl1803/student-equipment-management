@@ -224,16 +224,13 @@ public sealed class PhienDangNhapEndToEndTests : IAsyncLifetime
     }
 
     [Fact]
-    public async Task UC19_LamMoi_HaiYeuCauDongThoiCungToken_MotThanhCongMotBiTuChoiVaTokenMoiHopLe()
+    public async Task UC19_LamMoi_HaiYeuCauDongThoiCungToken_MotThanhCongMotBiTuChoiVaChuoiBiThuHoi()
     {
         var mssv = await ThemSinhVienTruongAsync("CNPM");
         try
         {
             var (_, token) = await DangNhapThanhCongAsync(mssv);
 
-            // Gửi 2 yêu cầu làm mới cùng lúc với cùng refresh token
-            // PostgreSQL đảm bảo chỉ 1 UPDATE thành công (cập nhật thay_the_boi)
-            // → đúng 1 request 200 OK và 1 request 401
             var phanHoi = await Task.WhenAll(
                 Task.Run(() => LamMoiAsync(token)),
                 Task.Run(() => LamMoiAsync(token)));
@@ -243,13 +240,10 @@ public sealed class PhienDangNhapEndToEndTests : IAsyncLifetime
             Assert.Single(thanhCong);
             Assert.Single(biTuChoi);
 
-            // Token mới từ request thắng cuộc phải dùng được
             var tokenMoi = (await DocJsonAsync(thanhCong[0])).GetProperty("refreshToken").GetString()!;
             var dungTokenMoi = await LamMoiAsync(tokenMoi);
-            Assert.Equal(HttpStatusCode.OK, dungTokenMoi.StatusCode);
-
-            // Phiên vẫn còn 1 token hợp lệ, không bị thu hồi nhầm
-            Assert.Equal(1, await DemTokenConHieuLucAsync(mssv));
+            Assert.Equal(HttpStatusCode.Unauthorized, dungTokenMoi.StatusCode);
+            Assert.Equal(0, await DemTokenConHieuLucAsync(mssv));
         }
         finally
         {
