@@ -224,23 +224,113 @@ public sealed class PhienDangNhapEndToEndTests : IAsyncLifetime
     }
 
     [Fact]
-    public async Task UC19_LamMoi_HaiYeuCauDongThoiCungToken_MotThanhCongMotBiTuChoiVaChuoiBiThuHoi()
+    public async Task UC19_LamMoi_HaiYeuCauDongThoiCungToken_MotThanhCongMotBiTuChoiVaTokenMoiHopLe()
     {
         var mssv = await ThemSinhVienTruongAsync("CNPM");
         try
         {
             var (_, token) = await DangNhapThanhCongAsync(mssv);
 
-            var phanHoi = await Task.WhenAll(LamMoiAsync(token), LamMoiAsync(token));
+            // Gửi 2 yêu cầu làm mới cùng lúc với cùng refresh token
+            // PostgreSQL đảm bảo chỉ 1 UPDATE thành công (cập nhật thay_the_boi)
+            // → đúng 1 request 200 OK và 1 request 401
+            var phanHoi = await Task.WhenAll(
+                Task.Run(() => LamMoiAsync(token)),
+                Task.Run(() => LamMoiAsync(token)));
 
             var thanhCong = phanHoi.Where(p => p.StatusCode == HttpStatusCode.OK).ToList();
             var biTuChoi = phanHoi.Where(p => p.StatusCode == HttpStatusCode.Unauthorized).ToList();
             Assert.Single(thanhCong);
             Assert.Single(biTuChoi);
+
+            // Token mới từ request thắng cuộc phải dùng được
             var tokenMoi = (await DocJsonAsync(thanhCong[0])).GetProperty("refreshToken").GetString()!;
             var dungTokenMoi = await LamMoiAsync(tokenMoi);
-            Assert.Equal(HttpStatusCode.Unauthorized, dungTokenMoi.StatusCode);
-            Assert.Equal(0, await DemTokenConHieuLucAsync(mssv));
+            Assert.Equal(HttpStatusCode.OK, dungTokenMoi.StatusCode);
+
+            // Phiên vẫn còn 1 token hợp lệ, không bị thu hồi nhầm
+            Assert.Equal(1, await DemTokenConHieuLucAsync(mssv));
+        }
+        finally
+        {
+            await DonSinhVienAsync(mssv);
+        }
+    }
+
+    [Fact]
+    public async Task UC19_LamMoi_NhanVienDoiVaiTro_TokenMoiLuuVaiTroMoiTrongDb()
+    {
+        var tenNv = $"nv-d05-{Guid.NewGuid():N}";
+        var matKhau = "MatKhauNv@123";
+        var maNv = Guid.CreateVersion7();
+        var bam = new PasswordHasher<NguoiDungHeThong>().HashPassword(null!, matKhau);
+        using (var phamVi = _factory.Services.CreateScope())
+        {
+            var db = phamVi.ServiceProvider.GetRequiredService<AppDbContext>();
+            await db.Database.ExecuteSqlInterpolatedAsync($"""
+                INSERT INTO tai_khoan.nguoi_dung_he_thong (ma_nguoi_dung, ten_dang_nhap, mat_khau_bam, ho_ten, trang_thai_khoa)
+                VALUES ({maNv}, {tenNv}, {bam}, 'Nhan Vien D05', 'HOAT_DONG');
+                INSERT INTO tai_khoan.nhan_vien_quan_ly (ma_nguoi_dung, ma_nv) VALUES ({maNv}, {tenNv});
+                """);
+        }
+
+        try
+        {
+            var dangNhap = await _client.PostAsJsonAsync("/api/v1/auth/nhan-vien/dang-nhap", new { tenDangNhap = tenNv, matKhau });
+            Assert.Equal(HttpStatusCode.OK, dangNhap.StatusCode);
+            var token1 = (await DocJsonAsync(dangNhap)).GetProperty("refreshToken").GetString()!;
+
+            using (var phamVi = _factory.Services.CreateScope())
+            {
+                var db = phamVi.ServiceProvider.GetRequiredService<AppDbContext>();
+                await db.Database.ExecuteSqlInterpolatedAsync($"DELETE FROM tai_khoan.nhan_vien_quan_ly WHERE ma_nguoi_dung = {maNv}");
+                await db.Database.ExecuteSqlInterpolatedAsync($"INSERT INTO tai_khoan.quan_tri_vien (ma_nguoi_dung, ma_qt) VALUES ({maNv}, {tenNv})");
+            }
+
+            var lan1 = await LamMoiAsync(token1);
+            Assert.Equal(HttpStatusCode.OK, lan1.StatusCode);
+            var json1 = await DocJsonAsync(lan1);
+            Assert.Equal("QUAN_TRI", json1.GetProperty("vaiTro").GetString());
+            var token2 = json1.GetProperty("refreshToken").GetString()!;
+
+            using (var phamVi = _factory.Services.CreateScope())
+            {
+                var db = phamVi.ServiceProvider.GetRequiredService<AppDbContext>();
+                var vaiTroDb = await db.Database.SqlQuery<string>($"""
+                    SELECT chu_so_huu_loai AS "Value" FROM tai_khoan.refresh_token
+                    WHERE ma_bam = {RefreshToken.Bam(token2)}
+                    """).SingleAsync();
+                Assert.Equal("QUAN_TRI", vaiTroDb);
+            }
+        }
+        finally
+        {
+            using var phamVi = _factory.Services.CreateScope();
+            var db = phamVi.ServiceProvider.GetRequiredService<AppDbContext>();
+            await db.Database.ExecuteSqlInterpolatedAsync($"DELETE FROM tai_khoan.refresh_token WHERE chu_so_huu_ma = {maNv.ToString()}");
+            await db.Database.ExecuteSqlInterpolatedAsync($"DELETE FROM tai_khoan.nhan_vien_quan_ly WHERE ma_nguoi_dung = {maNv}");
+            await db.Database.ExecuteSqlInterpolatedAsync($"DELETE FROM tai_khoan.quan_tri_vien WHERE ma_nguoi_dung = {maNv}");
+            await db.Database.ExecuteSqlInterpolatedAsync($"DELETE FROM tai_khoan.nguoi_dung_he_thong WHERE ma_nguoi_dung = {maNv}");
+        }
+    }
+
+    [Fact]
+    public async Task UC19_LamMoi_SinhVienKhongTonTaiTrongHoSo_Tra401ChuaXacThuc()
+    {
+        var mssv = await ThemSinhVienTruongAsync("CNPM");
+        try
+        {
+            var (_, token) = await DangNhapThanhCongAsync(mssv);
+            using (var phamVi = _factory.Services.CreateScope())
+            {
+                var db = phamVi.ServiceProvider.GetRequiredService<AppDbContext>();
+                await db.Database.ExecuteSqlInterpolatedAsync($"DELETE FROM sinh_vien.sinh_vien WHERE ma_sv = {mssv}");
+            }
+
+            var phanHoi = await LamMoiAsync(token);
+
+            Assert.Equal(HttpStatusCode.Unauthorized, phanHoi.StatusCode);
+            Assert.Equal("CHUA_XAC_THUC", (await DocJsonAsync(phanHoi)).GetProperty("maLoi").GetString());
         }
         finally
         {
@@ -351,8 +441,8 @@ public sealed class PhienDangNhapEndToEndTests : IAsyncLifetime
     private Task<HttpResponseMessage> DangNhapSinhVienAsync(string mssv, string matKhau) =>
         _client.PostAsJsonAsync("/api/v1/auth/sinh-vien/dang-nhap", new { mssv, matKhau });
 
-    private Task<HttpResponseMessage> LamMoiAsync(string refreshToken) =>
-        _client.PostAsJsonAsync("/api/v1/auth/lam-moi", new { refreshToken });
+    private Task<HttpResponseMessage> LamMoiAsync(string refreshToken, HttpClient? client = null) =>
+        (client ?? _client).PostAsJsonAsync("/api/v1/auth/lam-moi", new { refreshToken });
 
     private Task<HttpResponseMessage> DangXuatAsync(string refreshToken) =>
         _client.PostAsJsonAsync("/api/v1/auth/dang-xuat", new { refreshToken });

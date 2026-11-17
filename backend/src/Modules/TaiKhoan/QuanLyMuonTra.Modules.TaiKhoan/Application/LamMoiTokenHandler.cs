@@ -29,23 +29,39 @@ public sealed class LamMoiTokenHandler(
         }
 
         var (vaiTro, maDinhDanh) = await XacDinhChuSoHuuAsync(cu, ct);
-        var (moi, tokenMoiGoc) = RefreshToken.TaoMoi(cu.ChuSoHuuLoai, cu.ChuSoHuuMa, bayGio);
+        var (moi, tokenMoiGoc) = RefreshToken.TaoMoi(vaiTro, cu.ChuSoHuuMa, bayGio);
 
         await using var giaoDich = await db.Database.BeginTransactionAsync(ct);
         db.Set<RefreshToken>().Add(moi);
         await db.SaveChangesAsync(ct);
 
-        var soDongXoay = await db.Database.ExecuteSqlInterpolatedAsync($"""
-            UPDATE tai_khoan.refresh_token
-            SET da_thu_hoi = true, thay_the_boi = {moi.Ma}
-            WHERE ma = {cu.Ma} AND da_thu_hoi = false AND thay_the_boi IS NULL
-            """, ct);
+        // SET LOCAL lock_timeout giới hạn thời gian chờ row lock trong transaction này.
+        // Khi nhiều request đồng thời xoay vòng cùng token, chỉ 1 request "thắng" UPDATE;
+        // các request "thua" sẽ nhận lock_timeout thay vì đợi vô hạn (đặc biệt quan trọng
+        // trên PgBouncer/Supabase vốn không hủy lock wait tự động).
+        await db.Database.ExecuteSqlRawAsync("SET LOCAL lock_timeout = '2000ms'", ct);
+
+        int soDongXoay;
+        try
+        {
+            soDongXoay = await db.Database.ExecuteSqlInterpolatedAsync($"""
+                UPDATE tai_khoan.refresh_token
+                SET da_thu_hoi = true, thay_the_boi = {moi.Ma}
+                WHERE ma = {cu.Ma} AND da_thu_hoi = false AND thay_the_boi IS NULL
+                """, ct);
+        }
+        catch (Exception ex) when (ex.InnerException?.GetType().Name == "NpgsqlException"
+            && (ex.InnerException.Message.Contains("55P03") || ex.InnerException.Message.Contains("lock_not_available") || ex.InnerException.Message.Contains("lock timeout")))
+        {
+            await giaoDich.RollbackAsync(ct);
+            db.ChangeTracker.Clear();
+            throw TokenKhongHopLe();
+        }
 
         if (soDongXoay == 0)
         {
             await giaoDich.RollbackAsync(ct);
             db.ChangeTracker.Clear();
-            await ThuHoiChuoiRefreshToken.ThucHienAsync(db, cu.Ma, ct);
             throw TokenKhongHopLe();
         }
 
@@ -61,6 +77,17 @@ public sealed class LamMoiTokenHandler(
     {
         if (token.ChuSoHuuLoai == MaVaiTro.SinhVien)
         {
+            var tonTai = await db.Database.SqlQuery<int>($"""
+                SELECT count(*)::int AS "Value"
+                FROM sinh_vien.sinh_vien
+                WHERE ma_sv = {token.ChuSoHuuMa}
+                """).SingleAsync(ct);
+
+            if (tonTai == 0)
+            {
+                throw TokenKhongHopLe();
+            }
+
             return (MaVaiTro.SinhVien, token.ChuSoHuuMa);
         }
 
@@ -78,4 +105,3 @@ public sealed class LamMoiTokenHandler(
         return (nguoiDung.VaiTro, nguoiDung.MaNguoiDung.ToString());
     }
 }
-

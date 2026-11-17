@@ -90,6 +90,34 @@ public sealed class XacThucSinhVienTests
         Assert.Null(ketQua);
     }
 
+    [Fact]
+    public async Task UC19_SinhVienCoNhomMoiChuaCoTrongBangNhom_TuDongThemNhomVaTaoHoSoThanhCong()
+    {
+        await using var dichVu = TaoDichVu();
+        await using var phamVi = dichVu.CreateAsyncScope();
+        var db = phamVi.ServiceProvider.GetRequiredService<AppDbContext>();
+        await using var giaoDich = await db.Database.BeginTransactionAsync();
+        var mssv = $"SV-D05-{Guid.NewGuid():N}";
+        var maNhomMoi = $"NHOM_{Guid.NewGuid():N}";
+        var bam = new PasswordHasher<object>().HashPassword(null!, MatKhauDung);
+        await db.Database.ExecuteSqlInterpolatedAsync($"""
+            INSERT INTO truong_gia_lap.nhom_sinh_vien_truong (ma_nhom, ten_nhom) VALUES ({maNhomMoi}, 'Nhom Truong Moi');
+            INSERT INTO truong_gia_lap.sinh_vien_truong (ma_sv, mat_khau_bam, ho_ten, lop, khoa, email, ma_nhom, han_the, trang_thai_hoc, hoc_ky)
+            VALUES ({mssv}, {bam}, 'Sinh Vien Nhom Moi', 'KTPM2024', null, 'nhommoi@truong.local', {maNhomMoi}, DATE '2027-12-31', 'DANG_HOC', 'HK1-2026');
+            """);
+
+        var boXacThuc = TaoBoXacThuc(db);
+        var ketQua = await boXacThuc.XacThucAsync(mssv, MatKhauDung, CancellationToken.None);
+
+        Assert.Equal(mssv, ketQua);
+        var demNhom = await db.Database.SqlQuery<int>($"""
+            SELECT count(*)::int AS "Value" FROM sinh_vien.nhom_sinh_vien WHERE ma_nhom = {maNhomMoi}
+            """).SingleAsync();
+        Assert.Equal(1, demNhom);
+        var dong = await DocSinhVienAsync(db, mssv);
+        Assert.Equal("Sinh Vien Nhom Moi", dong.HoTen);
+    }
+
     private static XacThucSinhVien TaoBoXacThuc(AppDbContext db) => new(new MockSchoolDirectory(db), db);
 
     private static async Task ThemSinhVienTruongAsync(AppDbContext db, string mssv, string hoTen, string? khoa)
