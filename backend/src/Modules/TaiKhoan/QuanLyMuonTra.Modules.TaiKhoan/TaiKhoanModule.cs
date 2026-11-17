@@ -19,6 +19,9 @@ public static class TaiKhoanModule
         dichVu.AddScoped<ITrangThaiTaiKhoanReader, TrangThaiTaiKhoanReader>();
         dichVu.AddScoped<DangNhapNhanVienHandler>();
         dichVu.AddScoped<LayThongTinToiHandler>();
+        dichVu.AddScoped<DangNhapSinhVienHandler>();
+        dichVu.AddScoped<LamMoiTokenHandler>();
+        dichVu.AddScoped<DangXuatHandler>();
 
         return dichVu;
     }
