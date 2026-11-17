@@ -3,9 +3,11 @@ using Microsoft.AspNetCore.Diagnostics.HealthChecks;
 using QuanLyMuonTra.Api.Auth;
 using QuanLyMuonTra.Api.Health;
 using QuanLyMuonTra.Api.Loi;
+using QuanLyMuonTra.Api.MuonTra;
 using QuanLyMuonTra.Infrastructure;
 using QuanLyMuonTra.Modules.DanhMuc;
 using QuanLyMuonTra.Modules.DanhMuc.Infrastructure;
+using QuanLyMuonTra.Modules.MuonTra;
 using QuanLyMuonTra.Modules.QuyDinh;
 using QuanLyMuonTra.Modules.QuyDinh.Infrastructure;
 using QuanLyMuonTra.Modules.SinhVien;
@@ -42,6 +44,7 @@ builder.Services.AddXacThucJwt(jwt);
 builder.Services.AddChinhSachPhanQuyen();
 builder.Services.AddExceptionHandler<XuLyLoiToanCuc>();
 builder.Services.AddViPhamModule();
+builder.Services.AddMuonTraModule();
 builder.Services.AddHealthChecks()
     .AddCheck<CsdlHealthCheck>("csdl", tags: ["ready"]);
 builder.Services.AddScoped<FluentValidation.IValidator<DangNhapNhanVienRequest>, DangNhapNhanVienValidator>();
@@ -68,6 +71,7 @@ app.UseAuthorization();
 app.MapHealthChecks("/health", new HealthCheckOptions { Predicate = _ => false });
 app.MapHealthChecks("/health/ready", new HealthCheckOptions { Predicate = check => check.Tags.Contains("ready") });
 app.MapTaiKhoanEndpoints();
+app.MapMuonTraEndpoints();
 
 app.Run();
 
