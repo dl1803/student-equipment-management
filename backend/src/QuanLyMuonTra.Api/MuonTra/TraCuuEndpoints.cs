@@ -6,7 +6,7 @@ namespace QuanLyMuonTra.Api.MuonTra;
 
 public static class TraCuuEndpoints
 {
-    public static IEndpointRouteBuilder MapTraCuuEndpoints(this IEndpointRouteBuilder duongDan)
+    public static IEndpointRouteBuilder MapMuonTraEndpoints(this IEndpointRouteBuilder duongDan)
     {
         var nhomSv = duongDan.MapGroup("/api/v1/sv");
 

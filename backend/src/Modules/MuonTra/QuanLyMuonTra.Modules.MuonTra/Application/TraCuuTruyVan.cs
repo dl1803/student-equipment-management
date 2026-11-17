@@ -14,24 +14,29 @@ internal static class TraCuuTruyVan
                    p.ma_phong AS "MaPhong",
                    p.ten_phong AS "TenPhong",
                    p.co_so AS "CoSo",
-                   GREATEST(0, (
-                       (SELECT count(*)
-                        FROM danh_muc.thiet_bi t
-                        WHERE t.ma_phong = p.ma_phong AND t.ma_loai = l.ma_loai
-                          AND t.tinh_trang = 'SAN_SANG' AND t.ngung_su_dung = false)
-                     - COALESCE((SELECT sum(c.so_luong)
-                        FROM muon_tra.phieu_yeu_cau_muon y
-                        JOIN muon_tra.chi_tiet_yeu_cau_muon c ON c.ma_yeu_cau = y.ma_yeu_cau
-                        WHERE y.ma_phong = p.ma_phong AND c.ma_loai = l.ma_loai
-                          AND y.trang_thai = 'DA_DUYET' AND y.han_giu_cho > {thoiDiem}), 0)
-                     - (SELECT count(*)
-                        FROM muon_tra.dang_ky_cho d
-                        WHERE d.ma_phong = p.ma_phong AND d.ma_loai = l.ma_loai
-                          AND d.trang_thai = 'DA_THONG_BAO' AND d.han_giu_cho > {thoiDiem})
-                   ))::integer AS "SoLuongKhaDung"
+                   GREATEST(0, COALESCE(ss.so_luong, 0) - COALESCE(gc.so_luong, 0) - COALESCE(dk.so_luong, 0))::integer AS "SoLuongKhaDung"
             FROM danh_muc.loai_thiet_bi l
             JOIN danh_muc.phong_thiet_bi p
               ON EXISTS (SELECT 1 FROM danh_muc.thiet_bi tb WHERE tb.ma_loai = l.ma_loai AND tb.ma_phong = p.ma_phong)
+            LEFT JOIN (
+                SELECT t.ma_phong, t.ma_loai, count(*) AS so_luong
+                FROM danh_muc.thiet_bi t
+                WHERE t.tinh_trang = 'SAN_SANG' AND t.ngung_su_dung = false
+                GROUP BY t.ma_phong, t.ma_loai
+            ) ss ON ss.ma_phong = p.ma_phong AND ss.ma_loai = l.ma_loai
+            LEFT JOIN (
+                SELECT y.ma_phong, c.ma_loai, sum(c.so_luong) AS so_luong
+                FROM muon_tra.phieu_yeu_cau_muon y
+                JOIN muon_tra.chi_tiet_yeu_cau_muon c ON c.ma_yeu_cau = y.ma_yeu_cau
+                WHERE y.trang_thai = 'DA_DUYET' AND y.han_giu_cho > {thoiDiem}
+                GROUP BY y.ma_phong, c.ma_loai
+            ) gc ON gc.ma_phong = p.ma_phong AND gc.ma_loai = l.ma_loai
+            LEFT JOIN (
+                SELECT d.ma_phong, d.ma_loai, count(*) AS so_luong
+                FROM muon_tra.dang_ky_cho d
+                WHERE d.trang_thai = 'DA_THONG_BAO' AND d.han_giu_cho > {thoiDiem}
+                GROUP BY d.ma_phong, d.ma_loai
+            ) dk ON dk.ma_phong = p.ma_phong AND dk.ma_loai = l.ma_loai
             WHERE l.ngung_su_dung = false
             """);
     }

@@ -71,7 +71,7 @@ app.UseAuthorization();
 app.MapHealthChecks("/health", new HealthCheckOptions { Predicate = _ => false });
 app.MapHealthChecks("/health/ready", new HealthCheckOptions { Predicate = check => check.Tags.Contains("ready") });
 app.MapTaiKhoanEndpoints();
-app.MapTraCuuEndpoints();
+app.MapMuonTraEndpoints();
 
 app.Run();
 
