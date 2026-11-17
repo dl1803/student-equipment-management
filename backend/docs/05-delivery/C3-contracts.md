@@ -141,3 +141,24 @@ Lưu ý: tình trạng `DANG_DUOC_MUON` trong dữ liệu thử đặt trực ti
 | `IntegrationTests.DanhMuc` (14 ca), `IntegrationTests.QuyDinh` (ca mới 5) trên PostgreSQL | Chưa kiểm chứng — BLOCKED bởi K-1 (Skipped) |
 | Host nối module (D03-K) | Chưa nối tại commit 38af4b5 |
 | Truy vấn qua HTTP thật | Chưa làm (không có endpoint trong D04-N) |
+
+## 12. Bàn giao D05-N cho D06-N, D08-N, Vương, Khôi và tích hợp
+
+| Mục | Nội dung |
+|---|---|
+| Ràng buộc miền | `PhongThietBi`, `LoaiThietBi` (`DanhMuc.Domain`) ném `LoiNghiepVuException("DU_LIEU_KHONG_HOP_LE")` (400) khi tên/cơ sở rỗng, chu kỳ ≤ 0, phí < 0. Tạo/sửa là `internal` (`UnitTests` qua `InternalsVisibleTo`). Hai entity là `IAuditable` nên nhật ký ghi cùng `SaveChanges` |
+| Request | `PhongThietBiRequest`, `LoaiThietBiTaoMoiRequest`, `LoaiThietBiCapNhatRequest` (`DanhMuc.Application`). Sửa loại **không** có phí, `ngungSuDung`, tình trạng. Không `Trim`; không giới hạn độ dài |
+| Kiểm dữ liệu vào | Validator `internal` đăng ký `IValidator<T>` (singleton) trong `AddDanhMucModule()`. Thêm gói `FluentValidation 12.2.0` vào `DanhMuc.csproj` (đề xuất D05-N, chờ xác nhận) |
+| Handler | `TaoPhongThietBiHandler.XuLyAsync(yeuCau, ct)` → `PhongThietBiDto`; `SuaPhongThietBiHandler.XuLyAsync(ma, yeuCau, ct)` → `PhongThietBiDto`; `TaoLoaiThietBiHandler.XuLyAsync(yeuCau, ct)` và `SuaLoaiThietBiHandler.XuLyAsync(ma, yeuCau, ct)` → `LoaiThietBiQuanTriDto`. Không tìm thấy → `LoiNghiepVuException("KHONG_TIM_THAY")` (404). Nhận `DbContext` trừu tượng, một `SaveChangesAsync` |
+| Hàm đăng ký DI | `AddDanhMucModule()` đăng ký thêm 4 handler và 3 validator |
+| Việc cho Host | Bọc 4 handler bằng `POST/PUT /quan-tri/phong-thiet-bi` và `POST/PUT /quan-tri/loai-thiet-bi` với policy `QuanTri` thật và `KiemTraDuLieuFilter<T>`; POST trả 201, PUT trả 200 theo `openapi.yaml` |
+| Hợp đồng chuyển tình trạng | `IThietBiService` giữ nguyên như mục 3; hiện thực ở D07-N |
+| Chưa làm | Endpoint, policy, xóa/ngưng phòng và loại (D08-N), đổi phí trả trễ (D06-N), hiện thực `IThietBiService` (D07-N) |
+| OPEN mới | O9: PUT phòng/loại trong `openapi.yaml` có 409 `XUNG_DOT_CAP_NHAT` nhưng kiến trúc chỉ cho `xmin` ở 5 aggregate (chưa thêm `xmin`). O10: chưa có giới hạn trên của `phiTreMoiNgay` (vượt `numeric(14,0)` gây lỗi CSDL) và độ dài tên |
+
+| Hạng mục kiểm chứng (D05-N) | Trạng thái |
+|---|---|
+| `dotnet format --verify-no-changes`, `dotnet build -c Release` | Đạt (0 warning, 0 error) — 17/11/2026 — .NET SDK 9.0.305 |
+| `UnitTests.DanhMuc` (ca mới D05-N) | Đạt 47/47 (19 miền + 12 phòng + 16 loại) — 17/11/2026 — .NET SDK 9.0.305 |
+| `IntegrationTests.DanhMuc` (9 ca mới) trên PostgreSQL | Chưa kiểm chứng — BLOCKED bởi K-1 (Skipped) |
+| Quyền `QuanTri` thật qua HTTP | Chưa kiểm chứng — BLOCKED (chờ endpoint D05-N) |
