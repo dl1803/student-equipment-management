@@ -20,7 +20,8 @@
 | Cách khai báo Gradle | Kotlin DSL, `gradle/libs.versions.toml` | Như trên | FC 10.2: khai báo tập trung, khóa phiên bản |
 | Phiên bản thư viện (D02-L) | Plugin `org.openapi.generator` 7.25.0, Retrofit 3.0.0, OkHttp 4.12.0, Gson 2.13.2, gson-fire 1.9.0, `lifecycle-viewmodel` 2.10.0, `androidx.annotation` 1.9.1, JUnit 4.13.2; khóa trong `gradle/libs.versions.toml` | Đề xuất của Architect, chờ nhóm xác nhận | FC 1.4, FC 10.2; Gson, gson-fire, `androidx.annotation` ngoài danh sách FC 1.4 nên cần nhóm duyệt và cập nhật `Frontend-Architecture.md` |
 | Phiên bản thư viện (D03-L) | `androidx.lifecycle:lifecycle-livedata` 2.10.0, dùng chung khóa `lifecycle` trong `gradle/libs.versions.toml` | Đề xuất của Architect, chờ nhóm xác nhận | FC 1.4, FC 10.2; LiveData thuộc ĐX-FA-12 nhưng artifact chưa nằm trong danh sách đã khóa |
-| Phiên bản thư viện khác | Chưa khóa (Material Components, Navigation, Glide, MockWebServer...) | OPEN | FC 1.4: khóa khi task đầu tiên dùng và phải được nhóm duyệt |
+| Phiên bản thư viện (D05-L) | `com.google.android.material:material` 1.14.0, khóa `material` trong `gradle/libs.versions.toml` | Đề xuất của Architect, chờ nhóm xác nhận | FC 1.4, FC 10.2; xem mục 10 |
+| Phiên bản thư viện khác | Chưa khóa (Navigation, Glide, MockWebServer...) | OPEN | FC 1.4: khóa khi task đầu tiên dùng và phải được nhóm duyệt |
 
 Lý do chọn AGP 8.13.2 thay vì dòng 9.x: AGP 9 đổi mô hình DSL và bỏ API cũ mà một số plugin còn dùng. Plugin sinh client (D02-L) và Safe Args (D06-L) chưa được kiểm chứng với AGP 9 trong tài liệu này. Chuyển lên AGP 9 là một quyết định riêng của nhóm.
 
@@ -208,3 +209,32 @@ Nguồn: FA 5.4, 5.10; FC 6.5, 6.8, 9.1–9.4; ĐX-FA-13, ĐX-FA-14. Mọi quy�
 Phạm vi kiểm chứng của D03-L: test trong `src/test` chạy trên JVM với boundary mã hóa giả; **không** chứng minh Android Keystore thật và **không** chứng minh hệ điều hành loại tệp khỏi sao lưu. Kiểm tra trên thiết bị/emulator theo FC 9.4 thuộc D18-L: **chưa chạy**.
 
 Chưa có trong D03-L (thuộc ngày sau): kiểm hạn `exp` của JWT khi khởi động và điều hướng theo `TrangThaiPhien` (D06-L), `AuthInterceptor`/`TokenAuthenticator` và lý do `ApiError` khi kết thúc phiên (D04-L).
+
+## 10. Quyết định D05-L
+
+Nguồn: DS 3 đến 9, Phụ lục A đến C; FC 3.3, 3.5, 6.6, 7.1 đến 7.3, 8.4, 9.3, 10.3, Phụ lục A; FA 5.2; UI-Screens 3.1 đến 3.4; `BANG_THEO_DOI_40_NGAY.md` D05-L. Mọi quyết định dưới đây là đề xuất của Architect, chờ nhóm xác nhận.
+
+| # | Quyết định | Lý do và căn cứ |
+|---|---|---|
+| 1 | Khóa Material Components `1.14.0` trong `libs.versions.toml` (khóa `material`) | FC 1.4: khóa khi task đầu tiên dùng và phải được nhóm duyệt. Bản ổn định 13/05/2026 yêu cầu compileSdk 35 trở lên, minSdk 23 trở lên, dựng bằng AGP 8.11.1; tương thích compileSdk 36, minSdk 26, AGP 8.13.2 của dự án |
+| 2 | Theme `Theme.QuanLyMuonTra` kế thừa `Theme.MaterialComponents.Light.NoActionBar` (dòng M2), áp dụng ở `<application>`, `android:forceDarkAllowed=false` | FC 6.6 yêu cầu biến thể sáng của Material Components, không DayNight. Dòng M2 gần Design-System hơn M3 (bo góc 8 dp, thẻ không đổ bóng, nút cao 48 dp) |
+| 3 | Token Android chỉ gồm token áp dụng cho Android: bỏ `hover`, `-pressed` của nút, `text.link-hover`, `border.control-hover`, `size.control.*`, `size.table.*`, `z.*`, `layout.web.*`, `motion.*` | DS mục 6 (nhấn trên Android là gợn sóng `ds_color_overlay_pressed`), DS Phụ lục C (token riêng nền tảng). Token `motion.*` thêm khi có thành phần dùng chuyển động |
+| 4 | Độ đậm 400 và 700 dùng `sans-serif`, độ đậm 500 dùng `sans-serif-medium`, mã dùng `monospace`; không gói phông | ĐX-DS-04; `android:textFontWeight` cần API 28 trong khi minSdk là 26 |
+| 5 | Nhãn trạng thái tra theo cặp (`HoTrangThai`, mã) trong `NhanTrangThai`; mã lạ hiển thị nguyên mã, tông trung tính, không biểu tượng; tra phân biệt chữ hoa chữ thường; `null` hiển thị dấu gạch dài | DS 7.1, FC 7.3, UI-Screens 3.3; mã API là chữ hoa cố định (mọi giá trị enum trong `openapi.yaml`) |
+| 6 | Thêm `HangSo.MUI_GIO_VN`, `HangSo.NGUONG_THONG_BAO_KHOI_DONG_GIAY` (8 giây) và `HangSo.GIA_TRI_THIEU` (U+2014) | FC 7.1, ĐX-FA-04, ĐX-DS-12; mỗi hằng số một nơi định nghĩa |
+| 7 | Thêm lớp `TextLinkView` (kế thừa `MaterialTextView`) cho CMP-03 | XML không có thuộc tính gạch chân mà DS CMP-03 (kèm NT-02) yêu cầu luôn gạch chân. Phụ lục A của FC chỉ ghi `Widget.Ds.Link`; cần bổ sung tên lớp này vào Phụ lục A khi nhóm duyệt |
+| 8 | `ErrorView` chọn nội dung bằng `TrinhBayLoi.choVung`: `MANG` và `QUA_THOI_GIAN` là lỗi mạng; mọi lỗi HTTP là lỗi hệ thống kèm `traceId` nếu có; `HUY` ẩn view | DS 9.4, 9.8; FA 3.3 quy tắc 4; FA 3.4 đoạn cuối (mã không có xử lý riêng và phản hồi không phải problem+json) |
+| 9 | Biểu tượng lỗi mạng và rỗng dùng tông trung tính; biểu tượng lỗi hệ thống dùng `ds_color_tone_danger_icon` | DS 8 CMP-25 chỉ chỉ định màu cho lỗi hệ thống; rỗng không phải lỗi (DS 9.3) |
+| 10 | Ô nhập: nhãn là `TextView` riêng phía trên ô (có `android:labelFor`), tắt nhãn nổi `hintEnabled`; biểu tượng lỗi là biểu tượng tích hợp của `TextInputLayout` ở cuối ô | DS CMP-04 đặt nhãn luôn hiện phía trên; `TextInputLayout` không có biểu tượng đầu dòng lỗi |
+| 11 | Thẻ chỉ có hình thức tĩnh `Widget.Ds.Card`; biến thể chạm được, chọn được, theo tông thêm khi màn hình dùng đến | Kế hoạch D05-L chỉ yêu cầu hình thức nền |
+| 12 | Tiền tố id `ll_`, `fl_`, `pi_` cho `LinearLayout`, `FrameLayout`, `CircularProgressIndicator` | FC 3.3 chỉ liệt kê các tiền tố `btn_`, `tv_`, `et_`, `til_`, `rv_`, `img_`, `chip_`, `srl_`; cần bổ sung khi nhóm duyệt |
+| 13 | `TokenThietKeTest` thực hiện cục bộ phép kiểm TC-01 (không mã màu hay kích thước thô ngoài tệp token) bằng đọc tệp trong `src/main` | FC 10.3 mô tả bước grep trên CI; CI Android chưa tồn tại nên kiểm bằng test để chạy được ở mọi máy |
+
+Biểu tượng (`ic_check_circle`, `ic_info`, `ic_warning`, `ic_error`, `ic_inbox`, `ic_cloud_off`) lấy từ Material Icons kiểu Outlined (Apache License 2.0); Design-System ghi Material Symbols Outlined độ đậm 400. Hình hai bộ gần như trùng nhau nhưng chưa được so bằng mắt: **chưa chạy** (mở từng tệp trong Android Studio để xem trước).
+
+Phạm vi kiểm chứng của D05-L: test trong `src/test` chạy trên JVM và kiểm token, bảng nhãn, định dạng và quy tắc chọn nội dung lỗi. **Không** chứng minh giao diện thật: bố cục, màu, bo góc, chiều cao 48 dp, hành vi `LoadingView` sau 8 giây, giảm chuyển động, chữ cỡ 1,3 lần, TalkBack. Các kiểm tra này cần thiết bị hoặc emulator (FC 9.4, TC-02, TC-05, TC-06): **chưa chạy**, thuộc D19-L (rà giao diện Android: TC-01 đến 06, 10, 11, 14, 15) và D29-L (rà tiếp cận, bằng chứng thiết bị).
+
+Chưa có trong D05-L (thuộc ngày sau): `BottomNav`, `TopBar`, hộp thoại xác nhận, `MainActivity`, điều hướng (D06-L); ô tìm kiếm, ô chọn, nút phân đoạn, chip lọc, dòng danh sách (D08-L); khung ảnh (D09-L); chữ "Đang xử lý" và trạng thái đang xử lý của nút (thêm khi màn hình đầu tiên cần, dự kiến SCR-CM-01 ở D06-L); cấu hình lint và spotless cho Android (D19-L chạy chúng); `ic_search_off` (D08-L); Navigation và Glide chưa được khóa phiên bản.
+
+Điểm cần người dùng xác nhận (chưa có ngày nào sở hữu): ghi chú nguồn của D05-L trích FC 7.4 và bước 4 nói "lỗi từng vùng", nhưng không bước nào của D05-L yêu cầu `NhomLoi` và `ApiError.nhom()` (FC 7.4, kèm kiểm thử 32 mã ở FC 9.3) hay `LoiTruong` (lỗi theo trường, FC 9.3); mục 8 đã ghi `NhomLoi` không nằm trong task nào. D05-L không làm các phần này vì không cần chúng để đạt kết quả của ngày; "lỗi từng vùng" được hiểu là lỗi theo vùng tải dữ liệu, mỗi vùng một `ErrorView` (ĐX-UI-04). Nếu ý định là giao `NhomLoi` hoặc `LoiTruong` cho D05-L hay ngày khác thì cần ghi vào kế hoạch.
+
