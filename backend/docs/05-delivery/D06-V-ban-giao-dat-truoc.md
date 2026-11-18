@@ -29,9 +29,9 @@ Phòng và loại tồn tại (400) → thẻ (422) → trạng thái học (422
 
 ## 5. Kiểm thử
 
-- `tests/QuanLyMuonTra.UnitTests/MuonTra/KiemTraDieuKienGuiYeuCauTests.cs`
+- `tests/QuanLyMuonTra.UnitTests/MuonTra/KiemTraDieuKienGuiYeuCauTests.cs` (bao gồm kiểm thử phòng vệ tràn số nguyên)
 - `tests/QuanLyMuonTra.IntegrationTests/MuonTra/YeuCauMuonSvTests.cs` (rollback, dùng `D06-V-du-lieu-thu.sql`)
-- `tests/QuanLyMuonTra.IntegrationTests/MuonTra/YeuCauMuonSvHttpTests.cs` (không ghi dữ liệu)
+- `tests/QuanLyMuonTra.IntegrationTests/MuonTra/YeuCauMuonSvHttpTests.cs` (bao gồm test phần tử null, định dạng mã, không ghi dữ liệu)
 - `tests/QuanLyMuonTra.IntegrationTests/MuonTra/HostMoHinhEfMuonTraTests.cs`
 
 ## 6. Cổng thật chưa đạt
