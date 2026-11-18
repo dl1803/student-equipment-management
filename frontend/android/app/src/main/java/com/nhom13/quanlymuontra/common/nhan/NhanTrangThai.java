@@ -112,6 +112,6 @@ public final class NhanTrangThai {
     @NonNull
     static Set<String> maDaBiet(@NonNull HoTrangThai ho) {
         Map<String, ThongTinTrangThai> theoMa = BANG.get(ho);
-        return theoMa == null ? Collections.<String>emptySet() : theoMa.keySet();
+        return theoMa == null ? Collections.<String>emptySet() : Collections.unmodifiableSet(theoMa.keySet());
     }
 }

@@ -31,11 +31,12 @@ public final class ThongTinTrangThai {
 
     /**
      * Mã chưa biết: hiển thị nguyên mã, tông trung tính, mức nhạt, không biểu tượng và không báo lỗi
-     * (DS 7.1, UI-Screens 3.3). {@code null} hiển thị giá trị thiếu.
+     * (DS 7.1, UI-Screens 3.3). {@code null} hoặc chuỗi rỗng hiển thị giá trị thiếu (DS 9.7, ĐX-DS-12).
      */
     @NonNull
     static ThongTinTrangThai maLa(String ma) {
-        return new ThongTinTrangThai(0, ma == null ? HangSo.GIA_TRI_THIEU : ma, Tong.NEUTRAL, false);
+        return new ThongTinTrangThai(
+                0, (ma == null || ma.isEmpty()) ? HangSo.GIA_TRI_THIEU : ma, Tong.NEUTRAL, false);
     }
 
     /** Mã nhãn trong {@code strings.xml}; {@code 0} khi {@link #isMaLa()}. */

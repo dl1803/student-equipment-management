@@ -68,6 +68,13 @@ public class BannerView extends LinearLayout {
             throw new IllegalArgumentException("Khối thông báo không dùng tông trung tính (DS CMP-24)");
         }
 
+        boolean khan = tong == Tong.DANGER || tong == Tong.WARNING;
+        ViewCompat.setAccessibilityLiveRegion(
+                this,
+                khan
+                        ? ViewCompat.ACCESSIBILITY_LIVE_REGION_ASSERTIVE
+                        : ViewCompat.ACCESSIBILITY_LIVE_REGION_POLITE);
+
         GradientDrawable nen = new GradientDrawable();
         nen.setShape(GradientDrawable.RECTANGLE);
         nen.setCornerRadius(getResources().getDimension(R.dimen.ds_radius_lg));
@@ -104,12 +111,6 @@ public class BannerView extends LinearLayout {
         }
         binding.llLyDo.setVisibility(binding.llLyDo.getChildCount() > 0 ? View.VISIBLE : View.GONE);
 
-        boolean khan = tong == Tong.DANGER || tong == Tong.WARNING;
-        ViewCompat.setAccessibilityLiveRegion(
-                this,
-                khan
-                        ? ViewCompat.ACCESSIBILITY_LIVE_REGION_ASSERTIVE
-                        : ViewCompat.ACCESSIBILITY_LIVE_REGION_POLITE);
         setVisibility(View.VISIBLE);
     }
 

@@ -255,11 +255,18 @@ public class NhanTrangThaiTest {
     }
 
     @Test
-    public void DS71_MaNullHoacRong_HienGiaTriThieuHoacChuoiRong() {
+    public void DS71_MaNullHoacRong_HienGiaTriThieu() {
         ThongTinTrangThai khongCoMa = NhanTrangThai.thongTin(HoTrangThai.PHIEU_MUON, null);
         assertTrue(khongCoMa.isMaLa());
         assertEquals("\u2014", khongCoMa.getMaGoc());
-        assertTrue(NhanTrangThai.thongTin(HoTrangThai.PHIEU_MUON, "").isMaLa());
+        ThongTinTrangThai maRong = NhanTrangThai.thongTin(HoTrangThai.PHIEU_MUON, "");
+        assertTrue(maRong.isMaLa());
+        assertEquals("\u2014", maRong.getMaGoc());
+    }
+
+    @Test(expected = UnsupportedOperationException.class)
+    public void FC73_MaDaBiet_TraTapKhongTheSua() {
+        NhanTrangThai.maDaBiet(HoTrangThai.PHIEU_MUON).clear();
     }
 
     @Test

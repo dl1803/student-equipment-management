@@ -86,6 +86,7 @@
     <style name="Widget.Ds.Link" parent="">
         <item name="android:textAppearance">@style/TextAppearance.Ds.Body</item>
         <item name="android:textColor">@color/ds_color_text_link</item>
+        <item name="android:minWidth">@dimen/ds_size_touch_min</item>
         <item name="android:minHeight">@dimen/ds_size_touch_min</item>
         <item name="android:gravity">center_vertical</item>
     </style>
