@@ -1,0 +1,100 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+    D05-L (DS 4.2, 5.3, Phụ lục C; FC 8.4): họ phông và kiểu chữ của Design-System.
+    Android dùng phông hệ thống, không gói phông vào ứng dụng (ĐX-DS-04). Độ đậm 400 và 700 dùng
+    sans-serif (đậm bằng textStyle); độ đậm 500 dùng sans-serif-medium. Chữ số cùng độ rộng dùng
+    fontFeatureSettings tnum (ĐX-DS-12). Màu chữ mặc định là ds_color_text_primary; màn hình hoặc
+    thành phần đặt màu khác bằng token ngữ nghĩa.
+-->
+<resources>
+
+    <string name="ds_font_family_sans" translatable="false">sans-serif</string>
+    <string name="ds_font_family_sans_medium" translatable="false">sans-serif-medium</string>
+    <string name="ds_font_family_mono" translatable="false">monospace</string>
+
+    <!-- type.title-screen: 24 / 32, bold. -->
+    <style name="TextAppearance.Ds.TitleScreen" parent="">
+        <item name="android:fontFamily">@string/ds_font_family_sans</item>
+        <item name="android:textSize">@dimen/ds_font_size_24</item>
+        <item name="android:lineHeight">@dimen/ds_font_leading_32</item>
+        <item name="android:textStyle">bold</item>
+        <item name="android:textColor">@color/ds_color_text_primary</item>
+    </style>
+
+    <!-- type.title-section: 20 / 28, medium. -->
+    <style name="TextAppearance.Ds.TitleSection" parent="">
+        <item name="android:fontFamily">@string/ds_font_family_sans_medium</item>
+        <item name="android:textSize">@dimen/ds_font_size_20</item>
+        <item name="android:lineHeight">@dimen/ds_font_leading_28</item>
+        <item name="android:textColor">@color/ds_color_text_primary</item>
+    </style>
+
+    <!-- type.title-card: 16 / 24, medium. -->
+    <style name="TextAppearance.Ds.TitleCard" parent="">
+        <item name="android:fontFamily">@string/ds_font_family_sans_medium</item>
+        <item name="android:textSize">@dimen/ds_font_size_16</item>
+        <item name="android:lineHeight">@dimen/ds_font_leading_24</item>
+        <item name="android:textColor">@color/ds_color_text_primary</item>
+    </style>
+
+    <!-- type.body, cỡ của Android: 16 / 24, regular. -->
+    <style name="TextAppearance.Ds.Body" parent="">
+        <item name="android:fontFamily">@string/ds_font_family_sans</item>
+        <item name="android:textSize">@dimen/ds_font_size_16</item>
+        <item name="android:lineHeight">@dimen/ds_font_leading_24</item>
+        <item name="android:fontFeatureSettings">tnum</item>
+        <item name="android:textColor">@color/ds_color_text_primary</item>
+    </style>
+
+    <!-- type.body-strong: 16 / 24, medium. -->
+    <style name="TextAppearance.Ds.BodyStrong" parent="">
+        <item name="android:fontFamily">@string/ds_font_family_sans_medium</item>
+        <item name="android:textSize">@dimen/ds_font_size_16</item>
+        <item name="android:lineHeight">@dimen/ds_font_leading_24</item>
+        <item name="android:fontFeatureSettings">tnum</item>
+        <item name="android:textColor">@color/ds_color_text_primary</item>
+    </style>
+
+    <!-- type.label: 14 / 20, medium. -->
+    <style name="TextAppearance.Ds.Label" parent="">
+        <item name="android:fontFamily">@string/ds_font_family_sans_medium</item>
+        <item name="android:textSize">@dimen/ds_font_size_14</item>
+        <item name="android:lineHeight">@dimen/ds_font_leading_20</item>
+        <item name="android:textColor">@color/ds_color_text_primary</item>
+    </style>
+
+    <!-- type.label-sm: 12 / 16, medium. -->
+    <style name="TextAppearance.Ds.LabelSm" parent="">
+        <item name="android:fontFamily">@string/ds_font_family_sans_medium</item>
+        <item name="android:textSize">@dimen/ds_font_size_12</item>
+        <item name="android:lineHeight">@dimen/ds_font_leading_16</item>
+        <item name="android:textColor">@color/ds_color_text_primary</item>
+    </style>
+
+    <!-- type.caption: 12 / 16, regular. -->
+    <style name="TextAppearance.Ds.Caption" parent="">
+        <item name="android:fontFamily">@string/ds_font_family_sans</item>
+        <item name="android:textSize">@dimen/ds_font_size_12</item>
+        <item name="android:lineHeight">@dimen/ds_font_leading_16</item>
+        <item name="android:fontFeatureSettings">tnum</item>
+        <item name="android:textColor">@color/ds_color_text_primary</item>
+    </style>
+
+    <!-- type.code: 14 / 20, regular. -->
+    <style name="TextAppearance.Ds.Code" parent="">
+        <item name="android:fontFamily">@string/ds_font_family_mono</item>
+        <item name="android:textSize">@dimen/ds_font_size_14</item>
+        <item name="android:lineHeight">@dimen/ds_font_leading_20</item>
+        <item name="android:textColor">@color/ds_color_text_primary</item>
+    </style>
+
+    <!-- type.numeric-lg: 28 / 36, bold. -->
+    <style name="TextAppearance.Ds.NumericLg" parent="">
+        <item name="android:fontFamily">@string/ds_font_family_sans</item>
+        <item name="android:textSize">@dimen/ds_font_size_28</item>
+        <item name="android:lineHeight">@dimen/ds_font_leading_36</item>
+        <item name="android:textStyle">bold</item>
+        <item name="android:fontFeatureSettings">tnum</item>
+        <item name="android:textColor">@color/ds_color_text_primary</item>
+    </style>
+</resources>

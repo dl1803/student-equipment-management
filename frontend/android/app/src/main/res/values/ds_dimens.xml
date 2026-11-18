@@ -1,0 +1,74 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+    D05-L (DS 4.2 đến 4.4, 4.7, 5.5, Phụ lục C; FC 8.4): token kích thước của Design-System. Cùng với
+    ds_colors.xml và ds_type.xml, đây là nơi duy nhất được chứa giá trị dp và sp thô (TC-01); layout
+    và style chỉ tham chiếu tên ds_... (ngoại lệ duy nhất: 0dp của bố cục).
+    Token chỉ dành cho web (size.control.*, size.table.*, z.*, layout.web.*) không khai báo ở đây.
+    Token chuyển động (motion.*) sẽ được thêm khi có thành phần dùng đến chuyển động.
+-->
+<resources>
+
+    <!-- Khoảng cách (DS 4.3), dp. -->
+    <dimen name="ds_space_1">4dp</dimen>
+    <dimen name="ds_space_2">8dp</dimen>
+    <dimen name="ds_space_3">12dp</dimen>
+    <dimen name="ds_space_4">16dp</dimen>
+    <dimen name="ds_space_6">24dp</dimen>
+    <dimen name="ds_space_12">48dp</dimen>
+
+    <!-- Bo góc và viền (DS 4.4), dp. -->
+    <dimen name="ds_radius_sm">4dp</dimen>
+    <dimen name="ds_radius_md">8dp</dimen>
+    <dimen name="ds_radius_lg">12dp</dimen>
+    <dimen name="ds_radius_full">9999dp</dimen>
+    <dimen name="ds_border_width_default">1dp</dimen>
+    <dimen name="ds_border_width_strong">2dp</dimen>
+    <dimen name="ds_border_width_accent">4dp</dimen>
+
+    <!-- Độ nổi (DS 4.4, cột Android), dp. -->
+    <dimen name="ds_shadow_menu">4dp</dimen>
+    <dimen name="ds_shadow_dialog">8dp</dimen>
+
+    <!-- Kích thước điều khiển riêng của Android (DS 4.7), dp. -->
+    <dimen name="ds_size_touch_min">48dp</dimen>
+    <dimen name="ds_size_button_height">48dp</dimen>
+    <dimen name="ds_size_input_height">56dp</dimen>
+    <dimen name="ds_size_chip_height">32dp</dimen>
+    <dimen name="ds_size_list_row_min">56dp</dimen>
+    <dimen name="ds_size_appbar_height">56dp</dimen>
+    <dimen name="ds_size_bottomnav_height">56dp</dimen>
+    <dimen name="ds_size_photo_thumb">88dp</dimen>
+    <dimen name="ds_size_dialog_max">560dp</dimen>
+
+    <!-- Kích thước dùng chung hai nền tảng (DS 4.7), dp. -->
+    <dimen name="ds_size_icon_sm">16dp</dimen>
+    <dimen name="ds_size_icon_md">20dp</dimen>
+    <dimen name="ds_size_icon_lg">24dp</dimen>
+    <dimen name="ds_size_badge_height">24dp</dimen>
+    <dimen name="ds_size_state_max">480dp</dimen>
+
+    <!-- Cỡ chữ và chiều cao dòng (DS 4.2), sp. -->
+    <dimen name="ds_font_size_12">12sp</dimen>
+    <dimen name="ds_font_size_14">14sp</dimen>
+    <dimen name="ds_font_size_16">16sp</dimen>
+    <dimen name="ds_font_size_20">20sp</dimen>
+    <dimen name="ds_font_size_24">24sp</dimen>
+    <dimen name="ds_font_size_28">28sp</dimen>
+    <dimen name="ds_font_leading_16">16sp</dimen>
+    <dimen name="ds_font_leading_20">20sp</dimen>
+    <dimen name="ds_font_leading_24">24sp</dimen>
+    <dimen name="ds_font_leading_28">28sp</dimen>
+    <dimen name="ds_font_leading_32">32sp</dimen>
+    <dimen name="ds_font_leading_36">36sp</dimen>
+
+    <!-- Khoảng cách theo vai trò (DS 5.5, cột Android). -->
+    <dimen name="ds_space_gutter">@dimen/ds_space_4</dimen>
+    <dimen name="ds_space_section">@dimen/ds_space_6</dimen>
+    <dimen name="ds_space_card">@dimen/ds_space_4</dimen>
+    <dimen name="ds_space_dialog">@dimen/ds_space_6</dimen>
+    <dimen name="ds_space_field_label">@dimen/ds_space_1</dimen>
+    <dimen name="ds_space_field">@dimen/ds_space_4</dimen>
+    <dimen name="ds_space_actions">@dimen/ds_space_3</dimen>
+    <dimen name="ds_space_list_gap">@dimen/ds_space_2</dimen>
+    <dimen name="ds_space_state">@dimen/ds_space_12</dimen>
+</resources>
