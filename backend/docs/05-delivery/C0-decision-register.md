@@ -73,10 +73,10 @@ Mọi dòng dưới đây đang **OPEN**. Một quyết định OPEN chặn đú
 
 | Mã | Quyết định | Trạng thái | Ngày |
 |---|---|---|---|
-| K-12 | `PUT /quan-tri/nhan-vien/{ma}/quyen-phong`: `maPhong` không tồn tại trả 404 `KHONG_TIM_THAY`; danh sách trùng `maPhong` trả 400 `DU_LIEU_KHONG_HOP_LE`; hai PUT đồng thời va chạm PK trả 409 `XUNG_DOT_CAP_NHAT` | Khôi đề xuất, chờ nhóm xác nhận | 2026-11-17 |
+| K-12 | `PUT /quan-tri/nhan-vien/{ma}/quyen-phong`: `maPhong` không tồn tại trả 404 `KHONG_TIM_THAY`; danh sách trùng `maPhong` trả 400 `DU_LIEU_KHONG_HOP_LE`. Khóa bi quan `SELECT 1 FROM tai_khoan.nhan_vien_quan_ly WHERE ma_nguoi_dung = {ma} FOR UPDATE` trong cùng giao dịch trước khi đọc và thay thế để chống race condition gộp quyền (privilege escalation) | Đã chốt theo review của Vương | 2026-11-18 |
 | K-13 | Khóa tài khoản NV từ `HOAT_DONG` hoặc `TAM_KHOA_DANG_NHAP`, chỉ 409 `TRANG_THAI_KHONG_HOP_LE` khi đã `BI_KHOA`; mở khóa từ `BI_KHOA` hoặc `TAM_KHOA_DANG_NHAP`, 409 khi đã `HOAT_DONG`. Khóa thu hồi toàn bộ refresh token của NV trong cùng giao dịch (K-11) | Khôi đề xuất, chờ nhóm xác nhận | 2026-11-17 |
 | K-14 | Mở khóa đặt `so_lan_dang_nhap_sai = 0` | Khôi đề xuất, chờ nhóm xác nhận | 2026-11-17 |
-| K-15 | Chưa thêm `xmin` cho `nguoi_dung_he_thong` (KT chỉ cho 5 aggregate; cùng vấn đề O9); 409 `XUNG_DOT_CAP_NHAT` của các thao tác nhân viên mới chỉ phát sinh ở `quyen-phong`. Đặt lại mật khẩu không thu hồi refresh token | OPEN | 2026-11-17 |
+| K-15 | Bảng `nguoi_dung_he_thong` chưa có concurrency token `xmin`; xử lý đồng thời cho khóa/mở khóa bằng khóa bi quan `SELECT 1 FROM tai_khoan.nguoi_dung_he_thong WHERE ma_nguoi_dung = {ma} FOR UPDATE` đảm bảo trả 409 `TRANG_THAI_KHONG_HOP_LE`. Đặt lại mật khẩu nhân viên thu hồi toàn bộ refresh token trong cùng giao dịch; xóa cache quyền phòng khi khóa/mở khóa tài khoản. `QuyenPhongService` dùng `IMemoryCache` cho mô hình single-instance Render free tier; khi mở rộng multi-node cần chuyển sang `IDistributedCache` (Redis) / pub-sub invalidation | Đã chốt theo review của Vương | 2026-11-18 |
 
 ## 5. Mâu thuẫn giữa các nguồn đã phát hiện
 

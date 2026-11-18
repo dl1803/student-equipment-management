@@ -103,11 +103,21 @@ public sealed class KhoaMoKhoaDatLaiMatKhauNhanVienEndToEndTests : NhanVienQuanT
     public async Task UC14_DatLaiMatKhau_Tra204_MatKhauCuHetHieuLuc_KhongLoMatKhauTrongNhatKy()
     {
         var nhanVien = await TaoNhanVienQuaApiAsync();
+        var (_, refreshTokenCu) = await DangNhapNhanVienAsync(nhanVien.TenDangNhap, MatKhauNhanVien);
         const string matKhauMoi = "MatKhauMoi@456";
 
         var phanHoi = await GuiAsync(HttpMethod.Post, $"{DuongDan}/{nhanVien.Ma}/dat-lai-mat-khau", TokenQuanTri, new { matKhauMoi });
 
         Assert.Equal(HttpStatusCode.NoContent, phanHoi.StatusCode);
+        var soTokenConHieuLuc = await TruyVanDonAsync<int>($"""
+            SELECT count(*)::int AS "Value" FROM tai_khoan.refresh_token
+            WHERE chu_so_huu_ma = {nhanVien.Ma.ToString()} AND da_thu_hoi = false
+            """);
+        Assert.Equal(0, soTokenConHieuLuc);
+        var lamMoiTokenCu = await Client.PostAsJsonAsync("/api/v1/auth/lam-moi", new { refreshToken = refreshTokenCu });
+        Assert.Equal(HttpStatusCode.Unauthorized, lamMoiTokenCu.StatusCode);
+        Assert.Equal("CHUA_XAC_THUC", (await DocJsonAsync(lamMoiTokenCu)).GetProperty("maLoi").GetString());
+
         var dangNhapCu = await Client.PostAsJsonAsync("/api/v1/auth/nhan-vien/dang-nhap", new { tenDangNhap = nhanVien.TenDangNhap, matKhau = MatKhauNhanVien });
         Assert.Equal(HttpStatusCode.Unauthorized, dangNhapCu.StatusCode);
         await DangNhapNhanVienAsync(nhanVien.TenDangNhap, matKhauMoi);

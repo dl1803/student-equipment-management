@@ -75,6 +75,33 @@ public sealed class NhanVienQuanLyTests
         Assert.Equal("moi@truong.local", nhanVien.Email);
     }
 
+    [Theory]
+    [InlineData(null)]
+    [InlineData("")]
+    [InlineData("   ")]
+    public void UC14_CapNhatThongTin_HoTenRongHoacTrang_NemArgumentException(string? hoTenKhongHopLe)
+    {
+        var nhanVien = TaoNhanVien();
+
+        Assert.ThrowsAny<ArgumentException>(() => nhanVien.CapNhatThongTin(hoTenKhongHopLe!, "email@test.com"));
+    }
+
+    [Theory]
+    [InlineData(null, "hoten", "NV01")]
+    [InlineData("", "hoten", "NV01")]
+    [InlineData("   ", "hoten", "NV01")]
+    [InlineData("tendangnhap", null, "NV01")]
+    [InlineData("tendangnhap", "", "NV01")]
+    [InlineData("tendangnhap", "   ", "NV01")]
+    [InlineData("tendangnhap", "hoten", null)]
+    [InlineData("tendangnhap", "hoten", "")]
+    [InlineData("tendangnhap", "hoten", "   ")]
+    public void UC14_Tao_ThongTinRongHoacTrang_NemArgumentException(string? tenDangNhap, string? hoTen, string? maNv)
+    {
+        Assert.ThrowsAny<ArgumentException>(() =>
+            NhanVienQuanLy.Tao(Guid.CreateVersion7(), tenDangNhap!, "bam", hoTen!, maNv!));
+    }
+
     [Fact]
     public void UC14_DatLaiMatKhau_ThayMaBam()
     {

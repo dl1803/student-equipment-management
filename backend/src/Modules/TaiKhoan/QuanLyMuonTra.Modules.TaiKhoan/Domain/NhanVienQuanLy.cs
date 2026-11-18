@@ -19,22 +19,30 @@ public sealed class NhanVienQuanLy : NguoiDungHeThong
         string hoTen,
         string maNv,
         string? email = null,
-        string trangThaiKhoa = MaTrangThaiKhoa.HoatDong) =>
-        new()
+        string trangThaiKhoa = MaTrangThaiKhoa.HoatDong)
+    {
+        ArgumentException.ThrowIfNullOrWhiteSpace(tenDangNhap);
+        ArgumentException.ThrowIfNullOrWhiteSpace(hoTen);
+        ArgumentException.ThrowIfNullOrWhiteSpace(maNv);
+
+        return new()
         {
             MaNguoiDung = maNguoiDung,
-            TenDangNhap = tenDangNhap,
+            TenDangNhap = tenDangNhap.Trim(),
             MatKhauBam = matKhauBam,
-            HoTen = hoTen,
-            MaNv = maNv,
-            Email = email,
+            HoTen = hoTen.Trim(),
+            MaNv = maNv.Trim(),
+            Email = string.IsNullOrWhiteSpace(email) ? null : email.Trim(),
             TrangThaiKhoa = trangThaiKhoa
         };
+    }
 
     public void CapNhatThongTin(string hoTen, string? email)
     {
-        HoTen = hoTen;
-        Email = email;
+        ArgumentException.ThrowIfNullOrWhiteSpace(hoTen);
+
+        HoTen = hoTen.Trim();
+        Email = string.IsNullOrWhiteSpace(email) ? null : email.Trim();
     }
 
     public void Khoa()

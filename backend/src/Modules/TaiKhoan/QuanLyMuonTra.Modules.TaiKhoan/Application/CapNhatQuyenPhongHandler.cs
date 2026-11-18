@@ -29,6 +29,9 @@ public sealed class CapNhatQuyenPhongHandler(
 
         await using var giaoDich = await db.Database.BeginTransactionAsync(ct);
 
+        await db.Database.ExecuteSqlInterpolatedAsync(
+            $"SELECT 1 FROM tai_khoan.nhan_vien_quan_ly WHERE ma_nguoi_dung = {ma} FOR UPDATE", ct);
+
         var hienCo = await db.Set<NhanVienPhong>().Where(x => x.MaNguoiDung == ma).ToListAsync(ct);
         var daCo = hienCo.Select(x => x.MaPhong).ToHashSet();
         var canXoa = hienCo.Where(x => !dsMoi.Contains(x.MaPhong)).ToList();

@@ -23,10 +23,11 @@ public sealed class TaoNhanVienHandler(
         var nhanVien = NhanVienQuanLy.Tao(
             Guid.CreateVersion7(),
             tenDangNhap,
-            boBam.HashPassword(null!, matKhau),
+            string.Empty,
             hoTen,
             maNv,
             email);
+        nhanVien.DatLaiMatKhau(boBam.HashPassword(nhanVien, matKhau));
         db.Set<NhanVienQuanLy>().Add(nhanVien);
 
         try

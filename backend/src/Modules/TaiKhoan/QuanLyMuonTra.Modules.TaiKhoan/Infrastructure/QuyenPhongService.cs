@@ -7,6 +7,16 @@ using QuanLyMuonTra.SharedKernel;
 
 namespace QuanLyMuonTra.Modules.TaiKhoan.Infrastructure;
 
+/// <summary>
+/// Dịch vụ tra cứu và kiểm tra quyền phòng của nhân viên, hỗ trợ đệm bộ nhớ (in-memory cache).
+/// <para>
+/// <b>Ghi chú kiến trúc (ADR / K-15):</b> Hiện tại hệ thống triển khai dạng single-instance trên Render free tier,
+/// do đó sử dụng <see cref="IMemoryCache"/> với TTL 30 giây và cơ chế xóa đệm trực tiếp qua <see cref="IBoNhoDemQuyenPhong"/>.
+/// Khi nâng cấp hệ thống lên môi trường nhiều node (multi-node / distributed replica), cần thay thế bộ đệm cục bộ
+/// bằng <c>IDistributedCache</c> (Redis) hoặc kết hợp Redis Pub/Sub để phát tín hiệu xóa đệm đồng bộ giữa các node,
+/// tránh rủi ro rò rỉ quyền trong cửa sổ thời gian 30 giây trên các node chưa được xóa đệm.
+/// </para>
+/// </summary>
 public sealed class QuyenPhongService(DbContext db, IMemoryCache boNhoDem) : IQuyenPhongService, IBoNhoDemQuyenPhong
 {
     public static readonly TimeSpan ThoiGianDem = TimeSpan.FromSeconds(30);
