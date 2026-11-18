@@ -52,6 +52,23 @@ public sealed class LoaiThietBi : IAuditable
         ChuKyBaoTri = chuKyBaoTri;
     }
 
+    internal const long PhiTreToiDa = 99_999_999_999_999;
+
+    internal void CapNhatPhiTre(long phiTreMoiNgay)
+    {
+        if (phiTreMoiNgay < 0)
+        {
+            throw new LoiNghiepVuException("GIA_TRI_CAU_HINH_KHONG_HOP_LE", "Phí trả trễ mỗi ngày không được âm.");
+        }
+
+        if (phiTreMoiNgay > PhiTreToiDa)
+        {
+            throw new LoiNghiepVuException("GIA_TRI_CAU_HINH_KHONG_HOP_LE", "Phí trả trễ mỗi ngày vượt quá giới hạn lưu trữ.");
+        }
+
+        PhiTreMoiNgay = phiTreMoiNgay;
+    }
+
     private static void KiemTra(string tenLoai, int chuKyBaoTri)
     {
         if (string.IsNullOrWhiteSpace(tenLoai))
