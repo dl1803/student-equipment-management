@@ -234,4 +234,28 @@ public sealed class YeuCauMuonSvHttpTests : IAsyncLifetime
         Assert.Equal(HttpStatusCode.NotFound, khongTonTai.StatusCode);
         Assert.Equal("KHONG_TIM_THAY", (await DocJsonAsync(khongTonTai)).GetProperty("maLoi").GetString());
     }
+
+    [CanKetNoiTestFact]
+    public async Task UC02_GuiPhanTuNullTrongDanhSach_Tra400()
+    {
+        var token = TaoToken("D06-SV-HTTP", "SINH_VIEN");
+        var maPhong = Guid.NewGuid();
+        var bodyNull = $$"""{"maPhong":"{{maPhong}}","thoiGianMuonDuKienGio":2,"dsLoaiVaSoLuong":[null]}""";
+
+        var phanHoi = await GoiAsync(HttpMethod.Post, DuongDan, token, bodyNull);
+
+        Assert.Equal(HttpStatusCode.BadRequest, phanHoi.StatusCode);
+        Assert.Equal("DU_LIEU_KHONG_HOP_LE", (await DocJsonAsync(phanHoi)).GetProperty("maLoi").GetString());
+    }
+
+    [CanKetNoiTestFact]
+    public async Task UC02_ChiTietMaCoKyTuXuongDong_Tra400()
+    {
+        var token = TaoToken("D06-SV-HTTP", "SINH_VIEN");
+
+        var phanHoi = await GoiAsync(HttpMethod.Get, $"{DuongDan}/YC-000101-999999%0A", token);
+
+        Assert.Equal(HttpStatusCode.BadRequest, phanHoi.StatusCode);
+        Assert.Equal("DU_LIEU_KHONG_HOP_LE", (await DocJsonAsync(phanHoi)).GetProperty("maLoi").GetString());
+    }
 }

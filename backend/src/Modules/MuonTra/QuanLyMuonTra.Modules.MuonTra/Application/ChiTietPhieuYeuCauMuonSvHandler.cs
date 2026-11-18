@@ -8,7 +8,7 @@ namespace QuanLyMuonTra.Modules.MuonTra.Application;
 
 public sealed class ChiTietPhieuYeuCauMuonSvHandler(DbContext db, IDanhMucReader danhMuc)
 {
-    private static readonly Regex MauMaYeuCau = new("^YC-[0-9]{6}-[0-9]{6,}$", RegexOptions.CultureInvariant);
+    private static readonly Regex MauMaYeuCau = new(@"\AYC-[0-9]{6}-[0-9]{6,}\z", RegexOptions.CultureInvariant);
 
     public async Task<PhieuYeuCauMuonDto> XuLyAsync(string maSv, string maYeuCau, CancellationToken ct)
     {

@@ -135,4 +135,16 @@ public class KiemTraDieuKienGuiYeuCauTests
         Assert.Equal(422, loi.MaHttp);
         Assert.Contains("giới hạn 2 thiết bị", loi.Message);
     }
+
+    [Theory]
+    [InlineData(1, (long)int.MaxValue)]
+    [InlineData(0, (long)int.MaxValue + 1)]
+    public void UC02A2_SoLuongLon_KhongBiTranSo_Tra422(int soDangCam, long soMuonThem)
+    {
+        var loi = Assert.Throws<LoiNghiepVuException>(
+            () => KiemTraDieuKienGuiYeuCau.KiemTraGioiHanThietBi(QuyDinh, soDangCam, soMuonThem));
+
+        Assert.Equal(MaLoi.VuotGioiHanThietBi, loi.MaLoi);
+        Assert.Equal(422, loi.MaHttp);
+    }
 }

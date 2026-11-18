@@ -35,7 +35,7 @@ internal static class KiemTraDieuKienGuiYeuCau
         }
     }
 
-    public static void KiemTraGioiHanThietBi(QuyDinhNhomDto quyDinh, int soDangCam, int soMuonThem)
+    public static void KiemTraGioiHanThietBi(QuyDinhNhomDto quyDinh, int soDangCam, long soMuonThem)
     {
         if (quyDinh.VuotGioiHanSoThietBi(soDangCam, soMuonThem))
         {

@@ -61,7 +61,8 @@ public sealed class GuiYeuCauMuonHandler(
             thoiGianMuonDuKienGio);
 
         var soDangCam = await muonTra.DemThietBiDangCamAsync(maSv, ct);
-        KiemTraDieuKienGuiYeuCau.KiemTraGioiHanThietBi(quyDinhNhom, soDangCam, dsLoaiVaSoLuong.Sum(d => d.SoLuong));
+        var tongSoLuongYeuCau = dsLoaiVaSoLuong.Sum(d => (long)d.SoLuong);
+        KiemTraDieuKienGuiYeuCau.KiemTraGioiHanThietBi(quyDinhNhom, soDangCam, tongSoLuongYeuCau);
 
         foreach (var dong in dsLoaiVaSoLuong.OrderBy(d => d.MaLoai))
         {

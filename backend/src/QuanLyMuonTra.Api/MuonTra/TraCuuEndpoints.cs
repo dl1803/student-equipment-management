@@ -56,6 +56,7 @@ public static class TraCuuEndpoints
                 CancellationToken ct) =>
             {
                 var dsLoai = yeuCau.DsLoaiVaSoLuong
+                    .Where(d => d is not null)
                     .Select(d => new LoaiVaSoLuongYeuCau(d.MaLoai, d.SoLuong))
                     .ToList();
                 var phieu = await boXuLy.XuLyAsync(
