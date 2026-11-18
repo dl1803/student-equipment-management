@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- CMP-01 nút hủy bỏ hoặc xóa: nền. -->
+<selector xmlns:android="http://schemas.android.com/apk/res/android">
+    <item android:state_enabled="false" android:color="@color/ds_color_action_disabled_bg" />
+    <item android:color="@color/ds_color_action_destructive_bg" />
+</selector>

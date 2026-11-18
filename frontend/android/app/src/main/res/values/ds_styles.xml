@@ -1,0 +1,136 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+    D05-L (DS 8; FC 8.4, Phụ lục A): style dùng lại cho thành phần nền, đặt tên Widget.Ds.{ThanhPhan}.
+    {BienThe}, kế thừa kiểu của Material Components và chỉ đổi thuộc tính bằng token ds_. Không dùng
+    giá trị dp, sp hay mã màu thô. Hiệu ứng nhấn là gợn sóng ds_color_overlay_pressed (DS mục 6);
+    tiêu điểm bàn phím dùng chỉ báo của hệ thống. Chiều cao nút 48 dp là vùng chạm tối thiểu (DS 10).
+    Các style không có parent rõ ràng cần khai báo parent="" để tránh kế thừa ngầm theo dấu chấm.
+-->
+<resources>
+
+    <!-- CMP-01 Nút: bốn biến thể. Nền và chữ đổi theo trạng thái vô hiệu nhờ selector trong res/color. -->
+    <style name="Widget.Ds.Button.Primary" parent="Widget.MaterialComponents.Button">
+        <item name="android:minHeight">@dimen/ds_size_button_height</item>
+        <item name="android:insetTop">0dp</item>
+        <item name="android:insetBottom">0dp</item>
+        <item name="android:paddingLeft">@dimen/ds_space_4</item>
+        <item name="android:paddingRight">@dimen/ds_space_4</item>
+        <item name="android:textAppearance">@style/TextAppearance.Ds.Label</item>
+        <item name="android:textAllCaps">false</item>
+        <item name="android:textColor">@color/ds_button_text_primary</item>
+        <item name="cornerRadius">@dimen/ds_radius_md</item>
+        <item name="backgroundTint">@color/ds_button_bg_primary</item>
+        <item name="iconTint">@color/ds_button_text_primary</item>
+        <item name="rippleColor">@color/ds_color_overlay_pressed</item>
+    </style>
+
+    <style name="Widget.Ds.Button.Destructive" parent="Widget.MaterialComponents.Button">
+        <item name="android:minHeight">@dimen/ds_size_button_height</item>
+        <item name="android:insetTop">0dp</item>
+        <item name="android:insetBottom">0dp</item>
+        <item name="android:paddingLeft">@dimen/ds_space_4</item>
+        <item name="android:paddingRight">@dimen/ds_space_4</item>
+        <item name="android:textAppearance">@style/TextAppearance.Ds.Label</item>
+        <item name="android:textAllCaps">false</item>
+        <item name="android:textColor">@color/ds_button_text_destructive</item>
+        <item name="cornerRadius">@dimen/ds_radius_md</item>
+        <item name="backgroundTint">@color/ds_button_bg_destructive</item>
+        <item name="iconTint">@color/ds_button_text_destructive</item>
+        <item name="rippleColor">@color/ds_color_overlay_pressed</item>
+    </style>
+
+    <style name="Widget.Ds.Button.Secondary" parent="Widget.MaterialComponents.Button.OutlinedButton">
+        <item name="android:minHeight">@dimen/ds_size_button_height</item>
+        <item name="android:insetTop">0dp</item>
+        <item name="android:insetBottom">0dp</item>
+        <item name="android:paddingLeft">@dimen/ds_space_4</item>
+        <item name="android:paddingRight">@dimen/ds_space_4</item>
+        <item name="android:textAppearance">@style/TextAppearance.Ds.Label</item>
+        <item name="android:textAllCaps">false</item>
+        <item name="android:textColor">@color/ds_button_text_secondary</item>
+        <item name="cornerRadius">@dimen/ds_radius_md</item>
+        <item name="backgroundTint">@color/ds_button_bg_secondary</item>
+        <item name="strokeColor">@color/ds_button_stroke_secondary</item>
+        <item name="strokeWidth">@dimen/ds_border_width_default</item>
+        <item name="iconTint">@color/ds_button_text_secondary</item>
+        <item name="rippleColor">@color/ds_color_overlay_pressed</item>
+    </style>
+
+    <style name="Widget.Ds.Button.Tertiary" parent="Widget.MaterialComponents.Button.TextButton">
+        <item name="android:minHeight">@dimen/ds_size_button_height</item>
+        <item name="android:insetTop">0dp</item>
+        <item name="android:insetBottom">0dp</item>
+        <item name="android:paddingLeft">@dimen/ds_space_4</item>
+        <item name="android:paddingRight">@dimen/ds_space_4</item>
+        <item name="android:textAppearance">@style/TextAppearance.Ds.Label</item>
+        <item name="android:textAllCaps">false</item>
+        <item name="android:textColor">@color/ds_button_text_tertiary</item>
+        <item name="cornerRadius">@dimen/ds_radius_md</item>
+        <item name="backgroundTint">@color/ds_button_bg_tertiary</item>
+        <item name="iconTint">@color/ds_button_text_tertiary</item>
+        <item name="rippleColor">@color/ds_color_overlay_pressed</item>
+    </style>
+
+    <!-- CMP-02 Nút biểu tượng: vùng chạm 48 dp, biểu tượng 24 dp, gợn sóng không viền. Mỗi nơi dùng
+         phải đặt android:contentDescription (DS CMP-02, DS 10). -->
+    <style name="Widget.Ds.IconButton" parent="Widget.AppCompat.ImageButton">
+        <item name="android:minWidth">@dimen/ds_size_touch_min</item>
+        <item name="android:minHeight">@dimen/ds_size_touch_min</item>
+        <item name="android:padding">@dimen/ds_space_3</item>
+        <item name="android:background">@drawable/ds_ripple_borderless</item>
+        <item name="android:tint">@color/ds_icon_tint_secondary</item>
+        <item name="android:scaleType">center</item>
+    </style>
+
+    <!-- CMP-03 Liên kết: màu liên kết, chữ thân, vùng chạm 48 dp. Gạch chân do TextLinkView đảm bảo. -->
+    <style name="Widget.Ds.Link" parent="">
+        <item name="android:textAppearance">@style/TextAppearance.Ds.Body</item>
+        <item name="android:textColor">@color/ds_color_text_link</item>
+        <item name="android:minHeight">@dimen/ds_size_touch_min</item>
+        <item name="android:gravity">center_vertical</item>
+    </style>
+
+    <!-- CMP-04 Ô nhập: khung viền một nét, tiêu điểm dày hơn. Nhãn là TextView riêng phía trên (kiểu
+         TextAppearance.Ds.Label, android:labelFor trỏ tới ô nhập, cách ô ds_space_field_label), nên
+         tắt nhãn nổi của Material (hintEnabled). Lỗi dùng biểu tượng lỗi tích hợp ở cuối ô. -->
+    <style name="Widget.Ds.TextField" parent="Widget.MaterialComponents.TextInputLayout.OutlinedBox">
+        <item name="hintEnabled">false</item>
+        <item name="boxBackgroundColor">@color/ds_color_surface_default</item>
+        <item name="boxStrokeColor">@color/ds_textfield_stroke</item>
+        <item name="boxStrokeErrorColor">@color/ds_color_border_error</item>
+        <item name="boxStrokeWidth">@dimen/ds_border_width_default</item>
+        <item name="boxStrokeWidthFocused">@dimen/ds_border_width_strong</item>
+        <item name="boxCornerRadiusTopStart">@dimen/ds_radius_md</item>
+        <item name="boxCornerRadiusTopEnd">@dimen/ds_radius_md</item>
+        <item name="boxCornerRadiusBottomStart">@dimen/ds_radius_md</item>
+        <item name="boxCornerRadiusBottomEnd">@dimen/ds_radius_md</item>
+        <item name="errorTextAppearance">@style/TextAppearance.Ds.Caption</item>
+        <item name="errorTextColor">@color/ds_color_tone_danger_text</item>
+        <item name="errorIconTint">@color/ds_color_tone_danger_icon</item>
+        <item name="helperTextTextAppearance">@style/TextAppearance.Ds.Caption</item>
+        <item name="helperTextTextColor">@color/ds_color_text_secondary</item>
+    </style>
+
+    <!-- CMP-04: ô nhập bên trong TextInputLayout (dùng TextInputEditText). Cao tối thiểu 56 dp. -->
+    <style name="Widget.Ds.TextField.Input" parent="Widget.MaterialComponents.TextInputEditText.OutlinedBox">
+        <item name="android:minHeight">@dimen/ds_size_input_height</item>
+        <item name="android:paddingStart">@dimen/ds_space_3</item>
+        <item name="android:paddingEnd">@dimen/ds_space_3</item>
+        <item name="android:paddingTop">@dimen/ds_space_4</item>
+        <item name="android:paddingBottom">@dimen/ds_space_4</item>
+        <item name="android:textAppearance">@style/TextAppearance.Ds.Body</item>
+        <item name="android:textColorHint">@color/ds_color_text_placeholder</item>
+    </style>
+
+    <!-- CMP-15 Thẻ: nền mặt phẳng, viền nhạt, bo góc vừa, không đổ bóng, đệm space.card. Chỉ có hình
+         thức tĩnh; biến thể chạm được, chọn được và theo tông thêm khi màn hình dùng đến. -->
+    <style name="Widget.Ds.Card" parent="Widget.MaterialComponents.CardView">
+        <item name="cardBackgroundColor">@color/ds_color_surface_default</item>
+        <item name="cardCornerRadius">@dimen/ds_radius_md</item>
+        <item name="cardElevation">0dp</item>
+        <item name="strokeColor">@color/ds_color_border_subtle</item>
+        <item name="strokeWidth">@dimen/ds_border_width_default</item>
+        <item name="contentPadding">@dimen/ds_space_card</item>
+    </style>
+
+</resources>
