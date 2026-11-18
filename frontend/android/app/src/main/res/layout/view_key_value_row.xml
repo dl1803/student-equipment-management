@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+    CMP-14 Danh sách khóa và giá trị: một dòng gồm tên trường phía trên và giá trị phía dưới. Giá trị là
+    chữ (tv_gia_tri) hoặc một view tùy ý như StatusBadgeView (fl_gia_tri); KeyValueListView bật một
+    trong hai.
+-->
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical">
+
+    <TextView
+        android:id="@+id/tv_ten"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:textAppearance="@style/TextAppearance.Ds.Caption"
+        android:textColor="@color/ds_color_text_secondary" />
+
+    <TextView
+        android:id="@+id/tv_gia_tri"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:textAppearance="@style/TextAppearance.Ds.Body"
+        android:visibility="gone" />
+
+    <FrameLayout
+        android:id="@+id/fl_gia_tri"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:visibility="gone" />
+
+</LinearLayout>

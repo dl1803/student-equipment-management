@@ -102,4 +102,12 @@
     <string name="nhan_phat_sinh_bao_tri">Bảo trì</string>
     <string name="nhan_phat_sinh_thanh_ly">Thanh lý</string>
     <string name="nhan_phat_sinh_tam_tinh">Tạm tính</string>
+
+    <!-- Chữ dùng chung của thành phần nền (DS 9.8, CMP-25). -->
+    <string name="hanh_dong_thu_lai">Thử lại</string>
+    <string name="loi_mang">Không tải được dữ liệu. Kiểm tra kết nối rồi thử lại.</string>
+    <string name="loi_he_thong">Đã xảy ra lỗi hệ thống.</string>
+    <string name="trang_thai_ma_theo_doi">Mã theo dõi: %1$s</string>
+    <string name="trang_thai_dang_tai">Đang tải</string>
+    <string name="trang_thai_khoi_dong_cham">Hệ thống đang khởi động, vui lòng chờ</string>
 </resources>
