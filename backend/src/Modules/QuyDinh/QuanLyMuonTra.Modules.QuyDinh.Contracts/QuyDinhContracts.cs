@@ -8,7 +8,7 @@ public sealed record QuyDinhNhomDto(
     int ThoiGianMuonToiDaGio,
     IReadOnlyList<NgoaiLeTheoLoaiDto> DsNgoaiLeTheoLoai)
 {
-    public bool VuotGioiHanSoThietBi(int soDangCam, int soMuonThem)
+    public bool VuotGioiHanSoThietBi(long soDangCam, long soMuonThem)
     {
         return soDangCam + soMuonThem > SoThietBiToiDa;
     }
