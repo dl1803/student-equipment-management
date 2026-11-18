@@ -1,4 +1,4 @@
-# Bàn giao shared core web (D04-T, cập nhật D05-T)
+# Bàn giao shared core web (D04-T, cập nhật D05-T, D06-T)
 
 Người nhận: Long, phụ trách SCR-QT-05..09 (`features/quan-tri/cau-hinh/`, `features/quan-tri/tai-khoan-nhan-vien/`) từ ngày làm việc 20.
 Từ cuối D04-T, các interface dưới đây là **public và ổn định**. Muốn đổi chữ ký, Thịnh báo trước và cập nhật tài liệu này trong cùng PR. Cần thêm gì thì tạo issue hoặc nhắn Thịnh, không sửa thẳng `src/shared/**`.
@@ -82,13 +82,15 @@ export function useLuuThamSoMutation() {
 | `shared/format/docSo`        | `docSoNguyen(chuoi)` → `number \| null`                                                           | Đọc ô số nguyên không âm (chỉ chữ số); kiểm tra giới hạn ở biểu mẫu                                                               |
 | `shared/tuyen/banDoTuyen`    | `BAN_DO_TUYEN`, `tuyenCua`                                                                        | Không thêm tuyến ngoài 28 màn hình                                                                                                |
 
-**Thành phần đã hiện thực** (`shared/components/`): `Button` (CMP-01), `IconButton` (02), `TextLink` (03), `TextField` + `FormField` (04), `Select` (06, chọn một), `StatusBadge` (13), `KeyValueList` (14), `Card` (15), `DataTable` (18, mức cơ bản), `Pagination` (19), `Banner` (24), `StateView` (25), `Dialog` + `ConfirmDialog` (26), `Sidebar` (29), `Header` (30). Ví dụ dùng đầy đủ: `features/quan-tri/danh-muc/` (SCR-QT-02, QT-03).
+**Thành phần đã hiện thực** (`shared/components/`): `Button` (CMP-01), `IconButton` (02), `TextLink` (03), `TextField` + `FormField` (04), `Select` (06, chọn một), `StatusBadge` (13), `KeyValueList` (14), `Card` (15), `DataTable` (18), `Pagination` (19), `Menu` (20), `Banner` (24), `StateView` (25), `Dialog` + `ConfirmDialog` (26), `Sidebar` (29), `Header` (30). Ví dụ dùng đầy đủ: `features/quan-tri/danh-muc/` (SCR-QT-02, QT-03).
 
 - `Select` là `<select>` gốc: `{ id, dsLuaChon: LuaChon<T>[], giaTri: T | null, onChange(T | null), coMucTatCa?, goiY?, ... }`. Không có mục Tất cả và chưa chọn thì hiện mục gợi ý `goiY` (mặc định "Chọn"). **Khác hợp đồng ngày 4:** bỏ prop `cheDo`; chọn nhiều tách sang `SelectNhieuProps`.
-- `DataTable`: `{ tieuDe, dsCot: CotBang<T>[], dsDong, khoaDong, trangThaiThan?, hanhDongDong?, dangTaiLai? }`. Tối đa 2 hành động mỗi dòng (`SO_HANH_DONG_TRUC_TIEP_TOI_DA`); từ 3 trở lên sẽ báo lỗi cho tới khi có `Menu`. Trạng thái tải/rỗng/lỗi truyền qua `trangThaiThan`.
-- `Pagination`: `{ trang, kichThuoc, tongSo, onDoiTrang, dangTai? }`; tự ẩn khi chỉ có một trang.
+- `DataTable`: `{ tieuDe, dsCot: CotBang<T>[], dsDong, khoaDong, trangThaiThan?, hanhDongDong?, dangTaiLai? }`. Cứ truyền đủ hành động (`HanhDongDong`: `nhan`, `onClick`, `huyBo?`, `an?`): tối đa 2 mục hiện thì là nút văn bản trực tiếp, từ 3 mục hiện thì **tự gom vào `Menu`** (`SO_HANH_DONG_TRUC_TIEP_TOI_DA`); mục `an` không tính. Screen không tự dựng Menu. Trạng thái tải/rỗng/lỗi truyền qua `trangThaiThan`.
+- `Menu`: `{ nhanNutKichHoat?, dsMuc: HanhDongDong[] }`. Nút "Thao tác ▾"; mục `huyBo` tông danger, đặt cuối, cách bằng đường kẻ; bàn phím ↑/↓/Home/End/Enter/Esc/Tab theo DS CMP-20. Danh sách dùng `position: fixed` nên không bị khung cuộn của bảng cắt; cuộn trang thì menu đóng.
+- `Button`: thêm `bieuTuongSau` (biểu tượng bên phải chữ).
+- `Pagination`: `{ trang, kichThuoc, tongSo, onDoiTrang, dangTai? }`; tự ẩn khi chỉ có một trang và đang ở trang 1.
 
-**Props đã công bố, chưa hiện thực** (`shared/components/contracts.ts`): `SelectNhieu`, `Checkbox`, `RadioGroup`, `Menu` và phần mở rộng `DataTableMoRongProps` (chọn dòng, mở rộng dòng, làm nổi bật). Có thể viết `Screen` theo các props này ngay; thành phần thật sẽ khớp chữ ký.
+**Props đã công bố, chưa hiện thực** (`shared/components/contracts.ts`): `SelectNhieu`, `Checkbox`, `RadioGroup` và phần mở rộng `DataTableMoRongProps` (chọn dòng, mở rộng dòng, làm nổi bật). Có thể viết `Screen` theo các props này ngay; thành phần thật sẽ khớp chữ ký.
 
 ## 3. Kiểm thử màn hình bằng fixture
 

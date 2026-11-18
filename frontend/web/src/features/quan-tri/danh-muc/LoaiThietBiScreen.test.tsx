@@ -454,4 +454,77 @@ describe("LoaiThietBiScreen", () => {
       ).toBe("30.000 VNĐ"),
     );
   });
+
+  it("D06-T: đổi bộ lọc khi đang ở trang 2 → tải lại từ trang 1", async () => {
+    const goi = mayChu({
+      get: (cfg) =>
+        traVe(cfg, 200, {
+          tongSo: 45,
+          trang: cfg.params?.trang,
+          kichThuoc: 20,
+          danhSach: [LAPTOP],
+        }),
+    });
+    hienThi();
+    await screen.findByText("Trang 1 / 3");
+    fireEvent.click(screen.getByRole("button", { name: "Sau" }));
+    await screen.findByText("Trang 2 / 3");
+
+    fireEvent.change(screen.getByLabelText("Trạng thái sử dụng"), {
+      target: { value: "false" },
+    });
+
+    await waitFor(() =>
+      expect(goiTheo(goi, "get").at(-1)?.params).toEqual({
+        trang: 1,
+        kichThuoc: 20,
+        ngungSuDung: false,
+      }),
+    );
+    expect(await screen.findByText("Trang 1 / 3")).toBeTruthy();
+  });
+
+  it("D06-T / FC 5.2: Làm mới giữ dữ liệu cũ trong lúc tải, bảng đánh dấu aria-busy", async () => {
+    let lanGet = 0;
+    mayChu({
+      get: (cfg) =>
+        lanGet++ === 0
+          ? traVe(cfg, 200, trangLoai([LAPTOP, MAY_CHIEU]))
+          : new Promise<never>(() => undefined), // Lần làm mới chưa trả về.
+    });
+    hienThi();
+    await screen.findByText("Laptop");
+
+    fireEvent.click(screen.getByRole("button", { name: "Làm mới" }));
+
+    await waitFor(() =>
+      expect(screen.getByRole("table").getAttribute("aria-busy")).toBe("true"),
+    );
+    expect(screen.getByText("Laptop")).toBeTruthy();
+    expect(screen.getByText("Máy chiếu")).toBeTruthy();
+    expect(screen.queryByRole("status")).toBeNull();
+  });
+
+  it("D06-T / DS 9.5: thông báo rỗng là trạng thái thông tin, không dùng tông lỗi", async () => {
+    mayChu({ get: (cfg) => traVe(cfg, 200, trangLoai([])) });
+    hienThi();
+
+    const thongDiep = await screen.findByText("Chưa có loại thiết bị");
+    const khung = thongDiep.closest("[role]");
+    expect(khung?.getAttribute("role")).toBe("status");
+    expect(screen.queryByRole("alert")).toBeNull();
+    expect(khung?.outerHTML).not.toMatch(/danger|error/);
+  });
+
+  it("D06-T / UI-Screens 7.3: loại đã ngưng sử dụng không có hành động hoàn tác ngưng", async () => {
+    mayChu();
+    hienThi();
+    const dong = (await screen.findByText("Máy chiếu")).closest("tr");
+
+    expect(
+      within(dong ?? document.body)
+        .getAllByRole("button")
+        .map((b) => b.textContent),
+    ).toEqual(["Sửa", "Xóa"]);
+  });
 });

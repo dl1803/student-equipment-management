@@ -4,7 +4,6 @@
 // Khi hiện thực: chuyển kiểu sang shared/components/{Ten}.tsx và xóa khỏi đây.
 // Đã hiện thực ở D05-T: Select (chọn một), KeyValueList, Pagination, DataTable (mức cơ bản).
 import type { ReactNode } from "react";
-import type { HanhDongDong } from "./DataTable";
 import type { LuaChon } from "./Select";
 
 // ---------- CMP-06 Ô chọn, chế độ chọn nhiều (SCR-QT-04 nhà cung cấp, SCR-QT-09 quyền phòng) ----------
@@ -68,10 +67,4 @@ export type DataTableMoRongProps<TDong> = {
   lamNoiBat?: (dong: TDong) => "THONG_TIN" | "CANH_BAO" | null;
 };
 
-// ---------- CMP-20 Menu thao tác (Menu) ----------
-
-export type MenuProps = {
-  /** Nút kích hoạt là Button tertiary sm chữ "Thao tác" (DS 9.8). */
-  nhanNutKichHoat?: string;
-  dsMuc: ReadonlyArray<HanhDongDong>;
-};
+// CMP-20 Menu đã hiện thực ở ./Menu (D06-T); DataTable tự gom từ 3 hành động.

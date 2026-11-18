@@ -61,23 +61,41 @@ describe("DataTable", () => {
     expect(sua).toHaveBeenCalledWith("b");
   });
 
-  it("ĐX-DS-14: từ 3 hành động trở lên phải dùng Menu → báo lỗi lập trình", () => {
-    const ghiLoi = vi
-      .spyOn(console, "error")
-      .mockImplementation(() => undefined);
-    const ba = [1, 2, 3].map((i) => ({ nhan: `H${i}`, onClick: vi.fn() }));
-    expect(() =>
-      render(
-        <DataTable
-          tieuDe="Bảng"
-          dsCot={COT}
-          dsDong={DONG}
-          khoaDong={(d) => d.ma}
-          hanhDongDong={() => ba}
-        />,
-      ),
-    ).toThrow(/Menu/);
-    ghiLoi.mockRestore();
+  it("ĐX-DS-14: từ 3 hành động hiện thì gom vào Menu; ngưỡng tính sau khi bỏ mục ẩn", () => {
+    const xoa = vi.fn();
+    render(
+      <DataTable
+        tieuDe="Bảng"
+        dsCot={COT}
+        dsDong={DONG}
+        khoaDong={(d) => d.ma}
+        hanhDongDong={(d) => [
+          { nhan: "Sửa", onClick: vi.fn() },
+          { nhan: "Khóa", onClick: vi.fn(), huyBo: true, an: d.ma === "a" },
+          { nhan: "Xóa", onClick: () => xoa(d.ma), huyBo: true },
+        ]}
+      />,
+    );
+    // Dòng a: 2 mục hiện → nút trực tiếp; dòng b: 3 mục → Menu.
+    const [dongA, dongB] = screen.getAllByRole("row").slice(1);
+    expect(
+      within(dongA ?? document.body).getByRole("button", { name: "Xóa" }),
+    ).toBeTruthy();
+    expect(
+      within(dongA ?? document.body).queryByRole("button", {
+        name: "Thao tác",
+      }),
+    ).toBeNull();
+    const nut = within(dongB ?? document.body).getByRole("button", {
+      name: "Thao tác",
+    });
+    expect(
+      within(dongB ?? document.body).queryByRole("button", { name: "Sửa" }),
+    ).toBeNull();
+
+    fireEvent.click(nut);
+    fireEvent.click(screen.getByRole("menuitem", { name: "Xóa" }));
+    expect(xoa).toHaveBeenCalledWith("b");
   });
 
   it("CMP-18: trạng thái thân (rỗng) thay phần thân bảng, giữ hàng tiêu đề", () => {
