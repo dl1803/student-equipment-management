@@ -1,5 +1,6 @@
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Caching.Memory;
 using Microsoft.Extensions.DependencyInjection;
 using QuanLyMuonTra.Infrastructure;
 using QuanLyMuonTra.Infrastructure.Persistence;
@@ -23,7 +24,7 @@ public class QuyenPhongTests
         var phongDuocCap = await ThemPhongAsync(db);
         var phongKhac = await ThemPhongAsync(db);
         await CapQuyenAsync(db, maNv, phongDuocCap);
-        var dichVuQuyen = new QuyenPhongService(db);
+        var dichVuQuyen = TaoDichVuQuyen(db);
 
         var dsPhong = await dichVuQuyen.LayDsMaPhongAsync(maNv, CancellationToken.None);
 
@@ -50,6 +51,29 @@ public class QuyenPhongTests
         Assert.Equal(trangThai, await boDoc.LayTrangThaiKhoaAsync(maNv, CancellationToken.None));
         Assert.Null(await boDoc.LayTrangThaiKhoaAsync(Guid.CreateVersion7(), CancellationToken.None));
     }
+
+    [Fact]
+    public async Task UC14_QuyenPhong_DemTrongBoNho_VaXoaDemThiDocLaiTuCsdl()
+    {
+        await using var dichVu = TaoDichVu();
+        await using var phamVi = dichVu.CreateAsyncScope();
+        var db = phamVi.ServiceProvider.GetRequiredService<AppDbContext>();
+        await using var giaoDich = await db.Database.BeginTransactionAsync();
+        var maNv = await ThemNhanVienAsync(db, "HOAT_DONG");
+        var phong = await ThemPhongAsync(db);
+        var dichVuQuyen = TaoDichVuQuyen(db);
+
+        Assert.Empty(await dichVuQuyen.LayDsMaPhongAsync(maNv, CancellationToken.None));
+
+        await CapQuyenAsync(db, maNv, phong);
+        Assert.Empty(await dichVuQuyen.LayDsMaPhongAsync(maNv, CancellationToken.None));
+
+        dichVuQuyen.Xoa(maNv);
+        Assert.Equal(new[] { phong }, await dichVuQuyen.LayDsMaPhongAsync(maNv, CancellationToken.None));
+    }
+
+    private static QuyenPhongService TaoDichVuQuyen(AppDbContext db) =>
+        new(db, new MemoryCache(new MemoryCacheOptions()));
 
     internal static async Task<Guid> ThemNhanVienAsync(AppDbContext db, string trangThaiKhoa)
     {

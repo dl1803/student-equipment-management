@@ -1,6 +1,8 @@
+using QuanLyMuonTra.SharedKernel;
+
 namespace QuanLyMuonTra.Modules.TaiKhoan.Domain;
 
-public sealed class NhanVienPhong
+public sealed class NhanVienPhong : IAuditable
 {
     private NhanVienPhong()
     {
@@ -17,4 +19,3 @@ public sealed class NhanVienPhong
             MaPhong = maPhong
         };
 }
-

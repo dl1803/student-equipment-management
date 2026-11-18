@@ -69,6 +69,15 @@ Mọi dòng dưới đây đang **OPEN**. Một quyết định OPEN chặn đú
 | K-10 | `ISchoolDirectory` ở D05 chỉ có `XacThucAsync` (trả kèm thông tin SV); `LayTheoMssvAsync`, `LayThayDoiTuAsync` thêm ở D11-K. Đăng nhập SV thành công làm mới hồ sơ bằng một câu upsert 9 cột, không ghi `trang_thai_quyen_muon`, không upsert `nhom_sinh_vien` (nhóm phải có ở cả hai phía, đã seed ở `schema.sql` mục 10.4). `MockSchoolDirectory` là bản giả lập đọc `truong_gia_lap` (KT-05) | Khôi đề xuất, chờ nhóm xác nhận | 2026-11-16 |
 | K-11 | `lam-moi`: mọi lỗi (không thấy, hết hạn, đã thu hồi, tài khoản NV/QT không `HOAT_DONG`) trả 401 `CHUA_XAC_THUC`, vì OpenAPI `authLamMoi` không khai báo 403. Dùng lại token đã xoay vòng: thu hồi các token phía sau theo `thay_the_boi` rồi trả 401. Làm mới đồng thời cùng token: một thành công, một 401 và chuỗi bị thu hồi. `dang-xuat`: token không tồn tại trả 401; tồn tại thì thu hồi token và các token phía sau, trả 204 (lặp lại vẫn 204). Việc thu hồi refresh token ngay khi QT khóa tài khoản thuộc D06-K | Khôi đề xuất, chờ nhóm xác nhận | 2026-11-16 |
 
+### Quyết định D06-K cho K-12, K-13, K-14, K-15
+
+| Mã | Quyết định | Trạng thái | Ngày |
+|---|---|---|---|
+| K-12 | `PUT /quan-tri/nhan-vien/{ma}/quyen-phong`: `maPhong` không tồn tại trả 404 `KHONG_TIM_THAY`; danh sách trùng `maPhong` trả 400 `DU_LIEU_KHONG_HOP_LE`. Khóa bi quan `SELECT 1 FROM tai_khoan.nhan_vien_quan_ly WHERE ma_nguoi_dung = {ma} FOR UPDATE` trong cùng giao dịch trước khi đọc và thay thế để chống race condition gộp quyền (privilege escalation) | Đã chốt theo review của Vương | 2026-11-18 |
+| K-13 | Khóa tài khoản NV từ `HOAT_DONG` hoặc `TAM_KHOA_DANG_NHAP`, chỉ 409 `TRANG_THAI_KHONG_HOP_LE` khi đã `BI_KHOA`; mở khóa từ `BI_KHOA` hoặc `TAM_KHOA_DANG_NHAP`, 409 khi đã `HOAT_DONG`. Khóa thu hồi toàn bộ refresh token của NV trong cùng giao dịch (K-11) | Khôi đề xuất, chờ nhóm xác nhận | 2026-11-17 |
+| K-14 | Mở khóa đặt `so_lan_dang_nhap_sai = 0` | Khôi đề xuất, chờ nhóm xác nhận | 2026-11-17 |
+| K-15 | Bảng `nguoi_dung_he_thong` chưa có concurrency token `xmin`; xử lý đồng thời cho khóa/mở khóa bằng khóa bi quan `SELECT 1 FROM tai_khoan.nguoi_dung_he_thong WHERE ma_nguoi_dung = {ma} FOR UPDATE` đảm bảo trả 409 `TRANG_THAI_KHONG_HOP_LE`. Đặt lại mật khẩu nhân viên thu hồi toàn bộ refresh token trong cùng giao dịch; xóa cache quyền phòng khi khóa/mở khóa tài khoản. `QuyenPhongService` dùng `IMemoryCache` cho mô hình single-instance Render free tier; khi mở rộng multi-node cần chuyển sang `IDistributedCache` (Redis) / pub-sub invalidation | Đã chốt theo review của Vương | 2026-11-18 |
+
 ## 5. Mâu thuẫn giữa các nguồn đã phát hiện
 
 | # | Nội dung | Nguồn A | Nguồn B | Cách xử lý |

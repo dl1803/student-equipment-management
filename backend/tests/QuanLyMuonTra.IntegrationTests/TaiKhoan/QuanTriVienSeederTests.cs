@@ -103,6 +103,7 @@ public class QuanTriVienSeederTests
         await db.Database.ExecuteSqlRawAsync("""
             DELETE FROM tai_khoan.nguoi_dung_he_thong n
             WHERE NOT EXISTS (SELECT 1 FROM tai_khoan.nhan_vien_quan_ly v WHERE v.ma_nguoi_dung = n.ma_nguoi_dung)
+              AND NOT EXISTS (SELECT 1 FROM nhat_ky.nhat_ky_he_thong nk WHERE nk.ma_nguoi_dung = n.ma_nguoi_dung)
             """);
     }
 }
