@@ -11,6 +11,8 @@ public sealed record LoaiThietBiQuanTriDto(
 
 public sealed record NhaCungCapQuanTriDto(Guid MaNCC, string TenNCC, string? ThongTinLienHe);
 
+public sealed record PhiTreDto(Guid MaLoai, long PhiTreMoiNgay);
+
 public sealed record ThietBiQuanTriDto(
     string MaThietBi,
     Guid MaLoai,

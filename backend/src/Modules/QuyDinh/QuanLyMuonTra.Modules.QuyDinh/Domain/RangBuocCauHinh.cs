@@ -8,7 +8,7 @@ internal static class RangBuocCauHinh
     {
         if (!dieuKien)
         {
-            throw new NghiepVuException(MaLoi.GiaTriCauHinhKhongHopLe, thongDiep);
+            throw new LoiNghiepVuException(MaLoi.GiaTriCauHinhKhongHopLe, thongDiep);
         }
     }
 }

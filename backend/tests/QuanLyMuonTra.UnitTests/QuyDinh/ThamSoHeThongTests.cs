@@ -50,7 +50,7 @@ public sealed class ThamSoHeThongTests
         int nguongViPham,
         int soLanDangNhapSai)
     {
-        var loi = Assert.Throws<NghiepVuException>(() =>
+        var loi = Assert.Throws<LoiNghiepVuException>(() =>
             new ThamSoHeThong(soNgayKhoa, thoiGianGiuCho, anHan, soGioGiaHan, nguongViPham, soLanDangNhapSai, null, null));
 
         Assert.Equal("GIA_TRI_CAU_HINH_KHONG_HOP_LE", loi.MaLoi);
@@ -84,7 +84,7 @@ public sealed class ThamSoHeThongTests
     {
         var thamSo = TaoMacDinh();
 
-        var loi = Assert.Throws<NghiepVuException>(() =>
+        var loi = Assert.Throws<LoiNghiepVuException>(() =>
             thamSo.CapNhat(3, 30, 15, 2, 3, 5, new TimeOnly(7, 30), null));
 
         Assert.Equal("GIA_TRI_CAU_HINH_KHONG_HOP_LE", loi.MaLoi);
@@ -95,7 +95,7 @@ public sealed class ThamSoHeThongTests
     {
         var thamSo = TaoMacDinh();
 
-        var loi = Assert.Throws<NghiepVuException>(() =>
+        var loi = Assert.Throws<LoiNghiepVuException>(() =>
             thamSo.CapNhat(3, 30, 15, 2, 3, 5, null, new TimeOnly(17, 0)));
 
         Assert.Equal("GIA_TRI_CAU_HINH_KHONG_HOP_LE", loi.MaLoi);
@@ -112,7 +112,7 @@ public sealed class ThamSoHeThongTests
     {
         var thamSo = TaoMacDinh();
 
-        var loi = Assert.Throws<NghiepVuException>(() =>
+        var loi = Assert.Throws<LoiNghiepVuException>(() =>
             thamSo.CapNhat(3, 30, 15, 2, 3, 5, new TimeOnly(gioMo, phutMo), new TimeOnly(gioDong, phutDong)));
 
         Assert.Equal("GIA_TRI_CAU_HINH_KHONG_HOP_LE", loi.MaLoi);
@@ -123,7 +123,7 @@ public sealed class ThamSoHeThongTests
     {
         var thamSo = TaoMacDinh();
 
-        Assert.Throws<NghiepVuException>(() =>
+        Assert.Throws<LoiNghiepVuException>(() =>
             thamSo.CapNhat(7, 45, 20, 4, 6, 8, new TimeOnly(17, 0), new TimeOnly(7, 30)));
 
         Assert.Equal(3, thamSo.SoNgayKhoa);

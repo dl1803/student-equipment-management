@@ -26,7 +26,7 @@ public sealed class QuyDinhMuonTests
     [InlineData(2, -5)]
     public void UC13_TaoChung_SoThietBiHoacThoiGianKhongDuong_NemGiaTriCauHinhKhongHopLe(int soThietBi, int gio)
     {
-        var loi = Assert.Throws<NghiepVuException>(() => QuyDinhMuon.TaoChung("DAI_HOC", soThietBi, gio));
+        var loi = Assert.Throws<LoiNghiepVuException>(() => QuyDinhMuon.TaoChung("DAI_HOC", soThietBi, gio));
 
         Assert.Equal("GIA_TRI_CAU_HINH_KHONG_HOP_LE", loi.MaLoi);
     }
@@ -36,7 +36,7 @@ public sealed class QuyDinhMuonTests
     [InlineData("  ")]
     public void UC13_TaoChung_MaNhomRong_NemGiaTriCauHinhKhongHopLe(string maNhom)
     {
-        var loi = Assert.Throws<NghiepVuException>(() => QuyDinhMuon.TaoChung(maNhom, 2, 5));
+        var loi = Assert.Throws<LoiNghiepVuException>(() => QuyDinhMuon.TaoChung(maNhom, 2, 5));
 
         Assert.Equal("GIA_TRI_CAU_HINH_KHONG_HOP_LE", loi.MaLoi);
     }
@@ -58,7 +58,7 @@ public sealed class QuyDinhMuonTests
     [InlineData(-1)]
     public void UC13_TaoNgoaiLe_ThoiGianKhongDuong_NemGiaTriCauHinhKhongHopLe(int gio)
     {
-        var loi = Assert.Throws<NghiepVuException>(() => QuyDinhMuon.TaoNgoaiLe("DAI_HOC", MayChieu, gio));
+        var loi = Assert.Throws<LoiNghiepVuException>(() => QuyDinhMuon.TaoNgoaiLe("DAI_HOC", MayChieu, gio));
 
         Assert.Equal("GIA_TRI_CAU_HINH_KHONG_HOP_LE", loi.MaLoi);
     }
@@ -66,7 +66,7 @@ public sealed class QuyDinhMuonTests
     [Fact]
     public void UC13_TaoNgoaiLe_MaNhomRong_NemGiaTriCauHinhKhongHopLe()
     {
-        var loi = Assert.Throws<NghiepVuException>(() => QuyDinhMuon.TaoNgoaiLe(" ", MayChieu, 3));
+        var loi = Assert.Throws<LoiNghiepVuException>(() => QuyDinhMuon.TaoNgoaiLe(" ", MayChieu, 3));
 
         Assert.Equal("GIA_TRI_CAU_HINH_KHONG_HOP_LE", loi.MaLoi);
     }

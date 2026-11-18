@@ -162,3 +162,25 @@ Lưu ý: tình trạng `DANG_DUOC_MUON` trong dữ liệu thử đặt trực ti
 | `UnitTests.DanhMuc` (ca mới D05-N) | Đạt 49/49 (20 miền + 12 phòng + 17 loại) — 17/11/2026 — .NET SDK 9.0.305 |
 | `IntegrationTests.DanhMuc` (9 ca mới) trên PostgreSQL | Chưa kiểm chứng — BLOCKED bởi K-1 (Skipped) |
 | Quyền `QuanTri` thật qua HTTP | Chưa kiểm chứng — BLOCKED (chờ endpoint D05-N) |
+
+## 13. Bàn giao D06-N cho Vương, Khôi và tích hợp
+
+| Mục | Nội dung |
+|---|---|
+| Miền | `RangBuocCauHinh` ném `LoiNghiepVuException("GIA_TRI_CAU_HINH_KHONG_HOP_LE")` (422) thay cho `NghiepVuException`; `KhungPhat`, `ThamSoHeThong` là `IAuditable`. `LoaiThietBi.CapNhatPhiTre(long)` (`internal`): âm hoặc > 99.999.999.999.999 → 422 |
+| Request | `CapNhatThamSoRequest`, `KhungPhatRequest` (`QuyDinh.Application`), `PhiTreRequest` (`DanhMuc.Application`). Mọi trường `[JsonRequired]`; giờ quầy nhận `HH:mm` và `HH:mm:ss` qua `GioQuayJsonConverter` |
+| Handler | `LayThamSoHandler.XuLyAsync(ct)`, `CapNhatThamSoHandler.XuLyAsync(yeuCau, ct)` → `ThamSoHeThongDto`; `DsKhungPhatHandler.XuLyAsync(chiDangSuDung, trang, kichThuoc, ct)` → `KetQuaPhanTrang<KhungPhatDto>` (QT: `false`; quầy: `true`); `TaoKhungPhatHandler.XuLyAsync(yeuCau, ct)`, `SuaKhungPhatHandler.XuLyAsync(ma, yeuCau, ct)`, `TatKhungPhatHandler.XuLyAsync(ma, ct)` → `KhungPhatDto`; `XoaKhungPhatHandler.XuLyAsync(ma, ct)`; `CapNhatPhiTreHandler.XuLyAsync(maLoai, yeuCau, ct)` → `PhiTreDto` |
+| Kiểm dữ liệu vào | Chỉ đăng ký `IValidator<KhungPhatRequest>` (`KhungPhatRequestValidator`, tên null/rỗng → 400). **Không** đăng ký `IValidator` cho `CapNhatThamSoRequest` và `PhiTreRequest` (cấu trúc JSON đã kiểm qua `[JsonRequired]`/`GioQuayJsonConverter` → 400, miền giá trị do Domain kiểm → 422). Thêm gói `FluentValidation 12.2.0` vào `QuyDinh.csproj` (đề xuất D06-N, chờ xác nhận) |
+| Xóa khung | `XoaKhungPhatHandler` nhận mọi `IThamChieuKhungPhatProvider`; có tham chiếu → 409 `KHUNG_PHAT_DA_DUNG_KHONG_XOA`; **không có provider nào → `InvalidOperationException` (từ chối an toàn)** |
+| Hàm đăng ký DI | `AddQuyDinhModule()` thêm 7 handler và 1 validator; `AddDanhMucModule()` thêm `CapNhatPhiTreHandler` |
+| Việc cho Host | Bọc handler bằng endpoint `qtLayThamSo`, `qtCapNhatThamSo`, `qtDsKhungPhat`, `qtTaoKhungPhat`, `qtSuaKhungPhat`, `qtXoaKhungPhat`, `qtTatKhungPhat`, `qtCapNhatPhiTre`, `quayDsKhungPhat` với policy thật; **chỉ gắn `KiemTraDuLieuFilter<KhungPhatRequest>` cho `qtTaoKhungPhat` và `qtSuaKhungPhat`** (**không** gắn `KiemTraDuLieuFilter` cho `qtCapNhatThamSo`, `qtCapNhatPhiTre` hay các endpoint không có request body vì không có `IValidator<T>` tương ứng trong DI); **gọi `AddMuonTraModule()` trong `Program.cs`** để xóa khung kiểm cả `chi_tiet_phieu_muon`; cập nhật `C0-manifest-operation.csv` khi endpoint thật xuất hiện. `PUT` trả 200, `POST` tạo khung trả 201, `DELETE` trả 204, `POST …/tat` trả 200 theo `openapi.yaml` |
+| Chưa làm / BLOCKED | `qtLayQuyDinhMuon`, `qtCapNhatQuyDinhMuon` (chờ Q1–Q3: nguồn `tenNhom`/nhóm đã có, mã lỗi nhóm/loại không tồn tại, phạm vi `dsNhom`) |
+| OPEN | O9 mở rộng: khung/tham số cũng không có `xmin`/409 `XUNG_DOT_CAP_NHAT`. O10: chỉ PUT phí có giới hạn trên (D-10); đường tạo loại chưa có. O11: `PhanTrang`/`KetQuaPhanTrang<T>` bị nhân đôi giữa DanhMuc và QuyDinh |
+
+| Hạng mục kiểm chứng (D06-N) | Trạng thái |
+|---|---|
+| `dotnet format --verify-no-changes`, `dotnet build -c Release` | Đạt (0 warning, 0 error) — 18/11/2026 — .NET SDK 9.0.321 |
+| `UnitTests.QuyDinh` và `UnitTests.DanhMuc` (ca mới D06-N) | Đạt 39/39 (2 nhật ký/422 + 12 tham số + 15 khung phạt + 10 phí trễ; tổng UnitTests 355/355) — 18/11/2026 — .NET SDK 9.0.321 |
+| `IntegrationTests` (ThamSo, KhungPhat, PhiTre) trên PostgreSQL | Chưa kiểm chứng — BLOCKED bởi K-1 (11 ca Skipped: 2 ThamSo + 6 KhungPhat + 3 PhiTre) |
+| Xóa khung có `chi_tiet_phieu_muon` tham chiếu qua provider MuonTra | Chưa kiểm chứng — chờ Host đăng ký `AddMuonTraModule()` |
+| Quyền `QuanTri`/`NhanVien` thật qua HTTP | Chưa kiểm chứng — BLOCKED (chưa có endpoint) |

@@ -22,6 +22,7 @@ public static class DependencyInjection
         services.AddScoped<SuaLoaiThietBiHandler>();
         services.AddScoped<IValidator<LoaiThietBiTaoMoiRequest>, LoaiThietBiTaoMoiRequestValidator>();
         services.AddScoped<IValidator<LoaiThietBiCapNhatRequest>, LoaiThietBiCapNhatRequestValidator>();
+        services.AddScoped<CapNhatPhiTreHandler>();
         return services;
     }
 }
