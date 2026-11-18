@@ -1,20 +1,15 @@
 // DataTable — CMP-18 Bảng dữ liệu (DS 8.4; FC 5.2). Sở hữu: Thịnh (shared core).
-// Mức D05-T: bảng thật (caption, th scope), hàng tiêu đề cố định khi cuộn, cuộn ngang trong khung,
-// trạng thái thân bằng StateView, tối đa 2 hành động ở dòng (nút văn bản sm, ĐX-DS-14).
-// Phần còn lại của hợp đồng (dòng mở rộng, cột chọn, chọn dòng, làm nổi bật, Menu cho từ 3 hành
-// động) nằm ở contracts.ts, bổ sung ở ngày dùng đến.
+// Bảng thật (caption, th scope), hàng tiêu đề cố định khi cuộn, cuộn ngang trong khung, trạng thái
+// thân bằng StateView. Hành động ở dòng: tối đa 2 nút văn bản sm, từ 3 gom vào Menu (ĐX-DS-14).
+// Phần còn lại của hợp đồng (dòng mở rộng, cột chọn, chọn dòng, làm nổi bật) nằm ở contracts.ts,
+// bổ sung ở ngày dùng đến.
 import type { ReactNode } from "react";
 import { Button } from "./Button";
 import { classNames } from "./classNames";
+import { Menu, type HanhDongDong } from "./Menu";
 
-export type HanhDongDong = {
-  nhan: string;
-  onClick: () => void;
-  /** Hành động hủy bỏ (Xóa, Khóa): khi gom vào Menu thì chữ tông danger, đặt cuối (DS CMP-20). */
-  huyBo?: boolean;
-  /** Không áp dụng cho trạng thái hiện tại thì ẩn, không vô hiệu (DS CMP-18). */
-  an?: boolean;
-};
+// Kiểu mục hành động định nghĩa ở Menu; xuất lại ở đây để màn hình chỉ cần import từ DataTable.
+export type { HanhDongDong };
 
 export type CotBang<TDong> = {
   khoa: string;
@@ -26,7 +21,7 @@ export type CotBang<TDong> = {
   hienThi: (dong: TDong) => ReactNode;
 };
 
-/** Tối đa số hành động hiện trực tiếp ở dòng; từ số này trở lên phải gom vào Menu (ĐX-DS-14). */
+/** Tối đa số hành động hiện trực tiếp ở dòng; vượt số này thì gom vào Menu (ĐX-DS-14). */
 export const SO_HANH_DONG_TRUC_TIEP_TOI_DA = 2;
 
 export type DataTableProps<TDong> = {
@@ -96,16 +91,10 @@ export function DataTable<TDong>({
               const dsHanhDong = (hanhDongDong?.(dong) ?? []).filter(
                 (hd) => hd.an !== true,
               );
-              if (dsHanhDong.length > SO_HANH_DONG_TRUC_TIEP_TOI_DA) {
-                // Lỗi lập trình: báo ngay ở dev/test; production chỉ ghi log và vẫn hiện đủ nút
-                // (không làm sập màn hình, không âm thầm bỏ hành động).
-                const thongDiep =
-                  "DataTable: từ 3 hành động trở lên phải gom vào Menu (CMP-20, ĐX-DS-14) — chưa hiện thực";
-                if (process.env.NODE_ENV !== "production") {
-                  throw new Error(thongDiep);
-                }
-                console.error(thongDiep);
-              }
+              // Ngưỡng tính sau khi bỏ mục ẩn: cùng màn hình, dòng có 2 mục hiện thì là nút trực tiếp,
+              // dòng có từ 3 mục hiện thì gom vào Menu (ĐX-DS-14).
+              const gomVaoMenu =
+                dsHanhDong.length > SO_HANH_DONG_TRUC_TIEP_TOI_DA;
               return (
                 <tr
                   key={khoaDong(dong)}
@@ -125,18 +114,22 @@ export function DataTable<TDong>({
                   ))}
                   {coHanhDong ? (
                     <td className="px-3 py-2 text-right whitespace-nowrap">
-                      <div className="inline-flex gap-2">
-                        {dsHanhDong.map((hd) => (
-                          <Button
-                            key={hd.nhan}
-                            bienThe="tertiary"
-                            kichThuoc="sm"
-                            onClick={hd.onClick}
-                          >
-                            {hd.nhan}
-                          </Button>
-                        ))}
-                      </div>
+                      {gomVaoMenu ? (
+                        <Menu dsMuc={dsHanhDong} />
+                      ) : (
+                        <div className="inline-flex gap-2">
+                          {dsHanhDong.map((hd) => (
+                            <Button
+                              key={hd.nhan}
+                              bienThe="tertiary"
+                              kichThuoc="sm"
+                              onClick={hd.onClick}
+                            >
+                              {hd.nhan}
+                            </Button>
+                          ))}
+                        </div>
+                      )}
                     </td>
                   ) : null}
                 </tr>

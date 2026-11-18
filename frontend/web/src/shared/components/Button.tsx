@@ -19,6 +19,8 @@ export type ButtonProps = Omit<
   kichThuoc?: KichThuocButton;
   /** Biểu tượng bên trái, size.icon.md (ví dụ IconRefresh cho Làm mới). */
   bieuTuong?: ReactNode;
+  /** Biểu tượng bên phải chữ (ví dụ expand_more của nút "Thao tác", CMP-20). */
+  bieuTuongSau?: ReactNode;
   /** Đang chờ phản hồi: vô hiệu, chữ đổi thành "Đang xử lý" kèm chỉ báo quay (DS mục 6). */
   dangXuLy?: boolean;
   type?: "button" | "submit" | "reset";
@@ -48,6 +50,7 @@ export function Button({
   bienThe = "secondary",
   kichThuoc = "md",
   bieuTuong,
+  bieuTuongSau,
   dangXuLy = false,
   disabled = false,
   type = "button",
@@ -71,6 +74,7 @@ export function Button({
     >
       {dangXuLy ? <ChiBaoQuay kichThuoc="md" /> : bieuTuong}
       <span>{dangXuLy ? "Đang xử lý" : children}</span>
+      {dangXuLy ? null : bieuTuongSau}
     </button>
   );
 }
