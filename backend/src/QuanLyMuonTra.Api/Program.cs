@@ -8,6 +8,7 @@ using QuanLyMuonTra.Infrastructure;
 using QuanLyMuonTra.Modules.DanhMuc;
 using QuanLyMuonTra.Modules.DanhMuc.Infrastructure;
 using QuanLyMuonTra.Modules.MuonTra;
+using QuanLyMuonTra.Modules.MuonTra.Infrastructure;
 using QuanLyMuonTra.Modules.QuyDinh;
 using QuanLyMuonTra.Modules.QuyDinh.Infrastructure;
 using QuanLyMuonTra.Modules.SinhVien;
@@ -30,7 +31,8 @@ var jwt = XacThucJwt.DocCauHinh(builder.Configuration);
 IReadOnlyCollection<Assembly> assemblyCauHinhEf = [
     typeof(NguoiDungHeThong).Assembly,
     typeof(DanhMucModelBuilderExtensions).Assembly,
-    typeof(QuyDinhModelBuilderExtensions).Assembly
+    typeof(QuyDinhModelBuilderExtensions).Assembly,
+    typeof(MuonTraModelBuilderExtensions).Assembly
 ];
 
 builder.Services.AddHttpContextAccessor();
