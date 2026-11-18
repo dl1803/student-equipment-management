@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+    CMP-25 Trạng thái màn hình: nội dung bên trong StateViewBase (LinearLayout dọc, canh giữa, đệm dọc
+    ds_space_state). Chỉ báo quay mặc định ẩn; kích thước chỉ báo là mặc định của Material (nền tảng).
+    Thông điệp và mã theo dõi có chiều rộng tối đa ds_size_state_max để dễ đọc trên màn hình rộng.
+-->
+<merge xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    tools:parentTag="android.widget.LinearLayout">
+
+    <com.google.android.material.progressindicator.CircularProgressIndicator
+        android:id="@+id/pi_dang_tai"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:indeterminate="true"
+        android:visibility="gone"
+        app:indicatorColor="@color/ds_color_progress_indicator"
+        app:trackColor="@color/ds_color_progress_track" />
+
+    <ImageView
+        android:id="@+id/img_bieu_tuong"
+        android:layout_width="@dimen/ds_size_icon_lg"
+        android:layout_height="@dimen/ds_size_icon_lg"
+        android:importantForAccessibility="no"
+        android:visibility="gone" />
+
+    <TextView
+        android:id="@+id/tv_thong_diep"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/ds_space_3"
+        android:gravity="center"
+        android:maxWidth="@dimen/ds_size_state_max"
+        android:textAppearance="@style/TextAppearance.Ds.Body"
+        android:visibility="gone" />
+
+    <TextView
+        android:id="@+id/tv_ma_theo_doi"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/ds_space_2"
+        android:gravity="center"
+        android:maxWidth="@dimen/ds_size_state_max"
+        android:textAppearance="@style/TextAppearance.Ds.Code"
+        android:textIsSelectable="true"
+        android:visibility="gone" />
+
+    <com.google.android.material.button.MaterialButton
+        android:id="@+id/btn_hanh_dong"
+        style="@style/Widget.Ds.Button.Secondary"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/ds_space_4"
+        android:visibility="gone" />
+
+</merge>

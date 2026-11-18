@@ -1,0 +1,56 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+    CMP-24 Khối thông báo: nội dung bên trong BannerView (LinearLayout ngang). Nền, viền, bo góc và đệm
+    do BannerView đặt theo tông. Biểu tượng ở đầu, bên phải là cột chữ: tiêu đề, nội dung, lý do, hành
+    động. Mọi phần trừ biểu tượng và cột chữ đều ẩn cho tới khi BannerView.hienThi bật.
+-->
+<merge xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    tools:parentTag="android.widget.LinearLayout">
+
+    <ImageView
+        android:id="@+id/img_bieu_tuong"
+        android:layout_width="@dimen/ds_size_icon_md"
+        android:layout_height="@dimen/ds_size_icon_md"
+        android:layout_marginEnd="@dimen/ds_space_2"
+        android:importantForAccessibility="no" />
+
+    <LinearLayout
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_weight="1"
+        android:orientation="vertical">
+
+        <TextView
+            android:id="@+id/tv_tieu_de"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:textAppearance="@style/TextAppearance.Ds.TitleCard"
+            android:visibility="gone" />
+
+        <TextView
+            android:id="@+id/tv_noi_dung"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:textAppearance="@style/TextAppearance.Ds.Body"
+            android:visibility="gone" />
+
+        <LinearLayout
+            android:id="@+id/ll_ly_do"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/ds_space_1"
+            android:orientation="vertical"
+            android:visibility="gone" />
+
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/btn_hanh_dong"
+            style="@style/Widget.Ds.Button.Tertiary"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/ds_space_1"
+            android:visibility="gone" />
+
+    </LinearLayout>
+
+</merge>

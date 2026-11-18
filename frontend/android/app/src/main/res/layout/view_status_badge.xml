@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+    CMP-13 Nhãn trạng thái: nội dung bên trong StatusBadgeView (LinearLayout ngang). Nền, viền, đệm và
+    chiều cao tối thiểu do StatusBadgeView đặt bằng token. Chữ dài tự xuống dòng, không cắt (NT-04).
+-->
+<merge xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    tools:parentTag="android.widget.LinearLayout">
+
+    <ImageView
+        android:id="@+id/img_bieu_tuong"
+        android:layout_width="@dimen/ds_size_icon_sm"
+        android:layout_height="@dimen/ds_size_icon_sm"
+        android:layout_marginEnd="@dimen/ds_space_1"
+        android:importantForAccessibility="no"
+        android:visibility="gone" />
+
+    <TextView
+        android:id="@+id/tv_nhan"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textAppearance="@style/TextAppearance.Ds.LabelSm" />
+
+</merge>

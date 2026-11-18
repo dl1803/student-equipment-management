@@ -180,6 +180,7 @@ dependencies {
     implementation(libs.androidx.lifecycle.viewmodel)
     implementation(libs.androidx.lifecycle.livedata)
     implementation(libs.androidx.annotation)
+    implementation(libs.material)
     implementation(libs.jakarta.annotation)
     compileOnly(libs.findbugs.jsr305)
 

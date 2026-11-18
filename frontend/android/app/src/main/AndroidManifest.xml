@@ -8,6 +8,7 @@
         bị (FA 5.4, FC 6.5, ĐX-FA-14).
         D04-L: khai báo quyền mạng và cấm lưu lượng không mã hóa (FA 5.5, FC 6.8). Bản debug cần
         gọi máy chủ HTTP thường (nếu có) phải ghi đè ở src/debug khi có địa chỉ dev (D06-L).
+        D05-L: áp dụng theme sáng Theme.QuanLyMuonTra cho toàn ứng dụng (FC 6.6, ĐX-DS-01).
         Activity thuộc D06-L.
     -->
     <uses-permission android:name="android.permission.INTERNET" />
@@ -17,6 +18,7 @@
         android:allowBackup="false"
         android:dataExtractionRules="@xml/data_extraction_rules"
         android:fullBackupContent="@xml/backup_rules"
+        android:theme="@style/Theme.QuanLyMuonTra"
         android:usesCleartextTraffic="false" />
 
 </manifest>
