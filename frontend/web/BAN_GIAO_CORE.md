@@ -86,7 +86,7 @@ export function useLuuThamSoMutation() {
 
 - `Select` là `<select>` gốc: `{ id, dsLuaChon: LuaChon<T>[], giaTri: T | null, onChange(T | null), coMucTatCa?, goiY?, ... }`. Không có mục Tất cả và chưa chọn thì hiện mục gợi ý `goiY` (mặc định "Chọn"). **Khác hợp đồng ngày 4:** bỏ prop `cheDo`; chọn nhiều tách sang `SelectNhieuProps`.
 - `DataTable`: `{ tieuDe, dsCot: CotBang<T>[], dsDong, khoaDong, trangThaiThan?, hanhDongDong?, dangTaiLai? }`. Cứ truyền đủ hành động (`HanhDongDong`: `nhan`, `onClick`, `huyBo?`, `an?`): tối đa 2 mục hiện thì là nút văn bản trực tiếp, từ 3 mục hiện thì **tự gom vào `Menu`** (`SO_HANH_DONG_TRUC_TIEP_TOI_DA`); mục `an` không tính. Screen không tự dựng Menu. Trạng thái tải/rỗng/lỗi truyền qua `trangThaiThan`.
-- `Menu`: `{ nhanNutKichHoat?, dsMuc: HanhDongDong[] }`. Nút "Thao tác ▾"; mục `huyBo` tông danger, đặt cuối, cách bằng đường kẻ; bàn phím ↑/↓/Home/End/Enter/Esc/Tab theo DS CMP-20. Danh sách dùng `position: fixed` nên không bị khung cuộn của bảng cắt; cuộn trang thì menu đóng.
+- `Menu`: `{ nhanNutKichHoat?, dsMuc: HanhDongDong[] }`. Nút "Thao tác ▾"; mục `huyBo` tông danger, đặt cuối, cách bằng đường kẻ; bàn phím ↑/↓/Home/End/Enter/Esc/Tab theo DS CMP-20. Danh sách dùng `position: fixed` nên không bị khung cuộn của bảng cắt; bên dưới không đủ chỗ (dòng cuối khung nhìn) thì tự lật mở lên; cuộn trang thì menu đóng. Kiểu `HanhDongDong` định nghĩa ở `Menu`, `DataTable` xuất lại.
 - `Button`: thêm `bieuTuongSau` (biểu tượng bên phải chữ).
 - `Pagination`: `{ trang, kichThuoc, tongSo, onDoiTrang, dangTai? }`; tự ẩn khi chỉ có một trang và đang ở trang 1.
 

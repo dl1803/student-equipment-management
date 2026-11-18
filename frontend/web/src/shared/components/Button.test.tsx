@@ -59,6 +59,21 @@ describe("Button", () => {
     expect(onClick).not.toHaveBeenCalled();
   });
 
+  it("bieuTuongSau hiện sau nhãn; ẩn khi dangXuLy", () => {
+    const { rerender } = render(
+      <Button bieuTuongSau={<svg data-testid="sau" />}>Thao tác</Button>,
+    );
+    const nut = screen.getByRole("button", { name: "Thao tác" });
+    expect(nut.lastElementChild).toBe(screen.getByTestId("sau"));
+
+    rerender(
+      <Button dangXuLy bieuTuongSau={<svg data-testid="sau" />}>
+        Thao tác
+      </Button>,
+    );
+    expect(screen.queryByTestId("sau")).toBeNull();
+  });
+
   it("CMP-01: type=submit được giữ khi khai báo", () => {
     render(<Button type="submit">Đăng nhập</Button>);
     expect(

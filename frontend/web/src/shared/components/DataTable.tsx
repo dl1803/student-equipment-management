@@ -6,16 +6,10 @@
 import type { ReactNode } from "react";
 import { Button } from "./Button";
 import { classNames } from "./classNames";
-import { Menu } from "./Menu";
+import { Menu, type HanhDongDong } from "./Menu";
 
-export type HanhDongDong = {
-  nhan: string;
-  onClick: () => void;
-  /** Hành động hủy bỏ (Xóa, Khóa): khi gom vào Menu thì chữ tông danger, đặt cuối (DS CMP-20). */
-  huyBo?: boolean;
-  /** Không áp dụng cho trạng thái hiện tại thì ẩn, không vô hiệu (DS CMP-18). */
-  an?: boolean;
-};
+// Kiểu mục hành động định nghĩa ở Menu; xuất lại ở đây để màn hình chỉ cần import từ DataTable.
+export type { HanhDongDong };
 
 export type CotBang<TDong> = {
   khoa: string;
