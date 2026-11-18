@@ -24,7 +24,11 @@ public sealed class YeuCauMuonSvHttpTests : IAsyncLifetime
 
     public Task InitializeAsync()
     {
-        if (string.IsNullOrWhiteSpace(Environment.GetEnvironmentVariable(CanKetNoiTestFactAttribute.TenBienMoiTruong)))
+        try
+        {
+            _ = KetNoiKiemThu.LayChuoiKetNoi();
+        }
+        catch
         {
             return Task.CompletedTask;
         }

@@ -1,5 +1,6 @@
 using Microsoft.EntityFrameworkCore;
 using Npgsql;
+using QuanLyMuonTra.IntegrationTests.Database;
 
 namespace QuanLyMuonTra.IntegrationTests.MuonTra;
 
@@ -9,11 +10,13 @@ public sealed class CanKetNoiTestFactAttribute : FactAttribute
 
     public CanKetNoiTestFactAttribute()
     {
-        var chuoi = Environment.GetEnvironmentVariable(TenBienMoiTruong)
-            ?? Environment.GetEnvironmentVariable("ConnectionStrings:Test");
-        if (string.IsNullOrWhiteSpace(chuoi))
+        try
         {
-            Skip = "Chưa đặt biến môi trường ConnectionStrings__Test.";
+            _ = KetNoiKiemThu.LayChuoiKetNoi();
+        }
+        catch
+        {
+            Skip = "Chưa cấu hình ConnectionStrings:Test (qua user-secrets hoặc biến môi trường).";
         }
     }
 }
@@ -35,8 +38,7 @@ public sealed class GiaoDichTestRollback : IAsyncDisposable
 
     public static async Task<GiaoDichTestRollback> BatDauAsync()
     {
-        var chuoiKetNoi = Environment.GetEnvironmentVariable(CanKetNoiTestFactAttribute.TenBienMoiTruong)
-            ?? Environment.GetEnvironmentVariable("ConnectionStrings:Test")!;
+        var chuoiKetNoi = KetNoiKiemThu.LayChuoiKetNoi();
         var ketNoi = new NpgsqlConnection(chuoiKetNoi);
         await ketNoi.OpenAsync();
         var giaoDich = await ketNoi.BeginTransactionAsync();
