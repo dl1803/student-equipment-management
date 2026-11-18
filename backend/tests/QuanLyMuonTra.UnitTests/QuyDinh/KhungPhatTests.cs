@@ -35,7 +35,7 @@ public sealed class KhungPhatTests
     [InlineData(101)]
     public void UC13_TaoKhungPhat_TyLeNgoaiKhoang0Den100_NemGiaTriCauHinhKhongHopLe(double tyLe)
     {
-        var loi = Assert.Throws<NghiepVuException>(() => new KhungPhat("Khung", (decimal)tyLe));
+        var loi = Assert.Throws<LoiNghiepVuException>(() => new KhungPhat("Khung", (decimal)tyLe));
 
         Assert.Equal("GIA_TRI_CAU_HINH_KHONG_HOP_LE", loi.MaLoi);
     }
@@ -45,7 +45,7 @@ public sealed class KhungPhatTests
     [InlineData(0.001)]
     public void UC13_TaoKhungPhat_TyLeQuaHaiChuSoThapPhan_NemGiaTriCauHinhKhongHopLe(double tyLe)
     {
-        var loi = Assert.Throws<NghiepVuException>(() => new KhungPhat("Khung", (decimal)tyLe));
+        var loi = Assert.Throws<LoiNghiepVuException>(() => new KhungPhat("Khung", (decimal)tyLe));
 
         Assert.Equal("GIA_TRI_CAU_HINH_KHONG_HOP_LE", loi.MaLoi);
     }
@@ -55,7 +55,7 @@ public sealed class KhungPhatTests
     [InlineData("   ")]
     public void UC13_TaoKhungPhat_TenRongHoacToanKhoangTrang_NemGiaTriCauHinhKhongHopLe(string ten)
     {
-        var loi = Assert.Throws<NghiepVuException>(() => new KhungPhat(ten, 15m));
+        var loi = Assert.Throws<LoiNghiepVuException>(() => new KhungPhat(ten, 15m));
 
         Assert.Equal("GIA_TRI_CAU_HINH_KHONG_HOP_LE", loi.MaLoi);
     }
@@ -78,7 +78,7 @@ public sealed class KhungPhatTests
     {
         var khung = new KhungPhat("Nhẹ", 15m);
 
-        var loi = Assert.Throws<NghiepVuException>(() => khung.CapNhat("Nhẹ mới", 150m));
+        var loi = Assert.Throws<LoiNghiepVuException>(() => khung.CapNhat("Nhẹ mới", 150m));
 
         Assert.Equal("GIA_TRI_CAU_HINH_KHONG_HOP_LE", loi.MaLoi);
         Assert.Equal("Nhẹ", khung.TenKhung);

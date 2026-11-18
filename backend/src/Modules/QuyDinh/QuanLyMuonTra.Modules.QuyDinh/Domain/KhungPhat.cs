@@ -1,6 +1,8 @@
+using QuanLyMuonTra.SharedKernel;
+
 namespace QuanLyMuonTra.Modules.QuyDinh.Domain;
 
-public sealed class KhungPhat
+public sealed class KhungPhat : IAuditable
 {
     private KhungPhat()
     {
