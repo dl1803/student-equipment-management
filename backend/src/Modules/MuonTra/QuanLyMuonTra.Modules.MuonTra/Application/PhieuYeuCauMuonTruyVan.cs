@@ -51,6 +51,89 @@ internal static class PhieuYeuCauMuonTruyVan
         return danhSach[0];
     }
 
+    public static async Task<KetQuaPhanTrang<PhieuYeuCauMuonQuayDto>> DsTheoPhongAsync(
+        DbContext db,
+        IDanhMucReader danhMuc,
+        List<Guid> dsMaPhong,
+        string? trangThai,
+        int trang,
+        int kichThuoc,
+        CancellationToken ct)
+    {
+        var goc = DongPhieu(db).Where(d => dsMaPhong.Contains(d.MaPhong));
+        if (trangThai is not null)
+        {
+            goc = goc.Where(d => d.TrangThai == trangThai);
+        }
+
+        var tongSo = await goc.CountAsync(ct);
+        var batDau = PhanTrang.ViTriBatDau(trang, kichThuoc);
+        if (batDau >= tongSo)
+        {
+            return PhanTrang.Rong<PhieuYeuCauMuonQuayDto>(tongSo, trang, kichThuoc);
+        }
+
+        var cacDong = await goc
+            .OrderBy(d => d.ThoiGianGui)
+            .ThenBy(d => d.MaYeuCau)
+            .Skip((int)batDau)
+            .Take(kichThuoc)
+            .ToListAsync(ct);
+
+        var danhSach = await GhepAsync(db, danhMuc, cacDong, ct);
+        var danhSachQuay = await GhepSinhVienAsync(db, danhSach, ct);
+
+        return new KetQuaPhanTrang<PhieuYeuCauMuonQuayDto>(tongSo, trang, kichThuoc, danhSachQuay);
+    }
+
+    public static async Task<PhieuYeuCauMuonQuayDto?> LayQuayTheoMaAsync(
+        DbContext db,
+        IDanhMucReader danhMuc,
+        string maYeuCau,
+        CancellationToken ct)
+    {
+        var phieu = await LayTheoMaAsync(db, danhMuc, maYeuCau, ct);
+        if (phieu is null)
+        {
+            return null;
+        }
+
+        return (await GhepSinhVienAsync(db, [phieu], ct))[0];
+    }
+
+    private static async Task<IReadOnlyList<PhieuYeuCauMuonQuayDto>> GhepSinhVienAsync(
+        DbContext db,
+        IReadOnlyList<PhieuYeuCauMuonDto> cacPhieu,
+        CancellationToken ct)
+    {
+        var dsMaSv = cacPhieu.Select(p => p.MaSV).Distinct().ToList();
+        var cacSv = await db.Database.SqlQuery<DongSinhVienTomTat>($"""
+                SELECT ma_sv AS "MaSv", ho_ten AS "HoTen", lop AS "Lop"
+                FROM sinh_vien.sinh_vien
+                """)
+            .Where(s => dsMaSv.Contains(s.MaSv))
+            .ToListAsync(ct);
+        var theoMa = cacSv.ToDictionary(s => s.MaSv);
+
+        return cacPhieu
+            .Select(p => new PhieuYeuCauMuonQuayDto(
+                p.MaYeuCau,
+                p.MaSV,
+                p.MaPhong,
+                p.TenPhong,
+                p.ThoiGianGui,
+                p.ThoiGianMuonDuKienGio,
+                p.TrangThai,
+                p.LyDoTuChoi,
+                p.ThoiDiemDuyet,
+                p.HanGiuCho,
+                p.DsLoaiVaSoLuong,
+                theoMa.TryGetValue(p.MaSV, out var sv)
+                    ? new SinhVienTomTatDto(sv.MaSv, sv.HoTen, sv.Lop)
+                    : new SinhVienTomTatDto(p.MaSV, string.Empty, null)))
+            .ToList();
+    }
+
     private static IQueryable<DongPhieuYeuCauMuon> DongPhieu(DbContext db)
     {
         return db.Database.SqlQuery<DongPhieuYeuCauMuon>($"""
