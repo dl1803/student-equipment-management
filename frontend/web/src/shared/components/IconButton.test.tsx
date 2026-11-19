@@ -1,5 +1,6 @@
 // @vitest-environment jsdom
 import { fireEvent, render, screen } from "@testing-library/react";
+import { createRef } from "react";
 import { describe, expect, it, vi } from "vitest";
 import { IconButton } from "./IconButton";
 import { IconError } from "./icons/IconError";
@@ -29,6 +30,14 @@ describe("IconButton", () => {
     );
     fireEvent.click(screen.getByRole("button", { name: "Gỡ ảnh" }));
     expect(onClick).toHaveBeenCalledTimes(1);
+  });
+
+  it("nhận ref (React 19) trỏ tới nút thật để đặt tiêu điểm", () => {
+    const ref = createRef<HTMLButtonElement>();
+    render(
+      <IconButton ref={ref} nhanTruyCap="Đóng" bieuTuong={<IconError />} />,
+    );
+    expect(ref.current).toBe(screen.getByRole("button", { name: "Đóng" }));
   });
 
   it("kichThuoc: mặc định md (40px), sm (32px) cho góc ô ảnh", () => {

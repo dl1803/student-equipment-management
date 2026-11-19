@@ -6,9 +6,13 @@ import {
   KIEU_ANH_CHAP_NHAN,
   SO_ANH_TOI_DA,
 } from "./hangSo";
-import { locTepDaChon, THONG_DIEP_TU_CHOI_ANH } from "./kiemTraAnh";
+import {
+  laTepAnhChapNhan,
+  locTepDaChon,
+  THONG_DIEP_TU_CHOI_ANH,
+} from "./kiemTraAnh";
 
-const tep = (ten: string, type: string) => ({ ten, type });
+const tep = (name: string, type: string) => ({ name, type });
 
 describe("hằng số ảnh (FC 7.1)", () => {
   it("đúng giá trị tài liệu nguồn", () => {
@@ -36,7 +40,7 @@ describe("locTepDaChon (FA 4.10 bước 2, DS CMP-12)", () => {
       ],
       0,
     );
-    expect(kq.dsNhan.map((t) => t.ten)).toEqual(["a.jpg", "c.png", "e.webp"]);
+    expect(kq.dsNhan.map((t) => t.name)).toEqual(["a.jpg", "c.png", "e.webp"]);
     expect(kq.dsLyDo).toEqual(["SAI_KIEU"]);
   });
 
@@ -49,7 +53,7 @@ describe("locTepDaChon (FA 4.10 bước 2, DS CMP-12)", () => {
       ],
       3,
     );
-    expect(kq.dsNhan.map((t) => t.ten)).toEqual(["1.jpg", "2.jpg"]);
+    expect(kq.dsNhan.map((t) => t.name)).toEqual(["1.jpg", "2.jpg"]);
     expect(kq.dsLyDo).toEqual(["QUA_SO_LUONG"]);
   });
 
@@ -69,7 +73,7 @@ describe("locTepDaChon (FA 4.10 bước 2, DS CMP-12)", () => {
       ],
       4,
     );
-    expect(kq.dsNhan.map((t) => t.ten)).toEqual(["1.jpg"]);
+    expect(kq.dsNhan.map((t) => t.name)).toEqual(["1.jpg"]);
     expect(kq.dsLyDo).toEqual(["SAI_KIEU", "QUA_SO_LUONG"]);
   });
 
@@ -79,5 +83,20 @@ describe("locTepDaChon (FA 4.10 bước 2, DS CMP-12)", () => {
       QUA_DUNG_LUONG: "Mỗi ảnh tối đa 2 MB",
       QUA_SO_LUONG: "Tối đa 5 ảnh",
     });
+  });
+});
+
+describe("laTepAnhChapNhan (kiểu viết hoa, kiểu rỗng)", () => {
+  it.each([
+    ["anh.jpg", "IMAGE/JPEG", true],
+    ["anh.webp", "", true],
+    ["ANH.JPEG", "", true],
+    ["anh.png", " ", true],
+    ["anh.gif", "", false],
+    ["anh", "", false],
+    // Kiểu đã biết thì không xét đuôi.
+    ["anh.jpg", "image/gif", false],
+  ])("%s, type=%j → %s", (name, type, ketQua) => {
+    expect(laTepAnhChapNhan({ name, type })).toBe(ketQua);
   });
 });

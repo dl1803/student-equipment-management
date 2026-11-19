@@ -26,7 +26,7 @@ export type MucAnh = {
 
 export type UseAnhUploaderTuyChon = {
   giaiDoan: GiaiDoanAnh;
-  /** Ảnh đã gắn sẵn (SCR-QT-04 khi sửa). Chỉ đọc lúc khởi tạo. */
+  /** Ảnh đã gắn sẵn (SCR-QT-04 khi sửa). Chỉ đọc lúc khởi tạo (xem AnhUploaderProps.dsAnhCoSan). */
   dsAnhCoSan?: ReadonlyArray<AnhRef>;
 };
 
@@ -126,39 +126,55 @@ export function useAnhUploader({
 
   const xuLyLo = useCallback(
     async (dsTep: ReadonlyArray<File>) => {
-      for (const tep of dsTep) {
-        if (daGoRef.current) return;
-        let daNen: Blob;
-        try {
-          daNen = await nenAnh(tep);
-        } catch (loi) {
-          doiSoDangNen(-1);
-          const lyDo: LyDoTuChoiAnh =
-            loi instanceof LoiNenAnh && loi.lyDo === "QUA_LON"
-              ? "QUA_DUNG_LUONG"
-              : "SAI_KIEU";
-          setDsLyDoTuChoi((cu) => (cu.includes(lyDo) ? cu : [...cu, lyDo]));
-          continue;
+      // Số tệp của lô còn tính vào soDangNen. Lô bị ngắt giữa chừng vì lỗi ngoài dự kiến thì trả
+      // lại phần còn lại ở finally để coTheGui không bị kẹt ở false.
+      let conTrongLo = dsTep.length;
+      try {
+        for (const tep of dsTep) {
+          if (daGoRef.current) return;
+          let daTra = false;
+          const traCho = () => {
+            if (daTra) return;
+            daTra = true;
+            conTrongLo -= 1;
+            doiSoDangNen(-1);
+          };
+          let daNen: Blob;
+          try {
+            daNen = await nenAnh(tep);
+          } catch (loi) {
+            traCho();
+            const lyDo: LyDoTuChoiAnh =
+              loi instanceof LoiNenAnh && loi.lyDo === "QUA_LON"
+                ? "QUA_DUNG_LUONG"
+                : "SAI_KIEU";
+            setDsLyDoTuChoi((cu) => (cu.includes(lyDo) ? cu : [...cu, lyDo]));
+            continue;
+          }
+          if (daGoRef.current) return;
+          demKhoaRef.current += 1;
+          const khoa = `anh-${demKhoaRef.current}`;
+          const urlXem = URL.createObjectURL(daNen);
+          urlTamRef.current.add(urlXem);
+          tepNenRef.current.set(khoa, daNen);
+          traCho();
+          datDsAnh((cu) => [
+            ...cu,
+            { khoa, trangThai: "DANG_TAI", urlXem, maAnh: null },
+          ]);
+          await taiMot(khoa);
         }
-        if (daGoRef.current) return;
-        demKhoaRef.current += 1;
-        const khoa = `anh-${demKhoaRef.current}`;
-        const urlXem = URL.createObjectURL(daNen);
-        urlTamRef.current.add(urlXem);
-        tepNenRef.current.set(khoa, daNen);
-        doiSoDangNen(-1);
-        datDsAnh((cu) => [
-          ...cu,
-          { khoa, trangThai: "DANG_TAI", urlXem, maAnh: null },
-        ]);
-        await taiMot(khoa);
+      } finally {
+        if (conTrongLo > 0 && !daGoRef.current) doiSoDangNen(-conTrongLo);
       }
     },
     [datDsAnh, doiSoDangNen, taiMot],
   );
 
   const noiChuoi = useCallback((viec: () => Promise<void>) => {
-    chuoiRef.current = chuoiRef.current.then(viec);
+    // Promise bị từ chối sẽ bỏ qua mọi .then nối sau nó: nuốt lỗi ở cuối mỗi mắt xích để một lỗi
+    // ngoài dự kiến không làm tê liệt cả hàng đợi (lần chọn tệp hoặc "Thử lại" sau vẫn chạy).
+    chuoiRef.current = chuoiRef.current.then(viec).catch(() => undefined);
   }, []);
 
   const themTep = useCallback(

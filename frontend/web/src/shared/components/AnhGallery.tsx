@@ -7,7 +7,7 @@
 // tiết) ĐÚNG MỘT LẦN cho cả dải bằng cờ useRef; ảnh vẫn lỗi thì hiện "Không tải được ảnh" kèm nút
 // "Tải lại" và dừng. Bấm "Tải lại" là làm mới thủ công: thử hiển thị lại và tải lại chi tiết một lần
 // nữa. Không lưu URL vào storage, tuyến hay khóa truy vấn: URL chỉ nằm trong props.
-import { useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import type { AnhRef } from "@/shared/api/types";
 import { Button } from "./Button";
 import { IconBrokenImage } from "./icons/IconBrokenImage";
@@ -34,6 +34,14 @@ export function AnhGallery({ dsAnh, tenThietBi, onTaiLai }: AnhGalleryProps) {
   const [dsLoi, setDsLoi] = useState<ReadonlySet<string>>(new Set());
   const [chiSoXem, setChiSoXem] = useState<number | null>(null);
   const daTaiLaiRef = useRef(false);
+
+  // Tập ảnh khác (ví dụ chuyển sang thiết bị khác mà giữ nguyên component) là một lần hiển thị
+  // mới: cho tải lại tự động lại một lần. KHÔNG đặt lại khi chỉ URL đổi: refetch luôn trả URL ký
+  // mới, đặt lại theo URL sẽ thành vòng lặp tải lại với ảnh hỏng vì lý do khác (FC 5.9).
+  const khoaTapAnh = dsAnh.map((anh) => anh.maAnh).join(",");
+  useEffect(() => {
+    daTaiLaiRef.current = false;
+  }, [khoaTapAnh]);
 
   if (dsAnh.length === 0) {
     return (

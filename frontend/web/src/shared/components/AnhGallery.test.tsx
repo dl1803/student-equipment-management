@@ -104,4 +104,23 @@ describe("AnhGallery (CMP-23)", () => {
     fireEvent.click(within(lop).getByRole("img"));
     expect(lop.hasAttribute("open")).toBe(true);
   });
+
+  it("đổi sang tập ảnh khác (khác maAnh) thì được tải lại tự động thêm một lần", () => {
+    const onTaiLai = vi.fn();
+    const { rerender } = render(
+      <AnhGallery dsAnh={ds("v1")} tenThietBi="Laptop" onTaiLai={onTaiLai} />,
+    );
+    fireEvent.error(anh("Ảnh 1"));
+    expect(onTaiLai).toHaveBeenCalledOnce();
+
+    rerender(
+      <AnhGallery
+        dsAnh={[{ maAnh: "b1", url: "https://ky.test/b1?sig=v1" }]}
+        tenThietBi="Máy chiếu"
+        onTaiLai={onTaiLai}
+      />,
+    );
+    fireEvent.error(anh("Ảnh 1"));
+    expect(onTaiLai).toHaveBeenCalledTimes(2);
+  });
 });

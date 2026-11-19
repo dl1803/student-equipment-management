@@ -33,7 +33,11 @@ export type AnhUploaderProps = {
   giaiDoan: GiaiDoanAnh;
   /** Dùng trong tên truy cập của lớp xem: "Ảnh n của <tên thiết bị>". */
   tenThietBi: string;
-  /** Ảnh đã gắn sẵn (SCR-QT-04 khi sửa). Chỉ đọc lúc khởi tạo. */
+  /**
+   * Ảnh đã gắn sẵn (SCR-QT-04 khi sửa). CHỈ ĐỌC LÚC KHỞI TẠO: dữ liệu tải bất đồng bộ thì chỉ dựng
+   * AnhUploader khi truy vấn chi tiết đã có dữ liệu, kèm `key={maThietBi}` để dựng lại khi đổi
+   * thiết bị. Đồng bộ lại sau khởi tạo sẽ ghi đè thao tác thêm/gỡ của người dùng nên không làm.
+   */
   dsAnhCoSan?: ReadonlyArray<AnhRef>;
   onThayDoi: (giaTri: GiaTriAnhUploader) => void;
   /** Khu bị vô hiệu kèm chữ giải thích (SCR-NV-09 khi kết quả Mất: "Kết quả Mất không có ảnh"). */
@@ -145,7 +149,8 @@ export function AnhUploader({
         <button
           type="button"
           onClick={() => setKhoaDangXem(muc.khoa)}
-          className="block size-full cursor-pointer"
+          disabled={muc.trangThai === "DANG_TAI"}
+          className="block size-full cursor-pointer disabled:cursor-wait"
         >
           {/* eslint-disable-next-line @next/next/no-img-element -- ĐX-FA-11: không dùng next/image. */}
           <img

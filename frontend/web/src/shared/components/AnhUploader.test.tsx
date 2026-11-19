@@ -250,4 +250,28 @@ describe("AnhUploader (CMP-12)", () => {
       screen.getByRole("button", { name: /Thêm ảnh/ }).hasAttribute("disabled"),
     ).toBe(true);
   });
+
+  it("ô đang tải: nút xem ảnh bị vô hiệu, bàn phím không mở được lớp xem", async () => {
+    anhTaiGia.mockReturnValue(new Promise(() => {}));
+    const { chon } = veKhu();
+    await chon(tep("1.jpg"));
+    const nutXem = screen.getByRole("button", { name: "Xem ảnh 1" });
+    expect(nutXem.hasAttribute("disabled")).toBe(true);
+  });
+
+  it("lỗi ngoài dự kiến giữa lô không làm tê liệt hàng đợi và không kẹt nút gửi", async () => {
+    anhTaiGia.mockResolvedValue({ maAnh: "m1" });
+    taoUrl.mockImplementationOnce(() => {
+      throw new Error("lỗi DOM");
+    });
+    const { chon, giaTriCuoi } = veKhu();
+    await chon(tep("1.jpg"), tep("2.jpg"));
+    // Lô bị ngắt: phần còn lại trả về, không còn ô đang nén.
+    expect(giaTriCuoi()).toEqual({ dsMaAnh: [], coTheGui: true });
+
+    // Lần chọn sau vẫn chạy bình thường.
+    await chon(tep("3.jpg"));
+    expect(anhTaiGia).toHaveBeenCalledOnce();
+    expect(giaTriCuoi()).toEqual({ dsMaAnh: ["m1"], coTheGui: true });
+  });
 });

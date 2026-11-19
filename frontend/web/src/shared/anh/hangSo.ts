@@ -20,5 +20,17 @@ export const KIEU_ANH_CHAP_NHAN: ReadonlyArray<string> = [
   "image/webp",
 ];
 
+/**
+ * Đuôi tệp tương ứng KIEU_ANH_CHAP_NHAN, chỉ dùng khi trình duyệt không cho biết kiểu tệp
+ * (`File.type` rỗng do cấu hình MIME của máy). Nội dung thật vẫn được kiểm khi giải mã ở nenAnh và
+ * bằng chữ ký tệp ở máy chủ.
+ */
+export const DUOI_ANH_CHAP_NHAN: ReadonlyArray<string> = [
+  ".jpg",
+  ".jpeg",
+  ".png",
+  ".webp",
+];
+
 /** Kiểu tệp gửi lên sau nén: luôn JPEG (FA 4.10 bước 3). */
 export const KIEU_ANH_SAU_NEN = "image/jpeg";
