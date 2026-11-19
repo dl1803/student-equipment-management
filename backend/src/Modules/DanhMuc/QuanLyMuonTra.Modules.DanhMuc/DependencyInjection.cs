@@ -23,6 +23,13 @@ public static class DependencyInjection
         services.AddScoped<IValidator<LoaiThietBiTaoMoiRequest>, LoaiThietBiTaoMoiRequestValidator>();
         services.AddScoped<IValidator<LoaiThietBiCapNhatRequest>, LoaiThietBiCapNhatRequestValidator>();
         services.AddScoped<CapNhatPhiTreHandler>();
+        services.AddScoped<TaoThietBiHandler>();
+        services.AddScoped<SuaThietBiHandler>();
+        services.AddScoped<CapNhatGiaTriThietBiHandler>();
+        services.AddScoped<IThietBiService, ThietBiService>();
+        services.AddScoped<IValidator<ThietBiTaoMoiRequest>, ThietBiTaoMoiRequestValidator>();
+        services.AddScoped<IValidator<ThietBiCapNhatRequest>, ThietBiCapNhatRequestValidator>();
+        services.AddScoped<IValidator<GiaTriThietBiRequest>, GiaTriThietBiRequestValidator>();
         return services;
     }
 }

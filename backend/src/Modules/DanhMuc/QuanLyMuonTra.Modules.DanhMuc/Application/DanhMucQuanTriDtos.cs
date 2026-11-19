@@ -30,3 +30,5 @@ public sealed record ThietBiQuanTriDto(
     bool NgungSuDung,
     long GiaTriHienHanh,
     IReadOnlyList<NhaCungCapQuanTriDto> DsNhaCungCap);
+
+public sealed record GiaTriThietBiDto(string MaThietBi, long GiaTri, DateTimeOffset NgayCapNhat);

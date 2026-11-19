@@ -1,9 +1,42 @@
+using QuanLyMuonTra.SharedKernel;
+
 namespace QuanLyMuonTra.Modules.DanhMuc.Domain;
 
-public sealed class ThietBi
+public sealed class ThietBi : IAuditable
 {
     private ThietBi()
     {
+    }
+
+    internal static ThietBi NhapKho(
+        string maThietBi,
+        Guid maLoai,
+        Guid maPhong,
+        string tenThietBi,
+        string? moTa,
+        string? thongSoKyThuat,
+        DateOnly ngayNhapKho,
+        DateOnly? thoiHanBaoHanh,
+        string? viTriKe,
+        string? viTriTu)
+    {
+        KiemTraMa(maThietBi);
+        KiemTraTen(tenThietBi);
+        return new ThietBi
+        {
+            MaThietBi = maThietBi,
+            MaLoai = maLoai,
+            MaPhong = maPhong,
+            TenThietBi = tenThietBi,
+            MoTa = moTa,
+            ThongSoKyThuat = thongSoKyThuat,
+            NgayNhapKho = ngayNhapKho,
+            ThoiHanBaoHanh = thoiHanBaoHanh,
+            TinhTrang = TinhTrangThietBi.SanSang,
+            ViTriKe = viTriKe,
+            ViTriTu = viTriTu,
+            NgungSuDung = false,
+        };
     }
 
     public string MaThietBi { get; private set; } = string.Empty;
@@ -29,4 +62,43 @@ public sealed class ThietBi
     public string? ViTriTu { get; private set; }
 
     public bool NgungSuDung { get; private set; }
+
+    internal void CapNhatThongTin(
+        Guid maLoai,
+        Guid maPhong,
+        string tenThietBi,
+        string? moTa,
+        string? thongSoKyThuat,
+        DateOnly ngayNhapKho,
+        DateOnly? thoiHanBaoHanh,
+        string? viTriKe,
+        string? viTriTu)
+    {
+        KiemTraTen(tenThietBi);
+        MaLoai = maLoai;
+        MaPhong = maPhong;
+        TenThietBi = tenThietBi;
+        MoTa = moTa;
+        ThongSoKyThuat = thongSoKyThuat;
+        NgayNhapKho = ngayNhapKho;
+        ThoiHanBaoHanh = thoiHanBaoHanh;
+        ViTriKe = viTriKe;
+        ViTriTu = viTriTu;
+    }
+
+    private static void KiemTraMa(string maThietBi)
+    {
+        if (string.IsNullOrWhiteSpace(maThietBi))
+        {
+            throw new LoiNghiepVuException("DU_LIEU_KHONG_HOP_LE", "Mã thiết bị không được để trống.");
+        }
+    }
+
+    private static void KiemTraTen(string tenThietBi)
+    {
+        if (string.IsNullOrWhiteSpace(tenThietBi))
+        {
+            throw new LoiNghiepVuException("DU_LIEU_KHONG_HOP_LE", "Tên thiết bị không được để trống.");
+        }
+    }
 }
