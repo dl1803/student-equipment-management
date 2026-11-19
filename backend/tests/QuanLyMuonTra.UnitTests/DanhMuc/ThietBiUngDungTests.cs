@@ -169,6 +169,16 @@ public sealed class ThietBiUngDungTests
     }
 
     [Fact]
+    public async Task UC12_SuaThietBi_CoMaAnh_TuChoiAnToanTruocKhiTruyCapCsdl()
+    {
+        using var db = TaoDbContext();
+        var handler = new SuaThietBiHandler(db, new KhoaGia());
+
+        await Assert.ThrowsAsync<InvalidOperationException>(
+            () => handler.XuLyAsync("TB-01", YeuCauSua(dsAnh: TaoDanhSach(1)), CancellationToken.None));
+    }
+
+    [Fact]
     public void UC12_DangKyModuleDanhMuc_HandlerVaValidatorThietBiGiaiQuyetDuoc()
     {
         using var dichVu = new ServiceCollection()
@@ -182,6 +192,7 @@ public sealed class ThietBiUngDungTests
         var dv = phamVi.ServiceProvider;
 
         Assert.NotNull(dv.GetRequiredService<TaoThietBiHandler>());
+        Assert.NotNull(dv.GetRequiredService<SuaThietBiHandler>());
         Assert.NotNull(dv.GetRequiredService<IValidator<ThietBiTaoMoiRequest>>());
         Assert.NotNull(dv.GetRequiredService<IValidator<ThietBiCapNhatRequest>>());
         Assert.NotNull(dv.GetRequiredService<IValidator<GiaTriThietBiRequest>>());
