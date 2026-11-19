@@ -15,4 +15,11 @@ internal static class HoSoSinhVienTruyVan
             .SingleOrDefaultAsync(ct)
             ?? throw new InvalidOperationException($"Không tìm thấy hồ sơ sinh viên {maSv} của phiếu yêu cầu.");
     }
+
+    public static async Task KhoaAsync(DbContext db, string maSv, CancellationToken ct)
+    {
+        await db.Database.ExecuteSqlInterpolatedAsync($"""
+            SELECT ma_sv FROM sinh_vien.sinh_vien WHERE ma_sv = {maSv} FOR UPDATE
+            """, ct);
+    }
 }
