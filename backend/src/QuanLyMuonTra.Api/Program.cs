@@ -30,6 +30,10 @@ if (string.IsNullOrWhiteSpace(chuoiKetNoi))
 
 var jwt = XacThucJwt.DocCauHinh(builder.Configuration);
 var dsMienChoPhep = CauHinhBaoMat.DocDsMienChoPhep(builder.Configuration);
+if (dsMienChoPhep.Length == 0 && builder.Environment.IsDevelopment())
+{
+    dsMienChoPhep = ["http://localhost:3000", "http://localhost:5173"];
+}
 var gioiHanTanSuatAuth = CauHinhBaoMat.DocGioiHanTanSuatAuth(builder.Configuration);
 
 IReadOnlyCollection<Assembly> assemblyCauHinhEf = [

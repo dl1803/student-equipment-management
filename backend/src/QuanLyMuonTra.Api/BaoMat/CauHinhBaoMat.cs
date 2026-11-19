@@ -10,7 +10,13 @@ public static class CauHinhBaoMat
 {
     public const string TenChinhSachCors = "MienChoPhep";
 
-    private const string TienToDuongDanAuth = "/api/v1/auth";
+    private static readonly HashSet<string> CacDuongDanGioiHanAuth = new(StringComparer.OrdinalIgnoreCase)
+    {
+        "/api/v1/auth/nhan-vien/dang-nhap",
+        "/api/v1/auth/sinh-vien/dang-nhap",
+        "/api/v1/auth/lam-moi",
+        "/api/v1/auth/dang-xuat"
+    };
 
     public static string[] DocDsMienChoPhep(IConfiguration cauHinh)
     {
@@ -64,7 +70,7 @@ public static class CauHinhBaoMat
         {
             tuyChon.GlobalLimiter = PartitionedRateLimiter.Create<HttpContext, string>(ngucCanh =>
             {
-                if (!ngucCanh.Request.Path.StartsWithSegments(TienToDuongDanAuth))
+                if (!ngucCanh.Request.Path.HasValue || !CacDuongDanGioiHanAuth.Contains(ngucCanh.Request.Path.Value))
                 {
                     return RateLimitPartition.GetNoLimiter("khac");
                 }

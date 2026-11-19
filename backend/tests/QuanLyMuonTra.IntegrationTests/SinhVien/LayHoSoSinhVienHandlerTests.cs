@@ -64,6 +64,20 @@ public sealed class LayHoSoSinhVienHandlerTests
     }
 
     [Fact]
+    public async Task UC17_XemHoSoToi_DaCamDuToiDa_VanHopLe_KhiSoMuonThemBang0()
+    {
+        await using var phien = await PhienKiemThuHoSo.BatDauAsync(1);
+
+        var hoSo = await LayBoXuLy(phien).XuLyAsync("D02-SV-B", soMuonThem: 0, CancellationToken.None);
+
+        Assert.NotNull(hoSo);
+        Assert.Equal(1, hoSo.SoThietBiDangMuon);
+        Assert.Equal(1, hoSo.SoThietBiToiDa);
+        Assert.True(hoSo.HopLe);
+        Assert.Empty(hoSo.DsLyDoKhongHopLe);
+    }
+
+    [Fact]
     public async Task UC07_QuetThe_CoNoBienBan_HienThiNoNhungKhongTaoLyDoRieng()
     {
         await using var phien = await PhienKiemThuHoSo.BatDauAsync(2);

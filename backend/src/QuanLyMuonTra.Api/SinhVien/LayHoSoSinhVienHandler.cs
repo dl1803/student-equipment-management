@@ -29,9 +29,12 @@ public sealed class LayHoSoSinhVienHandler(
     IQuyDinhReader quyDinhReader,
     IClock dongHo)
 {
-    private const int SoThietBiMuonThemKhiQuetThe = 1;
+    public const int SoThietBiMuonThemKhiQuetThe = 1;
 
-    public async Task<SinhVienTheInfoResponse?> XuLyAsync(string maSv, CancellationToken ct)
+    public Task<SinhVienTheInfoResponse?> XuLyAsync(string maSv, CancellationToken ct) =>
+        XuLyAsync(maSv, SoThietBiMuonThemKhiQuetThe, ct);
+
+    public async Task<SinhVienTheInfoResponse?> XuLyAsync(string maSv, int soMuonThem, CancellationToken ct)
     {
         var hoSo = await hoSoReader.LayTheoMaSvAsync(maSv, ct);
         if (hoSo is null)
@@ -44,7 +47,7 @@ public sealed class LayHoSoSinhVienHandler(
         var soDangCam = await muonTraReader.DemThietBiDangCamAsync(hoSo.MaSv, ct);
         var dsBienBan = await bienBanReader.LayDsChuaNopAsync(hoSo.MaSv, ct);
 
-        var vuotGioiHan = quyDinh.VuotGioiHanSoThietBi(soDangCam, SoThietBiMuonThemKhiQuetThe);
+        var vuotGioiHan = quyDinh.VuotGioiHanSoThietBi(soDangCam, soMuonThem);
         var dsLyDo = DieuKienMuonSinhVien.XacDinhLyDoKhongHopLe(hoSo, VnTime.NgayLich(dongHo.UtcNow), vuotGioiHan);
 
         return new SinhVienTheInfoResponse(

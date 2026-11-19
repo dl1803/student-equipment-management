@@ -12,14 +12,14 @@ public sealed class HoSoSinhVienReader(DbContext db) : IHoSoSinhVienReader
             return null;
         }
 
-        var maSvChuan = maSv.Trim();
+        var maSvChuan = maSv.Trim().ToUpperInvariant();
         var dong = await db.Database.SqlQuery<DongHoSoSinhVien>($"""
                 SELECT sv.ma_sv AS "MaSv", sv.ho_ten AS "HoTen", sv.lop AS "Lop", sv.khoa AS "Khoa",
                        sv.ma_nhom AS "MaNhom", nhom.ten_nhom AS "TenNhom", sv.han_the AS "HanThe",
                        sv.trang_thai_hoc AS "TrangThaiHoc", sv.trang_thai_quyen_muon AS "TrangThaiQuyenMuon"
                 FROM sinh_vien.sinh_vien sv
                 JOIN sinh_vien.nhom_sinh_vien nhom ON nhom.ma_nhom = sv.ma_nhom
-                WHERE sv.ma_sv = {maSvChuan}
+                WHERE UPPER(sv.ma_sv) = {maSvChuan}
                 """)
             .FirstOrDefaultAsync(ct);
 

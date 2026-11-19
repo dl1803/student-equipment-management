@@ -39,6 +39,18 @@ public sealed class HoSoSinhVienReaderTests
         Assert.Equal("D02-SV-B", hoSo.MaSv);
     }
 
+    [Fact]
+    public async Task UC07_Reader_MaChuThuong_VanTimDuocVaTraMaChuanInHoa()
+    {
+        await using var phien = await PhienKiemThuHoSo.BatDauAsync(2);
+        var reader = phien.DichVu.GetRequiredService<IHoSoSinhVienReader>();
+
+        var hoSo = await reader.LayTheoMaSvAsync("  d02-sv-a  ", CancellationToken.None);
+
+        Assert.NotNull(hoSo);
+        Assert.Equal("D02-SV-A", hoSo.MaSv);
+    }
+
     [Theory]
     [InlineData("D02-SV-KHONG-TON-TAI")]
     [InlineData("")]

@@ -121,6 +121,34 @@ public sealed class BaoMatHttpTests
     }
 
     [Fact]
+    public async Task NFR05_GioiHanTanSuatAuth_KhongChanAuthToi_KhiVuotNguongDangNhap()
+    {
+        await using var factory = TaoFactory(("RateLimitAuth:SoYeuCau", "1"), ("RateLimitAuth:CuaSoGiay", "60"));
+        using var client = factory.CreateClient();
+
+        var lan1 = await DangNhapRongAsync(client);
+        var lan2 = await DangNhapRongAsync(client);
+        Assert.Equal(HttpStatusCode.BadRequest, lan1.StatusCode);
+        Assert.Equal(HttpStatusCode.TooManyRequests, lan2.StatusCode);
+
+        var authToi = await client.GetAsync("/api/v1/auth/toi");
+        Assert.Equal(HttpStatusCode.Unauthorized, authToi.StatusCode);
+    }
+
+    [Fact]
+    public async Task NFR05_Cors_MoiTruongDevelopment_ChoPhepLocalDev()
+    {
+        await using var factory = TaoFactory();
+        using var client = factory.CreateClient();
+
+        var chapNhan3000 = await GuiPreflightAsync(client, "http://localhost:3000");
+        var chapNhan5173 = await GuiPreflightAsync(client, "http://localhost:5173");
+
+        Assert.Equal("http://localhost:3000", Assert.Single(chapNhan3000.Headers.GetValues("Access-Control-Allow-Origin")));
+        Assert.Equal("http://localhost:5173", Assert.Single(chapNhan5173.Headers.GetValues("Access-Control-Allow-Origin")));
+    }
+
+    [Fact]
     public async Task NFR05_GioiHanTanSuatAuth_ChuaCauHinh_KhongGioiHan()
     {
         await using var factory = TaoFactory();
