@@ -106,6 +106,11 @@ internal static class PhieuYeuCauMuonTruyVan
         IReadOnlyList<PhieuYeuCauMuonDto> cacPhieu,
         CancellationToken ct)
     {
+        if (cacPhieu.Count == 0)
+        {
+            return [];
+        }
+
         var dsMaSv = cacPhieu.Select(p => p.MaSV).Distinct().ToList();
         var cacSv = await db.Database.SqlQuery<DongSinhVienTomTat>($"""
                 SELECT ma_sv AS "MaSv", ho_ten AS "HoTen", lop AS "Lop"

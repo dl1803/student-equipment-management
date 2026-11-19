@@ -1,5 +1,6 @@
 using QuanLyMuonTra.Modules.MuonTra.Application;
 using QuanLyMuonTra.Modules.MuonTra.Domain;
+using QuanLyMuonTra.Modules.MuonTra.Infrastructure;
 using QuanLyMuonTra.Modules.QuyDinh.Contracts;
 
 namespace QuanLyMuonTra.UnitTests.MuonTra;
@@ -75,5 +76,32 @@ public class KiemTraDieuKienDuyetTests
         Assert.Equal(MaLoi.SoLuongKhaDungThayDoi, lyDo.MaLoi);
         Assert.Contains("Loại X", lyDo.ThongDiep);
         Assert.Contains("còn 1", lyDo.ThongDiep);
+    }
+
+    [Fact]
+    public void BR30_GuiCungNgay_ChuaHetHan()
+    {
+        var gui = new DateTimeOffset(2026, 11, 18, 8, 0, 0, TimeSpan.FromHours(7));
+        var thoiDiem = new DateTimeOffset(2026, 11, 18, 16, 0, 0, TimeSpan.FromHours(7));
+
+        Assert.False(KiemTraDieuKienDuyet.DaHetHanTheoNgay(gui, thoiDiem));
+    }
+
+    [Fact]
+    public void BR30_GuiHomTruoc_DaHetHan()
+    {
+        var gui = new DateTimeOffset(2026, 11, 17, 23, 59, 0, TimeSpan.FromHours(7));
+        var thoiDiem = new DateTimeOffset(2026, 11, 18, 0, 1, 0, TimeSpan.FromHours(7));
+
+        Assert.True(KiemTraDieuKienDuyet.DaHetHanTheoNgay(gui, thoiDiem));
+    }
+
+    [Fact]
+    public async Task OutboxChuaNoi_GhiAsync_KhongNemLoi()
+    {
+        var outbox = new ThongBaoDuyetOutboxChuaNoi();
+        var thongBao = new ThongBaoDuyetHoacTuChoi("YC-1", "SV-1", true, null, null);
+
+        await outbox.GhiAsync(thongBao, CancellationToken.None);
     }
 }

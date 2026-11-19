@@ -35,6 +35,7 @@ public sealed class DuyetPhieuYeuCauMuonHandler(
                 ct);
 
             var phieu = await db.Set<PhieuYeuCauMuon>().SingleAsync(p => p.MaYeuCau == maYeuCau, ct);
+            var thoiDiem = dongHo.UtcNow.ToUniversalTime();
             if (phieu.TrangThai != TrangThaiYeuCauMuon.ChoDuyet)
             {
                 throw new LoiNghiepVuException(
@@ -42,7 +43,12 @@ public sealed class DuyetPhieuYeuCauMuonHandler(
                     $"Phiếu yêu cầu {maYeuCau} không còn ở trạng thái chờ duyệt.");
             }
 
-            var thoiDiem = dongHo.UtcNow.ToUniversalTime();
+            if (KiemTraDieuKienDuyet.DaHetHanTheoNgay(phieu.ThoiGianGui, thoiDiem))
+            {
+                throw new LoiNghiepVuException(
+                    MaLoi.TrangThaiKhongHopLe,
+                    $"Phiếu yêu cầu {maYeuCau} đã hết hiệu lực do quá hạn trong ngày (BR-30).");
+            }
             var hoSo = await HoSoSinhVienTruyVan.LayAsync(db, phieu.MaSv, ct);
             var quyDinhNhom = await quyDinh.LayQuyDinhNhomAsync(hoSo.MaNhom, ct)
                 ?? throw new InvalidOperationException($"Thiếu quy định mượn chung của nhóm {hoSo.MaNhom}.");

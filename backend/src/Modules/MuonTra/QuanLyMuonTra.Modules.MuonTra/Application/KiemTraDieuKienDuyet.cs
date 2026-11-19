@@ -9,6 +9,11 @@ internal static class KiemTraDieuKienDuyet
 {
     public const string TrangThaiChoDuyet = "CHO_DUYET";
 
+    public static bool DaHetHanTheoNgay(DateTimeOffset thoiGianGui, DateTimeOffset thoiDiemHienTai)
+    {
+        return VnTime.NgayLich(thoiDiemHienTai) > VnTime.NgayLich(thoiGianGui);
+    }
+
     public static async Task<IReadOnlyList<KhaDungTheoLoaiDto>> TinhKhaDungAsync(
         IAvailabilityService khaDung,
         PhieuYeuCauMuonDto phieu,

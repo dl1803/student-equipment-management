@@ -82,9 +82,12 @@ public class DuyetTuChoiYeuCauTests
         }
     }
 
-    private sealed class BoXuLy(YeuCauMuonSvTests.YeuCauMuonTestContext db, IReadOnlyCollection<Guid> phongDuocCap)
+    private sealed class BoXuLy(
+        YeuCauMuonSvTests.YeuCauMuonTestContext db,
+        IReadOnlyCollection<Guid> phongDuocCap,
+        DateTimeOffset? thoiDiem = null)
     {
-        private readonly DongHoCoDinh _dongHo = new(BayGio);
+        private readonly DongHoCoDinh _dongHo = new(thoiDiem ?? BayGio);
 
         public QuyenPhongGia Quyen { get; } = new(phongDuocCap);
 
@@ -298,6 +301,21 @@ public class DuyetTuChoiYeuCauTests
     }
 
     [CanKetNoiTestFact]
+    public async Task UC06_KiemTra_PhieuSangNgayHomSau_TraKhongDuocDuyet()
+    {
+        await using var gd = await GiaoDichTestRollback.BatDauAsync();
+        await using var db = await TaoContextAsync(gd);
+        var homSau = BayGio.AddDays(1);
+        var bo = new BoXuLy(db, [P1], homSau);
+
+        var ketQua = await bo.KiemTra.XuLyAsync(Nv1, YcHopLe, Ct);
+
+        Assert.False(ketQua.DuocDuyet);
+        var lyDo = Assert.Single(ketQua.DsLyDo);
+        Assert.Equal("TRANG_THAI_KHONG_HOP_LE", lyDo.MaLoi);
+    }
+
+    [CanKetNoiTestFact]
     public async Task UC06_TruyCap_MaSaiDinhDang400_KhongTonTai404_PhongChuaCapQuyen403()
     {
         await using var gd = await GiaoDichTestRollback.BatDauAsync();
@@ -424,6 +442,21 @@ public class DuyetTuChoiYeuCauTests
         var bo = new BoXuLy(db, [P1]);
 
         var loi = await Assert.ThrowsAsync<LoiNghiepVuException>(() => bo.Duyet.XuLyAsync(Nv2, YcDaDuyet, Ct));
+
+        Assert.Equal("TRANG_THAI_KHONG_HOP_LE", loi.MaLoi);
+        Assert.Equal(409, loi.MaHttp);
+        Assert.Empty(bo.ThongBao.DaGhi);
+    }
+
+    [CanKetNoiTestFact]
+    public async Task UC06_Duyet_PhieuSangNgayHomSau_Tra409TrangThaiKhongHopLe()
+    {
+        await using var gd = await GiaoDichTestRollback.BatDauAsync();
+        await using var db = await TaoContextAsync(gd);
+        var homSau = BayGio.AddDays(1);
+        var bo = new BoXuLy(db, [P1], homSau);
+
+        var loi = await Assert.ThrowsAsync<LoiNghiepVuException>(() => bo.Duyet.XuLyAsync(Nv1, YcHopLe, Ct));
 
         Assert.Equal("TRANG_THAI_KHONG_HOP_LE", loi.MaLoi);
         Assert.Equal(409, loi.MaHttp);

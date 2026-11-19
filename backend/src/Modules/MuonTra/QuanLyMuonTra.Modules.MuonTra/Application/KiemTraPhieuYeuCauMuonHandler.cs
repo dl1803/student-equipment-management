@@ -21,7 +21,7 @@ public sealed class KiemTraPhieuYeuCauMuonHandler(
     public async Task<KetQuaKiemTraPhieuDto> XuLyAsync(Guid maNv, string maYeuCau, CancellationToken ct)
     {
         var phieu = await PhieuYeuCauMuonQuayTruyCap.LayVaKiemQuyenAsync(db, danhMuc, quyenPhong, maNv, maYeuCau, ct);
-        var dsKhaDung = await KiemTraDieuKienDuyet.TinhKhaDungAsync(khaDung, phieu, ct);
+        var thoiDiem = dongHo.UtcNow.ToUniversalTime();
 
         if (phieu.TrangThai != KiemTraDieuKienDuyet.TrangThaiChoDuyet)
         {
@@ -29,10 +29,19 @@ public sealed class KiemTraPhieuYeuCauMuonHandler(
                 MaLoi.TrangThaiKhongHopLe,
                 $"Phiếu yêu cầu {phieu.MaYeuCau} đang ở trạng thái {phieu.TrangThai}, không thể duyệt.");
 
-            return new KetQuaKiemTraPhieuDto(false, [lyDoTrangThai], dsKhaDung);
+            return new KetQuaKiemTraPhieuDto(false, [lyDoTrangThai], []);
         }
 
-        var thoiDiem = dongHo.UtcNow.ToUniversalTime();
+        if (KiemTraDieuKienDuyet.DaHetHanTheoNgay(phieu.ThoiGianGui, thoiDiem))
+        {
+            var lyDoHetHan = new LyDoDto(
+                MaLoi.TrangThaiKhongHopLe,
+                $"Phiếu yêu cầu {phieu.MaYeuCau} đã hết hiệu lực do quá hạn trong ngày (BR-30).");
+
+            return new KetQuaKiemTraPhieuDto(false, [lyDoHetHan], []);
+        }
+
+        var dsKhaDung = await KiemTraDieuKienDuyet.TinhKhaDungAsync(khaDung, phieu, ct);
         var hoSo = await HoSoSinhVienTruyVan.LayAsync(db, phieu.MaSV, ct);
         var quyDinhNhom = await quyDinh.LayQuyDinhNhomAsync(hoSo.MaNhom, ct)
             ?? throw new InvalidOperationException($"Thiếu quy định mượn chung của nhóm {hoSo.MaNhom}.");
