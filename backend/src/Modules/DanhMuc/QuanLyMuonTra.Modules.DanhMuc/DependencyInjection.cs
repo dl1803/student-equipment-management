@@ -26,6 +26,7 @@ public static class DependencyInjection
         services.AddScoped<TaoThietBiHandler>();
         services.AddScoped<SuaThietBiHandler>();
         services.AddScoped<CapNhatGiaTriThietBiHandler>();
+        services.AddScoped<IThietBiService, ThietBiService>();
         services.AddScoped<IValidator<ThietBiTaoMoiRequest>, ThietBiTaoMoiRequestValidator>();
         services.AddScoped<IValidator<ThietBiCapNhatRequest>, ThietBiCapNhatRequestValidator>();
         services.AddScoped<IValidator<GiaTriThietBiRequest>, GiaTriThietBiRequestValidator>();
