@@ -46,6 +46,10 @@ public sealed class ThietBiService : IThietBiService
     public Task<bool> HoanThanhBaoTriAsync(string maThietBi, CancellationToken ct) =>
         ChuyenAsync(maThietBi, TinhTrangThietBi.DangBaoTriSuaChua, TinhTrangThietBi.SanSang, ct);
 
+    /// <summary>
+    /// Chuyển tình trạng thiết bị sang ĐÃ THANH LÝ nếu đang SẴN SÀNG hoặc ĐANG BẢO TRÌ SỬA CHỮA.
+    /// Yêu cầu bên gọi chạy trong giao dịch và giữ khóa tư vấn cặp (phòng, loại) trước khi gọi.
+    /// </summary>
     public async Task<bool> ThanhLyAsync(string maThietBi, CancellationToken ct)
     {
         if (await ChuyenAsync(maThietBi, TinhTrangThietBi.SanSang, TinhTrangThietBi.DaThanhLy, ct))

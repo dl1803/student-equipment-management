@@ -32,6 +32,9 @@ public sealed class TaoThietBiHandler
         AnhThietBi.ChanNeuCoAnh(yeuCau.DsMaAnh);
         var dsMaNcc = yeuCau.DsMaNCC?.ToList() ?? new List<Guid>();
 
+        var giaoDichNgoai = _db.Database.CurrentTransaction;
+        await using var giaoDichRieng = giaoDichNgoai is null ? await _db.Database.BeginTransactionAsync(ct) : null;
+
         await ThamChieuThietBi.KiemTraAsync(_db, yeuCau.MaLoai, yeuCau.MaPhong, dsMaNcc, ct);
         await KiemTraKhongTrungMaAsync(yeuCau.MaThietBi, ct);
 
@@ -53,7 +56,13 @@ public sealed class TaoThietBiHandler
             throw;
         }
 
-        return await DocThietBiQuanTri.LayAsync(_db, yeuCau.MaThietBi, ct);
+        var ketQua = await DocThietBiQuanTri.LayAsync(_db, yeuCau.MaThietBi, ct);
+        if (giaoDichRieng is not null)
+        {
+            await giaoDichRieng.CommitAsync(ct);
+        }
+
+        return ketQua;
     }
 
     private async Task KiemTraKhongTrungMaAsync(string maThietBi, CancellationToken ct)

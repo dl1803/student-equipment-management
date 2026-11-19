@@ -28,10 +28,16 @@ internal static class ThamChieuThietBi
             return;
         }
 
-        var soTonTai = await db.Set<NhaCungCap>().AsNoTracking().CountAsync(n => dsMaNcc.Contains(n.MaNCC), ct);
-        if (soTonTai != dsMaNcc.Count)
+        var dsMaNccDuyNhat = dsMaNcc.Distinct().ToList();
+        if (dsMaNccDuyNhat.Count != dsMaNcc.Count)
         {
-            throw new LoiNghiepVuException("DU_LIEU_KHONG_HOP_LE", "Nhà cung cấp không tồn tại hoặc bị trùng.");
+            throw new LoiNghiepVuException("DU_LIEU_KHONG_HOP_LE", "Danh sách nhà cung cấp không được trùng.");
+        }
+
+        var soTonTai = await db.Set<NhaCungCap>().AsNoTracking().CountAsync(n => dsMaNccDuyNhat.Contains(n.MaNCC), ct);
+        if (soTonTai != dsMaNccDuyNhat.Count)
+        {
+            throw new LoiNghiepVuException("DU_LIEU_KHONG_HOP_LE", "Nhà cung cấp không tồn tại.");
         }
     }
 }

@@ -76,6 +76,7 @@ public sealed class ThietBiGhiCsdlTests
         var db = phamVi.ServiceProvider.GetRequiredService<AppDbContext>();
         await using var giaoDich = await db.Database.BeginTransactionAsync();
         var (maPhong, maLoai) = await TaoPhongLoaiAsync(phamVi.ServiceProvider, "thamchieu");
+        var ncc = await TaoNccAsync(db, "NCC Hop Le");
         var handler = phamVi.ServiceProvider.GetRequiredService<TaoThietBiHandler>();
 
         var loaiSai = await Assert.ThrowsAsync<LoiNghiepVuException>(
@@ -84,12 +85,15 @@ public sealed class ThietBiGhiCsdlTests
             () => handler.XuLyAsync(YeuCauTao("TB-D07-P", maLoai, Guid.NewGuid()), CancellationToken.None));
         var nccSai = await Assert.ThrowsAsync<LoiNghiepVuException>(
             () => handler.XuLyAsync(YeuCauTao("TB-D07-N", maLoai, maPhong, 1, [Guid.NewGuid()]), CancellationToken.None));
+        var nccTrung = await Assert.ThrowsAsync<LoiNghiepVuException>(
+            () => handler.XuLyAsync(YeuCauTao("TB-D07-TRUNG-NCC", maLoai, maPhong, 1, [ncc, ncc]), CancellationToken.None));
 
-        Assert.All(new[] { loaiSai, phongSai, nccSai }, l =>
+        Assert.All(new[] { loaiSai, phongSai, nccSai, nccTrung }, l =>
         {
             Assert.Equal("DU_LIEU_KHONG_HOP_LE", l.MaLoi);
             Assert.Equal(400, l.MaHttp);
         });
+        Assert.Equal("Danh sách nhà cung cấp không được trùng.", nccTrung.Message);
     }
 
     [CanKetNoiTestFact]

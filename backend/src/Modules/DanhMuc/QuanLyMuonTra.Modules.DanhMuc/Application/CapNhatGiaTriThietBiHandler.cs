@@ -19,6 +19,9 @@ public sealed class CapNhatGiaTriThietBiHandler
     {
         var lichSu = new LichSuGiaTri(ma, yeuCau.GiaTri, _dongHo.UtcNow);
 
+        var giaoDichNgoai = _db.Database.CurrentTransaction;
+        await using var giaoDichRieng = giaoDichNgoai is null ? await _db.Database.BeginTransactionAsync(ct) : null;
+
         if (!await TonTaiAsync(ma, ct))
         {
             throw KhongTimThay();
@@ -38,6 +41,11 @@ public sealed class CapNhatGiaTriThietBiHandler
             }
 
             throw;
+        }
+
+        if (giaoDichRieng is not null)
+        {
+            await giaoDichRieng.CommitAsync(ct);
         }
 
         return new GiaTriThietBiDto(ma, yeuCau.GiaTri, lichSu.NgayCapNhat);

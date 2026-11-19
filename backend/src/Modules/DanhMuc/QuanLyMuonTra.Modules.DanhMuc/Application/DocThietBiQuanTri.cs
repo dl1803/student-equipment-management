@@ -1,5 +1,6 @@
 using Microsoft.EntityFrameworkCore;
 using QuanLyMuonTra.Modules.DanhMuc.Domain;
+using QuanLyMuonTra.SharedKernel;
 
 namespace QuanLyMuonTra.Modules.DanhMuc.Application;
 
@@ -35,7 +36,8 @@ internal static class DocThietBiQuanTri
                     .Select(g => (decimal?)g.GiaTri)
                     .FirstOrDefault(),
             })
-            .SingleAsync(ct);
+            .SingleOrDefaultAsync(ct)
+            ?? throw new LoiNghiepVuException("KHONG_TIM_THAY", "Không tìm thấy thiết bị.");
 
         var dsNcc = await (
             from g in db.Set<ThietBiNhaCungCap>().AsNoTracking()

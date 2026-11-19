@@ -14,6 +14,10 @@ public interface IThietBiService
 
     Task<bool> HoanThanhBaoTriAsync(string maThietBi, CancellationToken ct);
 
+    /// <summary>
+    /// Chuyển tình trạng thiết bị sang ĐÃ THANH LÝ nếu đang SẴN SÀNG hoặc ĐANG BẢO TRÌ SỬA CHỮA.
+    /// Yêu cầu bên gọi chạy trong giao dịch và giữ khóa tư vấn cặp (phòng, loại) trước khi gọi.
+    /// </summary>
     Task<bool> ThanhLyAsync(string maThietBi, CancellationToken ct);
 }
 
