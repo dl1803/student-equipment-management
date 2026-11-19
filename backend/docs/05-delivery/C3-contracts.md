@@ -184,3 +184,27 @@ Lưu ý: tình trạng `DANG_DUOC_MUON` trong dữ liệu thử đặt trực ti
 | `IntegrationTests` (ThamSo, KhungPhat, PhiTre) trên PostgreSQL | Chưa kiểm chứng — BLOCKED bởi K-1 (11 ca Skipped: 2 ThamSo + 6 KhungPhat + 3 PhiTre) |
 | Xóa khung có `chi_tiet_phieu_muon` tham chiếu qua provider MuonTra | Chưa kiểm chứng — chờ Host đăng ký `AddMuonTraModule()` |
 | Quyền `QuanTri`/`NhanVien` thật qua HTTP | Chưa kiểm chứng — BLOCKED (chưa có endpoint) |
+
+## 14. Bàn giao D07-N cho Vương, Khôi và tích hợp
+
+| Mục | Nội dung |
+|---|---|
+| Miền | `ThietBi.NhapKho(...)` (`internal static`, luôn `SAN_SANG`, `ngung_su_dung = false`), `ThietBi.CapNhatThongTin(...)` (`internal`, không đổi mã/tình trạng); `LichSuGiaTri(maThietBi, giaTri, ngayCapNhat)` (0..99.999.999.999.999, ngoài khoảng → 400); `ThietBi`, `LichSuGiaTri`, `ThietBiNhaCungCap` là `IAuditable` |
+| Request | `ThietBiTaoMoiRequest`, `ThietBiCapNhatRequest`, `GiaTriThietBiRequest` (`DanhMuc.Application`); trường bắt buộc theo OpenAPI là `[JsonRequired]`; `DsMaNCC`/`DsMaAnh` nullable |
+| Handler | `TaoThietBiHandler.XuLyAsync(yeuCau, ct)`, `SuaThietBiHandler.XuLyAsync(ma, yeuCau, ct)` → `ThietBiQuanTriDto`; `CapNhatGiaTriThietBiHandler.XuLyAsync(ma, yeuCau, ct)` → `GiaTriThietBiDto` |
+| Lỗi | Trùng mã → 409 `MA_THIET_BI_TRUNG`; thiết bị không có (PUT, `gia-tri`) → 404 `KHONG_TIM_THAY`; `maLoai`/`maPhong`/`maNCC` không tồn tại, dữ liệu sai → 400 `DU_LIEU_KHONG_HOP_LE`; va chạm `xmin` hoặc cặp phòng/loại đổi trong lúc chờ khóa → 409 `XUNG_DOT_CAP_NHAT` |
+| Khóa | `SuaThietBiHandler` khóa tư vấn cặp (phòng, loại) cũ và mới qua `IAdvisoryLockService`, dùng giao dịch của bên gọi nếu có, nếu không tự mở và commit |
+| Port | `ThietBiService : IThietBiService` (`DanhMuc.Infrastructure`), đăng ký trong `AddDanhMucModule()`. Chạy trong giao dịch của bên gọi, `UPDATE … WHERE` có điều kiện, trả `true` khi đúng 1 dòng; không có giao dịch → `InvalidOperationException` trước khi ghi. Chỉ `DatDangDuocMuonAsync` có `ngung_su_dung = false`. Ghi nhật ký `SUA` / `danh_muc.thiet_bi` (`TinhTrang` trước/sau) qua `IAuditLogger` |
+| Hàm đăng ký DI | `AddDanhMucModule()` thêm 3 handler, 3 validator và `IThietBiService` |
+| Việc cho Host | Bọc handler bằng endpoint `qtTaoThietBi`, `qtSuaThietBi`, `qtCapNhatGiaTriThietBi` với policy `QuanTri`; gắn `KiemTraDuLieuFilter<T>` cho cả ba request; đăng ký `AddMuonTraModule()` (cung cấp `IAdvisoryLockService`) |
+| Việc cho V (V09) | Gọi `IThietBiService` trong giao dịch đã giữ khóa tư vấn cặp (phòng, loại); `false` → ánh xạ `THIET_BI_DA_DUOC_GIAO` / `TRANG_THAI_KHONG_HOP_LE` theo mục 3 |
+| Chưa làm / BLOCKED | Gắn ảnh và `dsAnh` (K-2, N10); xóa/ngưng sử dụng thiết bị (D08-N) |
+| OPEN | Q1–Q9 trong `HUONG_DAN_THUC_HIEN_NGAY_7_D07-N.md` mục 5 (ghi lại kết quả chốt) |
+
+| Hạng mục kiểm chứng (D07-N) | Trạng thái |
+|---|---|
+| `dotnet format --verify-no-changes`, `dotnet build -c Release` | Đạt (0 error, 0 warning) — 19/11/2026, .NET SDK 9.0.321 |
+| `UnitTests` (ca mới D07-N: 16 miền + 22 ứng dụng) | Đạt 38/38 Passed (Tổng UnitTests: 413/413) — 19/11/2026, .NET SDK 9.0.321 |
+| `IntegrationTests` thiết bị (12 ca) trên PostgreSQL | Chưa kiểm chứng — BLOCKED bởi K-1 (12 ca Skipped: 8 ThietBiGhiCsdl + 4 ThietBiServiceCsdl) |
+| Khóa tư vấn thật, hai giao dịch đồng thời | Chưa kiểm chứng — thuộc nghiệm thu của V |
+| Quyền `QuanTri` thật qua HTTP | Chưa kiểm chứng — BLOCKED (chưa có endpoint) |
