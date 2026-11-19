@@ -178,6 +178,21 @@ public sealed class ThietBiUngDungTests
             () => handler.XuLyAsync("TB-01", YeuCauSua(dsAnh: TaoDanhSach(1)), CancellationToken.None));
     }
 
+    [Theory]
+    [InlineData(-1L)]
+    [InlineData(100_000_000_000_000L)]
+    public async Task UC12_CapNhatGiaTri_NgoaiKhoang_Nem400TruocKhiTruyCapCsdl(long giaTri)
+    {
+        using var db = TaoDbContext();
+        var handler = new CapNhatGiaTriThietBiHandler(db, new DongHoCoDinh());
+
+        var loi = await Assert.ThrowsAsync<LoiNghiepVuException>(
+            () => handler.XuLyAsync("TB-01", new GiaTriThietBiRequest(giaTri), CancellationToken.None));
+
+        Assert.Equal("DU_LIEU_KHONG_HOP_LE", loi.MaLoi);
+        Assert.Equal(400, loi.MaHttp);
+    }
+
     [Fact]
     public void UC12_DangKyModuleDanhMuc_HandlerVaValidatorThietBiGiaiQuyetDuoc()
     {
@@ -193,6 +208,7 @@ public sealed class ThietBiUngDungTests
 
         Assert.NotNull(dv.GetRequiredService<TaoThietBiHandler>());
         Assert.NotNull(dv.GetRequiredService<SuaThietBiHandler>());
+        Assert.NotNull(dv.GetRequiredService<CapNhatGiaTriThietBiHandler>());
         Assert.NotNull(dv.GetRequiredService<IValidator<ThietBiTaoMoiRequest>>());
         Assert.NotNull(dv.GetRequiredService<IValidator<ThietBiCapNhatRequest>>());
         Assert.NotNull(dv.GetRequiredService<IValidator<GiaTriThietBiRequest>>());
