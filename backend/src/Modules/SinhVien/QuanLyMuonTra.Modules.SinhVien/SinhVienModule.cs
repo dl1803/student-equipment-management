@@ -11,6 +11,7 @@ public static class SinhVienModule
     {
         dichVu.AddScoped<ISchoolDirectory, MockSchoolDirectory>();
         dichVu.AddScoped<IXacThucSinhVien, XacThucSinhVien>();
+        dichVu.AddScoped<IHoSoSinhVienReader, HoSoSinhVienReader>();
 
         return dichVu;
     }
