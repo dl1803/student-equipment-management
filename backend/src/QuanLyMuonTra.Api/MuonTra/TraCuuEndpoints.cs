@@ -102,12 +102,55 @@ public static class TraCuuEndpoints
                 Results.Ok(await boXuLy.XuLyAsync(ten, maLoai, maPhong, conHang, trang, kichThuoc, ct)))
             .RequireAuthorization(ChinhSach.NhanVien);
 
+        nhomQuay.MapGet("/phieu-yeu-cau-muon", async (
+                [FromQuery] string? trangThai,
+                [FromQuery] Guid? maPhong,
+                [FromServices] ICurrentUser nguoiDung,
+                [FromServices] DsPhieuYeuCauMuonQuayHandler boXuLy,
+                CancellationToken ct,
+                [FromQuery] int trang = 1,
+                [FromQuery] int kichThuoc = 20) =>
+                Results.Ok(await boXuLy.XuLyAsync(LayMaNv(nguoiDung), trangThai, maPhong, trang, kichThuoc, ct)))
+            .RequireAuthorization(ChinhSach.NhanVien);
+
+        nhomQuay.MapGet("/phieu-yeu-cau-muon/{ma}/kiem-tra", async (
+                string ma,
+                [FromServices] ICurrentUser nguoiDung,
+                [FromServices] KiemTraPhieuYeuCauMuonHandler boXuLy,
+                CancellationToken ct) =>
+                Results.Ok(await boXuLy.XuLyAsync(LayMaNv(nguoiDung), ma, ct)))
+            .RequireAuthorization(ChinhSach.NhanVien);
+
+        nhomQuay.MapPost("/phieu-yeu-cau-muon/{ma}/duyet", async (
+                string ma,
+                [FromServices] ICurrentUser nguoiDung,
+                [FromServices] DuyetPhieuYeuCauMuonHandler boXuLy,
+                CancellationToken ct) =>
+                Results.Ok(await boXuLy.XuLyAsync(LayMaNv(nguoiDung), ma, ct)))
+            .RequireAuthorization(ChinhSach.NhanVien);
+
+        nhomQuay.MapPost("/phieu-yeu-cau-muon/{ma}/tu-choi", async (
+                string ma,
+                TuChoiRequest yeuCau,
+                [FromServices] ICurrentUser nguoiDung,
+                [FromServices] TuChoiPhieuYeuCauMuonHandler boXuLy,
+                CancellationToken ct) =>
+                Results.Ok(await boXuLy.XuLyAsync(LayMaNv(nguoiDung), ma, yeuCau.LyDo, ct)))
+            .AddEndpointFilter<KiemTraDuLieuFilter<TuChoiRequest>>()
+            .RequireAuthorization(ChinhSach.NhanVien);
+
         return duongDan;
     }
 
     private static string LayMaSv(ICurrentUser nguoiDung)
     {
         return nguoiDung.MaSv
+            ?? throw new LoiNghiepVuException(MaLoi.ChuaXacThuc, "Chưa xác thực.");
+    }
+
+    private static Guid LayMaNv(ICurrentUser nguoiDung)
+    {
+        return nguoiDung.MaNguoiDung
             ?? throw new LoiNghiepVuException(MaLoi.ChuaXacThuc, "Chưa xác thực.");
     }
 }
