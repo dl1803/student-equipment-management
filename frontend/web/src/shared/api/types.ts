@@ -23,6 +23,11 @@ export type LoaiThietBiTaoMoiRequest = Schemas["LoaiThietBiTaoMoiRequest"];
 export type LoaiThietBiCapNhatRequest = Schemas["LoaiThietBiCapNhatRequest"];
 export type LoaiThietBiPage = Schemas["LoaiThietBiPage"];
 
+// Ảnh (FA 3.9, 4.10)
+export type GiaiDoanAnh = Schemas["GiaiDoanAnh"];
+export type TaiAnhResponse = Schemas["TaiAnhResponse"];
+export type AnhRef = Schemas["AnhRef"];
+
 // Mã trạng thái (họ trạng thái theo DS 7.2, FC 3.5)
 export type TinhTrangThietBi = Schemas["TinhTrangThietBi"];
 export type TrangThaiPhieuYeuCauMuon = Schemas["TrangThaiPhieuYeuCauMuon"];
