@@ -31,6 +31,25 @@ describe("IconButton", () => {
     expect(onClick).toHaveBeenCalledTimes(1);
   });
 
+  it("kichThuoc: mặc định md (40px), sm (32px) cho góc ô ảnh", () => {
+    render(
+      <>
+        <IconButton nhanTruyCap="Đóng" bieuTuong={<IconError />} />
+        <IconButton
+          kichThuoc="sm"
+          nhanTruyCap="Gỡ ảnh"
+          bieuTuong={<IconError />}
+        />
+      </>,
+    );
+    expect(screen.getByRole("button", { name: "Đóng" }).className).toContain(
+      "size-control-md",
+    );
+    const nho = screen.getByRole("button", { name: "Gỡ ảnh" });
+    expect(nho.className).toContain("size-control-sm");
+    expect(nho.className).not.toContain("size-control-md");
+  });
+
   it("CMP-02: nhanTruyCap rỗng → báo lỗi lập trình ngay, không render nút vô danh", () => {
     const onError = vi
       .spyOn(console, "error")
