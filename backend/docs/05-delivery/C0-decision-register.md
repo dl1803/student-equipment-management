@@ -78,6 +78,17 @@ Mọi dòng dưới đây đang **OPEN**. Một quyết định OPEN chặn đú
 | K-14 | Mở khóa đặt `so_lan_dang_nhap_sai = 0` | Khôi đề xuất, chờ nhóm xác nhận | 2026-11-17 |
 | K-15 | Bảng `nguoi_dung_he_thong` chưa có concurrency token `xmin`; xử lý đồng thời cho khóa/mở khóa bằng khóa bi quan `SELECT 1 FROM tai_khoan.nguoi_dung_he_thong WHERE ma_nguoi_dung = {ma} FOR UPDATE` đảm bảo trả 409 `TRANG_THAI_KHONG_HOP_LE`. Đặt lại mật khẩu nhân viên thu hồi toàn bộ refresh token trong cùng giao dịch; xóa cache quyền phòng khi khóa/mở khóa tài khoản. `QuyenPhongService` dùng `IMemoryCache` cho mô hình single-instance Render free tier; khi mở rộng multi-node cần chuyển sang `IDistributedCache` (Redis) / pub-sub invalidation | Đã chốt theo review của Vương | 2026-11-18 |
 
+### Quyết định D07-K cho K-16, K-17, K-18, K-19, K-20, K-21
+
+| Mã | Quyết định | Trạng thái | Ngày |
+|---|---|---|---|
+| K-16 | Quét thẻ và `GET /sv/toi`: `vuotGioiHanThietBi = QuyDinhNhomDto.VuotGioiHanSoThietBi(soDangCam, 1)`; SV đã cầm đủ tối đa thì `hopLe=false` với lý do `VUOT_GIOI_HAN_THIET_BI` (UC-07 bước 2 coi giao mới tối thiểu là 1). Việc chặn chính thức vẫn ở bước kiểm nguồn và lập phiếu | Khôi đề xuất, chờ nhóm xác nhận | 2026-11-19 |
+| K-17 | CORS và giới hạn tần suất auth chỉ cài cơ chế đọc cấu hình, không có giá trị mặc định: `Cors__AllowedOrigins` (danh sách origin cách nhau dấu phẩy, cấm `*`), `RateLimitAuth__SoYeuCau` + `RateLimitAuth__CuaSoGiay` (giới hạn theo IP cho `/api/v1/auth/*`, lỗi 429 `QUA_NHIEU_YEU_CAU`). Thiếu cấu hình thì không bật. Giá trị thật thuộc G7 (vẫn OPEN). `UseForwardedHeaders` và kiểm HTTPS/HSTS trên Render thuộc D12-K/D25-K | Khôi đề xuất, chờ nhóm xác nhận | 2026-11-19 |
+| K-18 | Gỡ `Jwt:Secret` khỏi `appsettings.json` (trái KT mục 15). Dev đặt bằng `dotnet user-secrets`, môi trường thật dùng `Jwt__Secret`; thiếu thì ứng dụng dừng khi khởi động | Khôi đề xuất, chờ nhóm xác nhận | 2026-11-19 |
+| K-19 | Thẻ hết hạn khi `hanThe` nhỏ hơn ngày lịch Việt Nam hiện tại (đúng ngày `hanThe` vẫn dùng được); nguồn ghi "Ngày hết hiệu lực của thẻ" chưa nêu rõ biên | Khôi đề xuất, chờ nhóm xác nhận | 2026-11-19 |
+| K-20 | Quét thẻ đọc `sinh_vien.sinh_vien`; MSSV chưa có dòng (chưa đăng nhập, chưa đồng bộ J8 ở D11-K) trả 404 `KHONG_TIM_THAY`. `dsBienBanChuaNop` chỉ để hiển thị (ĐX-API-24), không tạo lý do riêng; khóa vì nợ đi qua `trangThaiQuyenMuon` (J3) | Khôi đề xuất, chờ nhóm xác nhận | 2026-11-19 |
+| K-21 | Ghép thông tin thẻ SV ở project Api (`LayHoSoSinhVienHandler`) theo C5; quy tắc `DieuKienMuonSinhVien` đặt trong `SinhVien.Contracts` để D06-V, D08-V dùng lại. `Program.cs` nạp thêm assembly MuonTra vào `AppDbContext` của Host (phần "bàn giao ánh xạ để Host tích hợp" của D02-V còn thiếu) | Khôi đề xuất, chờ nhóm xác nhận | 2026-11-19 |
+
 ## 5. Mâu thuẫn giữa các nguồn đã phát hiện
 
 | # | Nội dung | Nguồn A | Nguồn B | Cách xử lý |

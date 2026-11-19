@@ -20,6 +20,11 @@ Cập nhật lần đầu: 13/11/2026 · Người lập: Đinh Nhật Khôi
    `dotnet user-secrets list --project backend/src/QuanLyMuonTra.Api`
 
 4. Khóa cấu hình `ConnectionStrings:Default` tương ứng biến môi trường `ConnectionStrings__Default` dùng trên Render (KT 15).
+5. Đặt khóa ký JWT cho máy dev (tối thiểu 32 byte; không dùng chuỗi từng nằm trong lịch sử Git). Chạy lệnh dưới, không in hay dán khóa ra nơi khác:
+
+   `$khoa = [Convert]::ToBase64String([System.Security.Cryptography.RandomNumberGenerator]::GetBytes(48)); dotnet user-secrets set "Jwt:Secret" $khoa --project backend/src/QuanLyMuonTra.Api; Remove-Variable khoa`
+
+   Khóa cấu hình `Jwt:Secret` tương ứng biến môi trường `Jwt__Secret` trên Render. Thiếu khóa thì API dừng khi khởi động.
 
 ## Điều cấm
 
