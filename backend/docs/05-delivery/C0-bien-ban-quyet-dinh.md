@@ -64,6 +64,6 @@ Ngày họp: ____ · Người ghi: Đinh Nhật Khôi · Người tham dự: ___
 | Hạn | Baseline D02; dev/test D05; giờ quầy trước vận hành |
 | Ngày/trạng thái | OPEN (từng mục con ghi trạng thái riêng) |
 | Giá trị cung cấp (chỉ điền khi **có người thật sự cung cấp**) | Giờ quầy: ____ · Truy cập/hạn mức: ____ · CORS: ____ · Giới hạn tần suất auth: ____ · Môi trường test (K-1): ____ |
-| Lưu ý | Không đặt giờ quầy mặc định; không coi "10 yêu cầu/phút" là đã chốt |
+| Lưu ý | Không đặt giờ quầy mặc định; không coi "10 yêu cầu/phút" là đã chốt · D07-K đã cài cơ chế đọc `Cors__AllowedOrigins`, `RateLimitAuth__SoYeuCau`, `RateLimitAuth__CuaSoGiay`; chưa có giá trị nên chưa bật (K-17) |
 | Công việc bị ảnh hưởng | Nghiệm thu NFR; giờ quầy chặn lập phiếu giao khi chưa cấu hình |
 

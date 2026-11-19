@@ -1,9 +1,11 @@
 using System.Reflection;
 using Microsoft.AspNetCore.Diagnostics.HealthChecks;
 using QuanLyMuonTra.Api.Auth;
+using QuanLyMuonTra.Api.BaoMat;
 using QuanLyMuonTra.Api.Health;
 using QuanLyMuonTra.Api.Loi;
 using QuanLyMuonTra.Api.MuonTra;
+using QuanLyMuonTra.Api.SinhVien;
 using QuanLyMuonTra.Infrastructure;
 using QuanLyMuonTra.Modules.DanhMuc;
 using QuanLyMuonTra.Modules.DanhMuc.Infrastructure;
@@ -27,6 +29,12 @@ if (string.IsNullOrWhiteSpace(chuoiKetNoi))
 }
 
 var jwt = XacThucJwt.DocCauHinh(builder.Configuration);
+var dsMienChoPhep = CauHinhBaoMat.DocDsMienChoPhep(builder.Configuration);
+if (dsMienChoPhep.Length == 0 && builder.Environment.IsDevelopment())
+{
+    dsMienChoPhep = ["http://localhost:3000", "http://localhost:5173"];
+}
+var gioiHanTanSuatAuth = CauHinhBaoMat.DocGioiHanTanSuatAuth(builder.Configuration);
 
 IReadOnlyCollection<Assembly> assemblyCauHinhEf = [
     typeof(NguoiDungHeThong).Assembly,
@@ -47,6 +55,17 @@ builder.Services.AddChinhSachPhanQuyen();
 builder.Services.AddExceptionHandler<XuLyLoiToanCuc>();
 builder.Services.AddViPhamModule();
 builder.Services.AddMuonTraModule();
+builder.Services.AddScoped<LayHoSoSinhVienHandler>();
+if (dsMienChoPhep.Length > 0)
+{
+    builder.Services.AddCorsTheoMien(dsMienChoPhep);
+}
+
+if (gioiHanTanSuatAuth is not null)
+{
+    builder.Services.AddGioiHanTanSuatAuth(gioiHanTanSuatAuth);
+}
+
 builder.Services.AddHealthChecks()
     .AddCheck<CsdlHealthCheck>("csdl", tags: ["ready"]);
 builder.Services.AddScoped<FluentValidation.IValidator<DangNhapNhanVienRequest>, DangNhapNhanVienValidator>();
@@ -71,7 +90,24 @@ if (!string.IsNullOrWhiteSpace(tenQuanTriKhoiTao) || !string.IsNullOrEmpty(matKh
     await boKhoiTao.ChayAsync(tenQuanTriKhoiTao, matKhauQuanTriKhoiTao, app.Lifetime.ApplicationStopping);
 }
 
+app.UseTieuDeBaoMat();
+
+if (!app.Environment.IsDevelopment())
+{
+    app.UseHsts();
+}
+
 app.UseExceptionHandler(_ => { });
+
+if (dsMienChoPhep.Length > 0)
+{
+    app.UseCors(CauHinhBaoMat.TenChinhSachCors);
+}
+
+if (gioiHanTanSuatAuth is not null)
+{
+    app.UseRateLimiter();
+}
 
 app.UseAuthentication();
 app.UseAuthorization();
@@ -80,6 +116,7 @@ app.MapHealthChecks("/health", new HealthCheckOptions { Predicate = _ => false }
 app.MapHealthChecks("/health/ready", new HealthCheckOptions { Predicate = check => check.Tags.Contains("ready") });
 app.MapTaiKhoanEndpoints();
 app.MapMuonTraEndpoints();
+app.MapSinhVienEndpoints();
 
 app.Run();
 
