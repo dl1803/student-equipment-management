@@ -11,21 +11,22 @@ Người lập: Nguyễn Đại Vương · Ngày: 19/11/2026 · Trạng thái: �
 
 ## 2. Thứ tự lỗi khi duyệt
 
-Sai định dạng mã (400) → không tồn tại (404) → phòng chưa cấp quyền (403) → trạng thái không còn chờ duyệt (409) → thẻ → trạng thái học → quyền mượn (422) → thời gian tối đa (422) → giới hạn tổng (422) → số lượng khả dụng (409).
+Sai định dạng mã (400) → không tồn tại (404) → phòng chưa cấp quyền (403) → trạng thái không còn chờ duyệt hoặc quá hạn trong ngày BR-30 (409) → thẻ → trạng thái học → quyền mượn (422) → thời gian tối đa (422) → giới hạn tổng (422) → số lượng khả dụng (409).
 
 ## 3. Quyết định đang áp dụng, chờ nhóm xác nhận
 
 | Mã | Nội dung |
 |---|---|
 | Audit | Ghi tường minh qua `IAuditLogger`: thao tác `DUYET_YEU_CAU_MUON`, `TU_CHOI_YEU_CAU_MUON`; đối tượng `muon_tra.phieu_yeu_cau_muon`. `PhieuYeuCauMuon` không gắn `IAuditable`. |
-| Kiểm tra phiếu không còn chờ duyệt | `kiem-tra` trả 200, `duocDuyet=false`, lý do `TRANG_THAI_KHONG_HOP_LE` (OpenAPI không có 409 cho thao tác này). |
+| Hết hạn trong ngày (BR-30) | Handler duyệt và kiểm tra áp dụng BR-30: nếu `VnTime.NgayLich(thoiDiem) > VnTime.NgayLich(thoiGianGui)` thì coi như phiếu đã hết hiệu lực, trả `TRANG_THAI_KHONG_HOP_LE` (không phụ thuộc cron J5). |
+| Kiểm tra phiếu không còn chờ duyệt | `kiem-tra` trả 200, `duocDuyet=false`, lý do `TRANG_THAI_KHONG_HOP_LE` (OpenAPI không có 409 cho thao tác này). Kiểm tra trạng thái và BR-30 trước khi tính khả dụng. |
 | Dịch lỗi domain | Handler tự dịch `NghiepVuException` thành `LoiNghiepVuException`; Host chưa ánh xạ `NghiepVuException` (D02-V ghi ngược lại). Cần Khôi xác nhận. |
 | O5, hạn thẻ, đọc hồ sơ SV | Giữ nguyên quyết định D06-V (xem D06-V mục 3). Dùng `HoSoSinhVienTruyVan`, thay bằng bộ đọc D07-K khi có. |
 | Giữ chỗ | Thời lượng đọc từ `ThamSoHeThong.ThoiGianGiuChoPhut`, không gán cứng. |
 
 ## 4. Mục chặn (BLOCKED)
 
-- Cổng thông báo C7 (`IThongBaoOutbox`, D09) chưa có. D07-V dùng cổng cục bộ `IThongBaoDuyetOutbox` (`MuonTra.Application`). Runtime đăng ký `ThongBaoDuyetOutboxChuaNoi` (ném `InvalidOperationException`), nên `POST .../duyet` và `POST .../tu-choi` trả 500 và hoàn tác toàn bộ cho đến khi nối.
+- Cổng thông báo C7 (`IThongBaoOutbox`, D09) chưa có. D07-V dùng cổng cục bộ `IThongBaoDuyetOutbox` (`MuonTra.Application`). Runtime đăng ký `ThongBaoDuyetOutboxChuaNoi` (ghi cảnh báo qua `ILogger` và bỏ qua thay vì ném 500) để luồng ghi nhận nghiệp vụ tại quầy hoạt động trơn tru trong thời gian chờ C7.
 - D10-V bắt buộc: thay `ThongBaoDuyetOutboxChuaNoi` bằng bộ chuyển đổi trong `MuonTra.Infrastructure` gọi C7 thật; ghi dòng `thong_bao.thong_bao` loại `DUYET_HOAC_TU_CHOI`, kênh `EMAIL` và `UNG_DUNG`, người nhận `ma_sv_nhan`, trong giao dịch hiện tại, khóa trùng lặp đề xuất `DUYET_HOAC_TU_CHOI:{maYeuCau}`; rồi kiểm lại duyệt/từ chối HTTP đầu cuối.
 
 ## 5. Kiểm thử
