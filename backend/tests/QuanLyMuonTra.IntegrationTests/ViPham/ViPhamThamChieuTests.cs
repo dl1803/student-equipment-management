@@ -108,9 +108,13 @@ public class ViPhamThamChieuTests
     public void UC09_Runtime_CoBanHienThucThatCuaViPhamTrongDi()
     {
         using var factory = new WebApplicationFactory<Program>()
-            .WithWebHostBuilder(builder => builder.UseSetting(
-                "ConnectionStrings:Default",
-                "Host=localhost;Database=khong-dung;Username=khong-dung;Password=khong-dung"));
+            .WithWebHostBuilder(builder =>
+            {
+                builder.UseSetting(
+                    "ConnectionStrings:Default",
+                    "Host=localhost;Database=khong-dung;Username=khong-dung;Password=khong-dung");
+                builder.UseSetting("Jwt:Secret", "chuoi-khoa-jwt-kiem-thu-it-nhat-32-ky-tu-tro-len");
+            });
         using var phamVi = factory.Services.CreateScope();
 
         var reader = phamVi.ServiceProvider.GetServices<IBienBanChuaNopReader>().Select(x => x.GetType()).ToList();
