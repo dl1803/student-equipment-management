@@ -89,6 +89,17 @@ Mọi dòng dưới đây đang **OPEN**. Một quyết định OPEN chặn đú
 | K-20 | Quét thẻ đọc `sinh_vien.sinh_vien`; MSSV chưa có dòng (chưa đăng nhập, chưa đồng bộ J8 ở D11-K) trả 404 `KHONG_TIM_THAY`. `dsBienBanChuaNop` chỉ để hiển thị (ĐX-API-24), không tạo lý do riêng; khóa vì nợ đi qua `trangThaiQuyenMuon` (J3) | Khôi đề xuất, chờ nhóm xác nhận | 2026-11-19 |
 | K-21 | Ghép thông tin thẻ SV ở project Api (`LayHoSoSinhVienHandler`) theo C5; quy tắc `DieuKienMuonSinhVien` đặt trong `SinhVien.Contracts` để D06-V, D08-V dùng lại. `Program.cs` nạp thêm assembly MuonTra vào `AppDbContext` của Host (phần "bàn giao ánh xạ để Host tích hợp" của D02-V còn thiếu) | Khôi đề xuất, chờ nhóm xác nhận | 2026-11-19 |
 
+### Quyết định D08-K cho K-22, K-23, K-24, K-25, K-26, K-27
+
+| Mã | Quyết định | Trạng thái | Ngày |
+|---|---|---|---|
+| K-22 | `IAnhStorage` và `SupabaseAnhStorage` đặt ở `Infrastructure/LuuTru`; module chỉ dùng `IAnhService`, `AnhRefDto`, `MaGiaiDoanAnh`, `MaDoiTuongAnh` ở SharedKernel. Chốt phần `IAnhStorage` của K-2 | Khôi đề xuất, chờ nhóm xác nhận | 2026-11-20 |
+| K-23 | Khóa lưu `{loai}/{yyyy}/{mm}/{uuid}`: `{loai}` là `ban-dau`, `khi-tra`, `thiet-bi` theo giai đoạn lúc tải (nguồn không định nghĩa `{loai}`); `yyyy`, `mm` theo UTC; `uuid` là `ma_anh`. Ảnh chưa gắn không lưu giai đoạn trong CSDL (CHECK `ck_anh_gan_doi_tuong`) nên khi gắn dùng tiền tố khóa để kiểm đúng giai đoạn | Khôi đề xuất, chờ nhóm xác nhận | 2026-11-20 |
+| K-24 | `GanAsync` gắn bằng một câu UPDATE có điều kiện (chưa gắn, đúng người tải, đúng bucket, đúng tiền tố) và so số dòng; thiếu dòng nào trả 400 `DU_LIEU_KHONG_HOP_LE`; không tự mở giao dịch, caller gọi trong giao dịch của mình; tối đa 5 ảnh mỗi (đối tượng, giai đoạn) tính cả ảnh đã gắn | Khôi đề xuất, chờ Vương và Lợi xác nhận | 2026-11-20 |
+| K-25 | Điểm kiểm quyền ảnh riêng tư: handler đọc phiếu/bàn giao của MuonTra (V11, V14) kiểm quyền phòng hoặc chủ phiếu trước rồi mới gọi `IAnhService.LayDsAnhKyAsync`; `AnhService` không tự kiểm quyền và chỉ ký ảnh bucket riêng tư | Khôi đề xuất, chờ Vương xác nhận | 2026-11-20 |
+| K-26 | Thêm `GoAnhThietBiAsync` (chỉ ảnh `THIET_BI`) phục vụ D10-N; không gỡ ảnh phiếu (NFR-07) | Khôi đề xuất, chờ Lợi xác nhận | 2026-11-20 |
+| K-27 | Thiếu `Supabase:Url` hoặc `Supabase:ServiceRoleKey` không làm ứng dụng dừng khi khởi động; lỗi 500 chỉ xảy ra khi dùng Storage (khác K-18 có chủ ý để các test dựng host không cần cấu hình Supabase) | Khôi đề xuất, chờ nhóm xác nhận | 2026-11-20 |
+
 ## 5. Mâu thuẫn giữa các nguồn đã phát hiện
 
 | # | Nội dung | Nguồn A | Nguồn B | Cách xử lý |
