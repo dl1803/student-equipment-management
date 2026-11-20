@@ -23,6 +23,14 @@ export type LoaiThietBiTaoMoiRequest = Schemas["LoaiThietBiTaoMoiRequest"];
 export type LoaiThietBiCapNhatRequest = Schemas["LoaiThietBiCapNhatRequest"];
 export type LoaiThietBiPage = Schemas["LoaiThietBiPage"];
 
+// Thiết bị và nhà cung cấp (SCR-QT-04)
+export type ThietBi = Schemas["ThietBi"];
+export type ThietBiPage = Schemas["ThietBiPage"];
+export type ThietBiTaoMoiRequest = Schemas["ThietBiTaoMoiRequest"];
+export type ThietBiCapNhatRequest = Schemas["ThietBiCapNhatRequest"];
+export type NhaCungCap = Schemas["NhaCungCap"];
+export type NhaCungCapPage = Schemas["NhaCungCapPage"];
+
 // Ảnh (FA 3.9, 4.10)
 export type GiaiDoanAnh = Schemas["GiaiDoanAnh"];
 export type TaiAnhResponse = Schemas["TaiAnhResponse"];

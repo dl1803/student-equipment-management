@@ -6,6 +6,9 @@
 // - khoaDong = true (đang chờ phản hồi): Esc bị chặn để kết quả thao tác ghi không bị giấu (FA-08).
 // - Tiêu điểm ban đầu do loại hộp quyết định (truyền ref); đóng xong trả tiêu điểm về nơi mở.
 // Không bọc nội dung trong <form> ở hộp Xác nhận để Enter không tự xác nhận.
+// kieu = "NGAN" (Wireframes P-04, ĐX-WF-05): ngăn biểu mẫu trượt từ bên phải, cao hết cửa sổ, rộng
+// tối đa layout.web.form-max, giữ danh sách phía sau; đầu ngăn có CMP-02 "Đóng"; thân cuộn dọc,
+// chân (hàng nút) cố định. Hành vi khác giữ nguyên như hộp ở giữa.
 import {
   useEffect,
   useId,
@@ -14,6 +17,8 @@ import {
   type RefObject,
 } from "react";
 import { classNames } from "./classNames";
+import { IconButton } from "./IconButton";
+import { IconClose } from "./icons/IconClose";
 
 export type DialogProps = {
   open: boolean;
@@ -32,6 +37,8 @@ export type DialogProps = {
   onDong: () => void;
   /** id của phần tử mô tả chính (ví dụ đoạn hệ quả), gắn vào aria-describedby. */
   idMoTa?: string;
+  /** HOP: hộp ở giữa (mặc định); NGAN: ngăn biểu mẫu trượt từ bên phải (chỉ biểu mẫu thiết bị). */
+  kieu?: "HOP" | "NGAN";
 };
 
 function traTieuDiem(noiMoRef: { current: HTMLElement | null }) {
@@ -50,6 +57,7 @@ export function Dialog({
   khoaDong = false,
   onDong,
   idMoTa,
+  kieu = "HOP",
 }: DialogProps) {
   const dialogRef = useRef<HTMLDialogElement>(null);
   const noiMoRef = useRef<HTMLElement | null>(null);
@@ -85,24 +93,58 @@ export function Dialog({
     return () => dialog.removeEventListener("cancel", handleCancel);
   }, [khoaDong, onDong]);
 
+  const laNgan = kieu === "NGAN";
+
   return (
     <dialog
       ref={dialogRef}
       aria-labelledby={idTieuDe}
       aria-describedby={idMoTa}
+      data-kieu={kieu}
       className={classNames(
-        "m-auto max-h-[90vh] w-full flex-col gap-4 rounded-lg bg-surface-default p-dialog text-text-primary shadow-dialog open:flex",
+        "flex-col bg-surface-default text-text-primary shadow-dialog open:flex",
         "backdrop:bg-overlay-scrim",
-        kichThuoc === "sm" ? "max-w-dialog-sm" : "max-w-dialog-md",
+        laNgan
+          ? "my-0 mr-0 ml-auto h-full max-h-none w-full max-w-web-form-max"
+          : classNames(
+              "m-auto max-h-[90vh] w-full gap-4 rounded-lg p-dialog",
+              kichThuoc === "sm" ? "max-w-dialog-sm" : "max-w-dialog-md",
+            ),
       )}
     >
-      <h2 id={idTieuDe} className="type-title-section">
-        {tieuDe}
-      </h2>
-      <div className="flex min-h-0 flex-1 flex-col gap-3 overflow-y-auto">
+      {laNgan ? (
+        <div className="flex items-center justify-between gap-4 border-b border-border-subtle px-dialog py-4">
+          <h2 id={idTieuDe} className="type-title-section">
+            {tieuDe}
+          </h2>
+          <IconButton
+            nhanTruyCap="Đóng"
+            bieuTuong={<IconClose kichThuoc="lg" />}
+            onClick={onDong}
+            disabled={khoaDong}
+          />
+        </div>
+      ) : (
+        <h2 id={idTieuDe} className="type-title-section">
+          {tieuDe}
+        </h2>
+      )}
+      <div
+        className={classNames(
+          "flex min-h-0 flex-1 flex-col gap-3 overflow-y-auto",
+          laNgan && "px-dialog py-4",
+        )}
+      >
         {children}
       </div>
-      <div className="flex justify-end gap-actions">{hangNut}</div>
+      <div
+        className={classNames(
+          "flex justify-end gap-actions",
+          laNgan && "border-t border-border-subtle px-dialog py-4",
+        )}
+      >
+        {hangNut}
+      </div>
     </dialog>
   );
 }
