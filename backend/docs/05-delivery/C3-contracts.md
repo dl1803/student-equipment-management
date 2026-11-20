@@ -220,7 +220,7 @@ Lưu ý: tình trạng `DANG_DUOC_MUON` trong dữ liệu thử đặt trực ti
 | Từ chối an toàn | Không có provider nào được đăng ký: handler xóa loại và xóa thiết bị ném `InvalidOperationException` (chặn an toàn, không tự xóa) |
 | Ràng buộc khung phạt | Kiểm chứng ràng buộc xóa khung phạt với provider tham chiếu của `MuonTra` (`ThamChieuMuonTraProvider`) và `ViPham` qua `KhungPhatThamChieuMuonTraCsdlTests` |
 | Host thật | Đã đăng ký `AddBaoTriModule()` vào `Program.cs` theo thống nhất với Khôi; kiểm chứng qua `ProviderThamChieuHostTests` |
-| Việc cho Host (Khôi) | Bọc handler bằng các endpoint HTTP `DELETE /quan-tri/loai-thiet-bi/{ma}`, `DELETE /quan-tri/thiet-bi/{ma}`, `PUT /quan-tri/loai-thiet-bi/{ma}/ngung-su-dung`, `PUT /quan-tri/thiet-bi/{ma}/ngung-su-dung` theo OpenAPI |
+| Việc cho Host (Khôi) | Bọc handler bằng các endpoint HTTP `DELETE /quan-tri/loai-thiet-bi/{ma}`, `DELETE /quan-tri/thiet-bi/{ma}`, `POST /quan-tri/loai-thiet-bi/{ma}/ngung-su-dung`, `POST /quan-tri/thiet-bi/{ma}/ngung-su-dung` theo OpenAPI |
 | OPEN | (Q1) Chưa có quy tắc từ chối khi ngưng/xóa làm khả dụng thấp hơn số giữ chỗ còn hạn — chờ nhóm chốt trước D11-N/D22-N. Gỡ liên kết ảnh `THIET_BI` khi xóa chuyển sang D10-N |
 
 | Hạng mục kiểm chứng (D08-N) | Trạng thái |

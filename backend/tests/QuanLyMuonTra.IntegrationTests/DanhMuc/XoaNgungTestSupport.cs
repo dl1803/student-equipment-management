@@ -9,6 +9,7 @@ using QuanLyMuonTra.Modules.DanhMuc.Domain;
 using QuanLyMuonTra.Modules.MuonTra;
 using QuanLyMuonTra.Modules.MuonTra.Infrastructure;
 using QuanLyMuonTra.Modules.QuyDinh;
+using QuanLyMuonTra.Modules.QuyDinh.Domain;
 using QuanLyMuonTra.Modules.TaiKhoan.Domain;
 using QuanLyMuonTra.Modules.ViPham;
 using QuanLyMuonTra.SharedKernel.Contracts;
@@ -28,6 +29,7 @@ internal static class XoaNgungTestSupport
                     typeof(NguoiDungHeThong).Assembly,
                     typeof(ThietBi).Assembly,
                     typeof(ThamChieuMuonTraProvider).Assembly,
+                    typeof(KhungPhat).Assembly,
                 ])
             .AddScoped<IAdvisoryLockService, AdvisoryLockService>()
             .AddDanhMucModule();
