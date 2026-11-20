@@ -86,6 +86,11 @@ public sealed class ThietBi : IAuditable
         ViTriTu = viTriTu;
     }
 
+    internal void NgungSuDungHoa()
+    {
+        NgungSuDung = true;
+    }
+
     private static void KiemTraMa(string maThietBi)
     {
         if (string.IsNullOrWhiteSpace(maThietBi))

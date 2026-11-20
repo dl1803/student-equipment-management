@@ -20,11 +20,15 @@ public static class DependencyInjection
         services.AddScoped<IValidator<PhongThietBiRequest>, PhongThietBiRequestValidator>();
         services.AddScoped<TaoLoaiThietBiHandler>();
         services.AddScoped<SuaLoaiThietBiHandler>();
+        services.AddScoped<NgungSuDungLoaiThietBiHandler>();
+        services.AddScoped<XoaLoaiThietBiHandler>();
         services.AddScoped<IValidator<LoaiThietBiTaoMoiRequest>, LoaiThietBiTaoMoiRequestValidator>();
         services.AddScoped<IValidator<LoaiThietBiCapNhatRequest>, LoaiThietBiCapNhatRequestValidator>();
         services.AddScoped<CapNhatPhiTreHandler>();
         services.AddScoped<TaoThietBiHandler>();
         services.AddScoped<SuaThietBiHandler>();
+        services.AddScoped<NgungSuDungThietBiHandler>();
+        services.AddScoped<XoaThietBiHandler>();
         services.AddScoped<CapNhatGiaTriThietBiHandler>();
         services.AddScoped<IThietBiService, ThietBiService>();
         services.AddScoped<IValidator<ThietBiTaoMoiRequest>, ThietBiTaoMoiRequestValidator>();
