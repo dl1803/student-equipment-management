@@ -6,7 +6,7 @@
 "POST","/api/v1/auth/lam-moi","DA_CAI"
 "POST","/api/v1/auth/dang-xuat","DA_CAI"
 "GET","/api/v1/auth/toi","DA_CAI"
-"POST","/api/v1/anh","CHUA_CAI"
+"POST","/api/v1/anh","DA_CAI"
 "GET","/api/v1/sv/tra-cuu/thiet-bi","DA_CAI"
 "GET","/api/v1/sv/tra-cuu/thiet-bi/{maLoai}","DA_CAI"
 "POST","/api/v1/sv/phieu-yeu-cau-muon","DA_CAI"

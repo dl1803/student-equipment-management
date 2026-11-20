@@ -1,5 +1,6 @@
 using System.Reflection;
 using Microsoft.AspNetCore.Diagnostics.HealthChecks;
+using QuanLyMuonTra.Api.Anh;
 using QuanLyMuonTra.Api.Auth;
 using QuanLyMuonTra.Api.BaoMat;
 using QuanLyMuonTra.Api.Health;
@@ -7,6 +8,7 @@ using QuanLyMuonTra.Api.Loi;
 using QuanLyMuonTra.Api.MuonTra;
 using QuanLyMuonTra.Api.SinhVien;
 using QuanLyMuonTra.Infrastructure;
+using QuanLyMuonTra.Infrastructure.LuuTru;
 using QuanLyMuonTra.Modules.DanhMuc;
 using QuanLyMuonTra.Modules.DanhMuc.Infrastructure;
 using QuanLyMuonTra.Modules.MuonTra;
@@ -46,6 +48,9 @@ IReadOnlyCollection<Assembly> assemblyCauHinhEf = [
 builder.Services.AddHttpContextAccessor();
 builder.Services.AddSingleton<ICurrentUser, HttpContextCurrentUser>();
 builder.Services.AddInfrastructure(chuoiKetNoi, assemblyCauHinhEf);
+builder.Services.AddAnhLuuTru(new SupabaseStorageOptions(
+    builder.Configuration["Supabase:Url"],
+    builder.Configuration["Supabase:ServiceRoleKey"]));
 builder.Services.AddTaiKhoanModule(jwt);
 builder.Services.AddSinhVienModule();
 builder.Services.AddDanhMucModule();
@@ -117,6 +122,7 @@ app.MapHealthChecks("/health/ready", new HealthCheckOptions { Predicate = check 
 app.MapTaiKhoanEndpoints();
 app.MapMuonTraEndpoints();
 app.MapSinhVienEndpoints();
+app.MapAnhEndpoints();
 
 app.Run();
 
