@@ -208,3 +208,26 @@ Lưu ý: tình trạng `DANG_DUOC_MUON` trong dữ liệu thử đặt trực ti
 | `IntegrationTests` thiết bị (12 ca) trên PostgreSQL | Chưa kiểm chứng — BLOCKED bởi K-1 (12 ca Skipped: 8 ThietBiGhiCsdl + 4 ThietBiServiceCsdl) |
 | Khóa tư vấn thật, hai giao dịch đồng thời | Chưa kiểm chứng — thuộc nghiệm thu của V |
 | Quyền `QuanTri` thật qua HTTP | Chưa kiểm chứng — BLOCKED (chưa có endpoint) |
+
+## 15. Bàn giao D08-N cho Vương, Khôi và tích hợp
+
+| Mục | Nội dung |
+|---|---|
+| Đã bàn giao | `NgungSuDungLoaiThietBiHandler`, `NgungSuDungThietBiHandler`, `XoaLoaiThietBiHandler`, `XoaThietBiHandler` (tầng ứng dụng, chưa có endpoint HTTP). Bổ sung phương thức miền `NgungSuDungHoa()` cho `LoaiThietBi` và `ThietBi` |
+| Quy tắc xóa loại | Từ chối 409 `DA_CO_LICH_SU_CHI_NGUNG_SU_DUNG` khi còn thiết bị (mọi trạng thái), còn yêu cầu mượn/đăng ký chờ (`MuonTra`), còn quy định ngoại lệ (`QuyDinh`). Bảng nối nhà cung cấp `loai_thiet_bi_nha_cung_cap` xóa kèm theo cơ chế cascade của CSDL |
+| Quy tắc xóa thiết bị | Chỉ khi `SAN_SANG` và không có chi tiết phiếu mượn (`MuonTra`), chi tiết biên bản (`ViPham`), bảo trì/thanh lý (`BaoTri`). Xóa kèm lịch sử giá trị `lich_su_gia_tri` và nhà cung cấp `thiet_bi_nha_cung_cap` trong cùng giao dịch, nạp và xóa tường minh để interceptor ghi nhật ký kiểm toán `XOA` |
+| Khóa tư vấn | Ngưng/xóa thiết bị lấy khóa tư vấn cặp (phòng, loại) qua `IAdvisoryLockService` trong giao dịch; gọi lặp ngưng sử dụng là idempotent |
+| Từ chối an toàn | Không có provider nào được đăng ký: handler xóa loại và xóa thiết bị ném `InvalidOperationException` (chặn an toàn, không tự xóa) |
+| Ràng buộc khung phạt | Kiểm chứng ràng buộc xóa khung phạt với provider tham chiếu của `MuonTra` (`ThamChieuMuonTraProvider`) và `ViPham` qua `KhungPhatThamChieuMuonTraCsdlTests` |
+| Host thật | Đã đăng ký `AddBaoTriModule()` vào `Program.cs` theo thống nhất với Khôi; kiểm chứng qua `ProviderThamChieuHostTests` |
+| Việc cho Host (Khôi) | Bọc handler bằng các endpoint HTTP `DELETE /quan-tri/loai-thiet-bi/{ma}`, `DELETE /quan-tri/thiet-bi/{ma}`, `POST /quan-tri/loai-thiet-bi/{ma}/ngung-su-dung`, `POST /quan-tri/thiet-bi/{ma}/ngung-su-dung` theo OpenAPI |
+| OPEN | (Q1) Chưa có quy tắc từ chối khi ngưng/xóa làm khả dụng thấp hơn số giữ chỗ còn hạn — chờ nhóm chốt trước D11-N/D22-N. Gỡ liên kết ảnh `THIET_BI` khi xóa chuyển sang D10-N |
+
+| Hạng mục kiểm chứng (D08-N) | Trạng thái |
+|---|---|
+| `dotnet format --verify-no-changes`, `dotnet build -c Release` | Đạt (0 warning, 0 error) — 20/11/2026 — .NET SDK 9.0.321 |
+| `UnitTests` (ca mới D08-N) | Đạt 7/7 Passed (2 Di + 3 NgungSuDung + 1 XoaLoai + 1 XoaThietBi; tổng UnitTests: 438/438) — 20/11/2026 |
+| `IntegrationTests` Host (`ProviderThamChieuHostTests`) | Đạt 1/1 Passed (kiểm chứng runtime đủ 4 provider DanhMuc và 2 provider KhungPhat) |
+| `IntegrationTests` CSDL trên PostgreSQL | Chưa kiểm chứng cục bộ — BLOCKED bởi K-1 (18 ca Skipped: 6 NgungSuDung + 5 XoaLoai + 7 XoaThietBi); chờ CI chạy với PostgreSQL |
+| Quyền `QuanTri` thật qua HTTP | Chưa kiểm chứng — BLOCKED (chờ endpoint D08-N từ Host) |
+

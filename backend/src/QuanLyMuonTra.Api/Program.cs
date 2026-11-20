@@ -9,6 +9,7 @@ using QuanLyMuonTra.Api.MuonTra;
 using QuanLyMuonTra.Api.SinhVien;
 using QuanLyMuonTra.Infrastructure;
 using QuanLyMuonTra.Infrastructure.LuuTru;
+using QuanLyMuonTra.Modules.BaoTri;
 using QuanLyMuonTra.Modules.DanhMuc;
 using QuanLyMuonTra.Modules.DanhMuc.Infrastructure;
 using QuanLyMuonTra.Modules.MuonTra;
@@ -59,6 +60,7 @@ builder.Services.AddXacThucJwt(jwt);
 builder.Services.AddChinhSachPhanQuyen();
 builder.Services.AddExceptionHandler<XuLyLoiToanCuc>();
 builder.Services.AddViPhamModule();
+builder.Services.AddBaoTriModule();
 builder.Services.AddMuonTraModule();
 builder.Services.AddScoped<LayHoSoSinhVienHandler>();
 if (dsMienChoPhep.Length > 0)

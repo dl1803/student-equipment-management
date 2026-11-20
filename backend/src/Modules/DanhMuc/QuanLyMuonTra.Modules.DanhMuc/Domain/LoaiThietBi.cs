@@ -52,6 +52,11 @@ public sealed class LoaiThietBi : IAuditable
         ChuKyBaoTri = chuKyBaoTri;
     }
 
+    internal void NgungSuDungHoa()
+    {
+        NgungSuDung = true;
+    }
+
     internal const long PhiTreToiDa = 99_999_999_999_999;
 
     internal void CapNhatPhiTre(long phiTreMoiNgay)
