@@ -109,6 +109,10 @@
   --color-tone-neutral-on-solid: var(--ds-color-tone-neutral-on-solid);
 
   /* Khoảng cách: thang 4.3 và vai trò 5.5 */
+  /* 0 không phải giá trị thiết kế mà là "không có khoảng cách": theme đã xóa thang mặc định
+     (--*: initial) nên phải khai báo thì top-0, inset-0, left-0, m-0, p-0… mới có tác dụng
+     (hàng tiêu đề cố định của CMP-18, Header, lớp phủ ô ảnh, danh sách thả xuống). */
+  --spacing-0: 0px;
   --spacing-1: var(--ds-space-1);
   --spacing-2: var(--ds-space-2);
   --spacing-3: var(--ds-space-3);

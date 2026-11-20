@@ -20,3 +20,29 @@ export function trangCanLuiVe(
   const trangCuoi = soTrang(tongSo, kichThuoc);
   return trang > trangCuoi ? trangCuoi : null;
 }
+
+/** Kích thước trang tối đa API nhận (UI-Screens 3.7; `KichThuoc` của openapi.yaml: maximum 100). */
+export const KICH_THUOC_TRANG_TOI_DA = 100;
+
+/** Phản hồi phân trang chuẩn (KT 6.1): mọi `*Page` của openapi.yaml có hai trường này. */
+type TrangDuLieu<T> = { tongSo: number; danhSach: ReadonlyArray<T> };
+
+/**
+ * Tải đủ mọi trang của một danh sách làm nguồn lựa chọn (loại, phòng, nhà cung cấp…), lần lượt
+ * từng trang cỡ KICH_THUOC_TRANG_TOI_DA, để ô chọn không thiếu mục nằm sau trang 1.
+ * Dừng khi đủ `tongSo` của trang đầu, hoặc khi gặp trang rỗng (dữ liệu bị xóa bớt giữa chừng),
+ * nên không lặp vô hạn. Thứ tự giữ nguyên thứ tự máy chủ (FA 3.10: client không sắp xếp lại).
+ */
+export async function taiTatCaTrang<T>(
+  goiTrang: (trang: number, kichThuoc: number) => Promise<TrangDuLieu<T>>,
+): Promise<T[]> {
+  const dau = await goiTrang(1, KICH_THUOC_TRANG_TOI_DA);
+  const tatCa: T[] = [...dau.danhSach];
+  const tongSoTrang = soTrang(dau.tongSo, KICH_THUOC_TRANG_TOI_DA);
+  for (let trang = 2; trang <= tongSoTrang; trang++) {
+    const tiep = await goiTrang(trang, KICH_THUOC_TRANG_TOI_DA);
+    if (tiep.danhSach.length === 0) break;
+    tatCa.push(...tiep.danhSach);
+  }
+  return tatCa;
+}

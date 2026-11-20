@@ -21,6 +21,7 @@ export const TIEN_TO_KHOA = {
   quanTriPhong: ["quan-tri", "phong"],
   quanTriLoaiThietBi: ["quan-tri", "loai-thiet-bi"],
   quanTriThietBi: ["quan-tri", "thiet-bi"],
+  quanTriNhaCungCap: ["quan-tri", "nha-cung-cap"],
   quanTriBienBan: ["quan-tri", "bien-ban"],
   quanTriThanhLy: ["quan-tri", "thanh-ly"],
   quanTriBaoCao: ["quan-tri", "bao-cao"],

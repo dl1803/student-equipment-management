@@ -1,8 +1,14 @@
-// Thông điệp riêng của SCR-QT-02, QT-03 (UI-Screens 7.2–7.3; FC 5.5 [ĐX-FC-11]). Sở hữu: Thịnh.
+// Thông điệp riêng của SCR-QT-02..04 (UI-Screens 7.2–7.4; FC 5.5 [ĐX-FC-11]). Sở hữu: Thịnh.
 export const THONG_DIEP_DANH_MUC = {
   PHONG_RONG: "Chưa có phòng thiết bị",
   LOAI_RONG: "Chưa có loại thiết bị",
   LOAI_RONG_BO_LOC: "Không có loại thiết bị phù hợp bộ lọc",
+  /** UI-Screens 7.4 chỉ quy định thông điệp rỗng khi có bộ lọc. */
+  THIET_BI_RONG_BO_LOC: "Không có thiết bị phù hợp bộ lọc",
+  /** Chưa lọc gì mà rỗng: theo cùng mẫu "Chưa có …" của SCR-QT-02, QT-03. */
+  THIET_BI_RONG: "Chưa có thiết bị",
+  /** UF-QT-01 E1: lỗi đặt dưới ô Mã thiết bị (Wireframes SCR-QT-04). */
+  MA_THIET_BI_TRUNG: "Mã thiết bị đã tồn tại. Nhập mã khác.",
   XUNG_DOT:
     "Dữ liệu vừa được người khác thay đổi. Biểu mẫu đã nạp giá trị mới nhất, vui lòng sửa lại rồi lưu.",
   XUNG_DOT_KHONG_NAP:

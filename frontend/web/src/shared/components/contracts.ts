@@ -3,25 +3,8 @@
 // CHỈ KHAI BÁO KIỂU. Không import các kiểu này vào màn hình như thể thành phần đã có.
 // Khi hiện thực: chuyển kiểu sang shared/components/{Ten}.tsx và xóa khỏi đây.
 // Đã hiện thực ở D05-T: Select (chọn một), KeyValueList, Pagination, DataTable (mức cơ bản).
+// Đã hiện thực ở D08-T: SelectNhieu (CMP-06 chọn nhiều) ở ./SelectNhieu.
 import type { ReactNode } from "react";
-import type { LuaChon } from "./Select";
-
-// ---------- CMP-06 Ô chọn, chế độ chọn nhiều (SCR-QT-04 nhà cung cấp, SCR-QT-09 quyền phòng) ----------
-
-export type SelectNhieuProps<T extends string = string> = {
-  id: string;
-  dsLuaChon: ReadonlyArray<LuaChon<T> & { moTa?: string }>;
-  giaTri: ReadonlyArray<T>;
-  onChange: (giaTri: T[]) => void;
-  /** Tóm tắt hiển thị trong ô, ví dụ (n) => `${n} phòng đã chọn`. */
-  tomTat: (soDaChon: number) => string;
-  disabled?: boolean;
-  required?: boolean;
-  "aria-invalid"?: boolean;
-  "aria-describedby"?: string;
-  /** Danh sách lựa chọn không tải được: ô ở trạng thái lỗi kèm "Thử lại" (DS CMP-06). */
-  loiTaiLuaChon?: { onThuLai: () => void };
-};
 
 // ---------- CMP-07 Ô tích và nút chọn (Checkbox, Radio) ----------
 
