@@ -11,6 +11,8 @@ public sealed class AnhStorageGia : IAnhStorage
 
     public List<TimeSpan> HieuLucDaKy { get; } = [];
 
+    public HashSet<string> KhoaLoiKy { get; } = [];
+
     public Task UploadAsync(string bucket, string khoaLuuTru, string loaiNoiDung, byte[] noiDung, CancellationToken ct)
     {
         DaTai.Add((bucket, khoaLuuTru, loaiNoiDung, noiDung.Length));
@@ -20,6 +22,11 @@ public sealed class AnhStorageGia : IAnhStorage
 
     public Task<string> TaoUrlKyAsync(string bucket, string khoaLuuTru, TimeSpan hieuLuc, CancellationToken ct)
     {
+        if (KhoaLoiKy.Contains(khoaLuuTru))
+        {
+            throw new InvalidOperationException("Lỗi giả lập từ Storage.");
+        }
+
         HieuLucDaKy.Add(hieuLuc);
 
         return Task.FromResult($"https://luu-tru-gia.test/{bucket}/{khoaLuuTru}?token=gia");
@@ -31,6 +38,9 @@ public sealed class AnhStorageGia : IAnhStorage
 
         return Task.CompletedTask;
     }
+
+    public string TaoUrlCongKhai(string bucket, string khoaLuuTru) =>
+        $"https://luu-tru-gia.test/{bucket}/{khoaLuuTru}";
 }
 
 public sealed class NguoiDungGia(Guid? maNguoiDung) : ICurrentUser

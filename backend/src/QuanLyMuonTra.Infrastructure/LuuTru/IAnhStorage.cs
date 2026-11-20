@@ -7,5 +7,7 @@ public interface IAnhStorage
     Task<string> TaoUrlKyAsync(string bucket, string khoaLuuTru, TimeSpan hieuLuc, CancellationToken ct);
 
     Task XoaAsync(string bucket, string khoaLuuTru, CancellationToken ct);
+
+    string TaoUrlCongKhai(string bucket, string khoaLuuTru);
 }
 

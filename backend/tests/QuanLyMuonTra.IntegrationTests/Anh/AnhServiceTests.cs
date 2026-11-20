@@ -288,6 +288,64 @@ public sealed class AnhServiceTests
         Assert.Empty(moi.LuuTru.HieuLucDaKy);
     }
 
+    [CanKetNoiTestFact]
+    public async Task UC12_Gan_AdminKhacGanAnhThietBiDoAdminCuTai_ThanhCong()
+    {
+        await using var moi = await MoiTruong.TaoAsync();
+        var maAnh = await TaiAnhAsync(moi.TaoDichVuAnh(), "THIET_BI");
+        var adminKhac = await moi.TaoNguoiDungKhacAsync();
+
+        await moi.TaoDichVuAnh(adminKhac).GanAsync([maAnh], "THIET_BI", "TB-001", "THIET_BI", CancellationToken.None);
+
+        var dong = await moi.DocAnhAsync(maAnh);
+        Assert.Equal("THIET_BI", dong.DoiTuongLoai);
+        Assert.Equal("TB-001", dong.DoiTuongId);
+        Assert.Equal("THIET_BI", dong.GiaiDoan);
+    }
+
+    [CanKetNoiTestFact]
+    public async Task UC12_LayDsAnhCongKhai_ThietBi_TraUrlCongKhaiDung()
+    {
+        await using var moi = await MoiTruong.TaoAsync();
+        var dichVuAnh = moi.TaoDichVuAnh();
+        var a1 = await TaiAnhAsync(dichVuAnh, "THIET_BI");
+        var a2 = await TaiAnhAsync(dichVuAnh, "THIET_BI");
+        await dichVuAnh.GanAsync([a1, a2], "THIET_BI", "TB-001", "THIET_BI", CancellationToken.None);
+
+        var dsAnh = await dichVuAnh.LayDsAnhCongKhaiAsync("THIET_BI", "TB-001", CancellationToken.None);
+
+        Assert.Equal(new HashSet<Guid> { a1, a2 }, dsAnh.Select(a => a.MaAnh).ToHashSet());
+        Assert.All(dsAnh, a => Assert.StartsWith("https://luu-tru-gia.test/thiet-bi-anh/thiet-bi/", a.Url));
+    }
+
+    [CanKetNoiTestFact]
+    public async Task UC07_LayDsAnhCongKhai_KhongPhaiThietBi_NemArgumentException()
+    {
+        await using var moi = await MoiTruong.TaoAsync();
+        var dichVuAnh = moi.TaoDichVuAnh();
+
+        await Assert.ThrowsAsync<ArgumentException>(
+            () => dichVuAnh.LayDsAnhCongKhaiAsync("CHI_TIET_PHIEU_MUON", "ct-001", CancellationToken.None));
+    }
+
+    [CanKetNoiTestFact]
+    public async Task NFR01_LayDsAnhKy_MotAnhLoiStorage_BoQuaVaTraCacAnhConLai()
+    {
+        await using var moi = await MoiTruong.TaoAsync();
+        var dichVuAnh = moi.TaoDichVuAnh();
+        var a1 = await TaiAnhAsync(dichVuAnh, "BAN_DAU");
+        var a2 = await TaiAnhAsync(dichVuAnh, "BAN_DAU");
+        await dichVuAnh.GanAsync([a1, a2], "CHI_TIET_PHIEU_MUON", "ct-001", "BAN_DAU", CancellationToken.None);
+
+        var dong1 = await moi.DocAnhAsync(a1);
+        moi.LuuTru.KhoaLoiKy.Add(dong1.KhoaLuuTru);
+
+        var dsAnh = await dichVuAnh.LayDsAnhKyAsync("CHI_TIET_PHIEU_MUON", "ct-001", "BAN_DAU", CancellationToken.None);
+
+        var anhDuyNhat = Assert.Single(dsAnh);
+        Assert.Equal(a2, anhDuyNhat.MaAnh);
+    }
+
     private static Task<Guid> TaiAnhAsync(AnhService dichVuAnh, string giaiDoan) =>
         dichVuAnh.TaiLenAsync(giaiDoan, new MemoryStream(AnhJpeg), CancellationToken.None);
 

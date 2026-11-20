@@ -20,5 +20,10 @@ public interface IAnhService
         string doiTuongId,
         string giaiDoan,
         CancellationToken ct);
+
+    Task<IReadOnlyList<AnhRefDto>> LayDsAnhCongKhaiAsync(
+        string doiTuongLoai,
+        string doiTuongId,
+        CancellationToken ct);
 }
 

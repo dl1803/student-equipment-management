@@ -16,3 +16,10 @@ public static class MaDoiTuongAnh
     public const string ChiTietPhieuMuon = "CHI_TIET_PHIEU_MUON";
 }
 
+public static class GioiHanAnh
+{
+    public const int KichThuocToiDaBytes = 2_097_152;
+
+    public const int SoAnhToiDa = 5;
+}
+

@@ -49,6 +49,9 @@ public sealed class SupabaseAnhStorage(HttpClient httpClient, SupabaseStorageOpt
         await DamBaoThanhCongAsync(phanHoi, "xóa ảnh", ct);
     }
 
+    public string TaoUrlCongKhai(string bucket, string khoaLuuTru) =>
+        $"{GocStorage()}/object/public/{bucket}/{khoaLuuTru}";
+
     private static async Task DamBaoThanhCongAsync(HttpResponseMessage phanHoi, string thaoTac, CancellationToken ct)
     {
         if (phanHoi.IsSuccessStatusCode)

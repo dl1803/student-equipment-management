@@ -95,10 +95,11 @@ Mọi dòng dưới đây đang **OPEN**. Một quyết định OPEN chặn đú
 |---|---|---|---|
 | K-22 | `IAnhStorage` và `SupabaseAnhStorage` đặt ở `Infrastructure/LuuTru`; module chỉ dùng `IAnhService`, `AnhRefDto`, `MaGiaiDoanAnh`, `MaDoiTuongAnh` ở SharedKernel. Chốt phần `IAnhStorage` của K-2 | Khôi đề xuất, chờ nhóm xác nhận | 2026-11-20 |
 | K-23 | Khóa lưu `{loai}/{yyyy}/{mm}/{uuid}`: `{loai}` là `ban-dau`, `khi-tra`, `thiet-bi` theo giai đoạn lúc tải (nguồn không định nghĩa `{loai}`); `yyyy`, `mm` theo UTC; `uuid` là `ma_anh`. Ảnh chưa gắn không lưu giai đoạn trong CSDL (CHECK `ck_anh_gan_doi_tuong`) nên khi gắn dùng tiền tố khóa để kiểm đúng giai đoạn | Khôi đề xuất, chờ nhóm xác nhận | 2026-11-20 |
-| K-24 | `GanAsync` gắn bằng một câu UPDATE có điều kiện (chưa gắn, đúng người tải, đúng bucket, đúng tiền tố) và so số dòng; thiếu dòng nào trả 400 `DU_LIEU_KHONG_HOP_LE`; không tự mở giao dịch, caller gọi trong giao dịch của mình; tối đa 5 ảnh mỗi (đối tượng, giai đoạn) tính cả ảnh đã gắn | Khôi đề xuất, chờ Vương và Lợi xác nhận | 2026-11-20 |
-| K-25 | Điểm kiểm quyền ảnh riêng tư: handler đọc phiếu/bàn giao của MuonTra (V11, V14) kiểm quyền phòng hoặc chủ phiếu trước rồi mới gọi `IAnhService.LayDsAnhKyAsync`; `AnhService` không tự kiểm quyền và chỉ ký ảnh bucket riêng tư | Khôi đề xuất, chờ Vương xác nhận | 2026-11-20 |
+| K-24 | `GanAsync` gắn bằng một câu UPDATE có điều kiện (chưa gắn, đúng người tải [với ảnh phiếu] hoặc đối tượng thiết bị, đúng bucket, đúng tiền tố) và so số dòng; thiếu dòng nào trả 400 `DU_LIEU_KHONG_HOP_LE`; không tự mở giao dịch, caller gọi trong giao dịch của mình; tối đa 5 ảnh mỗi (đối tượng, giai đoạn) tính cả ảnh đã gắn và dùng `pg_advisory_xact_lock` chống race condition | Khôi đề xuất, chờ Vương và Lợi xác nhận | 2026-11-20 |
+| K-25 | Điểm kiểm quyền ảnh riêng tư: handler đọc phiếu/bàn giao của MuonTra (V11, V14) kiểm quyền phòng hoặc chủ phiếu trước rồi mới gọi `IAnhService.LayDsAnhKyAsync`; `AnhService` không tự kiểm quyền và chỉ ký ảnh bucket riêng tư (bỏ qua ảnh lỗi đơn lẻ và ghi log warning) | Khôi đề xuất, chờ Vương xác nhận | 2026-11-20 |
 | K-26 | Thêm `GoAnhThietBiAsync` (chỉ ảnh `THIET_BI`) phục vụ D10-N; không gỡ ảnh phiếu (NFR-07) | Khôi đề xuất, chờ Lợi xác nhận | 2026-11-20 |
 | K-27 | Thiếu `Supabase:Url` hoặc `Supabase:ServiceRoleKey` không làm ứng dụng dừng khi khởi động; lỗi 500 chỉ xảy ra khi dùng Storage (khác K-18 có chủ ý để các test dựng host không cần cấu hình Supabase) | Khôi đề xuất, chờ nhóm xác nhận | 2026-11-20 |
+| K-28 | `IAnhService.LayDsAnhCongKhaiAsync` cấp URL công khai dạng `{Supabase:Url}/storage/v1/object/public/{bucket}/{khoa}` cho ảnh `THIET_BI` (đóng O-D08-1) | Khôi đề xuất theo review của Vương | 2026-11-20 |
 
 ## 5. Mâu thuẫn giữa các nguồn đã phát hiện
 

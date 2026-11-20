@@ -91,6 +91,9 @@ public sealed class AnhService(
         }
 
         var maNguoiGan = LayMaNguoiDung();
+        var khoaAdvisory = string.Create(CultureInfo.InvariantCulture, $"anh:{doiTuongLoai}:{doiTuongId}:{giaiDoan}");
+        await db.Database.ExecuteSqlInterpolatedAsync($"SELECT pg_advisory_xact_lock(hashtext({khoaAdvisory}))", ct);
+
         var soDaGan = await db.Set<AnhTaiLen>().CountAsync(
             a => a.DoiTuongLoai == doiTuongLoai && a.DoiTuongId == doiTuongId && a.GiaiDoan == giaiDoan,
             ct);
@@ -104,7 +107,7 @@ public sealed class AnhService(
         var tienToKhoa = $"{cauHinh.TienTo}/";
         var soDong = await db.Set<AnhTaiLen>()
             .Where(a => dsMa.Contains(a.MaAnh)
-                && a.NguoiTaiLen == maNguoiGan
+                && (doiTuongLoai == MaDoiTuongAnh.ThietBi || a.NguoiTaiLen == maNguoiGan)
                 && a.Bucket == cauHinh.Bucket
                 && a.KhoaLuuTru.StartsWith(tienToKhoa)
                 && a.DoiTuongId == null)
@@ -167,11 +170,48 @@ public sealed class AnhService(
         var ketQua = new List<AnhRefDto>(dsAnh.Count);
         foreach (var anh in dsAnh)
         {
-            var url = await luuTru.TaoUrlKyAsync(anh.Bucket, anh.KhoaLuuTru, ThoiHanUrlKy, ct);
-            ketQua.Add(new AnhRefDto(anh.MaAnh, url));
+            try
+            {
+                var url = await luuTru.TaoUrlKyAsync(anh.Bucket, anh.KhoaLuuTru, ThoiHanUrlKy, ct);
+                ketQua.Add(new AnhRefDto(anh.MaAnh, url));
+            }
+            catch (Exception ex)
+            {
+                nhatKy.LogWarning(
+                    ex,
+                    "Không thể tạo URL có chữ ký cho ảnh {MaAnh} ({Bucket}/{Khoa}).",
+                    anh.MaAnh,
+                    anh.Bucket,
+                    anh.KhoaLuuTru);
+            }
         }
 
         return ketQua;
+    }
+
+    public async Task<IReadOnlyList<AnhRefDto>> LayDsAnhCongKhaiAsync(
+        string doiTuongLoai,
+        string doiTuongId,
+        CancellationToken ct)
+    {
+        if (doiTuongLoai != MaDoiTuongAnh.ThietBi)
+        {
+            throw new ArgumentException("Chỉ ảnh thiết bị (bucket công khai) mới lấy URL công khai.", nameof(doiTuongLoai));
+        }
+
+        var dsAnh = await db.Set<AnhTaiLen>()
+            .AsNoTracking()
+            .Where(a => a.DoiTuongLoai == doiTuongLoai
+                && a.DoiTuongId == doiTuongId
+                && a.GiaiDoan == MaGiaiDoanAnh.ThietBi)
+            .OrderBy(a => a.ThoiDiem)
+            .ThenBy(a => a.MaAnh)
+            .Select(a => new { a.MaAnh, a.Bucket, a.KhoaLuuTru })
+            .ToListAsync(ct);
+
+        return dsAnh
+            .Select(anh => new AnhRefDto(anh.MaAnh, luuTru.TaoUrlCongKhai(anh.Bucket, anh.KhoaLuuTru)))
+            .ToList();
     }
 
     private static (string Bucket, string TienTo)? LayCauHinhGiaiDoan(string giaiDoan) => giaiDoan switch
