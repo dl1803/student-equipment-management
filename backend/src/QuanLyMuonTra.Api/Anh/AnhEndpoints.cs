@@ -32,7 +32,7 @@ public static class AnhEndpoints
 
                 var tep = form.Files.GetFile("file")
                     ?? throw new LoiNghiepVuException("DU_LIEU_KHONG_HOP_LE", "Thiếu tệp ảnh (trường file).");
-                if (tep.Length > AnhService.KichThuocToiDa)
+                if (tep.Length > GioiHanAnh.KichThuocToiDaBytes)
                 {
                     throw new LoiNghiepVuException("DU_LIEU_KHONG_HOP_LE", "Ảnh vượt quá 2 MB.");
                 }
