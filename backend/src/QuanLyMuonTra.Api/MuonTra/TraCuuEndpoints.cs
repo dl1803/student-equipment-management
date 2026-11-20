@@ -139,6 +139,20 @@ public static class TraCuuEndpoints
             .AddEndpointFilter<KiemTraDuLieuFilter<TuChoiRequest>>()
             .RequireAuthorization(ChinhSach.NhanVien);
 
+        nhomQuay.MapPost("/phieu-muon/kiem-tra-thiet-bi", async (
+                KiemTraThietBiRequest yeuCau,
+                [FromServices] ICurrentUser nguoiDung,
+                [FromServices] KiemTraThietBiGiaoHandler boXuLy,
+                CancellationToken ct) =>
+                Results.Ok(await boXuLy.XuLyAsync(
+                    LayMaNv(nguoiDung),
+                    yeuCau.MaThietBi,
+                    yeuCau.MaPhong,
+                    yeuCau.MaLoai,
+                    ct)))
+            .AddEndpointFilter<KiemTraDuLieuFilter<KiemTraThietBiRequest>>()
+            .RequireAuthorization(ChinhSach.NhanVien);
+
         return duongDan;
     }
 
