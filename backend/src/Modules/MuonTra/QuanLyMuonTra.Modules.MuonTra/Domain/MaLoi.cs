@@ -15,4 +15,7 @@ public static class MaLoi
     public const string VuotGioiHanThietBi = "VUOT_GIOI_HAN_THIET_BI";
     public const string VuotThoiGianMuonToiDa = "VUOT_THOI_GIAN_MUON_TOI_DA";
     public const string SoLuongKhaDungThayDoi = "SO_LUONG_KHA_DUNG_THAY_DOI";
+    public const string ThietBiKhongSanSang = "THIET_BI_KHONG_SAN_SANG";
+    public const string ThietBiSaiPhong = "THIET_BI_SAI_PHONG";
+    public const string ThietBiSaiLoai = "THIET_BI_SAI_LOAI";
 }
