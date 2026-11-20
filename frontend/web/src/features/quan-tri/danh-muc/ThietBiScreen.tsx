@@ -217,6 +217,9 @@ export function ThietBiScreen() {
                 giaTri={boLoc.maLoai}
                 onChange={(maLoai) => doiBoLoc({ maLoai })}
                 coMucTatCa
+                dangTaiLuaChon={
+                  truyVanLoai.isPending && luaChonLoc.loai.length === 0
+                }
                 {...(truyVanLoai.isError
                   ? {
                       loiTaiLuaChon: {
@@ -237,6 +240,9 @@ export function ThietBiScreen() {
                 giaTri={boLoc.maPhong}
                 onChange={(maPhong) => doiBoLoc({ maPhong })}
                 coMucTatCa
+                dangTaiLuaChon={
+                  truyVanPhong.isPending && luaChonLoc.phong.length === 0
+                }
                 {...(truyVanPhong.isError
                   ? {
                       loiTaiLuaChon: {

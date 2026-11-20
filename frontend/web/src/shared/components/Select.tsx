@@ -80,7 +80,9 @@ export function Select<T extends string = string>({
       )}
     >
       {coMucTatCa ? (
-        <option value={GIA_TRI_TAT_CA}>Tất cả</option>
+        <option value={GIA_TRI_TAT_CA}>
+          {dangTaiLuaChon ? CHU_NGUON_LUA_CHON.DANG_TAI : "Tất cả"}
+        </option>
       ) : giaTri === null ? (
         <option value={GIA_TRI_TAT_CA} disabled>
           {dangTaiLuaChon ? CHU_NGUON_LUA_CHON.DANG_TAI : goiY}

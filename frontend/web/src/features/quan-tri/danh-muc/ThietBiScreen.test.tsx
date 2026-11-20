@@ -665,4 +665,88 @@ describe("ThietBiScreen — Sửa thiết bị", () => {
         .value,
     ).toBe("11.000.000 VNĐ");
   });
+
+  it("409 XUNG_DOT_CAP_NHAT mà không còn thấy thiết bị trong trang: cảnh báo riêng, GIỮ dữ liệu đang nhập", async () => {
+    let lan = 0;
+    mayChu(
+      (cfg) =>
+        cfg.method === "put"
+          ? traVe(cfg, 409, {
+              type: "about:blank",
+              title: "Xung đột",
+              status: 409,
+              maLoi: "XUNG_DOT_CAP_NHAT",
+            })
+          : undefined,
+      // Lần tải lại sau xung đột: thiết bị không còn trong trang hiện tại.
+      () => (lan++ === 0 ? [LT001, MC009] : [MC009]),
+    );
+    hienThi();
+    const hop = await moSua("Laptop Dell Latitude 5440");
+    go(hop, /Tên thiết bị/, "Tên tôi đang sửa");
+    fireEvent.click(within(hop).getByRole("button", { name: "Lưu" }));
+
+    expect(
+      await within(hop).findByText(
+        /Danh sách đã được tải lại; kiểm tra giá trị hiện tại trước khi lưu lại/,
+      ),
+    ).toBeTruthy();
+    expect(
+      (within(hop).getByLabelText(/Tên thiết bị/) as HTMLInputElement).value,
+    ).toBe("Tên tôi đang sửa");
+    expect(document.querySelector("dialog[open]")).not.toBeNull();
+  });
+
+  it("404 KHONG_TIM_THAY khi lưu: đóng ngăn, báo trên màn hình và tải lại danh sách", async () => {
+    const goi = mayChu((cfg) =>
+      cfg.method === "put"
+        ? traVe(cfg, 404, {
+            type: "about:blank",
+            title: "Không tìm thấy",
+            status: 404,
+            maLoi: "KHONG_TIM_THAY",
+          })
+        : undefined,
+    );
+    hienThi();
+    const hop = await moSua("Laptop Dell Latitude 5440");
+    const soLanTaiTruoc = goiTheo(goi, "get", "/quan-tri/thiet-bi").length;
+    fireEvent.click(within(hop).getByRole("button", { name: "Lưu" }));
+
+    expect(
+      await screen.findByText(
+        /Không tìm thấy. Đối tượng có thể đã bị thay đổi/,
+      ),
+    ).toBeTruthy();
+    expect(document.querySelector("dialog[open]")).toBeNull();
+    await waitFor(() =>
+      expect(goiTheo(goi, "get", "/quan-tri/thiet-bi").length).toBeGreaterThan(
+        soLanTaiTruoc,
+      ),
+    );
+  });
+});
+
+describe("ThietBiScreen — nguồn lựa chọn của bộ lọc", () => {
+  it("đang tải lần đầu: ô Loại và Phòng vô hiệu, aria-busy, hiện 'Đang tải'", async () => {
+    mayChu((cfg) =>
+      cfg.method === "get" &&
+      (cfg.url === "/quan-tri/loai-thiet-bi" ||
+        cfg.url === "/quan-tri/phong-thiet-bi")
+        ? new Promise<PhanHoiHttp>(() => {})
+        : undefined,
+    );
+    hienThi();
+    await screen.findByText("Laptop Dell Latitude 5440");
+    for (const nhan of ["Loại", "Phòng"]) {
+      const o = screen.getByLabelText(nhan);
+      expect(o.hasAttribute("disabled")).toBe(true);
+      expect(o.getAttribute("aria-busy")).toBe("true");
+      expect(o.textContent).toContain("Đang tải");
+    }
+    // Ô Tình trạng có danh sách cố định nên vẫn dùng được.
+    expect(screen.getByLabelText("Tình trạng").hasAttribute("disabled")).toBe(
+      false,
+    );
+  });
 });

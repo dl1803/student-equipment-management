@@ -228,6 +228,8 @@ export function SelectNhieu<T extends string = string>({
                 // Tên mục là dòng chính; dòng phụ là mô tả, không dính vào tên.
                 aria-labelledby={`${idMuc(i)}-nhan`}
                 aria-describedby={lc.moTa ? `${idMuc(i)}-mo-ta` : undefined}
+                // Rê chuột cũng dời mục đang trỏ, để Space/Enter tác động đúng mục dưới chuột.
+                onMouseEnter={() => setViTri(i)}
                 onClick={() => {
                   setViTri(i);
                   doiMuc(lc.giaTri);

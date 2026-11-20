@@ -53,6 +53,21 @@ describe("Select — nguồn lựa chọn tải từ máy chủ (DS CMP-06)", ()
     fireEvent.change(screen.getByRole("combobox"), { target: { value: "b" } });
     expect(onChange).toHaveBeenCalledWith("b");
   });
+  it("bộ lọc có mục Tất cả đang tải: mục đó hiện 'Đang tải' thay vì 'Tất cả'", () => {
+    render(
+      <Select
+        id="loc"
+        dsLuaChon={[]}
+        giaTri={null}
+        onChange={vi.fn()}
+        coMucTatCa
+        dangTaiLuaChon
+      />,
+    );
+    const o = screen.getByRole("combobox");
+    expect(o.textContent).toBe("Đang tải");
+    expect(o.hasAttribute("disabled")).toBe(true);
+  });
 });
 
 describe("TextArea (CMP-04 nhiều dòng)", () => {

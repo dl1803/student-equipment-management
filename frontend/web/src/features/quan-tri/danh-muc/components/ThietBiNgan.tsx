@@ -90,8 +90,9 @@ function giaTriBanDau(thietBi: ThietBi | null): GiaTriThietBi {
     thoiHanBaoHanh: thietBi?.thoiHanBaoHanh ?? "",
     viTriKe: thietBi?.viTriKe ?? "",
     viTriTu: thietBi?.viTriTu ?? "",
-    dsMaNCC: thietBi?.dsNhaCungCap.map((ncc) => ncc.maNCC) ?? [],
-    dsMaAnh: thietBi?.dsAnh.map((anh) => anh.maAnh) ?? [],
+    // Hợp đồng bắt buộc hai mảng này; vẫn phòng thủ để phản hồi thiếu trường không làm vỡ ngăn.
+    dsMaNCC: thietBi?.dsNhaCungCap?.map((ncc) => ncc.maNCC) ?? [],
+    dsMaAnh: thietBi?.dsAnh?.map((anh) => anh.maAnh) ?? [],
     giaTri: "",
   };
 }

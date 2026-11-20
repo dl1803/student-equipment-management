@@ -131,4 +131,14 @@ describe("SelectNhieu (CMP-06 chọn nhiều)", () => {
     fireEvent.click(screen.getByRole("button", { name: "Thử lại" }));
     expect(onThuLai).toHaveBeenCalledOnce();
   });
+
+  it("rê chuột dời mục đang trỏ: Space bật/tắt đúng mục dưới chuột", () => {
+    const onChange = vi.fn<(g: string[]) => void>();
+    render(<VeThu onChange={onChange} />);
+    fireEvent.keyDown(o(), { key: "ArrowDown" });
+    const ds = screen.getByRole("listbox");
+    fireEvent.mouseEnter(screen.getByRole("option", { name: /Miền Nam/ }));
+    fireEvent.keyDown(ds, { key: " " });
+    expect(onChange).toHaveBeenLastCalledWith(["n3"]);
+  });
 });
