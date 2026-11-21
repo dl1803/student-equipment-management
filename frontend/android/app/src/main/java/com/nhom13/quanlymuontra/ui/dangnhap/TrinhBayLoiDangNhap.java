@@ -63,13 +63,13 @@ final class TrinhBayLoiDangNhap {
                 break;
         }
         String maLoi = loi.getMaLoi();
-        if (MA_DANG_NHAP_SAI.equals(maLoi)) {
+        Integer status = loi.getStatus();
+        if (MA_DANG_NHAP_SAI.equals(maLoi) || (status != null && status == 400)) {
             return new NoiDung(ViTri.DUOI_O_MAT_KHAU, Tong.DANGER, R.string.dang_nhap_sai, null);
         }
         if (MA_CHUA_XAC_THUC.equals(maLoi)) {
             return new NoiDung(ViTri.KHOI_THONG_BAO, Tong.INFO, R.string.phien_het_han, null);
         }
-        Integer status = loi.getStatus();
         if (MA_QUA_NHIEU_YEU_CAU.equals(maLoi)
                 || (status != null && status == STATUS_QUA_NHIEU_YEU_CAU)) {
             return new NoiDung(ViTri.KHOI_THONG_BAO, Tong.WARNING, R.string.qua_nhieu_yeu_cau, null);
@@ -78,8 +78,9 @@ final class TrinhBayLoiDangNhap {
                 ViTri.KHOI_THONG_BAO, Tong.DANGER, R.string.loi_he_thong, loi.getTraceId());
     }
 
-    /** @return {@code true} khi lỗi là sai thông tin đăng nhập, hiển thị dưới ô mật khẩu */
+    /** @return {@code true} khi lỗi là sai thông tin đăng nhập hoặc dữ liệu không hợp lệ (400), hiển thị dưới ô mật khẩu */
     static boolean laLoiDangNhapSai(@NonNull ApiError loi) {
-        return MA_DANG_NHAP_SAI.equals(loi.getMaLoi());
+        return MA_DANG_NHAP_SAI.equals(loi.getMaLoi())
+                || (loi.getStatus() != null && loi.getStatus() == 400);
     }
 }

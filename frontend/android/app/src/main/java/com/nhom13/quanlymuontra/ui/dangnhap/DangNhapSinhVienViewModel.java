@@ -74,15 +74,16 @@ public final class DangNhapSinhVienViewModel extends ViewModel {
         return xoaMatKhau;
     }
 
-    /** Gửi đăng nhập. Bỏ qua khi đang gửi hoặc thiếu trường bắt buộc. */
+    /** Gửi đăng nhập. Bỏ qua khi đang gửi hoặc thiếu trường bắt buộc (sau khi cắt khoảng trắng MSSV). */
     public void dangNhap(@NonNull String mssv, @NonNull String matKhau) {
-        if (Boolean.TRUE.equals(dangGui.getValue()) || mssv.isEmpty() || matKhau.isEmpty()) {
+        String mssvCat = mssv.trim();
+        if (Boolean.TRUE.equals(dangGui.getValue()) || mssvCat.isEmpty() || matKhau.isEmpty()) {
             return;
         }
         dangGui.setValue(true);
         loiHienThi.setValue(null);
         xacThucRepository.authDangNhapSinhVien(
-                mssv,
+                mssvCat,
                 matKhau,
                 new ApiCallback<Void>() {
                     @Override

@@ -75,8 +75,19 @@ public class TrinhBayLoiDangNhapTest {
     }
 
     @Test
+    public void UFCM01_Loi400_HienDuoiOInputNhuDangNhapSai() {
+        for (ApiError loi : new ApiError[] {http(400, "DU_LIEU_KHONG_HOP_LE"), http(400, null)}) {
+            TrinhBayLoiDangNhap.NoiDung nd = TrinhBayLoiDangNhap.cho(loi);
+
+            assertEquals(TrinhBayLoiDangNhap.ViTri.DUOI_O_MAT_KHAU, nd.viTri);
+            assertEquals(R.string.dang_nhap_sai, nd.thongDiep);
+            assertTrue(TrinhBayLoiDangNhap.laLoiDangNhapSai(loi));
+        }
+    }
+
+    @Test
     public void FA34_MaKhongCoXuLyRieng_LaLoiHeThongChungKhongPhaiPhienHetHan() {
-        for (ApiError loi : new ApiError[] {http(401, null), http(400, "MA_LA"), http(403, "TAI_KHOAN_BI_KHOA")}) {
+        for (ApiError loi : new ApiError[] {http(401, null), http(422, "MA_LA"), http(403, "TAI_KHOAN_BI_KHOA")}) {
             TrinhBayLoiDangNhap.NoiDung nd = TrinhBayLoiDangNhap.cho(loi);
 
             assertEquals(Tong.DANGER, nd.tong);

@@ -88,6 +88,7 @@ public class DangNhapSinhVienViewModelTest {
         DangNhapSinhVienViewModel vm = taoViewModel();
 
         vm.dangNhap("", "mat-khau");
+        vm.dangNhap("   ", "mat-khau");
         vm.dangNhap("20201234", "");
 
         assertEquals(Boolean.FALSE, vm.getDangGui().getValue());

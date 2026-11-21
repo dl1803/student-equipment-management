@@ -49,7 +49,7 @@ public class CauHinhMangD06Test {
     public void FC101_GitIgnoreAndroid_PhuDinhLaiThuMucSrcDebugBiMauDebugOGocBoQua() {
         // .gitignore gốc có mẫu [Dd]ebug/ bỏ qua mọi thư mục tên debug, trong đó có app/src/debug. Thiếu dòng phủ
         // định này, git bỏ qua cấu hình mạng debug mà không báo lỗi gì và máy khác không đăng nhập được khi chạy debug.
-        String gitIgnore = TaiNguyen.docChu("../.gitignore");
+        String gitIgnore = TaiNguyen.docChu("../.gitignore").replace("\r\n", "\n");
 
         assertTrue(gitIgnore.contains("\n!/app/src/debug/\n"));
     }

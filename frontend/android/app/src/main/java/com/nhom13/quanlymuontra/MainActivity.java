@@ -22,9 +22,10 @@ import com.nhom13.quanlymuontra.databinding.ActivityMainBinding;
  * dưới (CMP-27), và quan sát trạng thái phiên để đưa người dùng về đăng nhập khi phiên kết thúc.
  *
  * <p>Chuyển tab không dùng {@code NavigationUI.setupWithNavController}: hàm đó đưa ngăn xếp về điểm bắt đầu
- * của graph (KhoiDongFragment), mà KhoiDongFragment đã bị gỡ khỏi ngăn xếp sau khi khởi động, nên các tab sẽ
- * chồng lên nhau. Ở đây dùng cùng các tùy chọn (một bản duy nhất, lưu và khôi phục trạng thái) nhưng đưa
- * ngăn xếp về graph gốc, nên mỗi tab có ngăn xếp riêng được lưu theo mã của chính tab đó.
+ * của graph (KhoiDongFragment), mà KhoiDongFragment đã bị gỡ khỏi ngăn xếp sau khi khởi động. Ở đây dùng cùng
+ * các tùy chọn (một bản duy nhất, lưu và khôi phục trạng thái) nhưng đưa ngăn xếp về {@code trangChuFragment}
+ * (màn hình gốc luôn nằm ở đáy ngăn xếp sau khi khởi động/đăng nhập), giúp phím Back ở các tab phụ quay về
+ * Trang chủ trước khi thoát ứng dụng (FA 5.3).
  */
 public class MainActivity extends AppCompatActivity {
 
@@ -89,7 +90,7 @@ public class MainActivity extends AppCompatActivity {
                 new NavOptions.Builder()
                         .setLaunchSingleTop(true)
                         .setRestoreState(true)
-                        .setPopUpTo(R.id.nav_graph, false, true)
+                        .setPopUpTo(R.id.trangChuFragment, false, true)
                         .build();
         binding.bnvDieuHuong.setOnItemSelectedListener(
                 muc -> {

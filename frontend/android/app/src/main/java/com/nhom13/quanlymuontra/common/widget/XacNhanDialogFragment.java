@@ -34,8 +34,13 @@ import java.util.Objects;
  *
  * <p>Cách dùng: hiển thị bằng {@code show(getChildFragmentManager(), TAG)} của màn hình để hộp bị hủy cùng
  * màn hình khi phiên kết thúc; nhận kết quả bằng {@code getChildFragmentManager().setFragmentResultListener(
- * khoaKetQua, getViewLifecycleOwner(), ...)} và kiểm {@code bundle.getBoolean(KEY_XAC_NHAN)}. Trạng thái
- * đang xử lý được giữ qua xoay màn hình; bên gọi tự bảo đảm không gửi trùng yêu cầu ghi (FA 3.11).
+ * khoaKetQua, getViewLifecycleOwner(), ...)} và kiểm {@code bundle.getBoolean(KEY_XAC_NHAN)}.
+ *
+ * <p>Xử lý xoay màn hình khi đang xử lý: trạng thái đang xử lý được lưu và phục hồi qua xoay màn hình. Khi
+ * ViewModel hoặc thao tác nền hoàn tất sau xoay, màn hình gọi lấy lại hộp bằng {@code (XacNhanDialogFragment)
+ * getChildFragmentManager().findFragmentByTag(TAG)} rồi gọi {@code hop.dismiss()} (khi thành công) hoặc
+ * {@code hop.datDangXuLy(false)} (khi lỗi, để người dùng thử lại hoặc hủy), tránh kẹt trạng thái đang xử lý.
+ * Bên gọi tự bảo đảm không gửi trùng yêu cầu ghi (FA 3.11).
  */
 public class XacNhanDialogFragment extends DialogFragment {
 

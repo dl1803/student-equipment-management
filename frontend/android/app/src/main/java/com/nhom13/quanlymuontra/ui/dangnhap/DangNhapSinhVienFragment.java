@@ -63,6 +63,7 @@ public class DangNhapSinhVienFragment extends Fragment {
 
                     @Override
                     public void afterTextChanged(Editable s) {
+                        viewModel.xoaLoiDangNhapSai();
                         capNhatNutDangNhap();
                     }
                 });
@@ -82,10 +83,10 @@ public class DangNhapSinhVienFragment extends Fragment {
                 });
         binding().btnDangNhap.setOnClickListener(
                 nut -> {
-                    // Vô hiệu nút ngay trong hàm xử lý bấm, trước khi ViewModel tạo yêu cầu (ĐX-FA-22).
+                    // Chống gửi trùng: ViewModel bật cờ dangGui đồng bộ trước khi tạo yêu cầu, kích hoạt trạng thái đang xử lý (FA 3.11, ĐX-FA-22).
                     viewModel.dangNhap(
-                            binding().etMssv.getText().toString(),
-                            binding().etMatKhau.getText().toString());
+                            binding().etMssv.getText() != null ? binding().etMssv.getText().toString().trim() : "",
+                            binding().etMatKhau.getText() != null ? binding().etMatKhau.getText().toString() : "");
                 });
 
         viewModel.getDangGui().observe(getViewLifecycleOwner(), this::hienTrangThaiGui);
@@ -132,13 +133,15 @@ public class DangNhapSinhVienFragment extends Fragment {
         }
     }
 
-    /** Nút bật khi cả hai ô có nội dung và không đang chờ phản hồi (UI-Screens 4.4). */
+    /** Nút bật khi cả hai ô có nội dung (MSSV sau khi cắt khoảng trắng không rỗng) và không đang chờ phản hồi (UI-Screens 4.4). */
     private void capNhatNutDangNhap() {
         if (dangGui) {
             return;
         }
         boolean duTruong =
-                binding().etMssv.length() > 0 && binding().etMatKhau.length() > 0;
+                binding().etMssv.getText() != null
+                        && binding().etMssv.getText().toString().trim().length() > 0
+                        && binding().etMatKhau.length() > 0;
         binding().btnDangNhap.setEnabled(duTruong);
     }
 
