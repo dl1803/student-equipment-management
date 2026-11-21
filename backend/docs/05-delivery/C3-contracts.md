@@ -231,3 +231,22 @@ Lưu ý: tình trạng `DANG_DUOC_MUON` trong dữ liệu thử đặt trực ti
 | `IntegrationTests` CSDL trên PostgreSQL | Chưa kiểm chứng cục bộ — BLOCKED bởi K-1 (18 ca Skipped: 6 NgungSuDung + 5 XoaLoai + 7 XoaThietBi); chờ CI chạy với PostgreSQL |
 | Quyền `QuanTri` thật qua HTTP | Chưa kiểm chứng — BLOCKED (chờ endpoint D08-N từ Host) |
 
+## 16. Bàn giao D09-N cho Khôi và tích hợp
+
+| Mục | Nội dung |
+|---|---|
+| Đã bàn giao | Đối chiếu 26 thao tác UC-12/13 với `openapi.yaml`, bàn giao cấu hình module và mốc EXPLAIN, xem `D09-N-doi-chieu-hop-dong-va-ban-giao.md` |
+| Đã sửa | `LoaiThietBiTaoMoiRequest.PhiTreMoiNgay` bắt buộc khi tạo loại thiết bị (có test unit) — commit `a23da44` |
+| Migration / snapshot | Không thay đổi `Migrations` và snapshot |
+| Chưa làm / BLOCKED | `qtLayQuyDinhMuon`, `qtCapNhatQuyDinhMuon` (chờ Q1–Q3); mốc EXPLAIN (BLOCKED K-1 do chưa có DB kiểm thử) |
+| OPEN | O7, O8, O9, O10 (xem tài liệu D09-N); P1: ngữ nghĩa PUT thiết bị khi không gửi `dsMaNCC` |
+
+| Hạng mục kiểm chứng (D09-N) | Trạng thái |
+|---|---|
+| `dotnet format --verify-no-changes`, `dotnet build -c Release` | Đạt (0 warning, 0 error) — 21/11/2026 — .NET SDK 9.0.321 |
+| `UnitTests` (toàn bộ solution) | Đạt 440/440 Passed — 21/11/2026 |
+| `UnitTests.DanhMuc` và `UnitTests.QuyDinh` (ca đầu vào sai) | Đạt 207/207 Passed — 21/11/2026 |
+| Mốc EXPLAIN trên PostgreSQL kiểm thử | Chưa kiểm chứng — BLOCKED bởi K-1 (chờ kết nối DB kiểm thử) |
+| `qtLayQuyDinhMuon`, `qtCapNhatQuyDinhMuon` | Chưa kiểm chứng — BLOCKED bởi Q1–Q3 |
+| Quyền `QuanTri` thật qua HTTP | Chưa kiểm chứng — BLOCKED (chờ endpoint D09-N từ Host) |
+
