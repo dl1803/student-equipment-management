@@ -202,6 +202,7 @@ dependencies {
     implementation(libs.androidx.annotation)
     implementation(libs.material)
     implementation(libs.androidx.navigation.fragment)
+    implementation(libs.androidx.swiperefreshlayout)
     implementation(libs.retrofit.converter.gson)
     implementation(libs.jakarta.annotation)
     compileOnly(libs.findbugs.jsr305)
