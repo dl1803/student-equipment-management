@@ -20,6 +20,7 @@ public static class TaiKhoanModule
         dichVu.AddScoped<IQuyenPhongService>(sp => sp.GetRequiredService<QuyenPhongService>());
         dichVu.AddScoped<IBoNhoDemQuyenPhong>(sp => sp.GetRequiredService<QuyenPhongService>());
         dichVu.AddScoped<ITrangThaiTaiKhoanReader, TrangThaiTaiKhoanReader>();
+        dichVu.AddScoped<INhanVienEmailReader, NhanVienEmailReader>();
         dichVu.AddScoped<DangNhapNhanVienHandler>();
         dichVu.AddScoped<LayThongTinToiHandler>();
         dichVu.AddScoped<DangNhapSinhVienHandler>();

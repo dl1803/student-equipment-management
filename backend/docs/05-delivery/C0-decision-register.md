@@ -101,6 +101,17 @@ Mọi dòng dưới đây đang **OPEN**. Một quyết định OPEN chặn đú
 | K-27 | Thiếu `Supabase:Url` hoặc `Supabase:ServiceRoleKey` không làm ứng dụng dừng khi khởi động; lỗi 500 chỉ xảy ra khi dùng Storage (khác K-18 có chủ ý để các test dựng host không cần cấu hình Supabase) | Khôi đề xuất, chờ nhóm xác nhận | 2026-11-20 |
 | K-28 | `IAnhService.LayDsAnhCongKhaiAsync` cấp URL công khai dạng `{Supabase:Url}/storage/v1/object/public/{bucket}/{khoa}` cho ảnh `THIET_BI` (đóng O-D08-1) | Khôi đề xuất theo review của Vương | 2026-11-20 |
 
+### Quyết định D09-K cho K-29, K-30, K-31, K-32, K-33
+
+| Mã | Quyết định | Trạng thái | Ngày |
+|---|---|---|---|
+| K-29 | `IEmailSender` (`GuiAsync(nguoiNhan, tieuDe, noiDungHtml, ct)`) đặt ở SharedKernel; `LogEmailSender`, `HttpEmailSender`, `EmailOptions`, `AddEmailSender` ở `Infrastructure/Email`. Điều chỉnh dòng C7 (ghi `ThongBao.Application`) vì `Infrastructure` chỉ tham chiếu SharedKernel; theo tiền lệ K-22 | Khôi đề xuất, chờ nhóm xác nhận | 2026-11-21 |
+| K-30 | `IThongBaoOutbox.GhiAsync(YeuCauGhiThongBao)` ở `ThongBao.Contracts`: đúng một người nhận (SV hoặc NV), tham số mẫu, đối tượng nguồn, khóa chống trùng; yêu cầu giao dịch đang mở; ghi bằng `INSERT … ON CONFLICT (khoa_trung_lap, kenh_gui) … DO NOTHING`. Dòng `UNG_DUNG` lưu văn bản thường và `DA_GUI`; dòng `EMAIL` lưu HTML và `CHO_GUI`; tiêu đề email tra bằng `MauThongBao.TieuDe(loai)` khi gửi (D10-K). Sáu loại có mẫu; `NHAC_NHO_NV` không có (UC-18 hoãn) | Khôi đề xuất, chờ nhóm xác nhận | 2026-11-21 |
+| K-30b | Khóa chống trùng với thông báo gửi nhiều người nhận phải chứa người nhận trong `{moc}` (unique index không có cột người nhận), ví dụ `NHAC_BAO_TRI:{maThietBi}:{ngay}:{maNv}`; nếu không, người nhận thứ hai bị bỏ qua lặng lẽ. Báo D16-N | Khôi đề xuất, chờ Lợi xác nhận | 2026-11-21 |
+| K-31 | Thêm `INhanVienEmailReader.LayEmailAsync` vào `TaiKhoan.Contracts` (SQL thô trong `TaiKhoan`) để `ThongBao` quyết định có tạo dòng `EMAIL` cho NV hay không (KT 10.2, 4.2) | Khôi đề xuất, chờ nhóm xác nhận | 2026-11-21 |
+| K-32 | `HttpEmailSender` theo định dạng API Brevo (KT 10.3 chỉ đề xuất, nhóm chưa chốt nhà cung cấp); chưa xác minh với tài liệu hiện hành; chỉ kiểm bằng `HttpMessageHandler` giả; gate email thật là D20-K. `Email__Provider` trống = `Log`; `Http` thiếu `ApiKey`/`From` hoặc giá trị lạ làm ứng dụng dừng khi khởi động | Khôi đề xuất, chờ nhóm chọn nhà cung cấp | 2026-11-21 |
+| K-33 | Chưa xây cơ chế phát/nhận sự kiện miền trong tiến trình ở D09 (dòng "Sự kiện miền" của C7 ghi D09). "Xử lý trước commit" ở D09 nghĩa là ghi outbox bên trong giao dịch nghiệp vụ. `ThongBao` không phải bên nhận sự kiện của MuonTra (KT 4.2 không có cạnh `ThongBao → MuonTra`); cơ chế được làm ở task đầu tiên có bên nhận (D17-K nhận `GiuChoHetHan`) | Khôi đề xuất, chờ nhóm xác nhận | 2026-11-21 |
+
 ## 5. Mâu thuẫn giữa các nguồn đã phát hiện
 
 | # | Nội dung | Nguồn A | Nguồn B | Cách xử lý |
