@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- CMP-26: nền hộp thoại, mặt phẳng bo góc radius.lg (DS CMP-26). Bóng đổ do android:elevation của hộp. -->
+<shape xmlns:android="http://schemas.android.com/apk/res/android"
+    android:shape="rectangle">
+    <solid android:color="@color/ds_color_surface_default" />
+    <corners android:radius="@dimen/ds_radius_lg" />
+</shape>

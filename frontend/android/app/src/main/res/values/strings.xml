@@ -110,4 +110,9 @@
     <string name="trang_thai_ma_theo_doi">Mã theo dõi: %1$s</string>
     <string name="trang_thai_dang_tai">Đang tải</string>
     <string name="trang_thai_khoi_dong_cham">Hệ thống đang khởi động, vui lòng chờ</string>
+
+    <!-- D06-L (DS 9.8, CMP-01, CMP-26): chữ của nút Hủy và trạng thái đang xử lý của nút; nguyên văn DS 9.8. -->
+    <string name="hanh_dong_huy">Hủy</string>
+    <string name="hanh_dong_dang_xu_ly">Đang xử lý</string>
+
 </resources>
