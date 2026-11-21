@@ -132,6 +132,21 @@ public class KiemTraDieuKienGiaoTests
     }
 
     [Fact]
+    public void SinhVien_VuaHetHanTheVuaBiKhoa_TraCaHaiLyDo()
+    {
+        var dsLyDo = KiemTraDieuKienGiao.TongHopLyDoSinhVien(
+            HoSo(hanThe: Ngay.AddDays(-1), trangThaiQuyenMuon: "TAM_KHOA"),
+            Ngay,
+            QuyDinh,
+            0,
+            1);
+
+        Assert.Equal(
+            new[] { "SV_THE_HET_HAN", "SV_BI_KHOA_QUYEN_MUON" },
+            dsLyDo.Select(d => d.MaLoi).ToArray());
+    }
+
+    [Fact]
     public void KhaDung_ThieuSoLuong_CoLyDo()
     {
         var lyDo = KiemTraDieuKienGiao.KiemTraKhaDung("Loại X", 1, 2);

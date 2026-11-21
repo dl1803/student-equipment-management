@@ -4,6 +4,7 @@ using QuanLyMuonTra.Modules.DanhMuc.Contracts;
 using QuanLyMuonTra.Modules.MuonTra.Contracts;
 using QuanLyMuonTra.Modules.MuonTra.Domain;
 using QuanLyMuonTra.Modules.QuyDinh.Contracts;
+using QuanLyMuonTra.Modules.SinhVien.Contracts;
 using QuanLyMuonTra.Modules.TaiKhoan.Contracts;
 using QuanLyMuonTra.SharedKernel;
 using QuanLyMuonTra.SharedKernel.Contracts;
@@ -17,7 +18,8 @@ public sealed class KiemTraNguonGiaoHandler(
     IQuyDinhReader quyDinh,
     IMuonTraReader muonTra,
     IAvailabilityService khaDung,
-    IQuyenPhongService quyenPhong)
+    IQuyenPhongService quyenPhong,
+    IHoSoSinhVienReader hoSoReader)
 {
     private const string TrangThaiDaDuyet = "DA_DUYET";
 
@@ -119,15 +121,9 @@ public sealed class KiemTraNguonGiaoHandler(
         DateTimeOffset thoiDiem,
         CancellationToken ct)
     {
-        var tomTat = await db.Database.SqlQuery<DongSinhVienTomTat>($"""
-                SELECT ma_sv AS "MaSv", ho_ten AS "HoTen", lop AS "Lop"
-                FROM sinh_vien.sinh_vien
-                WHERE ma_sv = {maSv}
-                """)
-            .SingleOrDefaultAsync(ct)
+        var hoSo = await hoSoReader.LayTheoMaSvAsync(maSv, ct)
             ?? throw new LoiNghiepVuException(MaLoi.KhongTimThay, "Không tìm thấy sinh viên.");
 
-        var hoSo = await HoSoSinhVienTruyVan.LayAsync(db, maSv, ct);
         var quyDinhNhom = await quyDinh.LayQuyDinhNhomAsync(hoSo.MaNhom, ct)
             ?? throw new InvalidOperationException($"Thiếu quy định mượn chung của nhóm {hoSo.MaNhom}.");
         var soDangCam = await muonTra.DemThietBiDangCamAsync(maSv, ct);
@@ -155,7 +151,7 @@ public sealed class KiemTraNguonGiaoHandler(
         return new KetQuaKiemTraNguonDto(
             dsLyDo.Count == 0,
             dsLyDo,
-            new SinhVienTomTatDto(tomTat.MaSv, tomTat.HoTen, tomTat.Lop),
+            new SinhVienTomTatDto(hoSo.MaSv, hoSo.HoTen, hoSo.Lop ?? string.Empty),
             maPhong,
             tenPhong,
             dsLoai,

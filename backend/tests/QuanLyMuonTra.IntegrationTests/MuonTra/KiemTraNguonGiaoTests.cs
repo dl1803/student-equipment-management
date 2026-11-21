@@ -3,6 +3,7 @@ using QuanLyMuonTra.Modules.DanhMuc.Infrastructure;
 using QuanLyMuonTra.Modules.MuonTra.Application;
 using QuanLyMuonTra.Modules.MuonTra.Infrastructure;
 using QuanLyMuonTra.Modules.QuyDinh.Infrastructure;
+using QuanLyMuonTra.Modules.SinhVien.Infrastructure;
 using QuanLyMuonTra.Modules.TaiKhoan.Contracts;
 using QuanLyMuonTra.SharedKernel;
 
@@ -72,7 +73,8 @@ public class KiemTraNguonGiaoTests
             new QuyDinhReader(db),
             new MuonTraReader(db),
             new AvailabilityService(db, dongHo),
-            new QuyenPhongGia(phongDuocCap));
+            new QuyenPhongGia(phongDuocCap),
+            new HoSoSinhVienReader(db));
     }
 
     private static async Task<KetQuaKiemTraNguonDto> TheoPhieuYeuCauAsync(string maYeuCau)
