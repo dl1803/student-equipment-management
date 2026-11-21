@@ -6,12 +6,14 @@ import androidx.annotation.StringRes;
 import com.nhom13.quanlymuontra.R;
 import com.nhom13.quanlymuontra.common.nhan.Tong;
 import com.nhom13.quanlymuontra.data.model.ApiError;
+import java.util.List;
+import java.util.Map;
 
 /**
  * Chọn nội dung, tông và vị trí hiển thị cho một {@link ApiError} ở SCR-CM-01 (UI-Screens 4.4, DS 9.4,
- * FA 3.3 và 3.4). Dùng cho cả lỗi của lần đăng nhập lẫn lý do kết thúc phiên (làm mới thất bại) vì hai
- * trường hợp dùng chung bảng mã lỗi. Chỉ dựa vào {@code loai}, {@code status} và {@code maLoi}, không
- * dựa vào chữ của {@code detail}; mã không có xử lý riêng là lỗi hệ thống chung kèm {@code traceId}.
+ * FA 3.3, 3.4 và 3.11). Dùng cho cả lỗi của lần đăng nhập lẫn lý do kết thúc phiên (làm mới thất bại) vì hai
+ * trường hợp dùng chung bảng mã lỗi. Chỉ dựa vào {@code loai}, {@code status}, {@code errors} và {@code maLoi},
+ * không dựa vào chữ của {@code detail}; mã không có xử lý riêng là lỗi hệ thống chung kèm {@code traceId}.
  */
 final class TrinhBayLoiDangNhap {
 
@@ -22,7 +24,9 @@ final class TrinhBayLoiDangNhap {
 
     /** Nơi hiển thị thông báo. */
     enum ViTri {
-        /** Lỗi dưới ô mật khẩu (UI-Screens 4.4, Wireframes). */
+        /** Lỗi dưới ô mã số sinh viên (FA 3.11). */
+        DUOI_O_MSSV,
+        /** Lỗi dưới ô mật khẩu (UI-Screens 4.4, Wireframes, FA 3.11). */
         DUOI_O_MAT_KHAU,
         /** Khối thông báo CMP-24 ở đầu biểu mẫu. */
         KHOI_THONG_BAO
@@ -33,6 +37,7 @@ final class TrinhBayLoiDangNhap {
         @NonNull final ViTri viTri;
         @NonNull final Tong tong;
         @StringRes final int thongDiep;
+        @Nullable final String thongDiepTuyChinh;
         @Nullable final String traceId;
 
         NoiDung(
@@ -40,9 +45,19 @@ final class TrinhBayLoiDangNhap {
                 @NonNull Tong tong,
                 @StringRes int thongDiep,
                 @Nullable String traceId) {
+            this(viTri, tong, thongDiep, null, traceId);
+        }
+
+        NoiDung(
+                @NonNull ViTri viTri,
+                @NonNull Tong tong,
+                @StringRes int thongDiep,
+                @Nullable String thongDiepTuyChinh,
+                @Nullable String traceId) {
             this.viTri = viTri;
             this.tong = tong;
             this.thongDiep = thongDiep;
+            this.thongDiepTuyChinh = thongDiepTuyChinh;
             this.traceId = traceId;
         }
     }
@@ -64,6 +79,21 @@ final class TrinhBayLoiDangNhap {
         }
         String maLoi = loi.getMaLoi();
         Integer status = loi.getStatus();
+        if (status != null && status == 400 && !loi.getErrors().isEmpty()) {
+            for (Map.Entry<String, List<String>> entry : loi.getErrors().entrySet()) {
+                String k = entry.getKey().toLowerCase();
+                List<String> ds = entry.getValue();
+                String tb = (ds != null && !ds.isEmpty()) ? ds.get(0) : null;
+                if (tb != null && !tb.isEmpty()) {
+                    if (k.contains("mssv")) {
+                        return new NoiDung(ViTri.DUOI_O_MSSV, Tong.DANGER, R.string.dang_nhap_sai, tb, null);
+                    }
+                    if (k.contains("matkhau")) {
+                        return new NoiDung(ViTri.DUOI_O_MAT_KHAU, Tong.DANGER, R.string.dang_nhap_sai, tb, null);
+                    }
+                }
+            }
+        }
         if (MA_DANG_NHAP_SAI.equals(maLoi) || (status != null && status == 400)) {
             return new NoiDung(ViTri.DUOI_O_MAT_KHAU, Tong.DANGER, R.string.dang_nhap_sai, null);
         }
@@ -78,7 +108,7 @@ final class TrinhBayLoiDangNhap {
                 ViTri.KHOI_THONG_BAO, Tong.DANGER, R.string.loi_he_thong, loi.getTraceId());
     }
 
-    /** @return {@code true} khi lỗi là sai thông tin đăng nhập hoặc dữ liệu không hợp lệ (400), hiển thị dưới ô mật khẩu */
+    /** @return {@code true} khi lỗi là sai thông tin đăng nhập hoặc dữ liệu không hợp lệ (400), hiển thị dưới ô nhập */
     static boolean laLoiDangNhapSai(@NonNull ApiError loi) {
         return MA_DANG_NHAP_SAI.equals(loi.getMaLoi())
                 || (loi.getStatus() != null && loi.getStatus() == 400);

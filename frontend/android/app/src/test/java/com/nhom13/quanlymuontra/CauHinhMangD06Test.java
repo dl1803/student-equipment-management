@@ -1,6 +1,7 @@
 package com.nhom13.quanlymuontra;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import org.junit.Test;
 import org.w3c.dom.Document;
@@ -49,9 +50,10 @@ public class CauHinhMangD06Test {
     public void FC101_GitIgnoreAndroid_PhuDinhLaiThuMucSrcDebugBiMauDebugOGocBoQua() {
         // .gitignore gốc có mẫu [Dd]ebug/ bỏ qua mọi thư mục tên debug, trong đó có app/src/debug. Thiếu dòng phủ
         // định này, git bỏ qua cấu hình mạng debug mà không báo lỗi gì và máy khác không đăng nhập được khi chạy debug.
-        String gitIgnore = TaiNguyen.docChu("../.gitignore").replace("\r\n", "\n");
+        String gitIgnore = TaiNguyen.docChu("../.gitignore");
+        List<String> dong = Arrays.asList(gitIgnore.split("\\R"));
 
-        assertTrue(gitIgnore.contains("\n!/app/src/debug/\n"));
+        assertTrue(dong.contains("!/app/src/debug/"));
     }
 
     @Test
@@ -60,7 +62,7 @@ public class CauHinhMangD06Test {
         assertTrue(gradle.contains("buildConfig = true"));
         // Mỗi dòng có dạng: buildConfigField("String", "API_BASE_URL", "\"<địa chỉ>\"")
         List<String> diaChi = new ArrayList<>();
-        for (String dong : gradle.split("\n")) {
+        for (String dong : gradle.split("\\R")) {
             if (dong.contains("\"API_BASE_URL\"")) {
                 diaChi.add(dong.substring(dong.indexOf("\\\"") + 2, dong.lastIndexOf("\\\"")));
             }

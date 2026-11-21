@@ -64,6 +64,7 @@ public class DangNhapSinhVienFragment extends Fragment {
                     @Override
                     public void afterTextChanged(Editable s) {
                         viewModel.xoaLoiDangNhapSai();
+                        binding().tilMssv.setError(null);
                         capNhatNutDangNhap();
                     }
                 });
@@ -78,6 +79,7 @@ public class DangNhapSinhVienFragment extends Fragment {
                     @Override
                     public void afterTextChanged(Editable s) {
                         viewModel.xoaLoiDangNhapSai();
+                        binding().tilMatKhau.setError(null);
                         capNhatNutDangNhap();
                     }
                 });
@@ -146,6 +148,7 @@ public class DangNhapSinhVienFragment extends Fragment {
     }
 
     private void hienLoi(@Nullable ApiError loi) {
+        binding().tilMssv.setError(null);
         binding().tilMatKhau.setError(null);
         binding().bannerDangNhap.an();
         if (loi == null) {
@@ -155,12 +158,20 @@ public class DangNhapSinhVienFragment extends Fragment {
         if (noiDung == null) {
             return;
         }
+        String thongBao = noiDung.thongDiepTuyChinh != null
+                ? noiDung.thongDiepTuyChinh
+                : getString(noiDung.thongDiep);
+        if (noiDung.viTri == TrinhBayLoiDangNhap.ViTri.DUOI_O_MSSV) {
+            binding().tilMssv.setError(thongBao);
+            binding().etMssv.requestFocus();
+            return;
+        }
         if (noiDung.viTri == TrinhBayLoiDangNhap.ViTri.DUOI_O_MAT_KHAU) {
-            binding().tilMatKhau.setError(getString(noiDung.thongDiep));
+            binding().tilMatKhau.setError(thongBao);
             binding().etMatKhau.requestFocus();
             return;
         }
-        String chu = getString(noiDung.thongDiep);
+        String chu = thongBao;
         if (noiDung.traceId != null && !noiDung.traceId.isEmpty()) {
             chu = chu + "\n" + getString(R.string.trang_thai_ma_theo_doi, noiDung.traceId);
         }

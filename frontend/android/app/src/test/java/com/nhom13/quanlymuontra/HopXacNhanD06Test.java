@@ -42,5 +42,7 @@ public class HopXacNhanD06Test {
         assertTrue(ma.contains("OnBackPressedCallback"));
         assertTrue(ma.contains("if (!dangXuLy)"));
         assertTrue(ma.contains("NutDangXuLy.batDau(nutXacNhan)"));
+        assertTrue(ma.contains("findFragmentByTag"));
+        assertTrue(ma.contains("datDangXuLy"));
     }
 }

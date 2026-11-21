@@ -8,6 +8,9 @@ import static org.junit.Assert.assertTrue;
 import com.nhom13.quanlymuontra.R;
 import com.nhom13.quanlymuontra.common.nhan.Tong;
 import com.nhom13.quanlymuontra.data.model.ApiError;
+import java.util.Collections;
+import java.util.List;
+import java.util.Map;
 import org.junit.Test;
 
 /** Bảng ánh xạ lỗi của SCR-CM-01 (UI-Screens 4.4, DS 9.4, FA 3.3 và 3.4). */
@@ -83,6 +86,23 @@ public class TrinhBayLoiDangNhapTest {
             assertEquals(R.string.dang_nhap_sai, nd.thongDiep);
             assertTrue(TrinhBayLoiDangNhap.laLoiDangNhapSai(loi));
         }
+    }
+
+    @Test
+    public void FA311_Loi400TheoTruong_HienDuoiOTuongUng() {
+        ApiError loiMssv = ApiError.http(400, "DU_LIEU_KHONG_HOP_LE", null, null,
+                Collections.singletonMap("Mssv", Collections.singletonList("MSSV không hợp lệ")));
+        TrinhBayLoiDangNhap.NoiDung ndMssv = TrinhBayLoiDangNhap.cho(loiMssv);
+        assertEquals(TrinhBayLoiDangNhap.ViTri.DUOI_O_MSSV, ndMssv.viTri);
+        assertEquals("MSSV không hợp lệ", ndMssv.thongDiepTuyChinh);
+        assertTrue(TrinhBayLoiDangNhap.laLoiDangNhapSai(loiMssv));
+
+        ApiError loiMatKhau = ApiError.http(400, "DU_LIEU_KHONG_HOP_LE", null, null,
+                Collections.singletonMap("MatKhau", Collections.singletonList("Mật khẩu không hợp lệ")));
+        TrinhBayLoiDangNhap.NoiDung ndMatKhau = TrinhBayLoiDangNhap.cho(loiMatKhau);
+        assertEquals(TrinhBayLoiDangNhap.ViTri.DUOI_O_MAT_KHAU, ndMatKhau.viTri);
+        assertEquals("Mật khẩu không hợp lệ", ndMatKhau.thongDiepTuyChinh);
+        assertTrue(TrinhBayLoiDangNhap.laLoiDangNhapSai(loiMatKhau));
     }
 
     @Test
