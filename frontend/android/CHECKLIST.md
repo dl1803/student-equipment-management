@@ -22,6 +22,7 @@
 | Phiên bản thư viện (D03-L) | `androidx.lifecycle:lifecycle-livedata` 2.10.0, dùng chung khóa `lifecycle` trong `gradle/libs.versions.toml` | Đề xuất của Architect, chờ nhóm xác nhận | FC 1.4, FC 10.2; LiveData thuộc ĐX-FA-12 nhưng artifact chưa nằm trong danh sách đã khóa |
 | Phiên bản thư viện (D05-L) | `com.google.android.material:material` 1.14.0, khóa `material` trong `gradle/libs.versions.toml` | Đề xuất của Architect, chờ nhóm xác nhận | FC 1.4, FC 10.2; xem mục 10 |
 | Phiên bản thư viện (D06-L) | `androidx.navigation:navigation-fragment` 2.9.8 và plugin Safe Args `androidx.navigation.safeargs` 2.9.8 (khóa `navigation`); `com.squareup.retrofit2:converter-gson` 3.0.0 (dùng chung khóa `retrofit`) | Đề xuất của Architect, chờ nhóm xác nhận | FC 1.4, FC 10.2; xem mục 11 |
+| Phiên bản thư viện (D07-L) | `androidx.swiperefreshlayout:swiperefreshlayout` 1.1.0 (khóa `swiperefreshlayout`) | Đề xuất của Architect, chờ nhóm xác nhận | FC 1.4, FC 6.6 (kéo để làm mới); xem mục 12 |
 | Phiên bản thư viện khác | Chưa khóa (Glide...); MockWebServer đã khóa ở D04-L, Navigation ở D06-L | OPEN | FC 1.4: khóa khi task đầu tiên dùng và phải được nhóm duyệt |
 
 Lý do chọn AGP 8.13.2 thay vì dòng 9.x: AGP 9 đổi mô hình DSL và bỏ API cũ mà một số plugin còn dùng. Plugin sinh client (D02-L) và Safe Args (D06-L) chưa được kiểm chứng với AGP 9 trong tài liệu này. Chuyển lên AGP 9 là một quyết định riêng của nhóm.
@@ -108,7 +109,7 @@ Tổng cộng 16 màn hình và 1 hộp thoại. Tên Fragment và tham số the
 | SCR-SV-11 | Biên bản và phí phạt | `BienBanPhiPhatFragment` | Không | Mở chồng lên | UF-SV-06 | UC-05 | `svDsBienBanViPham` |
 | SCR-SV-12 | Danh sách vi phạm | `DanhSachViPhamFragment` | Không | Mở chồng lên | UF-SV-06 | UC-05 | `svDsViPham` |
 | SCR-SV-13 | Thông báo | `ThongBaoFragment` | Không | Tab Thông báo | UF-SV-07 | UC-17, FR-24 | `svDsThongBao` |
-| SCR-SV-14 | Hồ sơ mượn | `HoSoMuonFragment` | `cheDoBiChan`, `hanhDongDaChon` | Tab Hồ sơ | UF-SV-08 | UC-17, UC-02 | `svToi`; nút Đăng xuất gọi `authDangXuat` |
+| SCR-SV-14 | Hồ sơ mượn | `HoSoMuonFragment` | `cheDoBiChan`, `hanhDongDaChon`, `coNutQuayLai` | Tab Hồ sơ | UF-SV-08 | UC-17, UC-02 | `svToi`; nút Đăng xuất gọi `authDangXuat` |
 | DLG-SV-01 | Hộp thoại Đã đăng ký chờ | `DaDangKyChoDialogFragment` | Không | Hộp thoại, có nút tới SCR-SV-08 | UF-SV-03 | UC-03 | `svDangKyCho` |
 
 Thanh điều hướng dưới có bốn mục: Trang chủ (SCR-SV-01), Tra cứu (SCR-SV-02), Thông báo (SCR-SV-13), Hồ sơ (SCR-SV-14). Mỗi tab giữ ngăn xếp quay lại riêng (FA 5.3).
@@ -274,4 +275,36 @@ Phạm vi kiểm chứng của D06-L: test trong `src/test` chạy trên JVM và
 Hình các biểu tượng mới (`ic_arrow_back`, `ic_home`, `ic_home_filled`, `ic_search`, `ic_notifications`, `ic_notifications_filled`, `ic_person`, `ic_person_filled`) lấy từ Material Icons (Apache License 2.0).
 
 Chưa có trong D06-L (thuộc ngày sau): nút Đăng xuất và nội dung SCR-SV-14 (D07-L, dùng `XacThucRepository.authDangXuat` đã có); nội dung bốn tab; `NhomLoi` và `LoiTruong` (vẫn chưa có ngày nào sở hữu, xem mục 10); Glide chưa được khóa phiên bản; biểu tượng launcher; địa chỉ máy chủ production (D12-K).
+
+## 12. Quyết định D07-L
+
+Nguồn: UI-Screens 4.1, 5.1, 5.14; User-Flows UF-SV-08, UF-CM-03; Wireframes SCR-SV-01, SCR-SV-14, ĐX-WF-14; FA 5.1 đến 5.4, 5.6, 5.9; FC 3.3, 6.2, 6.3, 6.6, 6.7, 7.2; DS CMP-13, 14, 15, 24, 25; `BANG_THEO_DOI_40_NGAY.md` D07-L. Mọi quyết định dưới đây là đề xuất của Architect, chờ nhóm xác nhận.
+
+| # | Quyết định | Lý do và căn cứ |
+|---|---|---|
+| 1 | Thêm tham số Safe Args thứ ba `coNutQuayLai` (boolean, mặc định false) cho `hoSoMuonFragment`; `MainActivity` hiện nút Quay lại khi `coNutQuayLai` hoặc `cheDoBiChan` là true | ĐX-WF-14 cần phân biệt mở từ Xem lý do với mở từ thanh điều hướng; ngăn xếp của hai đường vào giống nhau nên cần cờ. FA 5.3 quy tắc 1 cho phép "cờ chế độ" |
+| 2 | Chạm tab Hồ sơ dùng `NavOptions` không `restoreState`; ba tab còn lại giữ nguyên | Bản đã lưu của `hoSoMuonFragment` có thể mang `coNutQuayLai=true`. Điều chỉnh quyết định 5 của mục 11 chỉ cho tab Hồ sơ |
+| 3 | Khóa `swiperefreshlayout` 1.1.0 | FC 6.6, FC 1.4 |
+| 4 | `HoSoMuonRepository.svToi` không đệm; `TaiHoSoViewModel` dùng chung cho SCR-SV-01 và SCR-SV-14 (cờ `canTaiLai`, bỏ phản hồi cũ, hủy truy vấn đọc ở `onCleared`) | FA 5.3 quy tắc 3, FA 5.6, FC 6.2, 6.3, ĐX-FC-22 |
+| 5 | Tám lối vào hiển thị đủ; chỉ nối Tra cứu thiết bị và Hồ sơ mượn | Các đích còn lại chưa có trong nav graph |
+| 6 | Liên kết "Xem biên bản" của SCR-SV-14 chưa thêm | Đích SCR-SV-11 chưa có; thêm cùng SCR-SV-11 |
+| 7 | Lỗi tải ở SCR-SV-01 thay thẻ quyền mượn bằng `ErrorView`; lời chào chỉ hiện khi đã có `hoTen` | ĐX-UI-04 |
+| 8 | Lớp công khai `TheTong` (CMP-15 biến thể Tông), `QuyenMuon` (mã quyền mượn), `FormatSoLuong` (`n/m`, DS 9.7); kiểu `Widget.Ds.Card.Interactive`; biểu tượng `ic_chevron_right` | `GiaoDienTong` không công khai; CMP-15; DS 9.7. Cần ghi `TheTong` vào Phụ lục A của FC khi nhóm duyệt |
+| 9 | Tiền tố id `card_`, `kvl_`, `sb_`, `ev_`, `banner_` | FC 3.3 chưa có; cần bổ sung khi nhóm duyệt |
+| 10 | Chữ do Architect viết: `trang_chu_quyen_muon_nhan`, `trang_chu_dang_muon`, `ho_so_bi_chan_dang_ky_cho`, `ho_so_bi_chan_chung`, `ho_so_huong_dan_cam_muon_dai_han`, các nhãn dòng thông tin. Hướng dẫn Tạm khóa viết đủ chữ "nhân viên", "quản trị viên" thay cho NV, QT | DS 9.8; UI-Screens 5.14 chỉ nêu ý |
+| 11 | Số thiết bị hiển thị `n/m` ("1/3"), ngày lập biên bản hiển thị `dd/MM/yyyy HH:mm` | DS 9.7, ĐX-UI-12; Wireframes vẽ "1 / 3" và ngày không giờ |
+| 12 | Cập nhật FA 5.3 thêm tham số `coNutQuayLai` | CLAUDE.md: sửa tài liệu trước khi sửa mã |
+
+Lối vào đã có chữ nhưng **chưa nối** (nối ở ngày của màn hình đích; không làm ở D07-L):
+
+| Lối vào | Đích | Ngày dự kiến theo `BANG_THEO_DOI_40_NGAY.md` |
+|---|---|---|
+| Đặt trước thiết bị | SCR-SV-04 (kèm kiểm quyền mượn bằng `svToi`, FA 5.3 quy tắc 3) | D10-L |
+| Phiếu yêu cầu của tôi | SCR-SV-06 | D12-L |
+| Đăng ký chờ của tôi | SCR-SV-08 | D13-L |
+| Lịch sử mượn/trả | SCR-SV-09 | D14-L |
+| Biên bản và phí phạt; liên kết "Xem biên bản" ở SCR-SV-14 | SCR-SV-11 | D15-L |
+| Vi phạm | SCR-SV-12 | D15-L |
+
+Phạm vi kiểm chứng của D07-L: test trong `src/test` chạy trên JVM và kiểm repository (đường dẫn, lỗi, không đệm), logic tải của `ViewModel`, đăng xuất, bảng chữ, cấu trúc layout và nav graph, quy tắc mã. **Không** chứng minh hình thức thật, bố cục ở 320/360/412 dp và cỡ chữ 1,3 lần, TalkBack, nút Quay lại, khôi phục tab, chế độ bị chặn: cần thiết bị hoặc emulator (FC 9.4, TC-05, TC-06). Chế độ bị chặn chỉ kiểm được khi có lối vào (D09-L, D10-L). Kiểm với backend thật (`/sv/toi`) thuộc gate tích hợp, giữ **OPEN**.
 

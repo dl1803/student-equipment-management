@@ -836,7 +836,7 @@ Navigation Component với một nav graph; `MainActivity` chứa `NavHostFragme
 | `SCR-SV-11` | `BienBanPhiPhatFragment` | – |
 | `SCR-SV-12` | `DanhSachViPhamFragment` | – |
 | `SCR-SV-13` | `ThongBaoFragment` | Tab Thông báo |
-| `SCR-SV-14` | `HoSoMuonFragment` | Tab Hồ sơ; tham số `cheDoBiChan`, `hanhDongDaChon` |
+| `SCR-SV-14` | `HoSoMuonFragment` | Tab Hồ sơ; tham số `cheDoBiChan`, `hanhDongDaChon`, `coNutQuayLai` (cờ mở từ Xem lý do hoặc ô Hồ sơ mượn để thanh tiêu đề có nút Quay lại, Wireframes ĐX-WF-14) |
 | `DLG-SV-01` | `DaDangKyChoDialogFragment` | Hộp thoại có nút tới `SCR-SV-08` |
 
 Quy tắc:

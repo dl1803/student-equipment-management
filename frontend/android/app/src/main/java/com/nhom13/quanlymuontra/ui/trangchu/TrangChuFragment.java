@@ -136,7 +136,9 @@ public class TrangChuFragment extends Fragment {
                 break;
             case HO_SO:
                 dieuHuong.navigate(
-                        TrangChuFragmentDirections.actionTrangChuFragmentToHoSoMuonFragment());
+                        TrangChuFragmentDirections
+                                .actionTrangChuFragmentToHoSoMuonFragment()
+                                .setCoNutQuayLai(true));
                 break;
             default:
                 // Đích của các lối vào còn lại chưa có trong nav graph; nối ở ngày của màn hình đích
