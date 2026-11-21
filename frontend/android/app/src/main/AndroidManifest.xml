@@ -10,7 +10,7 @@
         gọi được máy chủ dev HTTP thường nhờ src/debug/AndroidManifest.xml; main vẫn cấm lưu lượng
         không mã hóa.
         D05-L: áp dụng theme sáng Theme.QuanLyMuonTra cho toàn ứng dụng (FC 6.6, ĐX-DS-01).
-        Activity thuộc D06-L.
+        D06-L: khai báo nhãn ứng dụng và MainActivity, điểm vào duy nhất (FA 5.3).
     -->
     <uses-permission android:name="android.permission.INTERNET" />
 
@@ -19,7 +19,20 @@
         android:allowBackup="false"
         android:dataExtractionRules="@xml/data_extraction_rules"
         android:fullBackupContent="@xml/backup_rules"
+        android:label="@string/ung_dung_ten"
         android:theme="@style/Theme.QuanLyMuonTra"
-        android:usesCleartextTraffic="false" />
+        android:usesCleartextTraffic="false">
+
+        <activity
+            android:name=".MainActivity"
+            android:exported="true"
+            android:windowSoftInputMode="adjustResize">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+        </activity>
+
+    </application>
 
 </manifest>

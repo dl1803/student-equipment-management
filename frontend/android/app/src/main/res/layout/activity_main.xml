@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+    D06-L (FA 5.3): khung của MainActivity theo UI-Screens 4.1. Từ trên xuống: thanh tiêu đề (CMP-28), vùng
+    NavHost, thanh điều hướng dưới (CMP-27). Thanh tiêu đề, thanh dưới và hai đường kẻ ẩn sẵn để màn hình
+    khởi động không nháy khung; MainActivity bật chúng theo điểm đến. Lề an toàn của hệ thống (thanh trạng
+    thái, thanh điều hướng, bàn phím) do MainActivity đặt thành padding của khối gốc.
+-->
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/ll_goc"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical">
+
+    <com.google.android.material.appbar.MaterialToolbar
+        android:id="@+id/tb_man_hinh"
+        style="@style/Widget.Ds.TopBar"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/ds_size_appbar_height"
+        android:visibility="gone" />
+
+    <View
+        android:id="@+id/v_duong_ke_duoi_tieu_de"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/ds_border_width_default"
+        android:background="@color/ds_color_border_subtle"
+        android:visibility="gone" />
+
+    <androidx.fragment.app.FragmentContainerView
+        android:id="@+id/fcv_dieu_huong"
+        android:name="androidx.navigation.fragment.NavHostFragment"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1"
+        android:background="?android:attr/colorBackground"
+        app:defaultNavHost="true"
+        app:navGraph="@navigation/nav_graph" />
+
+    <View
+        android:id="@+id/v_duong_ke_tren_dieu_huong"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/ds_border_width_default"
+        android:background="@color/ds_color_border_subtle"
+        android:visibility="gone" />
+
+    <com.google.android.material.bottomnavigation.BottomNavigationView
+        android:id="@+id/bnv_dieu_huong"
+        style="@style/Widget.Ds.BottomNav"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/ds_size_bottomnav_height"
+        android:visibility="gone"
+        app:menu="@menu/menu_bottom_nav" />
+
+</LinearLayout>

@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- CMP-27 mục thanh điều hướng dưới: đang chọn dùng màu liên kết, mục khác dùng chữ phụ (DS CMP-27). -->
+<selector xmlns:android="http://schemas.android.com/apk/res/android">
+    <item android:state_checked="true" android:color="@color/ds_color_text_link" />
+    <item android:color="@color/ds_color_text_secondary" />
+</selector>

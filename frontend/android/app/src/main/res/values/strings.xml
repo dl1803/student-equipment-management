@@ -136,4 +136,11 @@
     <string name="thong_bao_tieu_de">Thông báo</string>
     <string name="ho_so_muon_tieu_de">Hồ sơ mượn</string>
 
+    <!-- D06-L (UI-Screens 4.1, DS 9.8): nút Quay lại của thanh tiêu đề và tên bốn mục của thanh điều hướng dưới. -->
+    <string name="hanh_dong_quay_lai">Quay lại</string>
+    <string name="dieu_huong_trang_chu">Trang chủ</string>
+    <string name="dieu_huong_tra_cuu">Tra cứu</string>
+    <string name="dieu_huong_thong_bao">Thông báo</string>
+    <string name="dieu_huong_ho_so">Hồ sơ</string>
+
 </resources>
