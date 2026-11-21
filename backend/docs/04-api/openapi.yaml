@@ -1271,6 +1271,8 @@ paths:
           $ref: '#/components/responses/ChuaXacThuc'
         '403':
           $ref: '#/components/responses/KhongDuQuyenNhanVienTheoPhong'
+        '404':
+          $ref: '#/components/responses/KhongTimThay'
         '409':
           description: |-
             Xung đột. Mã lỗi (`maLoi`):
