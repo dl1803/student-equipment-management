@@ -1,7 +1,9 @@
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
 using QuanLyMuonTra.Infrastructure;
+using QuanLyMuonTra.Infrastructure.LuuTru;
 using QuanLyMuonTra.Infrastructure.Persistence;
+using QuanLyMuonTra.IntegrationTests.Anh;
 using QuanLyMuonTra.IntegrationTests.Database;
 using QuanLyMuonTra.IntegrationTests.MuonTra;
 using QuanLyMuonTra.Modules.DanhMuc;
@@ -233,13 +235,26 @@ public sealed class ThietBiGhiCsdlTests
     internal static Task<int> DemAsync(AppDbContext db, FormattableString sql) =>
         db.Database.SqlQuery<int>(sql).SingleAsync();
 
-    internal static ServiceProvider TaoDichVu() =>
-        new ServiceCollection()
+    internal static ServiceProvider TaoDichVu(
+        NhatKyTests.NguoiDungGia? nguoiDung = null,
+        AnhStorageGia? luuTru = null,
+        IClock? dongHo = null)
+    {
+        var dichVu = new ServiceCollection()
             .AddInfrastructure(KetNoiKiemThu.LayChuoiKetNoi(), [typeof(ThietBi).Assembly])
-            .AddSingleton<ICurrentUser>(new NhatKyTests.NguoiDungGia())
+            .AddSingleton<ICurrentUser>(nguoiDung ?? new NhatKyTests.NguoiDungGia())
+            .AddSingleton<IAnhStorage>(luuTru ?? new AnhStorageGia())
+            .AddScoped<IAnhService, AnhService>()
+            .AddLogging()
             .AddScoped<IAdvisoryLockService, AdvisoryLockService>()
-            .AddDanhMucModule()
-            .BuildServiceProvider();
+            .AddDanhMucModule();
+        if (dongHo is not null)
+        {
+            dichVu.AddSingleton(dongHo);
+        }
+
+        return dichVu.BuildServiceProvider();
+    }
 
     private static ThietBiTaoMoiRequest YeuCauTao(
         string ma,

@@ -8,11 +8,13 @@ public sealed class TaoThietBiHandler
 {
     private readonly DbContext _db;
     private readonly IClock _dongHo;
+    private readonly IAnhService _anh;
 
-    public TaoThietBiHandler(DbContext db, IClock dongHo)
+    public TaoThietBiHandler(DbContext db, IClock dongHo, IAnhService anh)
     {
         _db = db;
         _dongHo = dongHo;
+        _anh = anh;
     }
 
     public async Task<ThietBiQuanTriDto> XuLyAsync(ThietBiTaoMoiRequest yeuCau, CancellationToken ct)
@@ -29,7 +31,6 @@ public sealed class TaoThietBiHandler
             yeuCau.ViTriKe,
             yeuCau.ViTriTu);
         var giaTriDau = new LichSuGiaTri(yeuCau.MaThietBi, yeuCau.GiaTri, _dongHo.UtcNow);
-        AnhThietBi.ChanNeuCoAnh(yeuCau.DsMaAnh);
         var dsMaNcc = yeuCau.DsMaNCC?.ToList() ?? new List<Guid>();
 
         var giaoDichNgoai = _db.Database.CurrentTransaction;
@@ -55,6 +56,8 @@ public sealed class TaoThietBiHandler
             await KiemTraKhongTrungMaAsync(yeuCau.MaThietBi, ct);
             throw;
         }
+
+        await AnhThietBi.GanMoiAsync(_anh, yeuCau.MaThietBi, yeuCau.DsMaAnh, ct);
 
         var ketQua = await DocThietBiQuanTri.LayAsync(_db, yeuCau.MaThietBi, ct);
         if (giaoDichRieng is not null)
