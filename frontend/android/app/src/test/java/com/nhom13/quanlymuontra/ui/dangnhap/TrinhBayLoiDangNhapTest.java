@@ -78,13 +78,20 @@ public class TrinhBayLoiDangNhapTest {
     }
 
     @Test
-    public void UFCM01_Loi400_HienDuoiOInputNhuDangNhapSai() {
-        for (ApiError loi : new ApiError[] {http(400, "DU_LIEU_KHONG_HOP_LE"), http(400, null)}) {
-            TrinhBayLoiDangNhap.NoiDung nd = TrinhBayLoiDangNhap.cho(loi);
+    public void FA54_LamMoiTra400_KhongHienThongBaoSaiThongTin() {
+        // Hợp đồng /auth/lam-moi có thể trả 400 (DU_LIEU_KHONG_HOP_LE); khi đó màn hình đăng nhập
+        // không được hiện "Thông tin đăng nhập không đúng" dưới ô mật khẩu (UI-Screens 4.6).
+        for (ApiError loi : new ApiError[] {
+                http(400, "DU_LIEU_KHONG_HOP_LE"),
+                http(400, null),
+                ApiError.http(400, "DU_LIEU_KHONG_HOP_LE", null, null,
+                        Collections.singletonMap("RefreshToken", Collections.singletonList("Token không hợp lệ")))
+        }) {
+            assertFalse(TrinhBayLoiDangNhap.laLoiDangNhapSai(loi));
 
-            assertEquals(TrinhBayLoiDangNhap.ViTri.DUOI_O_MAT_KHAU, nd.viTri);
-            assertEquals(R.string.dang_nhap_sai, nd.thongDiep);
-            assertTrue(TrinhBayLoiDangNhap.laLoiDangNhapSai(loi));
+            TrinhBayLoiDangNhap.NoiDung nd = TrinhBayLoiDangNhap.cho(loi);
+            assertEquals(TrinhBayLoiDangNhap.ViTri.KHOI_THONG_BAO, nd.viTri);
+            assertEquals(Tong.DANGER, nd.tong);
         }
     }
 
@@ -95,19 +102,19 @@ public class TrinhBayLoiDangNhapTest {
         TrinhBayLoiDangNhap.NoiDung ndMssv = TrinhBayLoiDangNhap.cho(loiMssv);
         assertEquals(TrinhBayLoiDangNhap.ViTri.DUOI_O_MSSV, ndMssv.viTri);
         assertEquals("MSSV không hợp lệ", ndMssv.thongDiepTuyChinh);
-        assertTrue(TrinhBayLoiDangNhap.laLoiDangNhapSai(loiMssv));
+        assertFalse(TrinhBayLoiDangNhap.laLoiDangNhapSai(loiMssv));
 
         ApiError loiMatKhau = ApiError.http(400, "DU_LIEU_KHONG_HOP_LE", null, null,
                 Collections.singletonMap("MatKhau", Collections.singletonList("Mật khẩu không hợp lệ")));
         TrinhBayLoiDangNhap.NoiDung ndMatKhau = TrinhBayLoiDangNhap.cho(loiMatKhau);
         assertEquals(TrinhBayLoiDangNhap.ViTri.DUOI_O_MAT_KHAU, ndMatKhau.viTri);
         assertEquals("Mật khẩu không hợp lệ", ndMatKhau.thongDiepTuyChinh);
-        assertTrue(TrinhBayLoiDangNhap.laLoiDangNhapSai(loiMatKhau));
+        assertFalse(TrinhBayLoiDangNhap.laLoiDangNhapSai(loiMatKhau));
     }
 
     @Test
     public void FA34_MaKhongCoXuLyRieng_LaLoiHeThongChungKhongPhaiPhienHetHan() {
-        for (ApiError loi : new ApiError[] {http(401, null), http(422, "MA_LA"), http(403, "TAI_KHOAN_BI_KHOA")}) {
+        for (ApiError loi : new ApiError[] {http(401, null), http(400, "MA_LA"), http(403, "TAI_KHOAN_BI_KHOA")}) {
             TrinhBayLoiDangNhap.NoiDung nd = TrinhBayLoiDangNhap.cho(loi);
 
             assertEquals(Tong.DANGER, nd.tong);

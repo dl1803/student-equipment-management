@@ -223,4 +223,18 @@ public class DangNhapSinhVienViewModelTest {
 
         assertEquals("CHUA_XAC_THUC", vm.getLoiHienThi().getValue().getMaLoi());
     }
+
+    @Test
+    public void FA54_LamMoiTra400_KhongHienThongBaoSaiThongTin() {
+        ApiError loi400 = ApiError.http(400, "DU_LIEU_KHONG_HOP_LE", null, "trace-400", null);
+        phien.ketThucPhien(loi400);
+
+        DangNhapSinhVienViewModel vm = taoViewModel();
+
+        assertEquals(loi400, vm.getLoiHienThi().getValue());
+        assertFalse("Lỗi 400 không phải là lỗi sai thông tin đăng nhập",
+                TrinhBayLoiDangNhap.laLoiDangNhapSai(vm.getLoiHienThi().getValue()));
+        TrinhBayLoiDangNhap.NoiDung nd = TrinhBayLoiDangNhap.cho(vm.getLoiHienThi().getValue());
+        assertEquals(TrinhBayLoiDangNhap.ViTri.KHOI_THONG_BAO, nd.viTri);
+    }
 }

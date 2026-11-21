@@ -79,22 +79,31 @@ final class TrinhBayLoiDangNhap {
         }
         String maLoi = loi.getMaLoi();
         Integer status = loi.getStatus();
-        if (status != null && status == 400 && !loi.getErrors().isEmpty()) {
-            for (Map.Entry<String, List<String>> entry : loi.getErrors().entrySet()) {
-                String k = entry.getKey().toLowerCase();
-                List<String> ds = entry.getValue();
-                String tb = (ds != null && !ds.isEmpty()) ? ds.get(0) : null;
-                if (tb != null && !tb.isEmpty()) {
-                    if (k.contains("mssv")) {
-                        return new NoiDung(ViTri.DUOI_O_MSSV, Tong.DANGER, R.string.dang_nhap_sai, tb, null);
+        if (status != null && status == 400) {
+            if (!loi.getErrors().isEmpty()) {
+                for (Map.Entry<String, List<String>> entry : loi.getErrors().entrySet()) {
+                    String k = entry.getKey().toLowerCase();
+                    List<String> ds = entry.getValue();
+                    String tb = (ds != null && !ds.isEmpty()) ? ds.get(0) : null;
+                    if (tb != null && !tb.isEmpty()) {
+                        if (k.contains("mssv")) {
+                            return new NoiDung(ViTri.DUOI_O_MSSV, Tong.DANGER, R.string.loi_he_thong, tb, null);
+                        }
+                        if (k.contains("matkhau")) {
+                            return new NoiDung(ViTri.DUOI_O_MAT_KHAU, Tong.DANGER, R.string.loi_he_thong, tb, null);
+                        }
                     }
-                    if (k.contains("matkhau")) {
-                        return new NoiDung(ViTri.DUOI_O_MAT_KHAU, Tong.DANGER, R.string.dang_nhap_sai, tb, null);
+                }
+                for (List<String> ds : loi.getErrors().values()) {
+                    if (ds != null && !ds.isEmpty() && ds.get(0) != null && !ds.get(0).isEmpty()) {
+                        return new NoiDung(ViTri.KHOI_THONG_BAO, Tong.DANGER, R.string.loi_he_thong, ds.get(0), null);
                     }
                 }
             }
+            return new NoiDung(
+                    ViTri.KHOI_THONG_BAO, Tong.DANGER, R.string.loi_he_thong, loi.getTraceId());
         }
-        if (MA_DANG_NHAP_SAI.equals(maLoi) || (status != null && status == 400)) {
+        if (MA_DANG_NHAP_SAI.equals(maLoi)) {
             return new NoiDung(ViTri.DUOI_O_MAT_KHAU, Tong.DANGER, R.string.dang_nhap_sai, null);
         }
         if (MA_CHUA_XAC_THUC.equals(maLoi)) {
@@ -108,9 +117,8 @@ final class TrinhBayLoiDangNhap {
                 ViTri.KHOI_THONG_BAO, Tong.DANGER, R.string.loi_he_thong, loi.getTraceId());
     }
 
-    /** @return {@code true} khi lỗi là sai thông tin đăng nhập hoặc dữ liệu không hợp lệ (400), hiển thị dưới ô nhập */
+    /** @return {@code true} khi lỗi là sai thông tin đăng nhập, hiển thị dưới ô mật khẩu */
     static boolean laLoiDangNhapSai(@NonNull ApiError loi) {
-        return MA_DANG_NHAP_SAI.equals(loi.getMaLoi())
-                || (loi.getStatus() != null && loi.getStatus() == 400);
+        return MA_DANG_NHAP_SAI.equals(loi.getMaLoi());
     }
 }
