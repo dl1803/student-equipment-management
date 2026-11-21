@@ -4,6 +4,7 @@ import androidx.annotation.NonNull;
 import androidx.lifecycle.ViewModel;
 import androidx.lifecycle.ViewModelProvider;
 import com.nhom13.quanlymuontra.ui.dangnhap.DangNhapSinhVienViewModel;
+import com.nhom13.quanlymuontra.ui.hoso.HoSoMuonViewModel;
 import com.nhom13.quanlymuontra.ui.khoidong.KhoiDongViewModel;
 import com.nhom13.quanlymuontra.ui.trangchu.TrangChuViewModel;
 import java.time.Clock;
@@ -38,6 +39,12 @@ public final class AppViewModelFactory implements ViewModelProvider.Factory {
         }
         if (TrangChuViewModel.class.equals(modelClass)) {
             return modelClass.cast(new TrangChuViewModel(appContainer.getHoSoMuonRepository()));
+        }
+        if (HoSoMuonViewModel.class.equals(modelClass)) {
+            return modelClass.cast(
+                    new HoSoMuonViewModel(
+                            appContainer.getHoSoMuonRepository(),
+                            appContainer.getXacThucRepository()));
         }
         // Lớp chưa đăng ký: tạo nhầm lớp lạ phải lộ ngay thay vì trả về null.
         throw new IllegalArgumentException(

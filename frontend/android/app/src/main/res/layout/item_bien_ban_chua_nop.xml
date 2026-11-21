@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+    SCR-SV-14: một biên bản chưa nộp (UI-Screens 5.14): mã biên bản (type.code, không xuống dòng), số tiền và ngày
+    lập. Liên kết tới SCR-SV-11 chưa có vì màn hình đích chưa tồn tại; thêm cùng SCR-SV-11 (CHECKLIST mục 12).
+-->
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_marginTop="@dimen/ds_space_3"
+    android:orientation="vertical">
+
+    <TextView
+        android:id="@+id/tv_ma"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:maxLines="1"
+        android:textAppearance="@style/TextAppearance.Ds.Code" />
+
+    <TextView
+        android:id="@+id/tv_chi_tiet"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:textAppearance="@style/TextAppearance.Ds.Body" />
+
+</LinearLayout>

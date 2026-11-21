@@ -1,5 +1,207 @@
 <?xml version="1.0" encoding="utf-8"?>
-<!-- SCR-SV-14 Hồ sơ mượn (tab Hồ sơ). Khung rỗng của D06-L để bốn tab chuyển được; nội dung và nút Đăng xuất cài ở D07-L. -->
-<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<!--
+    SCR-SV-14 Hồ sơ mượn (UI-Screens 5.14, Wireframes SCR-SV-14, DS CMP-14, CMP-15, CMP-24, CMP-25). Từ trên xuống:
+    khối thông báo chế độ bị chặn (chỉ khi cheDoBiChan), trạng thái tải hoặc lỗi, rồi các khối theo thứ tự Wireframes:
+    Thông tin sinh viên, Quyền mượn, Biên bản chưa nộp (ẩn khi rỗng), Lý do không được mượn (chỉ khi hopLe là false),
+    Hướng dẫn mở lại; cuối cùng nút Đăng xuất. Nút Đăng xuất nằm ngoài vùng dữ liệu để dùng được cả khi tải lỗi.
+    Không có nút mở khóa hay gỡ cấm (UI-Screens 5.14). Kéo xuống để làm mới (ĐX-UF-04).
+-->
+<androidx.swiperefreshlayout.widget.SwipeRefreshLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/srl_lam_moi"
     android:layout_width="match_parent"
-    android:layout_height="match_parent" />
+    android:layout_height="match_parent">
+
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:padding="@dimen/ds_space_gutter">
+
+            <com.nhom13.quanlymuontra.common.widget.BannerView
+                android:id="@+id/banner_bi_chan"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="@dimen/ds_space_section"
+                android:visibility="gone" />
+
+            <com.nhom13.quanlymuontra.common.widget.LoadingView
+                android:id="@+id/lv_tai"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content" />
+
+            <com.nhom13.quanlymuontra.common.widget.ErrorView
+                android:id="@+id/ev_loi"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:visibility="gone" />
+
+            <LinearLayout
+                android:id="@+id/ll_noi_dung"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:visibility="gone">
+
+                <com.google.android.material.card.MaterialCardView
+                    android:id="@+id/card_thong_tin"
+                    style="@style/Widget.Ds.Card"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content">
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="vertical">
+
+                        <TextView
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:text="@string/ho_so_the_thong_tin"
+                            android:textAppearance="@style/TextAppearance.Ds.TitleCard" />
+
+                        <com.nhom13.quanlymuontra.common.widget.KeyValueListView
+                            android:id="@+id/kvl_thong_tin"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_marginTop="@dimen/ds_space_3" />
+
+                    </LinearLayout>
+
+                </com.google.android.material.card.MaterialCardView>
+
+                <com.google.android.material.card.MaterialCardView
+                    android:id="@+id/card_quyen_muon"
+                    style="@style/Widget.Ds.Card"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="@dimen/ds_space_section">
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="vertical">
+
+                        <TextView
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:text="@string/ho_so_the_quyen_muon"
+                            android:textAppearance="@style/TextAppearance.Ds.TitleCard" />
+
+                        <com.nhom13.quanlymuontra.common.widget.KeyValueListView
+                            android:id="@+id/kvl_quyen_muon"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_marginTop="@dimen/ds_space_3" />
+
+                    </LinearLayout>
+
+                </com.google.android.material.card.MaterialCardView>
+
+                <com.google.android.material.card.MaterialCardView
+                    android:id="@+id/card_bien_ban"
+                    style="@style/Widget.Ds.Card"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="@dimen/ds_space_section"
+                    android:visibility="gone">
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="vertical">
+
+                        <TextView
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:text="@string/ho_so_the_bien_ban"
+                            android:textAppearance="@style/TextAppearance.Ds.TitleCard" />
+
+                        <LinearLayout
+                            android:id="@+id/ll_bien_ban"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:orientation="vertical" />
+
+                    </LinearLayout>
+
+                </com.google.android.material.card.MaterialCardView>
+
+                <com.google.android.material.card.MaterialCardView
+                    android:id="@+id/card_ly_do"
+                    style="@style/Widget.Ds.Card"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="@dimen/ds_space_section"
+                    android:visibility="gone">
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="vertical">
+
+                        <TextView
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:text="@string/ho_so_the_ly_do"
+                            android:textAppearance="@style/TextAppearance.Ds.TitleCard" />
+
+                        <LinearLayout
+                            android:id="@+id/ll_ly_do"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_marginTop="@dimen/ds_space_2"
+                            android:orientation="vertical" />
+
+                    </LinearLayout>
+
+                </com.google.android.material.card.MaterialCardView>
+
+                <com.google.android.material.card.MaterialCardView
+                    android:id="@+id/card_huong_dan"
+                    style="@style/Widget.Ds.Card"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="@dimen/ds_space_section"
+                    android:visibility="gone">
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="vertical">
+
+                        <TextView
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:text="@string/ho_so_the_huong_dan"
+                            android:textAppearance="@style/TextAppearance.Ds.TitleCard" />
+
+                        <TextView
+                            android:id="@+id/tv_huong_dan"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_marginTop="@dimen/ds_space_2"
+                            android:textAppearance="@style/TextAppearance.Ds.Body" />
+
+                    </LinearLayout>
+
+                </com.google.android.material.card.MaterialCardView>
+
+            </LinearLayout>
+
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/btn_dang_xuat"
+                style="@style/Widget.Ds.Button.Secondary"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/ds_space_section"
+                android:text="@string/ho_so_dang_xuat" />
+
+        </LinearLayout>
+
+    </ScrollView>
+
+</androidx.swiperefreshlayout.widget.SwipeRefreshLayout>

@@ -163,4 +163,34 @@
     <string name="trang_chu_loi_vao_vi_pham">Vi phạm</string>
     <string name="trang_chu_loi_vao_ho_so">Hồ sơ mượn</string>
 
+    <!--
+        D07-L, SCR-SV-14 (UI-Screens 5.14, User-Flows UF-SV-08, Wireframes SCR-SV-14). Nguyên văn tài liệu: "Đặt trước
+        không thực hiện được" (Wireframes), tên các khối, "Không có hạn chế do quyền mượn", nội dung hướng dẫn Tạm
+        khóa (UI-Screens 5.14, viết đủ chữ thay cho NV và QT). Do Architect viết, chờ nhóm xác nhận:
+        ho_so_bi_chan_dang_ky_cho, ho_so_bi_chan_chung, ho_so_huong_dan_cam_muon_dai_han, các nhãn dòng thông tin.
+    -->
+    <string name="ho_so_bi_chan_dat_truoc">Đặt trước không thực hiện được</string>
+    <string name="ho_so_bi_chan_dang_ky_cho">Đăng ký chờ không thực hiện được</string>
+    <string name="ho_so_bi_chan_chung">Thao tác không thực hiện được</string>
+    <string name="ho_so_the_thong_tin">Thông tin sinh viên</string>
+    <string name="ho_so_ma_sv">Mã sinh viên</string>
+    <string name="ho_so_ho_ten">Họ tên</string>
+    <string name="ho_so_lop">Lớp</string>
+    <string name="ho_so_khoa">Khoa</string>
+    <string name="ho_so_nhom">Nhóm sinh viên</string>
+    <string name="ho_so_han_the">Hạn thẻ</string>
+    <string name="ho_so_trang_thai_hoc">Trạng thái học</string>
+    <string name="ho_so_the_quyen_muon">Quyền mượn</string>
+    <string name="ho_so_quyen_muon_trang_thai">Trạng thái quyền mượn</string>
+    <string name="ho_so_so_thiet_bi">Số thiết bị đang mượn</string>
+    <string name="ho_so_the_bien_ban">Biên bản chưa nộp</string>
+    <string name="ho_so_bien_ban_chi_tiet">%1$s · %2$s</string>
+    <string name="ho_so_the_ly_do">Lý do không được mượn</string>
+    <string name="ho_so_ly_do_dong">• %1$s</string>
+    <string name="ho_so_the_huong_dan">Hướng dẫn mở lại</string>
+    <string name="ho_so_huong_dan_binh_thuong">Không có hạn chế do quyền mượn</string>
+    <string name="ho_so_huong_dan_tam_khoa">Trả đủ thiết bị của các phiếu quá hạn và nộp đủ tiền phạt tại quầy. Hệ thống xét mở khóa sau khi nhân viên ghi nhận Đã nộp hoặc chọn Xác nhận đã nhận đủ thiết bị. Chỉ mở khi không còn biên bản Chưa nộp và không còn thiết bị chưa trả của phiếu quá hạn. Phiếu chưa đến hạn không giữ khóa, không cần quản trị viên</string>
+    <string name="ho_so_huong_dan_cam_muon_dai_han">Chỉ quản trị viên gỡ cấm mượn dài hạn</string>
+    <string name="ho_so_dang_xuat">Đăng xuất</string>
+
 </resources>
