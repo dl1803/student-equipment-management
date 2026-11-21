@@ -22,7 +22,12 @@ public sealed class HttpEmailSender(HttpClient httpClient, string apiKey, string
         using var phanHoi = await httpClient.SendAsync(yeuCau, ct);
         if (!phanHoi.IsSuccessStatusCode)
         {
-            throw new InvalidOperationException($"Dịch vụ email trả mã {(int)phanHoi.StatusCode}.");
+            var chiTietLoi = phanHoi.Content is not null ? await phanHoi.Content.ReadAsStringAsync(ct) : null;
+            var thongBao = string.IsNullOrWhiteSpace(chiTietLoi)
+                ? $"Dịch vụ email trả mã {(int)phanHoi.StatusCode}."
+                : $"Dịch vụ email trả mã {(int)phanHoi.StatusCode}: {chiTietLoi.Trim()}";
+
+            throw new InvalidOperationException(thongBao);
         }
     }
 }

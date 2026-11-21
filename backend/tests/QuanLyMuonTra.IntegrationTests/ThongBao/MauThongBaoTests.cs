@@ -89,5 +89,22 @@ public sealed class MauThongBaoTests
 
         Assert.Contains("Phiếu mượn {hanTra} sắp đến hạn", noiDung);
     }
+
+    [Fact]
+    public void EmailHtml_ThamSoCoXuongDong_ChuyenThanhTheBr()
+    {
+        var thamSo = new Dictionary<string, string>
+        {
+            [ThamSoThongBao.MaYeuCau] = "YC-1",
+            [ThamSoThongBao.KetQua] = "tu choi",
+            [ThamSoThongBao.ChiTiet] = "Dong 1\nDong 2\r\nDong 3"
+        };
+
+        var html = MauThongBao.TaoNoiDungEmailHtml(MaLoaiThongBao.DuyetHoacTuChoi, thamSo);
+
+        Assert.Contains("Dong 1<br/>Dong 2<br/>Dong 3", html);
+        Assert.DoesNotContain("\n", html);
+        Assert.DoesNotContain("\r", html);
+    }
 }
 

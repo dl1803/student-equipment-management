@@ -89,7 +89,20 @@ public sealed class EmailSenderTests
             () => new ServiceCollection().AddEmailSender(new EmailOptions("Smtp", "khoa", "gui@example.test")));
     }
 
-    private sealed class XuLyGia(HttpStatusCode maTrangThai) : HttpMessageHandler
+    [Fact]
+    public async Task HttpEmailSender_NhaCungCapTraLoiCoChiTiet_DuaChiTietVaoThongBaoLoi()
+    {
+        var xuLy = new XuLyGia(HttpStatusCode.BadRequest, """{"code":"invalid_parameter","message":"Sender not authorized"}""");
+        var boGui = new HttpEmailSender(new HttpClient(xuLy), "khoa-kiem-thu", "gui@example.test");
+
+        var loi = await Assert.ThrowsAsync<InvalidOperationException>(
+            () => boGui.GuiAsync("sv@example.test", "T", "<p>N</p>", CancellationToken.None));
+
+        Assert.Contains("400", loi.Message);
+        Assert.Contains("Sender not authorized", loi.Message);
+    }
+
+    private sealed class XuLyGia(HttpStatusCode maTrangThai, string? thanPhanHoi = null) : HttpMessageHandler
     {
         public HttpMethod? PhuongThuc { get; private set; }
 
@@ -106,7 +119,13 @@ public sealed class EmailSenderTests
             KhoaApi = request.Headers.TryGetValues("api-key", out var cacGiaTri) ? cacGiaTri.Single() : null;
             Than = request.Content is null ? null : await request.Content.ReadAsStringAsync(cancellationToken);
 
-            return new HttpResponseMessage(maTrangThai);
+            var phanHoi = new HttpResponseMessage(maTrangThai);
+            if (thanPhanHoi is not null)
+            {
+                phanHoi.Content = new StringContent(thanPhanHoi);
+            }
+
+            return phanHoi;
         }
     }
 }

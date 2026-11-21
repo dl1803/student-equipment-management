@@ -49,7 +49,7 @@ public static class MauThongBao
     }
 
     public static string TaoNoiDungEmailHtml(string loaiThongBao, IReadOnlyDictionary<string, string> thamSo) =>
-        $"<p>{WebUtility.HtmlEncode(TaoNoiDungUngDung(loaiThongBao, thamSo))}</p>";
+        $"<p>{WebUtility.HtmlEncode(TaoNoiDungUngDung(loaiThongBao, thamSo)).Replace("\r\n", "<br/>").Replace("\n", "<br/>")}</p>";
 
     private static Mau LayMau(string loaiThongBao) =>
         CacMau.TryGetValue(loaiThongBao, out var mau)

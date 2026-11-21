@@ -168,5 +168,41 @@ public sealed class ThongBaoOutboxTests
         await Assert.ThrowsAsync<ArgumentException>(
             () => outbox.GhiAsync(MoiTruongThongBao.TaoYeuCau("SV-X", null, "k") with { DoiTuongId = null }, CancellationToken.None));
     }
+
+    [CanKetNoiTestFact]
+    public async Task GhiChoNhanVien_MaSvNhanChuoiRong_VanHopLeVaKhongLoiCheckConstraint()
+    {
+        await using var moi = await MoiTruongThongBao.TaoAsync();
+        var maNv = await moi.TaoNhanVienAsync("nv-sanit@example.test");
+        var khoa = $"KT-D09K-{Guid.NewGuid():N}";
+        var yeuCau = MoiTruongThongBao.TaoYeuCau(null, maNv, khoa) with { MaSvNhan = "   " };
+
+        await moi.TaoOutbox(BayGio).GhiAsync(yeuCau, CancellationToken.None);
+
+        var cacDong = await moi.DocTheoKhoaAsync(khoa);
+        Assert.Equal(2, cacDong.Count);
+        Assert.All(cacDong, d =>
+        {
+            Assert.Equal(maNv, d.MaNvNhan);
+            Assert.Null(d.MaSvNhan);
+        });
+    }
+
+    [CanKetNoiTestFact]
+    public async Task KhoaTrungLapChuoiKhoangTrang_CoiNhuNullVaMoiLanGhiLaDongMoi()
+    {
+        await using var moi = await MoiTruongThongBao.TaoAsync();
+        var maSv = await moi.TaoSinhVienAsync();
+        var outbox = moi.TaoOutbox(BayGio);
+        var yeuCau = MoiTruongThongBao.TaoYeuCau(maSv, null, "bo-di") with { KhoaTrungLap = "   " };
+
+        await outbox.GhiAsync(yeuCau, CancellationToken.None);
+        await outbox.GhiAsync(yeuCau, CancellationToken.None);
+
+        var soDong = await moi.Db.Database
+            .SqlQuery<int>($"SELECT count(*)::int AS \"Value\" FROM thong_bao.thong_bao WHERE ma_sv_nhan = {maSv}")
+            .SingleAsync();
+        Assert.Equal(4, soDong);
+    }
 }
 
