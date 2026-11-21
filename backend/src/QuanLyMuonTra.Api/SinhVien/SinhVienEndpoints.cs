@@ -1,5 +1,6 @@
 using Microsoft.AspNetCore.Mvc;
 using QuanLyMuonTra.Api.Auth;
+using QuanLyMuonTra.Modules.ThongBao.Application;
 using QuanLyMuonTra.SharedKernel;
 
 namespace QuanLyMuonTra.Api.SinhVien;
@@ -19,6 +20,20 @@ public static class SinhVienEndpoints
                     ?? throw new LoiNghiepVuException("CHUA_XAC_THUC", "Hồ sơ sinh viên không tồn tại.");
 
                 return Results.Ok(hoSo);
+            })
+            .RequireAuthorization(ChinhSach.SinhVien);
+
+        duongDan.MapGet("/api/v1/sv/thong-bao", async (
+                [FromServices] ICurrentUser nguoiDung,
+                [FromServices] DsThongBaoSvHandler boXuLy,
+                CancellationToken ct,
+                [FromQuery] int trang = 1,
+                [FromQuery] int kichThuoc = 20) =>
+            {
+                var maSv = nguoiDung.MaSv
+                    ?? throw new LoiNghiepVuException("CHUA_XAC_THUC", "Thiếu thông tin sinh viên đăng nhập.");
+
+                return Results.Ok(await boXuLy.XuLyAsync(maSv, trang, kichThuoc, ct));
             })
             .RequireAuthorization(ChinhSach.SinhVien);
 

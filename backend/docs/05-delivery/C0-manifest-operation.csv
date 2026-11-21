@@ -18,7 +18,7 @@
 "GET","/api/v1/sv/phieu-muon","CHUA_CAI"
 "GET","/api/v1/sv/phieu-muon/{ma}","CHUA_CAI"
 "GET","/api/v1/sv/bien-ban-vi-pham","CHUA_CAI"
-"GET","/api/v1/sv/thong-bao","CHUA_CAI"
+"GET","/api/v1/sv/thong-bao","DA_CAI"
 "GET","/api/v1/sv/toi","DA_CAI"
 "GET","/api/v1/sv/vi-pham","CHUA_CAI"
 "GET","/api/v1/sv/phong-thiet-bi","DA_CAI"
