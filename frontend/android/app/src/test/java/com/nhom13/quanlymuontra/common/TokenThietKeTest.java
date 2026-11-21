@@ -28,21 +28,29 @@ public class TokenThietKeTest {
     /** Tên token màu nguyên thủy và mã màu (DS 4.1). */
     private static final String[][] MAU_NGUYEN_THUY = {
         {"ds_color_gray_0", "#FFFFFF"},
-        {"ds_color_gray_50", "#F6F7F9"},
-        {"ds_color_gray_100", "#EEF0F3"},
-        {"ds_color_gray_200", "#E1E4E9"},
+        {"ds_color_gray_50", "#FAFAFA"},
+        {"ds_color_gray_100", "#F5F5F5"},
+        {"ds_color_gray_200", "#E9EBEE"},
         {"ds_color_gray_300", "#CBD0D8"},
         {"ds_color_gray_400", "#808998"},
         {"ds_color_gray_500", "#6B7482"},
-        {"ds_color_gray_600", "#4F5764"},
+        {"ds_color_gray_600", "#5F6B7A"},
         {"ds_color_gray_700", "#3A414D"},
-        {"ds_color_gray_900", "#161A21"},
+        {"ds_color_gray_900", "#1B212D"},
+        {"ds_color_lime_50", "#F3FBDD"},
+        {"ds_color_lime_100", "#E7F7C3"},
+        {"ds_color_lime_400", "#C8EE44"},
+        {"ds_color_lime_500", "#BCE236"},
+        {"ds_color_lime_600", "#AED42A"},
+        {"ds_color_emerald_50", "#E8F5EF"},
+        {"ds_color_emerald_100", "#CDEBDD"},
+        {"ds_color_emerald_600", "#1E7F5C"},
+        {"ds_color_emerald_700", "#197050"},
+        {"ds_color_emerald_800", "#15603F"},
         {"ds_color_blue_50", "#EEF4FB"},
         {"ds_color_blue_100", "#D6E4F5"},
-        {"ds_color_blue_500", "#2F69B0"},
         {"ds_color_blue_600", "#1F5499"},
         {"ds_color_blue_700", "#184380"},
-        {"ds_color_blue_800", "#133466"},
         {"ds_color_green_50", "#E7F5EC"},
         {"ds_color_amber_50", "#FFF4DB"},
         {"ds_color_red_50", "#FDECEC"},
@@ -99,10 +107,11 @@ public class TokenThietKeTest {
         {"ds_space_3", "12dp"},
         {"ds_space_4", "16dp"},
         {"ds_space_6", "24dp"},
+        {"ds_space_8", "32dp"},
         {"ds_space_12", "48dp"},
-        {"ds_radius_sm", "4dp"},
-        {"ds_radius_md", "8dp"},
-        {"ds_radius_lg", "12dp"},
+        {"ds_radius_sm", "6dp"},
+        {"ds_radius_md", "10dp"},
+        {"ds_radius_lg", "16dp"},
         {"ds_radius_full", "9999dp"},
         {"ds_border_width_default", "1dp"},
         {"ds_border_width_strong", "2dp"},
@@ -142,7 +151,7 @@ public class TokenThietKeTest {
             Pattern.compile("\"#[0-9A-Fa-f]{3,8}\"|\\b0x[0-9A-Fa-f]{8}\\b");
     private static final Pattern DON_VI_THO = Pattern.compile("(\\d+(?:\\.\\d+)?)(dp|sp|dip|px)\\b");
     private static final Pattern MAU_NGUYEN_THUY_THAM_CHIEU =
-            Pattern.compile("@color/ds_color_(gray|blue|green|amber|red)_\\d+");
+            Pattern.compile("@color/ds_color_(gray|lime|emerald|blue|green|amber|red)_\\d+");
 
     private static Map<String, String> docTheo(String tep, String the) {
         Document tai = TaiNguyen.docXml(tep);
@@ -166,7 +175,7 @@ public class TokenThietKeTest {
     @Test
     public void DXDS02_MauNguHia_ChiThamChieuTokenKhongLapGiaTri() {
         Map<String, String> mau = docTheo(RES + "/values/ds_colors.xml", "color");
-        Pattern nguyenThuy = Pattern.compile("ds_color_(gray|blue|green|amber|red)_\\d+");
+        Pattern nguyenThuy = Pattern.compile("ds_color_(gray|lime|emerald|blue|green|amber|red)_\\d+");
         for (Map.Entry<String, String> m : mau.entrySet()) {
             assertTrue("Token màu phải bắt đầu bằng ds_color_: " + m.getKey(), m.getKey().startsWith("ds_color_"));
             boolean laNguyenThuy = nguyenThuy.matcher(m.getKey()).matches();
@@ -184,6 +193,25 @@ public class TokenThietKeTest {
         Map<String, String> mau = docTheo(RES + "/values/ds_colors.xml", "color");
         assertEquals(30, TONG.length);
         for (String[] dong : TONG) {
+            assertEquals(dong[0], dong[1], mau.get(dong[0]));
+        }
+    }
+
+    /** Ánh xạ ngữ nghĩa đổi theo ĐX-DS-17 (DS 5.1): nút chính chanh với chữ tối, liên kết xanh lá đậm. */
+    @Test
+    public void DXDS17_MauNguHia_ThamChieuDungBacMoi() {
+        Map<String, String> mau = docTheo(RES + "/values/ds_colors.xml", "color");
+        String[][] kyVong = {
+            {"ds_color_action_primary_bg", "@color/ds_color_lime_400"},
+            {"ds_color_action_primary_text", "@color/ds_color_gray_900"},
+            {"ds_color_text_link", "@color/ds_color_emerald_700"},
+            {"ds_color_surface_selected", "@color/ds_color_lime_50"},
+            {"ds_color_border_selected", "@color/ds_color_emerald_600"},
+            {"ds_color_focus_ring", "@color/ds_color_emerald_600"},
+            {"ds_color_nav_indicator", "@color/ds_color_lime_100"},
+            {"ds_color_progress_indicator", "@color/ds_color_emerald_600"},
+        };
+        for (String[] dong : kyVong) {
             assertEquals(dong[0], dong[1], mau.get(dong[0]));
         }
     }

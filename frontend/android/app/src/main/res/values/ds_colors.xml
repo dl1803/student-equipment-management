@@ -11,24 +11,35 @@
 -->
 <resources>
 
-    <!-- Lớp nguyên thủy (DS 4.1): xám trung tính, xanh dương, xanh lá, hổ phách, đỏ. -->
+    <!-- Lớp nguyên thủy (DS 4.1; ĐX-DS-17): xám trung tính, xanh chanh (màu nhấn), xanh lá đậm (liên
+         kết, tiêu điểm), xanh dương (tông info), xanh lá, hổ phách, đỏ. -->
     <color name="ds_color_gray_0">#FFFFFF</color>
-    <color name="ds_color_gray_50">#F6F7F9</color>
-    <color name="ds_color_gray_100">#EEF0F3</color>
-    <color name="ds_color_gray_200">#E1E4E9</color>
+    <color name="ds_color_gray_50">#FAFAFA</color>
+    <color name="ds_color_gray_100">#F5F5F5</color>
+    <color name="ds_color_gray_200">#E9EBEE</color>
     <color name="ds_color_gray_300">#CBD0D8</color>
     <color name="ds_color_gray_400">#808998</color>
     <color name="ds_color_gray_500">#6B7482</color>
-    <color name="ds_color_gray_600">#4F5764</color>
+    <color name="ds_color_gray_600">#5F6B7A</color>
     <color name="ds_color_gray_700">#3A414D</color>
-    <color name="ds_color_gray_900">#161A21</color>
+    <color name="ds_color_gray_900">#1B212D</color>
+
+    <color name="ds_color_lime_50">#F3FBDD</color>
+    <color name="ds_color_lime_100">#E7F7C3</color>
+    <color name="ds_color_lime_400">#C8EE44</color>
+    <color name="ds_color_lime_500">#BCE236</color>
+    <color name="ds_color_lime_600">#AED42A</color>
+
+    <color name="ds_color_emerald_50">#E8F5EF</color>
+    <color name="ds_color_emerald_100">#CDEBDD</color>
+    <color name="ds_color_emerald_600">#1E7F5C</color>
+    <color name="ds_color_emerald_700">#197050</color>
+    <color name="ds_color_emerald_800">#15603F</color>
 
     <color name="ds_color_blue_50">#EEF4FB</color>
     <color name="ds_color_blue_100">#D6E4F5</color>
-    <color name="ds_color_blue_500">#2F69B0</color>
     <color name="ds_color_blue_600">#1F5499</color>
     <color name="ds_color_blue_700">#184380</color>
-    <color name="ds_color_blue_800">#133466</color>
 
     <color name="ds_color_green_50">#E7F5EC</color>
 
@@ -56,8 +67,8 @@
     <color name="ds_color_red_800">#7F1818</color>
 
     <!-- Độ mờ (DS Phụ lục C, định dạng ARGB): lớp che và hiệu ứng gợn khi chạm. -->
-    <color name="ds_color_overlay_scrim">#80161A21</color>
-    <color name="ds_color_overlay_pressed">#1F161A21</color>
+    <color name="ds_color_overlay_scrim">#801B212D</color>
+    <color name="ds_color_overlay_pressed">#1F1B212D</color>
 
     <!-- Lớp ngữ nghĩa (DS 5.1). -->
     <color name="ds_color_text_primary">@color/ds_color_gray_900</color>
@@ -65,25 +76,26 @@
     <color name="ds_color_text_placeholder">@color/ds_color_gray_500</color>
     <color name="ds_color_text_disabled">@color/ds_color_gray_500</color>
     <color name="ds_color_text_inverse">@color/ds_color_gray_0</color>
-    <color name="ds_color_text_link">@color/ds_color_blue_700</color>
+    <color name="ds_color_text_link">@color/ds_color_emerald_700</color>
 
     <color name="ds_color_surface_default">@color/ds_color_gray_0</color>
     <color name="ds_color_surface_subtle">@color/ds_color_gray_50</color>
     <color name="ds_color_surface_muted">@color/ds_color_gray_100</color>
-    <color name="ds_color_surface_selected">@color/ds_color_blue_50</color>
+    <color name="ds_color_surface_selected">@color/ds_color_lime_50</color>
 
     <color name="ds_color_border_subtle">@color/ds_color_gray_200</color>
     <color name="ds_color_border_control">@color/ds_color_gray_400</color>
-    <color name="ds_color_border_selected">@color/ds_color_blue_600</color>
+    <color name="ds_color_border_selected">@color/ds_color_emerald_600</color>
     <color name="ds_color_border_error">@color/ds_color_red_600</color>
 
-    <color name="ds_color_focus_ring">@color/ds_color_blue_500</color>
-    <color name="ds_color_nav_indicator">@color/ds_color_blue_100</color>
-    <color name="ds_color_progress_indicator">@color/ds_color_blue_600</color>
+    <color name="ds_color_focus_ring">@color/ds_color_emerald_600</color>
+    <color name="ds_color_nav_indicator">@color/ds_color_lime_100</color>
+    <color name="ds_color_progress_indicator">@color/ds_color_emerald_600</color>
     <color name="ds_color_progress_track">@color/ds_color_gray_200</color>
 
-    <color name="ds_color_action_primary_bg">@color/ds_color_blue_600</color>
-    <color name="ds_color_action_primary_text">@color/ds_color_gray_0</color>
+    <!-- Nút chính: nền chanh, chữ tối (12,11:1); chanh không bao giờ đi với chữ trắng (ĐX-DS-03). -->
+    <color name="ds_color_action_primary_bg">@color/ds_color_lime_400</color>
+    <color name="ds_color_action_primary_text">@color/ds_color_gray_900</color>
     <color name="ds_color_action_destructive_bg">@color/ds_color_red_600</color>
     <color name="ds_color_action_destructive_text">@color/ds_color_gray_0</color>
     <color name="ds_color_action_secondary_bg">@color/ds_color_gray_0</color>
