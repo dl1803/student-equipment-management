@@ -153,7 +153,36 @@ public static class TraCuuEndpoints
             .AddEndpointFilter<KiemTraDuLieuFilter<KiemTraThietBiRequest>>()
             .RequireAuthorization(ChinhSach.NhanVien);
 
+        nhomQuay.MapPost("/phieu-muon/kiem-tra-nguon", async (
+                KiemTraNguonRequest yeuCau,
+                [FromServices] ICurrentUser nguoiDung,
+                [FromServices] KiemTraNguonGiaoHandler boXuLy,
+                CancellationToken ct) =>
+                Results.Ok(await KiemTraNguonAsync(yeuCau, LayMaNv(nguoiDung), boXuLy, ct)))
+            .AddEndpointFilter<KiemTraDuLieuFilter<KiemTraNguonRequest>>()
+            .RequireAuthorization(ChinhSach.NhanVien);
+
         return duongDan;
+    }
+
+    private static Task<KetQuaKiemTraNguonDto> KiemTraNguonAsync(
+        KiemTraNguonRequest yeuCau,
+        Guid maNv,
+        KiemTraNguonGiaoHandler boXuLy,
+        CancellationToken ct)
+    {
+        return yeuCau.Nguon switch
+        {
+            KiemTraNguonRequest.PhieuYeuCau => boXuLy.KiemTraPhieuYeuCauAsync(maNv, yeuCau.MaYeuCau!, ct),
+            KiemTraNguonRequest.DangKyCho => boXuLy.KiemTraDangKyChoAsync(maNv, yeuCau.MaDangKy!, ct),
+            KiemTraNguonRequest.TrucTiep => boXuLy.KiemTraTrucTiepAsync(
+                maNv,
+                yeuCau.MaSV!,
+                yeuCau.MaPhong!.Value,
+                yeuCau.DsLoaiVaSoLuong.Select(d => new LoaiVaSoLuongYeuCau(d.MaLoai, d.SoLuong)).ToList(),
+                ct),
+            _ => throw new InvalidOperationException($"Nguồn giao không hợp lệ: {yeuCau.Nguon}.")
+        };
     }
 
     private static string LayMaSv(ICurrentUser nguoiDung)

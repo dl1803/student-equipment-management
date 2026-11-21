@@ -20,6 +20,10 @@ public sealed class KiemTraThietBiGiaoHttpTests : IAsyncLifetime
     private const string NoiDung = """
         {"maThietBi":"D08-TB-01","maPhong":"019c0000-0000-7000-8000-0000000d8b01","maLoai":"019c0000-0000-7000-8000-0000000d8c01"}
         """;
+    private const string DuongDanNguon = "/api/v1/quay/phieu-muon/kiem-tra-nguon";
+    private const string NoiDungNguon = """
+        {"nguon":"PHIEU_YEU_CAU","maYeuCau":"YC-261120-998001"}
+        """;
     private static readonly JsonSerializerOptions JsonOptions = new(JsonSerializerDefaults.Web);
 
     private WebApplicationFactory<Program>? _factory;
@@ -72,9 +76,14 @@ public sealed class KiemTraThietBiGiaoHttpTests : IAsyncLifetime
 
     private Task<HttpResponseMessage> GoiAsync(string? token)
     {
-        var yeuCau = new HttpRequestMessage(HttpMethod.Post, DuongDan)
+        return GoiAsync(DuongDan, NoiDung, token);
+    }
+
+    private Task<HttpResponseMessage> GoiAsync(string duongDan, string noiDung, string? token)
+    {
+        var yeuCau = new HttpRequestMessage(HttpMethod.Post, duongDan)
         {
-            Content = new StringContent(NoiDung, Encoding.UTF8, "application/json")
+            Content = new StringContent(noiDung, Encoding.UTF8, "application/json")
         };
         if (token is not null)
         {
@@ -103,6 +112,24 @@ public sealed class KiemTraThietBiGiaoHttpTests : IAsyncLifetime
     public async Task TokenSinhVien_Tra403KhongDuQuyen()
     {
         var phanHoi = await GoiAsync(TaoToken("D08-SV-A", "SINH_VIEN"));
+
+        Assert.Equal(HttpStatusCode.Forbidden, phanHoi.StatusCode);
+        Assert.Equal("KHONG_DU_QUYEN", await LayMaLoiAsync(phanHoi));
+    }
+
+    [CanKetNoiTestFact]
+    public async Task KiemTraNguon_KhongCoToken_Tra401()
+    {
+        var phanHoi = await GoiAsync(DuongDanNguon, NoiDungNguon, null);
+
+        Assert.Equal(HttpStatusCode.Unauthorized, phanHoi.StatusCode);
+        Assert.Equal("CHUA_XAC_THUC", await LayMaLoiAsync(phanHoi));
+    }
+
+    [CanKetNoiTestFact]
+    public async Task KiemTraNguon_TokenSinhVien_Tra403KhongDuQuyen()
+    {
+        var phanHoi = await GoiAsync(DuongDanNguon, NoiDungNguon, TaoToken("D08-SV-A", "SINH_VIEN"));
 
         Assert.Equal(HttpStatusCode.Forbidden, phanHoi.StatusCode);
         Assert.Equal("KHONG_DU_QUYEN", await LayMaLoiAsync(phanHoi));
