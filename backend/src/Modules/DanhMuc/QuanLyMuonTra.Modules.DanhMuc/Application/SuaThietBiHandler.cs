@@ -9,17 +9,17 @@ public sealed class SuaThietBiHandler
 {
     private readonly DbContext _db;
     private readonly IAdvisoryLockService _khoa;
+    private readonly IAnhService _anh;
 
-    public SuaThietBiHandler(DbContext db, IAdvisoryLockService khoa)
+    public SuaThietBiHandler(DbContext db, IAdvisoryLockService khoa, IAnhService anh)
     {
         _db = db;
         _khoa = khoa;
+        _anh = anh;
     }
 
     public async Task<ThietBiQuanTriDto> XuLyAsync(string ma, ThietBiCapNhatRequest yeuCau, CancellationToken ct)
     {
-        AnhThietBi.ChanNeuCoAnh(yeuCau.DsMaAnh);
-
         var giaoDichNgoai = _db.Database.CurrentTransaction;
         await using var giaoDichRieng = giaoDichNgoai is null ? await _db.Database.BeginTransactionAsync(ct) : null;
 
@@ -69,7 +69,9 @@ public sealed class SuaThietBiHandler
             throw XungDot();
         }
 
-        var ketQua = await DocThietBiQuanTri.LayAsync(_db, ma, ct);
+        await AnhThietBi.ThayAsync(_anh, ma, yeuCau.DsMaAnh, ct);
+
+        var ketQua = await DocThietBiQuanTri.LayAsync(_db, _anh, ma, ct);
         if (giaoDichRieng is not null)
         {
             await giaoDichRieng.CommitAsync(ct);

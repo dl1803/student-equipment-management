@@ -1,3 +1,5 @@
+using QuanLyMuonTra.SharedKernel;
+
 namespace QuanLyMuonTra.Modules.DanhMuc.Application;
 
 public sealed record LoaiThietBiQuanTriDto(
@@ -29,6 +31,7 @@ public sealed record ThietBiQuanTriDto(
     string? ViTriTu,
     bool NgungSuDung,
     long GiaTriHienHanh,
-    IReadOnlyList<NhaCungCapQuanTriDto> DsNhaCungCap);
+    IReadOnlyList<NhaCungCapQuanTriDto> DsNhaCungCap,
+    IReadOnlyList<AnhRefDto> DsAnh);
 
 public sealed record GiaTriThietBiDto(string MaThietBi, long GiaTri, DateTimeOffset NgayCapNhat);

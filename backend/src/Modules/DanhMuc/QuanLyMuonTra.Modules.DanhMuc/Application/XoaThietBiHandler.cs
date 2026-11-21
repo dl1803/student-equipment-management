@@ -11,12 +11,18 @@ public sealed class XoaThietBiHandler
     private readonly DbContext _db;
     private readonly IAdvisoryLockService _khoa;
     private readonly IReadOnlyList<IThamChieuDanhMucProvider> _cacProvider;
+    private readonly IAnhService _anh;
 
-    public XoaThietBiHandler(DbContext db, IAdvisoryLockService khoa, IEnumerable<IThamChieuDanhMucProvider> cacProvider)
+    public XoaThietBiHandler(
+        DbContext db,
+        IAdvisoryLockService khoa,
+        IEnumerable<IThamChieuDanhMucProvider> cacProvider,
+        IAnhService anh)
     {
         _db = db;
         _khoa = khoa;
         _cacProvider = cacProvider.ToList();
+        _anh = anh;
     }
 
     public async Task XuLyAsync(string ma, CancellationToken ct)
@@ -73,6 +79,8 @@ public sealed class XoaThietBiHandler
         {
             throw XungDot();
         }
+
+        await AnhThietBi.GoTatCaAsync(_anh, ma, ct);
 
         if (giaoDichRieng is not null)
         {

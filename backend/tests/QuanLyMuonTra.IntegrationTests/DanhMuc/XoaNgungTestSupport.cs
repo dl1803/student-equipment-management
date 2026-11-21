@@ -1,7 +1,9 @@
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
 using QuanLyMuonTra.Infrastructure;
+using QuanLyMuonTra.Infrastructure.LuuTru;
 using QuanLyMuonTra.Infrastructure.Persistence;
+using QuanLyMuonTra.IntegrationTests.Anh;
 using QuanLyMuonTra.IntegrationTests.Database;
 using QuanLyMuonTra.Modules.BaoTri;
 using QuanLyMuonTra.Modules.DanhMuc;
@@ -12,6 +14,7 @@ using QuanLyMuonTra.Modules.QuyDinh;
 using QuanLyMuonTra.Modules.QuyDinh.Domain;
 using QuanLyMuonTra.Modules.TaiKhoan.Domain;
 using QuanLyMuonTra.Modules.ViPham;
+using QuanLyMuonTra.SharedKernel;
 using QuanLyMuonTra.SharedKernel.Contracts;
 
 namespace QuanLyMuonTra.IntegrationTests.DanhMuc;
@@ -31,6 +34,9 @@ internal static class XoaNgungTestSupport
                     typeof(ThamChieuMuonTraProvider).Assembly,
                     typeof(KhungPhat).Assembly,
                 ])
+            .AddSingleton<IAnhStorage>(new AnhStorageGia())
+            .AddScoped<IAnhService, AnhService>()
+            .AddLogging()
             .AddScoped<IAdvisoryLockService, AdvisoryLockService>()
             .AddDanhMucModule();
         return (themModule is null ? dichVu : themModule(dichVu)).BuildServiceProvider();
