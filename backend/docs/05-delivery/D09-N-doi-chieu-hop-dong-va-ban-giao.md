@@ -111,9 +111,9 @@ Ngoài các khai báo ánh xạ thực thể EF Core, migration chung cần bổ
 
 ## 6. Mốc EXPLAIN (kết quả Phần E)
 
-- **Trạng thái**: **Chưa đo — BLOCKED (K-1)**.
-- **Lý do**: Máy phát triển cục bộ hiện chưa cấu hình chuỗi kết nối cơ sở dữ liệu PostgreSQL kiểm thử (`ConnectionStrings:Test` chưa có trong `user-secrets` hoặc biến môi trường).
-- **Kế hoạch tiếp theo**: Theo đúng quy định tại mục 5.E và mục 7 của hướng dẫn D09-N, không commit file kiểm thử EXPLAIN khi chưa có kết quả chạy thật trên DB. Mốc so sánh EXPLAIN sẽ được thực hiện khi Khôi cấp cơ sở dữ liệu kiểm thử dùng chung trên Supabase hoặc ở các mốc Ngày 25/26.
+- **Trạng thái**: **Đã chuẩn bị file kiểm thử — Chưa đo số liệu thật (BLOCKED K-1)**.
+- **Lý do**: Đã chuẩn bị file kiểm thử `ExplainTruyVanDocCsdlTests.cs` (giao dịch rollback với 2.000 thiết bị mẫu); tuy nhiên máy phát triển cục bộ hiện chưa cấu hình chuỗi kết nối cơ sở dữ liệu PostgreSQL kiểm thử (`ConnectionStrings:Test` chưa có trong `user-secrets` hoặc biến môi trường). Test được gắn `[CanKetNoiTestFact]` để tự động bỏ qua khi thiếu kết nối và sẵn sàng chạy khi có DB kiểm thử.
+- **Kế hoạch tiếp theo**: Mốc so sánh EXPLAIN chi tiết sẽ được thực hiện và ghi nhận vào tài liệu khi Khôi cấp cơ sở dữ liệu kiểm thử dùng chung trên Supabase hoặc ở các mốc Ngày 25/26.
 
 ---
 

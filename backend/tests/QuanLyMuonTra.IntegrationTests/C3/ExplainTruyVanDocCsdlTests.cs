@@ -94,6 +94,5 @@ public sealed class ExplainTruyVanDocCsdlTests(ITestOutputHelper output)
         "FROM generate_series(1, " + SoLuongThietBiDo + ") AS g; " +
         "INSERT INTO danh_muc.lich_su_gia_tri (ma_lich_su, ma_thiet_bi, gia_tri) " +
         "SELECT gen_random_uuid(), 'EXPL-' || lpad(g::text, 5, '0'), 1000000 " +
-        "FROM generate_series(1, " + SoLuongThietBiDo + ") AS g; " +
-        "ANALYZE danh_muc.thiet_bi; ANALYZE danh_muc.lich_su_gia_tri;";
+        "FROM generate_series(1, " + SoLuongThietBiDo + ") AS g;";
 }
