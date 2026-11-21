@@ -91,6 +91,15 @@ public sealed class LoaiThietBiUngDungTests
         Assert.Equal(new LoaiThietBiTaoMoiRequest("Laptop", null, "Dell", 180, 50000), yeuCau);
     }
 
+    [Theory]
+    [InlineData("""{"tenLoai":"Laptop","chuKyBaoTri":180}""")]
+    [InlineData("""{"tenLoai":"Laptop","moTa":null,"hangSanXuat":null,"chuKyBaoTri":180}""")]
+    public void UC12_Json_TaoLoaiThieuPhiTreMoiNgay_NemJsonException(string json)
+    {
+        Assert.Throws<JsonException>(
+            () => JsonSerializer.Deserialize<LoaiThietBiTaoMoiRequest>(json, TuyChonJson));
+    }
+
     [Fact]
     public void UC12_Json_PhanHoiLoaiDungTenTruongOpenApi()
     {
