@@ -143,4 +143,24 @@
     <string name="dieu_huong_thong_bao">Thông báo</string>
     <string name="dieu_huong_ho_so">Hồ sơ</string>
 
+    <!--
+        D07-L, SCR-SV-01 (UI-Screens 5.1, Wireframes SCR-SV-01). Nguyên văn tài liệu: tên tám lối vào, "Bạn chưa thể
+        đặt trước hoặc đăng ký chờ", "Xem lý do", "Xin chào, <họ tên>". Do Architect viết, chờ nhóm xác nhận:
+        trang_chu_quyen_muon_nhan và trang_chu_dang_muon (Wireframes ghi "Quyền mượn: ..." và "Đang mượn: 1 / 3
+        thiết bị"; DS 9.7 quy định dạng n/m nên dùng "1/3").
+    -->
+    <string name="trang_chu_loi_chao">Xin chào, %1$s</string>
+    <string name="trang_chu_quyen_muon_nhan">Quyền mượn:</string>
+    <string name="trang_chu_dang_muon">Đang mượn: %1$s thiết bị</string>
+    <string name="trang_chu_khong_the_dat_truoc">Bạn chưa thể đặt trước hoặc đăng ký chờ</string>
+    <string name="trang_chu_xem_ly_do">Xem lý do</string>
+    <string name="trang_chu_loi_vao_tra_cuu">Tra cứu thiết bị</string>
+    <string name="trang_chu_loi_vao_dat_truoc">Đặt trước thiết bị</string>
+    <string name="trang_chu_loi_vao_phieu_yeu_cau">Phiếu yêu cầu của tôi</string>
+    <string name="trang_chu_loi_vao_dang_ky_cho">Đăng ký chờ của tôi</string>
+    <string name="trang_chu_loi_vao_lich_su">Lịch sử mượn/trả</string>
+    <string name="trang_chu_loi_vao_bien_ban">Biên bản và phí phạt</string>
+    <string name="trang_chu_loi_vao_vi_pham">Vi phạm</string>
+    <string name="trang_chu_loi_vao_ho_so">Hồ sơ mượn</string>
+
 </resources>

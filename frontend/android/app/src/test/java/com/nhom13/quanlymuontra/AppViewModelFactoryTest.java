@@ -10,6 +10,7 @@ import com.nhom13.quanlymuontra.data.repository.XacThucRepository;
 import com.nhom13.quanlymuontra.data.session.SessionManager;
 import com.nhom13.quanlymuontra.ui.dangnhap.DangNhapSinhVienViewModel;
 import com.nhom13.quanlymuontra.ui.khoidong.KhoiDongViewModel;
+import com.nhom13.quanlymuontra.ui.trangchu.TrangChuViewModel;
 import java.util.Collections;
 import org.junit.After;
 import org.junit.Before;
@@ -54,5 +55,10 @@ public class AppViewModelFactoryTest {
     @Test
     public void FA51_DangNhapSinhVienViewModel_DuocTaoTuAppContainer() {
         assertNotNull(nhaMay.create(DangNhapSinhVienViewModel.class));
+    }
+
+    @Test
+    public void FA51_TrangChuViewModel_DuocTaoTuAppContainer() {
+        assertNotNull(nhaMay.create(TrangChuViewModel.class));
     }
 }
