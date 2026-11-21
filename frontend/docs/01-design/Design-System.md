@@ -77,14 +77,14 @@ Phạm vi hiển thị: **tiếng Việt, chế độ sáng** (ĐX-DS-01). Ngu�
 
 | Mã | Quyết định | Căn cứ |
 |---|---|---|
-| ĐX-DS-01 | Giao diện chỉ có tiếng Việt và chế độ sáng; không có logo hay màu thương hiệu. Khi nhà trường cung cấp nhận diện thương hiệu, chỉ thay lớp token nguyên thủy của màu xanh dương (mục 4.1); các lớp trên giữ nguyên. | `UI-Screens.md` 1.3 (giao diện tiếng Việt); nguồn không có yêu cầu chế độ tối hoặc nhận diện; nguyên tắc YAGNI |
+| ĐX-DS-01 | Giao diện chỉ có tiếng Việt và chế độ sáng; không có logo (tên hệ thống hiển thị bằng chữ). Màu nhận diện là xanh chanh (màu nhấn) và xanh lá đậm theo ĐX-DS-17. Khi nhà trường cung cấp nhận diện thương hiệu, chỉ thay lớp token nguyên thủy của hai màu này (mục 4.1); các lớp trên giữ nguyên. | `UI-Screens.md` 1.3 (giao diện tiếng Việt); nguồn không có yêu cầu chế độ tối hoặc nhận diện; nguyên tắc YAGNI |
 | ĐX-DS-02 | Một bộ giá trị token dùng cho cả hai nền tảng (`dp`/`sp` và `px`/`rem` cùng số). Token chia ba lớp: nguyên thủy → ngữ nghĩa → thành phần. Màu và kiểu chữ trong thành phần và màn hình chỉ dùng token ngữ nghĩa hoặc token thành phần; các thang còn lại (khoảng cách, bo góc, viền, đổ bóng, chuyển động, kích thước, thứ tự lớp) dùng trực tiếp. Không dùng giá trị thô. | KT-04 (hai nền tảng, một API); yêu cầu nhất quán |
-| ĐX-DS-03 | Bảng màu gồm xám trung tính, xanh dương (màu chủ đạo, cũng dùng cho tông `info`) và ba màu phản hồi (xanh lá, hổ phách, đỏ). Mọi cặp chữ/nền đạt tỷ lệ tương phản tối thiểu 4,5:1 và thành phần giao diện tối thiểu 3:1; số liệu kiểm chứng ở mục 5.4. | `UI-Screens.md` 3.8 (không chỉ dựa vào màu); không có nguồn màu |
+| ĐX-DS-03 | Bảng màu gồm xám trung tính, xanh chanh (màu nhấn: nút chính, mục menu đang chọn; luôn đi với chữ tối), xanh lá đậm (liên kết, tiêu điểm, mục được chọn), xanh dương (tông `info`) và ba màu phản hồi (xanh lá, hổ phách, đỏ). Mọi cặp chữ/nền đạt tỷ lệ tương phản tối thiểu 4,5:1 và thành phần giao diện tối thiểu 3:1; số liệu kiểm chứng ở mục 5.4. Xanh chanh không bao giờ dùng làm màu chữ hoặc nền cho chữ trắng (chỉ đạt 1,33:1). | `UI-Screens.md` 3.8 (không chỉ dựa vào màu); không có nguồn màu |
 | ĐX-DS-04 | Phông: `[Web]` Roboto (chữ), Roboto Mono (mã), nạp các tập ký tự có tiếng Việt; `[Android]` phông sans-serif mặc định của hệ thống và `monospace` cho mã. Không gói thêm phông vào ứng dụng Android. Mã (phiếu, thiết bị, SV, biên bản) dùng phông đơn cách để NV phân biệt ký tự khi nhập tay. | `UI-Screens.md` 1.3 (tiếng Việt, cần hiển thị đủ dấu); BR-13, BR-40 (nhập tay mã) |
 | ĐX-DS-05 | Bộ biểu tượng: Material Symbols (kiểu Outlined), danh sách giới hạn ở Phụ lục A. Biểu tượng chỉ bổ trợ chữ, không thay chữ (trừ nút biểu tượng có tên truy cập). | `UI-Screens.md` 3.8; nguồn không chọn bộ biểu tượng |
 | ĐX-DS-06 | Năm tông phản hồi và hai mức nhấn (nhạt, đậm); mã trạng thái nghiệp vụ ánh xạ sang tông ở mục 7. | `UI-Screens.md` 3.3 giao quy tắc phân biệt trạng thái cho Design-System; 3.8 |
 | ĐX-DS-07 | Web: chiều rộng cửa sổ tối thiểu được hỗ trợ là 1024 px. Android: chiều rộng tham chiếu để kiểm tra là 320 dp, 360 dp, 412 dp; kiểm tra ở cỡ chữ hệ thống mặc định và mức lớn (hệ số 1,3). | `UI-Screens.md` 3.9 (kích thước web giao cho Design-System, nguồn không nêu); NFR-04 |
-| ĐX-DS-08 | Android: vùng chạm tối thiểu 48 × 48 dp. Web: chiều cao điều khiển 32 px (dày đặc), 40 px (mặc định), 48 px (thao tác quầy). | `UI-Screens.md` 3.8 giao kích thước vùng chạm cho Design-System |
+| ĐX-DS-08 | Android: vùng chạm tối thiểu 48 × 48 dp. Web: chiều cao điều khiển 36 px (dày đặc: dòng bảng, bộ lọc), 48 px (mặc định), 56 px (thao tác quầy, tab). | `UI-Screens.md` 3.8 giao kích thước vùng chạm cho Design-System |
 | ĐX-DS-09 | Hộp xác nhận: tiêu điểm ban đầu ở nút Hủy; phím Enter không tự xác nhận hành động; nút xác nhận ở bên phải nút Hủy; bấm vào lớp che không đóng hộp. | ĐX-UF-05; `UI-Screens.md` 3.8 (phím Enter dùng để nhập mã ở quầy) nên cần tránh xác nhận nhầm |
 | ĐX-DS-10 | Thông điệp mặc định trong `UI-Screens.md` được giữ làm chữ chính thức. Tài liệu này chốt thêm bộ nhãn hành động chuẩn và danh sách chữ do Design-System đặt (mục 9.8) và các nhãn phát sinh ở mục 7.3. | `UI-Screens.md` 1.4 giao Wireframes và Design-System chốt chữ chính thức |
 | ĐX-DS-11 | Hành động bị vô hiệu do điều kiện nghiệp vụ phải có lý do hiển thị ngay cạnh hoặc phía trên, không chỉ trong chú giải (tooltip). | `User-Flows.md` UF-NV-01 A1; `UI-Screens.md` SCR-NV-04, SCR-NV-05 (hiển thị lý do); màn hình cảm ứng không có thao tác di chuột |
@@ -93,6 +93,7 @@ Phạm vi hiển thị: **tiếng Việt, chế độ sáng** (ĐX-DS-01). Ngu�
 | ĐX-DS-14 | Hành động ở dòng bảng: tối đa 2 hành động hiển thị trực tiếp; từ 3 hành động trở lên gom vào Menu thao tác. | `UI-Screens.md` SCR-QT-03 (2 hành động), SCR-QT-04, SCR-QT-07 (3), SCR-QT-09 (đến 5) |
 | ĐX-DS-15 | Chuyển động tối thiểu, chỉ để báo thay đổi trạng thái; tôn trọng cài đặt giảm chuyển động của hệ điều hành. | Nguyên tắc YAGNI; `User-Flows.md` 3.10 (NFR-03: không chèn bước trung gian không cần thiết) |
 | ĐX-DS-16 | Cách trình bày lỗi và thông báo (mục 9.4): lỗi 422 và lỗi từ chối do quyền hoặc hệ thống dùng tông `danger`; lỗi 409 và lỗi dữ liệu đã đổi dùng `warning`; thông tin phiên dùng `info`; không dùng thanh thông báo nổi (toast). | `UI-Screens.md` 3.2 chỉ nêu cách hiển thị chung (cạnh trường, banner, hộp thoại) mà không nêu tông; NT-07 |
+| ĐX-DS-17 | Phong cách giao diện tham khảo bộ UI kit "Maglo – Financial Management Web UI Kit" (Figma Community, miễn phí; ghi nguồn tác giả theo giấy phép của bộ kit). **Chỉ lấy phong cách**: màu nhấn xanh chanh với chữ tối, xanh lá đậm cho liên kết và tab, nền xám rất nhạt, bo góc lớn, điều khiển cao 48, thanh menu bên cao hết cửa sổ có tên hệ thống ở đầu, bảng không khung chỉ có đường kẻ ngang, thẻ nền xám nhạt không viền, tab gạch chân, màn hình đăng nhập hai cột. **Không lấy**: logo, ảnh minh họa (màn hình đăng nhập dùng ảnh minh họa riêng do nhóm cung cấp), nội dung và chức năng của bộ kit (biểu đồ, thẻ ngân hàng, đăng nhập Google, quên mật khẩu, đăng ký), chế độ tối, phông Kumbh Sans (không có tập ký tự tiếng Việt; giữ Roboto theo ĐX-DS-04), bộ biểu tượng riêng (giữ Material Symbols theo ĐX-DS-05). Màu của bộ kit được chỉnh lại để đạt mục 5.4 (chữ phụ `#929EAE` chỉ đạt 2,72:1 và xanh lá `#29A073` chỉ đạt 3,30:1 trên nền trắng). | Nhóm thống nhất áp dụng giao diện mới; ĐX-DS-01, ĐX-DS-03 |
 
 ---
 
@@ -119,7 +120,7 @@ Các nguyên tắc suy ra từ yêu cầu của dự án; mỗi nguyên tắc c�
 | Lớp | Vai trò | Ví dụ | Ai được dùng |
 |---|---|---|---|
 | Nguyên thủy (primitive) | Giá trị thô của bảng màu, thang cỡ chữ, thang khoảng cách, bo góc, viền, kích thước | `color.blue.600` = `#1F5499`; `space.4` = 16 | **Màu và cỡ, độ đậm chữ**: chỉ lớp ngữ nghĩa và lớp thành phần tham chiếu. **Khoảng cách, bo góc, viền, đổ bóng, chuyển động, kích thước, thứ tự lớp**: thành phần và màn hình dùng trực tiếp vì tên token đã nêu mức độ |
-| Ngữ nghĩa (semantic) | Gán mục đích sử dụng cho giá trị nguyên thủy | `color.action.primary.bg` → `color.blue.600`; `type.title-screen` | Thành phần và màn hình |
+| Ngữ nghĩa (semantic) | Gán mục đích sử dụng cho giá trị nguyên thủy | `color.action.primary.bg` → `color.lime.400`; `type.title-screen` | Thành phần và màn hình |
 | Thành phần (component) | Giá trị riêng của một thành phần khi cần khác ngữ nghĩa chung | `size.button.height` | Thành phần tương ứng |
 
 Quy tắc: không dùng giá trị thô (mã màu, số pixel) trong thành phần hay màn hình, và không dùng màu nguyên thủy trực tiếp (ví dụ `color.blue.600`) mà dùng token ngữ nghĩa (ví dụ `color.action.primary.bg`). Muốn đổi diện mạo thì đổi lớp nguyên thủy hoặc lớp ngữ nghĩa, không sửa từng màn hình (ĐX-DS-02).
@@ -150,33 +151,53 @@ Quy tắc: không dùng giá trị thô (mã màu, số pixel) trong thành ph�
 
 ### 4.1 Màu
 
-Bảng màu gồm xám trung tính, xanh dương (màu chủ đạo) và ba màu phản hồi (xanh lá, hổ phách, đỏ). Chỉ giữ các bậc được dùng; số bậc không liên tục là có chủ đích (ĐX-DS-03).
+Bảng màu gồm xám trung tính, xanh chanh (màu nhấn), xanh lá đậm (liên kết, tiêu điểm), xanh dương (tông `info`) và ba màu phản hồi (xanh lá, hổ phách, đỏ). Chỉ giữ các bậc được dùng; số bậc không liên tục là có chủ đích (ĐX-DS-03, ĐX-DS-17).
 
 **Xám trung tính**
 
 | Token | Giá trị | Dùng cho (qua token ngữ nghĩa ở mục 5) |
 |---|---|---|
-| `color.gray.0` | `#FFFFFF` | Nền thẻ, ô nhập, hộp thoại, bảng; chữ trên nền đậm |
-| `color.gray.50` | `#F6F7F9` | Nền trang; nền khi rê chuột; nền ô chỉ đọc; vùng mở rộng của dòng bảng |
-| `color.gray.100` | `#EEF0F3` | Nền tiêu đề cột bảng; nền thành phần bị vô hiệu; nền nhãn trung tính |
-| `color.gray.200` | `#E1E4E9` | Đường kẻ phân cách; viền thẻ và bảng |
+| `color.gray.0` | `#FFFFFF` | Nền trang, ô nhập, hộp thoại, bảng; chữ trên nền đậm |
+| `color.gray.50` | `#FAFAFA` | Nền thanh menu bên `[Web]`, thẻ; nền khi rê chuột; nền ô chỉ đọc; vùng mở rộng của dòng bảng |
+| `color.gray.100` | `#F5F5F5` | Nền thành phần bị vô hiệu; nền nhãn trung tính; rê chuột trên nền `gray.50` |
+| `color.gray.200` | `#E9EBEE` | Đường kẻ phân cách; đường kẻ dòng bảng |
 | `color.gray.300` | `#CBD0D8` | Viền nhãn trung tính |
 | `color.gray.400` | `#808998` | Viền điều khiển (ô nhập, ô chọn, nút phụ) |
 | `color.gray.500` | `#6B7482` | Chữ gợi ý (placeholder), chữ vô hiệu; viền điều khiển khi rê chuột |
-| `color.gray.600` | `#4F5764` | Chữ phụ; tiêu đề cột bảng; biểu tượng phụ; mục điều hướng chưa chọn |
+| `color.gray.600` | `#5F6B7A` | Chữ phụ; tiêu đề cột bảng; biểu tượng phụ; mục điều hướng chưa chọn |
 | `color.gray.700` | `#3A414D` | Chữ nhãn trung tính; nền nhãn trung tính đậm |
-| `color.gray.900` | `#161A21` | Chữ chính; nền lớp che (kèm độ trong suốt) |
+| `color.gray.900` | `#1B212D` | Chữ chính; chữ trên nền chanh; nền lớp che (kèm độ trong suốt) |
 
-**Xanh dương (chủ đạo; cũng dùng cho tông `info`)**
+**Xanh chanh (màu nhấn; ĐX-DS-17)**
 
 | Token | Giá trị | Dùng cho |
 |---|---|---|
-| `color.blue.50` | `#EEF4FB` | Nền mục được chọn; nền tông `info` |
-| `color.blue.100` | `#D6E4F5` | Viền tông `info`; nền khi nhấn nút văn bản; nền chỉ báo mục điều hướng đang chọn |
-| `color.blue.500` | `#2F69B0` | Vòng tiêu điểm bàn phím |
-| `color.blue.600` | `#1F5499` | Nền nút chính; biểu tượng và nền đậm của tông `info`; viền mục được chọn |
-| `color.blue.700` | `#184380` | Chữ liên kết và nút văn bản; chữ tông `info`; nền nút chính khi rê chuột |
-| `color.blue.800` | `#133466` | Nền nút chính khi nhấn |
+| `color.lime.50` | `#F3FBDD` | Nền mục được chọn |
+| `color.lime.100` | `#E7F7C3` | Nền chỉ báo mục điều hướng đang chọn `[Android]` |
+| `color.lime.400` | `#C8EE44` | Nền nút chính; nền mục menu bên đang chọn `[Web]` |
+| `color.lime.500` | `#BCE236` | Nền nút chính khi rê chuột |
+| `color.lime.600` | `#AED42A` | Nền nút chính khi nhấn |
+
+Chữ trên mọi bậc chanh là `color.gray.900`. Không dùng bậc chanh làm màu chữ, biểu tượng hay nền cho chữ trắng.
+
+**Xanh lá đậm (liên kết, tiêu điểm; ĐX-DS-17)**
+
+| Token | Giá trị | Dùng cho |
+|---|---|---|
+| `color.emerald.50` | `#E8F5EF` | Nền nút văn bản khi rê chuột |
+| `color.emerald.100` | `#CDEBDD` | Nền nút văn bản khi nhấn |
+| `color.emerald.600` | `#1E7F5C` | Vòng tiêu điểm bàn phím; viền mục được chọn; vạch dưới tab đang chọn; cung chỉ báo đang tải |
+| `color.emerald.700` | `#197050` | Chữ liên kết và nút văn bản |
+| `color.emerald.800` | `#15603F` | Chữ liên kết khi rê chuột `[Web]` |
+
+**Xanh dương (tông `info`)**
+
+| Token | Giá trị | Dùng cho |
+|---|---|---|
+| `color.blue.50` | `#EEF4FB` | Nền tông `info` |
+| `color.blue.100` | `#D6E4F5` | Viền tông `info` |
+| `color.blue.600` | `#1F5499` | Biểu tượng và nền đậm của tông `info` |
+| `color.blue.700` | `#184380` | Chữ tông `info` |
 
 **Xanh lá, hổ phách, đỏ**
 
@@ -215,6 +236,7 @@ Thang cơ sở 4; chỉ số = số bội của 4.
 | `space.3` | 12 |
 | `space.4` | 16 |
 | `space.6` | 24 |
+| `space.8` | 32 |
 | `space.12` | 48 |
 
 Đơn vị: `[Web]` px, `[Android]` dp. Mọi khoảng cách, đệm (padding) và lề (margin) lấy từ thang này; không dùng giá trị ngoài thang.
@@ -223,18 +245,18 @@ Thang cơ sở 4; chỉ số = số bội của 4.
 
 | Token | Giá trị | Dùng cho |
 |---|---|---|
-| `radius.sm` | 4 | Ô chọn (checkbox), vạch nhấn |
-| `radius.md` | 8 | Nút, ô nhập, thẻ, bảng, ô đính ảnh |
-| `radius.lg` | 12 | Hộp thoại, khối thông báo, lớp xem ảnh |
+| `radius.sm` | 6 | Ô chọn (checkbox), vạch nhấn |
+| `radius.md` | 10 | Nút, ô nhập, ô chọn, mục menu bên, ô đính ảnh |
+| `radius.lg` | 16 | Thẻ, hộp thoại, khối thông báo, lớp xem ảnh, khối ảnh ở màn hình đăng nhập |
 | `radius.full` | 9999 | Nhãn trạng thái, chip, nút chọn (radio) |
 | `border.width.default` | 1 | Viền thẻ, ô nhập, đường kẻ |
 | `border.width.strong` | 2 | Vòng tiêu điểm; viền mục được chọn; viền ô nhập khi tiêu điểm |
 | `border.width.accent` | 4 | Vạch nhấn ở đầu dòng được làm nổi bật và mục điều hướng web đang chọn |
 | `border.focus-offset` | 2 | Khoảng cách giữa vòng tiêu điểm và mép thành phần `[Web]` |
-| `shadow.menu` | `0 4px 12px rgba(22, 26, 33, 0.12)`; `[Android]` độ nổi 4 dp | Menu thả xuống, danh sách chọn |
-| `shadow.dialog` | `0 8px 24px rgba(22, 26, 33, 0.16)`; `[Android]` độ nổi 8 dp | Hộp thoại, lớp xem ảnh |
+| `shadow.menu` | `0 4px 12px rgba(27, 33, 45, 0.12)`; `[Android]` độ nổi 4 dp | Menu thả xuống, danh sách chọn |
+| `shadow.dialog` | `0 8px 24px rgba(27, 33, 45, 0.16)`; `[Android]` độ nổi 8 dp | Hộp thoại, lớp xem ảnh |
 
-Thẻ, bảng và thanh điều hướng không dùng đổ bóng; chúng phân tách bằng viền `border.width.default` màu `color.border.subtle`.
+Thẻ, bảng và thanh điều hướng không dùng đổ bóng (ĐX-DS-17): thẻ phân tách bằng nền `color.surface.subtle` trên nền trang `color.surface.default`; bảng chỉ có đường kẻ ngang `color.border.subtle` giữa các dòng; thanh menu bên phân tách bằng nền `color.surface.subtle`.
 
 ### 4.5 Chuyển động
 
@@ -262,11 +284,11 @@ Không có chuyển động nào khác (ĐX-DS-15). Khi hệ điều hành bật
 
 | Token | Giá trị | Dùng cho |
 |---|---|---|
-| `size.control.sm` | 32 | Nút và ô chọn trong dòng bảng, bộ lọc dày đặc |
-| `size.control.md` | 40 | Mặc định cho nút, ô nhập, ô chọn |
-| `size.control.lg` | 48 | Ô nhập mã quầy và nút thao tác chính ở quầy (ĐX-DS-08) |
-| `size.table.row` | 48 | Chiều cao tối thiểu dòng bảng |
-| `size.table.row-sub` | 40 | Chiều cao tối thiểu dòng con khi mở rộng |
+| `size.control.sm` | 36 | Nút và ô chọn trong dòng bảng, bộ lọc dày đặc |
+| `size.control.md` | 48 | Mặc định cho nút, ô nhập, ô chọn, mục menu bên |
+| `size.control.lg` | 56 | Ô nhập mã quầy và nút thao tác chính ở quầy; chiều cao tab (ĐX-DS-08) |
+| `size.table.row` | 64 | Chiều cao tối thiểu dòng bảng |
+| `size.table.row-sub` | 48 | Chiều cao tối thiểu dòng con khi mở rộng |
 | `size.photo.tile` | 96 | Ô ảnh thu nhỏ trong khu đính ảnh và đối chiếu |
 | `size.dialog.sm` | 480 | Chiều rộng hộp xác nhận mặc định |
 | `size.dialog.md` | 640 | Chiều rộng hộp thoại nhiều nội dung hoặc có biểu mẫu |
@@ -311,32 +333,34 @@ Không có chuyển động nào khác (ĐX-DS-15). Khi hệ điều hành bật
 | | `color.text.placeholder` | `color.gray.500` | Chữ gợi ý; chỉ dùng trên nền `color.surface.default` |
 | | `color.text.disabled` | `color.gray.500` | Chữ của thành phần bị vô hiệu |
 | | `color.text.inverse` | `color.gray.0` | Chữ trên nền đậm |
-| | `color.text.link` | `color.blue.700` | Liên kết, nút văn bản |
-| | `color.text.link-hover` | `color.blue.800` | `[Web]` liên kết khi rê chuột |
-| Nền | `color.surface.default` | `color.gray.0` | Thẻ, ô nhập, bảng, hộp thoại, thanh điều hướng |
-| | `color.surface.subtle` | `color.gray.50` | Nền trang; rê chuột; ô chỉ đọc; vùng mở rộng; cột "lúc giao" ở khối đối chiếu |
-| | `color.surface.muted` | `color.gray.100` | Tiêu đề cột bảng; nền thành phần bị vô hiệu |
-| | `color.surface.selected` | `color.blue.50` | Dòng, thẻ, mục được chọn |
+| | `color.text.link` | `color.emerald.700` | Liên kết, nút văn bản |
+| | `color.text.link-hover` | `color.emerald.800` | `[Web]` liên kết khi rê chuột |
+| Nền | `color.surface.default` | `color.gray.0` | Nền trang `[Web]`, ô nhập, bảng, hộp thoại; thanh điều hướng `[Android]` |
+| | `color.surface.subtle` | `color.gray.50` | Thanh menu bên `[Web]`, thẻ; rê chuột; ô chỉ đọc; vùng mở rộng; cột "lúc giao" ở khối đối chiếu |
+| | `color.surface.muted` | `color.gray.100` | Nền thành phần bị vô hiệu; rê chuột trên nền `subtle` |
+| | `color.surface.selected` | `color.lime.50` | Dòng, thẻ, mục được chọn |
 | | `color.overlay.scrim` | `color.gray.900` độ mờ 50% | Lớp che sau hộp thoại và lớp xem ảnh |
 | | `color.overlay.pressed` | `color.gray.900` độ mờ 12% | `[Android]` hiệu ứng gợn khi chạm |
 | Viền | `color.border.subtle` | `color.gray.200` | Đường kẻ, viền thẻ, viền bảng |
 | | `color.border.control` | `color.gray.400` | Viền ô nhập, ô chọn, nút phụ |
 | | `color.border.control-hover` | `color.gray.500` | `[Web]` viền điều khiển khi rê chuột |
-| | `color.border.selected` | `color.blue.600` | Viền thẻ hoặc mục được chọn; vạch nhấn mục điều hướng |
+| | `color.border.selected` | `color.emerald.600` | Viền thẻ hoặc mục được chọn; vạch dưới tab đang chọn |
 | | `color.border.error` | `color.red.600` | Viền ô nhập có lỗi |
-| Tiêu điểm | `color.focus.ring` | `color.blue.500` | Vòng tiêu điểm bàn phím |
-| Điều hướng | `color.nav.indicator` | `color.blue.100` | Nền chỉ báo mục đang chọn ở thanh điều hướng dưới `[Android]` |
-| Tiến trình | `color.progress.indicator` | `color.blue.600` | Cung quay của chỉ báo đang tải |
+| Tiêu điểm | `color.focus.ring` | `color.emerald.600` | Vòng tiêu điểm bàn phím |
+| Điều hướng | `color.nav.indicator` | `color.lime.100` | Nền chỉ báo mục đang chọn ở thanh điều hướng dưới `[Android]` |
+| | `color.nav.selected.bg` | `color.lime.400` | Nền mục đang chọn ở thanh menu bên `[Web]` |
+| | `color.nav.selected.text` | `color.gray.900` | Chữ mục đang chọn ở thanh menu bên `[Web]` |
+| Tiến trình | `color.progress.indicator` | `color.emerald.600` | Cung quay của chỉ báo đang tải |
 | | `color.progress.track` | `color.gray.200` | Vạch nền của chỉ báo đang tải |
-| Nút chính | `color.action.primary.bg` / `-hover` / `-pressed` | `color.blue.600` / `700` / `800` | Nền nút chính |
-| | `color.action.primary.text` | `color.gray.0` | Chữ nút chính |
+| Nút chính | `color.action.primary.bg` / `-hover` / `-pressed` | `color.lime.400` / `500` / `600` | Nền nút chính |
+| | `color.action.primary.text` | `color.gray.900` | Chữ nút chính (chữ tối trên nền chanh) |
 | Nút hủy bỏ | `color.action.destructive.bg` / `-hover` / `-pressed` | `color.red.600` / `700` / `800` | Nền nút hủy bỏ |
 | | `color.action.destructive.text` | `color.gray.0` | Chữ nút hủy bỏ |
 | Nút phụ | `color.action.secondary.bg` / `-hover` / `-pressed` | `color.gray.0` / `50` / `100` | Nền nút phụ |
 | | `color.action.secondary.border` | `color.border.control` | Viền nút phụ |
 | | `color.action.secondary.text` | `color.text.primary` | Chữ nút phụ |
 | Nút văn bản | `color.action.tertiary.text` | `color.text.link` | Chữ nút văn bản |
-| | `color.action.tertiary.bg-hover` / `-pressed` | `color.blue.50` / `100` | Nền khi rê chuột / khi nhấn |
+| | `color.action.tertiary.bg-hover` / `-pressed` | `color.emerald.50` / `100` | Nền khi rê chuột / khi nhấn |
 | Vô hiệu | `color.action.disabled.bg` | `color.gray.100` | Nền nút, ô nhập bị vô hiệu |
 | | `color.action.disabled.text` | `color.gray.500` | Chữ bị vô hiệu |
 | | `color.action.disabled.border` | `color.gray.200` | Viền bị vô hiệu |
@@ -378,21 +402,22 @@ Tỷ lệ tính theo công thức độ chói tương đối của WCAG 2.x từ
 
 | Cặp màu (chữ hoặc thành phần / nền) | Dùng ở | Tỷ lệ | Yêu cầu | Kết quả |
 |---|---|---|---|---|
-| Chữ chính / nền mặc định (`default`) | Nội dung chính | 17,44:1 | 4,5:1 | Đạt |
-| Chữ chính / nền phụ (`subtle`) | Nội dung trên nền trang, hàng rê chuột | 16,27:1 | 4,5:1 | Đạt |
-| Chữ chính / nền được chọn (`selected`) | Dòng, thẻ được chọn | 15,76:1 | 4,5:1 | Đạt |
-| Chữ phụ / nền mặc định (`default`) | Chú thích, chữ phụ | 7,29:1 | 4,5:1 | Đạt |
-| Chữ phụ / nền phụ (`subtle`) | Chú thích trên nền trang | 6,80:1 | 4,5:1 | Đạt |
-| Chữ phụ / nền xám nhạt (`muted`) | Chữ phụ trong tiêu đề bảng | 6,39:1 | 4,5:1 | Đạt |
-| Chữ phụ / nền được chọn (`selected`) | Chú thích trong dòng được chọn | 6,59:1 | 4,5:1 | Đạt |
+| Chữ chính / nền mặc định (`default`) | Nội dung chính | 16,13:1 | 4,5:1 | Đạt |
+| Chữ chính / nền phụ (`subtle`) | Thanh menu bên, hàng rê chuột, thẻ | 15,45:1 | 4,5:1 | Đạt |
+| Chữ chính / nền được chọn (`selected`) | Dòng, thẻ được chọn | 15,09:1 | 4,5:1 | Đạt |
+| Chữ phụ / nền mặc định (`default`) | Chú thích, chữ phụ, tiêu đề cột bảng | 5,43:1 | 4,5:1 | Đạt |
+| Chữ phụ / nền phụ (`subtle`) | Mục menu chưa chọn, chú thích trong thẻ | 5,20:1 | 4,5:1 | Đạt |
+| Chữ phụ / nền xám nhạt (`muted`) | Chữ phụ trên nền tắt tiếng | 4,98:1 | 4,5:1 | Đạt |
+| Chữ phụ / nền được chọn (`selected`) | Chú thích trong dòng được chọn | 5,08:1 | 4,5:1 | Đạt |
 | Chữ gợi ý / nền mặc định (`default`) | Placeholder (chỉ trên ô nhập nền trắng) | 4,72:1 | 4,5:1 | Đạt |
-| Chữ liên kết / nền mặc định (`default`) | Liên kết, nút văn bản | 9,75:1 | 4,5:1 | Đạt |
-| Chữ liên kết / nền phụ (`subtle`) | Liên kết trên nền trang | 9,10:1 | 4,5:1 | Đạt |
-| Chữ nút văn bản / nền rê chuột | Nút văn bản khi rê chuột | 8,81:1 | 4,5:1 | Đạt |
-| Chữ nút văn bản / nền khi nhấn | Nút văn bản khi nhấn | 7,56:1 | 4,5:1 | Đạt |
-| Chữ trắng / nút chính | Nút chính | 7,54:1 | 4,5:1 | Đạt |
-| Chữ trắng / nút chính rê chuột | – | 9,75:1 | 4,5:1 | Đạt |
-| Chữ trắng / nút chính khi nhấn | – | 12,28:1 | 4,5:1 | Đạt |
+| Chữ liên kết / nền mặc định (`default`) | Liên kết, nút văn bản | 6,04:1 | 4,5:1 | Đạt |
+| Chữ liên kết / nền phụ (`subtle`) | Liên kết trong thẻ, thanh menu bên | 5,79:1 | 4,5:1 | Đạt |
+| Chữ nút văn bản / nền rê chuột | Nút văn bản khi rê chuột | 5,39:1 | 4,5:1 | Đạt |
+| Chữ nút văn bản / nền khi nhấn | Nút văn bản khi nhấn | 4,76:1 | 4,5:1 | Đạt |
+| Chữ tối / nút chính | Nút chính | 12,11:1 | 4,5:1 | Đạt |
+| Chữ tối / nút chính rê chuột | – | 10,81:1 | 4,5:1 | Đạt |
+| Chữ tối / nút chính khi nhấn | – | 9,41:1 | 4,5:1 | Đạt |
+| Chữ tối / mục menu bên đang chọn | Thanh menu bên `[Web]` | 12,11:1 | 4,5:1 | Đạt |
 | Chữ trắng / nút hủy bỏ | Nút hủy bỏ | 5,46:1 | 4,5:1 | Đạt |
 | Chữ trắng / nút hủy bỏ rê chuột | – | 7,66:1 | 4,5:1 | Đạt |
 | Chữ trắng / nút hủy bỏ khi nhấn | – | 10,26:1 | 4,5:1 | Đạt |
@@ -400,32 +425,33 @@ Tỷ lệ tính theo công thức độ chói tương đối của WCAG 2.x từ
 | Chữ tông `success` / nền tông `success` | Nhãn nhạt, khối thông báo | 6,60:1 | 4,5:1 | Đạt |
 | Chữ tông `warning` / nền tông `warning` | Nhãn nhạt, khối thông báo | 6,28:1 | 4,5:1 | Đạt |
 | Chữ tông `danger` / nền tông `danger` | Nhãn nhạt, khối thông báo | 6,70:1 | 4,5:1 | Đạt |
-| Chữ tông `neutral` / nền tông `neutral` | Nhãn nhạt, khối thông báo | 9,00:1 | 4,5:1 | Đạt |
+| Chữ tông `neutral` / nền tông `neutral` | Nhãn nhạt, khối thông báo | 9,43:1 | 4,5:1 | Đạt |
 | Chữ trắng / nền đậm tông `info` | Nhãn đậm | 7,54:1 | 4,5:1 | Đạt |
 | Chữ trắng / nền đậm tông `success` | Nhãn đậm | 5,37:1 | 4,5:1 | Đạt |
 | Chữ trắng / nền đậm tông `warning` | Nhãn đậm | 4,58:1 | 4,5:1 | Đạt |
 | Chữ trắng / nền đậm tông `danger` | Nhãn đậm | 5,46:1 | 4,5:1 | Đạt |
 | Chữ trắng / nền đậm tông `neutral` | Nhãn đậm | 10,28:1 | 4,5:1 | Đạt |
 | Viền điều khiển / nền mặc định (`default`) | Ô nhập, ô chọn, nút phụ | 3,53:1 | 3:1 | Đạt |
-| Viền điều khiển / nền phụ (`subtle`) | Ô chọn trên nền trang | 3,29:1 | 3:1 | Đạt |
-| Viền điều khiển / nền xám nhạt (`muted`) | Viền khi điều khiển nằm trên nền tắt tiếng | 3,09:1 | 3:1 | Đạt |
-| Vòng tiêu điểm / nền mặc định (`default`) | Tiêu điểm bàn phím | 5,57:1 | 3:1 | Đạt |
-| Vòng tiêu điểm / nền phụ (`subtle`) | Tiêu điểm bàn phím trên nền trang | 5,20:1 | 3:1 | Đạt |
+| Viền điều khiển / nền phụ (`subtle`) | Ô chọn trong thẻ, thanh menu bên | 3,38:1 | 3:1 | Đạt |
+| Viền điều khiển / nền xám nhạt (`muted`) | Viền khi điều khiển nằm trên nền tắt tiếng | 3,24:1 | 3:1 | Đạt |
+| Vòng tiêu điểm / nền mặc định (`default`) | Tiêu điểm bàn phím | 4,95:1 | 3:1 | Đạt |
+| Vòng tiêu điểm / nền phụ (`subtle`) | Tiêu điểm bàn phím trong thẻ, thanh menu bên | 4,74:1 | 3:1 | Đạt |
+| Vòng tiêu điểm / mục menu đang chọn | Tiêu điểm trên nền chanh | 3,71:1 | 3:1 | Đạt |
 | Viền lỗi / nền mặc định (`default`) | Ô nhập lỗi | 5,46:1 | 3:1 | Đạt |
-| Viền mục được chọn / nền mặc định (`default`) | Thẻ, mục được chọn | 7,54:1 | 3:1 | Đạt |
+| Viền mục được chọn / nền mặc định (`default`) | Thẻ, mục được chọn; vạch dưới tab đang chọn | 4,95:1 | 3:1 | Đạt |
 | Biểu tượng tông `info` / nền tông `info` | Biểu tượng trong nhãn, khối thông báo | 6,81:1 | 3:1 | Đạt |
 | Biểu tượng tông `success` / nền tông `success` | Biểu tượng trong nhãn, khối thông báo | 4,77:1 | 3:1 | Đạt |
 | Biểu tượng tông `warning` / nền tông `warning` | Biểu tượng trong nhãn, khối thông báo | 4,20:1 | 3:1 | Đạt |
 | Biểu tượng tông `danger` / nền tông `danger` | Biểu tượng trong nhãn, khối thông báo | 4,78:1 | 3:1 | Đạt |
-| Biểu tượng tông `neutral` / nền tông `neutral` | Biểu tượng trong nhãn, khối thông báo | 6,39:1 | 3:1 | Đạt |
+| Biểu tượng tông `neutral` / nền tông `neutral` | Biểu tượng trong nhãn, khối thông báo | 4,98:1 | 3:1 | Đạt |
 
-Ngoại lệ không bắt buộc đạt 4,5:1: chữ bị vô hiệu (`color.text.disabled` trên `color.action.disabled.bg` đạt 4,14:1); đường kẻ và viền trang trí (`color.border.subtle`, viền tông). Các thành phần này không là cách duy nhất truyền thông tin: nhãn, chữ và vị trí vẫn nhận biết được.
+Ngoại lệ không bắt buộc đạt 4,5:1: chữ bị vô hiệu (`color.text.disabled` trên `color.action.disabled.bg` đạt 4,33:1); đường kẻ và viền trang trí (`color.border.subtle`, viền tông). Các thành phần này không là cách duy nhất truyền thông tin: nhãn, chữ và vị trí vẫn nhận biết được.
 
 ### 5.5 Khoảng cách theo vai trò
 
 | Token | Giá trị | Dùng cho |
 |---|---|---|
-| `space.gutter` | `[Android]` `space.4`; `[Web]` `space.6` | Lề trái, phải của nội dung màn hình |
+| `space.gutter` | `[Android]` `space.4`; `[Web]` `space.8` | Lề trái, phải của nội dung màn hình |
 | `space.section` | `space.6` | Khoảng giữa các khu vực lớn trong một màn hình |
 | `space.card` | `space.4` | Đệm bên trong thẻ, khối thông báo, ô đính ảnh |
 | `space.dialog` | `space.6` | Đệm bên trong hộp thoại |
@@ -607,7 +633,7 @@ Mỗi thành phần dưới đây ghi: mục đích, cấu tạo, biến thể v
 | Cấu tạo | Chữ (`type.label`); biểu tượng `size.icon.md` bên trái, tùy chọn. Nhãn chữ là động từ theo mục 9.8. Biểu tượng dùng khi giúp nhận ra hành động, ví dụ `refresh` ở nút Làm mới, `download` ở nút Xuất Excel và Xuất CSV (SCR-QT-12). |
 | Biến thể | **Chính** (`primary`): hành động quan trọng nhất của vùng, tối đa một nút chính trong mỗi vùng hành động (toàn màn hình hoặc một hộp thoại). **Phụ** (`secondary`): hành động thay thế. **Văn bản** (`tertiary`): hành động nhẹ, hành động ở dòng bảng, liên kết dạng nút. **Hủy bỏ** (`destructive`): hành động xóa, ngừng, khóa, hủy, từ chối (danh sách ở mục 9.2). |
 | Kích thước | `[Web]` `size.control.sm`/`md`/`lg`, mặc định `md`; `lg` cho thao tác chính ở quầy. `[Android]` `size.button.height`; nút chính cuối biểu mẫu rộng hết chiều ngang. Bo góc `radius.md`; đệm ngang `space.4`. |
-| Màu theo biến thể | Chính: `color.action.primary.*`. Hủy bỏ: `color.action.destructive.*`. Phụ: `color.action.secondary.*`. Văn bản: chữ `color.action.tertiary.text`, nền trong suốt, `bg-hover`/`bg-pressed`. Vô hiệu: `color.action.disabled.*` (mọi biến thể). |
+| Màu theo biến thể | Chính: `color.action.primary.*` (nền chanh, chữ tối). Hủy bỏ: `color.action.destructive.*`. Phụ: `color.action.secondary.*`. Văn bản: chữ `color.action.tertiary.text`, nền trong suốt, `bg-hover`/`bg-pressed`. Vô hiệu: `color.action.disabled.*` (mọi biến thể). |
 | Quy tắc | Nút gửi dữ liệu vô hiệu trong lúc chờ phản hồi và hiển thị "Đang xử lý" (mục 6). Hành động bị vô hiệu do nghiệp vụ phải có lý do ở cạnh (ĐX-DS-11). Hai nút cạnh nhau cách `space.actions`; nút chính ở bên phải trong hộp thoại và hàng nút cuối biểu mẫu `[Web]`. |
 | Tiếp cận | Là phần tử nút thật; nhãn chữ đủ nghĩa khi đọc riêng; `[Android]` vùng chạm `size.touch.min`. |
 | Dùng ở | Mọi màn hình có hành động. |
@@ -698,9 +724,9 @@ Mỗi thành phần dưới đây ghi: mục đích, cấu tạo, biến thể v
 | Mục | Quy định |
 |---|---|
 | Mục đích | Chuyển giữa các khung nhìn của cùng một màn hình: Đang mượn, Quá hạn, Đã trả (SCR-NV-08); Đến hạn bảo trì, Chờ tiếp nhận sửa chữa (SCR-NV-14). |
-| Cấu tạo | Dãy tab ngang; chữ `type.label`; viền dưới `color.border.subtle`. Tab đang chọn: chữ `color.text.link` và vạch dưới `border.width.strong` màu `color.border.selected`; tab khác: chữ `color.text.secondary`. Chiều cao `size.control.lg`. |
+| Cấu tạo | Dãy tab ngang, các tab cách nhau `space.6`; chữ `type.label`; viền dưới `color.border.subtle`. Tab đang chọn: chữ `color.text.primary` độ đậm `font.weight.bold` và vạch dưới `border.width.strong` màu `color.border.selected` (dấu hiệu ngoài màu); tab khác: chữ `color.text.secondary`. Chiều cao `size.control.lg` (ĐX-DS-17: tab gạch chân). |
 | Quy tắc | Đổi tab thì tải lại dữ liệu của tab đó; nội dung tab không dùng nhãn trạng thái thay chữ tab. |
-| Tiếp cận | Mũi tên trái phải di chuyển giữa tab; tab đang chọn được khai báo cho trình đọc màn hình. |
+| Tiếp cận | Mẫu tab của WAI-ARIA, kích hoạt tự động: mũi tên trái phải di chuyển vòng và chọn luôn, Home/End về tab đầu/cuối; chỉ tab đang chọn nhận phím Tab; tab đang chọn được khai báo cho trình đọc màn hình; nội dung tab nằm trong vùng gắn với tab đang chọn. |
 | Dùng ở | SCR-NV-08, SCR-NV-14. |
 
 #### CMP-10 Bộ chọn số lượng (`QuantityStepper`)
@@ -764,8 +790,8 @@ Mỗi thành phần dưới đây ghi: mục đích, cấu tạo, biến thể v
 | Mục | Quy định |
 |---|---|
 | Mục đích | Nhóm thông tin hoặc hành động liên quan trong một khung. |
-| Cấu tạo | Nền `color.surface.default`, viền `color.border.subtle`, `radius.md`, đệm `space.card`, không đổ bóng. Tiêu đề (nếu có) `type.title-card`. |
-| Biến thể | **Tĩnh**: chỉ chứa nội dung. **Tương tác**: cả thẻ bấm được, có biểu tượng `chevron_right` ở cuối khi chuyển màn hình; rê chuột `[Web]` viền `color.border.control-hover`; có trạng thái nhấn và tiêu điểm theo mục 6. Dùng làm "lối vào chức năng" ở các trang chủ: tiêu đề `type.title-card`, không biểu tượng riêng cho từng chức năng. **Chọn được**: như tương tác nhưng chọn một trong nhiều; được chọn: nền `color.surface.selected`, viền `color.border.selected` dày `border.width.strong`, biểu tượng `check_circle` ở góc. **Tông**: nền `color.tone.<tông>.bg`, viền `.border`, kèm biểu tượng và chữ của tông (thẻ quyền mượn khi khác Bình thường). |
+| Cấu tạo | Nền `color.surface.subtle` trên nền trang `color.surface.default`, không viền nhìn thấy, `radius.lg`, đệm `space.6`, không đổ bóng (ĐX-DS-17). Tiêu đề (nếu có) `type.title-card`. |
+| Biến thể | **Tĩnh**: chỉ chứa nội dung. **Tương tác**: cả thẻ bấm được, có biểu tượng `chevron_right` ở cuối khi chuyển màn hình; rê chuột `[Web]` hiện viền `color.border.control-hover`, nhấn nền `color.surface.muted`; có trạng thái nhấn và tiêu điểm theo mục 6. Dùng làm "lối vào chức năng" ở các trang chủ: tiêu đề `type.title-card`, không biểu tượng riêng cho từng chức năng. **Chọn được**: như tương tác nhưng chọn một trong nhiều; được chọn: nền `color.surface.selected`, viền `color.border.selected` dày `border.width.strong`, biểu tượng `check_circle` ở góc. **Tông**: nền `color.tone.<tông>.bg`, viền `.border`, kèm biểu tượng và chữ của tông (thẻ quyền mượn khi khác Bình thường). |
 | Quy tắc | Thẻ tông không thay Khối thông báo (CMP-24) khi nội dung là thông báo lỗi hoặc cảnh báo. Thẻ chọn được là nhóm nút chọn: chọn bằng Space hoặc Enter, mũi tên di chuyển `[Web]`. |
 | Dùng ở | SCR-SV-01 (thẻ quyền mượn, lối vào); SCR-SV-05 (tóm tắt phiếu); SCR-NV-01, SCR-QT-01 (lối vào); SCR-NV-05 (ba thẻ nguồn giao, chọn được); SCR-NV-06 (thẻ thiết bị đã thêm); SCR-NV-09 (thẻ kiểm tra từng thiết bị); SCR-NV-07, SCR-NV-10 (kết quả vừa lập); SCR-QT-05 (khối từng nhóm), SCR-QT-08 (biểu mẫu). |
 
@@ -794,7 +820,7 @@ Mỗi thành phần dưới đây ghi: mục đích, cấu tạo, biến thể v
 | Mục | Quy định |
 |---|---|
 | Mục đích | Hiển thị danh sách có nhiều cột cho NV và QT. |
-| Cấu tạo | Khung `color.surface.default`, viền `color.border.subtle`, `radius.md`. Hàng tiêu đề: nền `color.surface.muted`, chữ `type.label` `color.text.secondary`, cố định khi cuộn dọc (`z.sticky`). Dòng: cao tối thiểu `size.table.row`, chữ `type.body`, đường kẻ dưới `color.border.subtle`, đệm ngang `space.3`. |
+| Cấu tạo | Không khung bao, nền `color.surface.default` (ĐX-DS-17). Hàng tiêu đề: không nền, chữ `type.label-sm` `color.text.secondary`, đường kẻ dưới `color.border.subtle`, cố định khi cuộn dọc (`z.sticky`). Dòng: cao tối thiểu `size.table.row`, chữ `type.body`, đường kẻ dưới `color.border.subtle`, đệm `space.4` ngang và `space.3` dọc. |
 | Căn lề và định dạng | Chữ căn trái. Số lượng, số tiền căn phải, chữ số cùng độ rộng. Mã (`type.code`), ngày giờ, tiền không xuống dòng. Văn bản dài (mô tả, nội dung thực hiện, lý do) xuống dòng, **không cắt bằng dấu ba chấm** vì thông tin dùng để đối chiếu (BR-80, NFR-07). Cột nhãn trạng thái căn trái. Cột hành động ở cuối, căn phải. |
 | Trạng thái dòng | Rê chuột: nền `color.surface.subtle`. Được chọn: `color.surface.selected`. Được làm nổi bật: theo mục 6 (kiểu thông tin cho ĐX-UI-09, kiểu cảnh báo cho khoản không đủ ở SCR-NV-03); kiểu cảnh báo **kèm** chữ nhãn: khoản không đủ có CMP-13 "Không đủ" ở ô số lượng khả dụng. Dòng bấm được (chọn dòng để mở màn hình khác): con trỏ bàn tay, nhận tiêu điểm, Enter mở. |
 | Biến thể | **Dòng mở rộng**: ô đầu có CMP-02 `expand_more`/`expand_less` (`aria-expanded`); vùng mở rộng nền `color.surface.subtle`, dòng con cao `size.table.row-sub`. **Cột chọn**: ô tích (CMP-07) ở ô đầu (SCR-QT-11); ô tích trong ô của dòng (SCR-NV-12). **Hành động ở dòng**: tối đa 2 nút văn bản `sm`; từ 3 hành động dùng CMP-20 (ĐX-DS-14). |
@@ -932,8 +958,8 @@ Mỗi thành phần dưới đây ghi: mục đích, cấu tạo, biến thể v
 | Mục | Quy định |
 |---|---|
 | Mục đích | Điều hướng giữa các chức năng của NV hoặc QT (`UI-Screens.md` 4.2, 4.3). |
-| Cấu tạo | Rộng `layout.web.sidebar-width`, nền `color.surface.default`, đường kẻ phải `color.border.subtle`, cố định, tự cuộn khi dài. Mục: cao `size.control.md`, chữ `type.label`, đệm ngang `space.4`; không có biểu tượng. Nhóm (QT: Danh mục, Cấu hình) có tiêu đề nhóm `type.caption` `color.text.secondary`. Danh sách mục theo vai trò lấy nguyên từ `UI-Screens.md` 4.2 và 4.3. |
-| Trạng thái | Mục đang chọn: nền `color.surface.selected`, chữ `color.text.link`, vạch nhấn `border.width.accent` màu `color.border.selected` ở mép trái. Rê chuột: nền `color.surface.subtle`. |
+| Cấu tạo | Rộng `layout.web.sidebar-width`, cao hết cửa sổ, nền `color.surface.subtle`, không đường kẻ (ĐX-DS-17). Đầu thanh: tên hệ thống "Quản lý mượn trả thiết bị" (`type.title-card`, độ đậm `font.weight.bold`), cao `layout.web.header-height`, là liên kết về trang chủ của vai trò; không logo (ĐX-DS-01). Phần mục tự cuộn khi dài, đệm ngang `space.4`. Mục: cao tối thiểu `size.control.md`, `radius.md`, chữ `type.label` `color.text.secondary`, đệm ngang `space.4`; các mục cách nhau `space.1`; mỗi mục có biểu tượng `size.icon.md` ở trước chữ, cách chữ `space.3` (Phụ lục A, nhóm "Menu bên web"); biểu tượng cùng màu chữ của mục và ẩn với trình đọc màn hình. Nhóm (QT: Danh mục, Cấu hình) có tiêu đề nhóm `type.caption` `color.text.secondary`. Danh sách mục theo vai trò lấy nguyên từ `UI-Screens.md` 4.2 và 4.3. |
+| Trạng thái | Mục đang chọn: nền `color.nav.selected.bg`, chữ `color.nav.selected.text` độ đậm `font.weight.bold` (dấu hiệu ngoài màu). Rê chuột: nền `color.surface.muted`, chữ `color.text.primary`. |
 | Quy tắc | Chỉ liệt kê mục thuộc vai trò (NFR-01; `User-Flows.md` 3.2); không có mục ngoài phạm vi giai đoạn 1. |
 | Tiếp cận | Là điều hướng có tên "Menu chính"; mục đang chọn được khai báo là trang hiện tại. |
 | Dùng ở | SCR-NV-01 đến SCR-NV-14; SCR-QT-01 đến SCR-QT-12. |
@@ -943,7 +969,7 @@ Mỗi thành phần dưới đây ghi: mục đích, cấu tạo, biến thể v
 | Mục | Quy định |
 |---|---|
 | Mục đích | Hiển thị người dùng đang đăng nhập và cho đăng xuất. |
-| Cấu tạo | Cao `layout.web.header-height`, nền `color.surface.default`, đường kẻ dưới `color.border.subtle`, `z.sticky`. Bên phải: họ tên (`type.body-strong`), vai trò (`type.caption` `color.text.secondary`, ví dụ "Nhân viên quản lý thiết bị", "Quản trị viên"), nút "Đăng xuất" (CMP-01 văn bản, biểu tượng `logout`). Nội dung bên trái do Wireframes quyết định. |
+| Cấu tạo | Dải đầu của cột nội dung (không chạy suốt chiều ngang), cao `layout.web.header-height`, nền `color.surface.default`, không đường kẻ, cố định khi cuộn (`z.sticky`), đệm ngang `space.gutter`. Bên phải: khối người dùng nền `color.surface.subtle`, `radius.full`, gồm họ tên (`type.body-strong`) và vai trò (`type.caption` `color.text.secondary`, ví dụ "Nhân viên quản lý thiết bị", "Quản trị viên"); nút "Đăng xuất" (CMP-01 văn bản, biểu tượng `logout`). Bên trái để trống; tên hệ thống nằm ở đầu thanh menu bên (CMP-29). |
 | Quy tắc | Đăng xuất không có hộp xác nhận (UF-CM-03). |
 | Dùng ở | SCR-NV-01 đến SCR-NV-14; SCR-QT-01 đến SCR-QT-12. |
 
@@ -1167,19 +1193,19 @@ Mục này chỉ quy định khung chung và kích thước; bố cục chi ti�
 | Token | Giá trị | Dùng cho |
 |---|---|---|
 | `layout.web.min-width` | 1024 | Chiều rộng cửa sổ tối thiểu được hỗ trợ (ĐX-DS-07). Dưới mức này trang cuộn ngang và không được hỗ trợ chính thức |
-| `layout.web.header-height` | 56 | Chiều cao thanh đầu trang (CMP-30) |
-| `layout.web.sidebar-width` | 240 | Chiều rộng thanh menu bên (CMP-29) |
+| `layout.web.header-height` | 72 | Chiều cao thanh đầu trang (CMP-30) và phần tên hệ thống ở đầu thanh menu bên (CMP-29) |
+| `layout.web.sidebar-width` | 250 | Chiều rộng thanh menu bên (CMP-29) |
 | `layout.web.content-max` | 1440 | Chiều rộng tối đa vùng nội dung; rộng hơn thì canh giữa |
 | `layout.web.form-max` | 640 | Chiều rộng tối đa của biểu mẫu một cột |
-| `layout.web.login-width` | 400 | Chiều rộng khung đăng nhập |
+| `layout.web.login-width` | 400 | Chiều rộng biểu mẫu đăng nhập |
 
 | Nội dung | Quy định |
 |---|---|
-| Khung chung | Thanh đầu trang chạy suốt chiều ngang ở trên; thanh menu bên ở bên trái, dưới thanh đầu trang; vùng nội dung ở bên phải, cuộn dọc độc lập, đệm `space.gutter`. Màn hình đăng nhập (SCR-CM-02) và khởi động (SCR-CM-03) không có hai thanh này. |
+| Khung chung | Thanh menu bên ở bên trái, cao hết cửa sổ, có tên hệ thống ở đầu; cột nội dung ở bên phải, cuộn dọc độc lập, gồm thanh đầu trang (CMP-30) ở trên và nội dung bên dưới, đệm ngang `space.gutter`. Nền trang `color.surface.default`, nền thanh menu bên `color.surface.subtle` (ĐX-DS-17). Màn hình đăng nhập (SCR-CM-02) và khởi động (SCR-CM-03) không có hai thanh này. |
 | Khung trang | Từ trên xuống: tiêu đề trang (`type.title-screen`) cùng hành động chính và nút Làm mới ở bên phải; khối thông báo (nếu có); thanh bộ lọc (nếu có); nội dung; phân trang. Các khu vực cách nhau `space.section`. |
 | Màn hình nhiều bước | Thanh tiến trình (CMP-31) nằm dưới tiêu đề trang. |
 | Cuộn | Trang không cuộn ngang; bảng và khối rộng cuộn ngang trong khung riêng (CMP-18). Hàng tiêu đề bảng và thanh đầu trang cố định khi cuộn dọc. |
-| Màn hình đăng nhập | Khung đăng nhập canh giữa cả hai chiều, rộng `layout.web.login-width`, nền `color.surface.default` với viền `color.border.subtle` và `radius.lg`; nền trang `color.surface.subtle`. |
+| Màn hình đăng nhập | Hai cột bằng nhau trên nền `color.surface.default` (ĐX-DS-17). Cột trái: tên hệ thống ở góc trên (`type.title-card`, độ đậm `font.weight.bold`), biểu mẫu rộng `layout.web.login-width` nằm chính giữa cột theo cả hai chiều, không khung. Cột phải: khối nền `color.surface.subtle`, `radius.lg`, cách mép `space.4`, chứa một ảnh minh họa trang trí do nhóm cung cấp (tên thay thế rỗng vì không mang thông tin; không logo); ảnh canh giữa, rộng tối đa `size.dialog.md`. |
 
 ---
 
@@ -1234,6 +1260,24 @@ Material Symbols, kiểu Outlined, độ đậm nét 400 (ĐX-DS-05). `[Web]` nh
 | | `inbox`, `search_off` | CMP-25 rỗng |
 | | `cloud_off` | CMP-25 lỗi mạng |
 | | `image`, `broken_image` | CMP-23 |
+| Menu bên web (CMP-29) | `home` | Trang chủ (NV, QT) |
+| | `pending_actions` | Phiếu yêu cầu chờ duyệt |
+| | `output` | Giao thiết bị |
+| | `input` | Nhận trả thiết bị |
+| | `receipt_long` | Biên bản và thu phạt (NV); Biên bản vi phạm (QT) |
+| | `assignment_late` | Phiếu chưa trả quá 30 ngày |
+| | `hourglass_empty` | Danh sách chờ |
+| | `build` | Bảo trì và sửa chữa |
+| | `meeting_room` | Phòng thiết bị |
+| | `category` | Loại thiết bị |
+| | `inventory_2` | Thiết bị |
+| | `rule` | Quy định mượn |
+| | `payments` | Phí trả trễ |
+| | `gavel` | Khung phạt |
+| | `tune` | Tham số hệ thống |
+| | `manage_accounts` | Tài khoản nhân viên |
+| | `recycling` | Thanh lý |
+| | `bar_chart` | Báo cáo |
 
 ---
 
@@ -1263,5 +1307,5 @@ Material Symbols, kiểu Outlined, độ đậm nét 400 (ĐX-DS-05). `[Web]` nh
 | Android (tài nguyên) | Tiền tố `ds_`; dấu chấm và gạch ngang đổi thành gạch dưới; chữ thường. Màu ở tệp màu, kích thước và cỡ chữ ở tệp kích thước (`dp` và `sp`) | `color.blue.600` → `ds_color_blue_600`; `space.4` → `ds_space_4` (dp); `font.size.14` → `ds_font_size_14` (sp) |
 | Vai trò kiểu chữ | Một nhóm gồm cỡ, chiều cao dòng, độ đậm, họ phông: `[Web]` ba biến `-size`, `-line`, `-weight` kèm họ phông; `[Android]` một kiểu chữ (text appearance) | `type.body` → `--ds-type-body-size`, `--ds-type-body-line`, `--ds-type-body-weight` |
 | Độ mờ | `color.overlay.scrim`: CSS `rgba(22, 26, 33, 0.5)`; Android `#80161A21` (ARGB). `color.overlay.pressed`: CSS `rgba(22, 26, 33, 0.12)`; Android `#1F161A21` | – |
-| Tham chiếu | Token ngữ nghĩa tham chiếu token nguyên thủy, không lặp giá trị: `[Web]` `var(--ds-color-blue-600)`; `[Android]` `@color/ds_color_blue_600` | `--ds-color-action-primary-bg: var(--ds-color-blue-600);` |
+| Tham chiếu | Token ngữ nghĩa tham chiếu token nguyên thủy, không lặp giá trị: `[Web]` `var(--ds-color-blue-600)`; `[Android]` `@color/ds_color_blue_600` | `--ds-color-action-primary-bg: var(--ds-color-lime-400);` |
 | Token riêng nền tảng | Chỉ khai báo ở nền tảng tương ứng (`[Web]` `z.*`, `layout.web.*`, `size.control.*`; `[Android]` `size.touch.*`, `size.input.*`) | – |
