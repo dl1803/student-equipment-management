@@ -4,6 +4,8 @@
 import { apiClient } from "@/shared/api/client";
 import { TIEN_TO_KHOA } from "@/shared/api/tienToKhoa";
 import type {
+  GiaTriThietBi,
+  GiaTriThietBiRequest,
   LoaiThietBi,
   LoaiThietBiCapNhatRequest,
   LoaiThietBiPage,
@@ -159,6 +161,28 @@ export async function qtSuaThietBi(
 ): Promise<ThietBi> {
   const res = await apiClient.put<ThietBi>(
     `/quan-tri/thiet-bi/${maHoa(ma)}`,
+    yeuCau,
+  );
+  return res.data;
+}
+
+export async function qtXoaThietBi(ma: string): Promise<void> {
+  await apiClient.delete(`/quan-tri/thiet-bi/${maHoa(ma)}`);
+}
+
+export async function qtNgungSuDungThietBi(ma: string): Promise<ThietBi> {
+  const res = await apiClient.post<ThietBi>(
+    `/quan-tri/thiet-bi/${maHoa(ma)}/ngung-su-dung`,
+  );
+  return res.data;
+}
+
+export async function qtCapNhatGiaTriThietBi(
+  ma: string,
+  yeuCau: GiaTriThietBiRequest,
+): Promise<GiaTriThietBi> {
+  const res = await apiClient.put<GiaTriThietBi>(
+    `/quan-tri/thiet-bi/${maHoa(ma)}/gia-tri`,
     yeuCau,
   );
   return res.data;

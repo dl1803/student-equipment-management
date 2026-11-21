@@ -3,7 +3,9 @@
 // Ngăn biểu mẫu Nhập kho/Sửa thiết bị — SCR-QT-04 (UI-Screens 7.4; UF-QT-01; Wireframes SCR-QT-04,
 // P-04 ngăn trượt từ bên phải, P-05 khu đính ảnh). Sở hữu: Thịnh.
 // - Mã thiết bị và Giá trị chỉ nhập khi thêm; khi sửa mã là ô chỉ đọc (không vô hiệu, DS CMP-04),
-//   giá trị hiện hành hiển thị chỉ đọc. ThietBiCapNhatRequest không có mã, giá trị, tình trạng.
+//   giá trị hiện hành hiển thị chỉ đọc kèm nút "Cập nhật giá trị" (mở CapNhatGiaTriDialog chồng lên
+//   ngăn; giá trị mới lấy từ phản hồi máy chủ, không đụng dữ liệu đang nhập ở ngăn).
+//   ThietBiCapNhatRequest không có mã, giá trị, tình trạng.
 // - KHÔNG có ô Tình trạng: thiết bị mới là Sẵn sàng, tình trạng chỉ đổi qua nghiệp vụ (UF-QT-01 E2).
 // - Nhà cung cấp chọn nhiều từ danh sách có sẵn (dsMaNCC); không thêm nhà cung cấp mới ở đây.
 // - Ảnh qua AnhUploader (giaiDoan THIET_BI) → dsMaAnh; nút Lưu vô hiệu khi còn ảnh đang tải/lỗi.
@@ -40,13 +42,14 @@ import { ganLoiMayChu } from "@/shared/hooks/ganLoiMayChu";
 import { useThaoTacGhi } from "@/shared/hooks/useThaoTacGhi";
 import { thongBaoTheoLoi, type ThongBao } from "@/shared/labels/thongDiepLoi";
 import { thongTinNhanPhatSinh } from "@/shared/labels/trangThai";
+import { CapNhatGiaTriDialog } from "./CapNhatGiaTriDialog";
 import {
   useLuuThietBiMutation,
   useTatCaLoaiQuery,
   useTatCaNhaCungCapQuery,
   useTatCaPhongQuery,
 } from "../hooks";
-import { THONG_DIEP_DANH_MUC } from "../thongDiep";
+import { THONG_DIEP_DANH_MUC, daCapNhatGiaTri } from "../thongDiep";
 
 /** Giá trị biểu mẫu: ngày là chuỗi `yyyy-MM-dd` của ô date; số nhập dạng chuỗi (FC 5.6). */
 type GiaTriThietBi = {
@@ -173,6 +176,7 @@ export function ThietBiNgan({
   const { register, control, formState } = form;
   const [thongBao, setThongBao] = useState<ThongBao | null>(null);
   const [loiKhongGan, setLoiKhongGan] = useState<string[]>([]);
+  const [moCapNhatGiaTri, setMoCapNhatGiaTri] = useState(false);
 
   const truyVanLoai = useTatCaLoaiQuery();
   const truyVanPhong = useTatCaPhongQuery();
@@ -574,21 +578,50 @@ export function ThietBiNgan({
             )}
           </FormField>
         ) : (
-          <FormField
-            id="giaTri"
-            nhan="Giá trị hiện hành"
-            moTa="Đổi giá trị bằng Cập nhật giá trị; giá trị hiện hành dùng để tính bồi thường."
-          >
-            {(tt) => (
-              <TextField
-                {...tt}
-                readOnly
-                value={formatTien(banDangSua?.giaTriHienHanh)}
-              />
-            )}
-          </FormField>
+          <div className="flex items-end gap-3">
+            <div className="flex-1">
+              <FormField
+                id="giaTri"
+                nhan="Giá trị hiện hành"
+                moTa="Đổi giá trị bằng Cập nhật giá trị; giá trị hiện hành dùng để tính bồi thường."
+              >
+                {(tt) => (
+                  <TextField
+                    {...tt}
+                    readOnly
+                    value={formatTien(banDangSua?.giaTriHienHanh)}
+                  />
+                )}
+              </FormField>
+            </div>
+            <Button
+              onClick={() => setMoCapNhatGiaTri(true)}
+              disabled={thaoTac.dangGui}
+            >
+              Cập nhật giá trị
+            </Button>
+          </div>
         )}
       </form>
+      {moCapNhatGiaTri && banDangSua !== null ? (
+        <CapNhatGiaTriDialog
+          thietBi={banDangSua}
+          onDong={() => setMoCapNhatGiaTri(false)}
+          onXong={(banGhi) => {
+            setMoCapNhatGiaTri(false);
+            setBanDangSua({ ...banDangSua, giaTriHienHanh: banGhi.giaTri });
+            setThongBao({
+              tong: "success",
+              noiDung: daCapNhatGiaTri(
+                banDangSua.tenThietBi,
+                formatTien(banGhi.giaTri),
+              ),
+            });
+          }}
+          taiLaiDanhSach={taiLaiDanhSach}
+          onKhongConTonTai={onKhongConTonTai}
+        />
+      ) : null}
     </Dialog>
   );
 }
