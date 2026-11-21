@@ -283,7 +283,17 @@ export function ThietBiScreen() {
             khongXuongDong: true,
             hienThi: (tb) => <span className="type-code">{tb.maThietBi}</span>,
           },
-          { khoa: "tenThietBi", tieuDe: "Tên", hienThi: (tb) => tb.tenThietBi },
+          {
+            khoa: "tenThietBi",
+            tieuDe: "Tên",
+            // Tên dài có dấu vẫn xuống dòng, nhưng cột không bị ép nhỏ hơn size.keyvalue.label: bảng
+            // rộng hơn khung thì cuộn ngang trong khung (DS CMP-18).
+            hienThi: (tb) => (
+              <span className="block min-w-keyvalue-label">
+                {tb.tenThietBi}
+              </span>
+            ),
+          },
           { khoa: "tenLoai", tieuDe: "Loại", hienThi: (tb) => tb.tenLoai },
           { khoa: "tenPhong", tieuDe: "Phòng", hienThi: (tb) => tb.tenPhong },
           {
@@ -295,6 +305,8 @@ export function ThietBiScreen() {
           {
             khoa: "tinhTrang",
             tieuDe: "Tình trạng",
+            // Nhãn trạng thái không vỡ chữ; hai nhãn vẫn xếp xuống dòng khi cần (flex-wrap).
+            khongXuongDong: true,
             hienThi: (tb) => (
               <div className="flex flex-wrap gap-1">
                 <StatusBadge ho="TINH_TRANG_THIET_BI" ma={tb.tinhTrang} />
