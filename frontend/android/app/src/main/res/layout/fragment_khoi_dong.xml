@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+    SCR-CM-03 Khởi động và khôi phục phiên (UI-Screens 4.6, DS CMP-25): chỉ một chỉ báo đang tải giữa màn
+    hình, không hiển thị tạm màn hình đăng nhập hay màn hình chính. LoadingView tự hiển thị thông điệp
+    khởi động chậm sau 8 giây (ĐX-FA-04). Wireframe có thêm dòng chữ "Đang kiểm tra phiên"; không dùng vì
+    UI-Screens 4.6 và DS CMP-25 chỉ quy định chỉ báo, và dòng chữ sẽ trùng với thông điệp khởi động chậm.
+-->
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <com.nhom13.quanlymuontra.common.widget.LoadingView
+        android:id="@+id/lv_khoi_dong"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center" />
+
+</FrameLayout>

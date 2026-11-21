@@ -1,5 +1,18 @@
 package com.nhom13.quanlymuontra;
 
+import android.content.Context;
+import androidx.annotation.NonNull;
+import com.nhom13.quanlymuontra.data.api.OkHttpClientFactory;
+import com.nhom13.quanlymuontra.data.repository.XacThucRepository;
+import com.nhom13.quanlymuontra.data.session.SessionManager;
+import com.nhom13.quanlymuontra.data.session.TokenStore;
+import com.nhom13.quanlymuontra.generated.JSON;
+import com.nhom13.quanlymuontra.generated.api.XacThucApi;
+import okhttp3.HttpUrl;
+import okhttp3.OkHttpClient;
+import retrofit2.Retrofit;
+import retrofit2.converter.gson.GsonConverterFactory;
+
 /**
  * Điểm lắp ráp duy nhất của ứng dụng, tạo một lần trong {@link UngDung} (FA 5.1, ĐX-FA-12).
  *
@@ -7,5 +20,49 @@ package com.nhom13.quanlymuontra;
  * {@code SessionManager}, các {@code Repository}) được tạo thủ công tại đây và chỉ được thêm vào
  * khi lớp của chúng tồn tại, để không có trường nào không có người dùng. {@code ViewModel} nhận
  * phụ thuộc qua {@link AppViewModelFactory}, không tự truy cập lớp này.
+ *
+ * <p>Hàm tạo nhận sẵn các thành phần để kiểm thử dựng bằng bản giả; bản dùng thật do {@link
+ * #taoChoUngDung(Context)} lắp ráp.
  */
-public final class AppContainer {}
+public final class AppContainer {
+
+    private final SessionManager sessionManager;
+    private final XacThucRepository xacThucRepository;
+
+    public AppContainer(
+            @NonNull SessionManager sessionManager, @NonNull XacThucRepository xacThucRepository) {
+        this.sessionManager = sessionManager;
+        this.xacThucRepository = xacThucRepository;
+    }
+
+    /**
+     * Lắp ráp bản dùng thật (FA 5.5, 5.8): {@code SessionManager} trên kho mã hóa, {@code OkHttpClient}
+     * chính (có {@code AuthInterceptor} và {@code TokenAuthenticator}), {@code Retrofit} trỏ tới {@code
+     * BuildConfig.API_BASE_URL} với bộ chuyển đổi Gson của bộ sinh, rồi các {@code Repository}.
+     */
+    @NonNull
+    public static AppContainer taoChoUngDung(@NonNull Context context) {
+        HttpUrl diaChiGoc = HttpUrl.get(BuildConfig.API_BASE_URL);
+        SessionManager sessionManager = new SessionManager(TokenStore.create(context));
+        OkHttpClient client = OkHttpClientFactory.taoClientChinh(sessionManager, diaChiGoc);
+        Retrofit retrofit =
+                new Retrofit.Builder()
+                        .baseUrl(diaChiGoc)
+                        .client(client)
+                        .addConverterFactory(GsonConverterFactory.create(new JSON().getGson()))
+                        .build();
+        XacThucRepository xacThucRepository =
+                new XacThucRepository(retrofit.create(XacThucApi.class), sessionManager);
+        return new AppContainer(sessionManager, xacThucRepository);
+    }
+
+    @NonNull
+    public SessionManager getSessionManager() {
+        return sessionManager;
+    }
+
+    @NonNull
+    public XacThucRepository getXacThucRepository() {
+        return xacThucRepository;
+    }
+}
