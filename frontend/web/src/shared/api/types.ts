@@ -28,6 +28,8 @@ export type ThietBi = Schemas["ThietBi"];
 export type ThietBiPage = Schemas["ThietBiPage"];
 export type ThietBiTaoMoiRequest = Schemas["ThietBiTaoMoiRequest"];
 export type ThietBiCapNhatRequest = Schemas["ThietBiCapNhatRequest"];
+export type GiaTriThietBiRequest = Schemas["GiaTriThietBiRequest"];
+export type GiaTriThietBi = Schemas["GiaTriThietBi"];
 export type NhaCungCap = Schemas["NhaCungCap"];
 export type NhaCungCapPage = Schemas["NhaCungCapPage"];
 

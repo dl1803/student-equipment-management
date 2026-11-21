@@ -13,6 +13,8 @@ import type { ApiError } from "@/shared/api/apiError";
 import { taiTatCaTrang } from "@/shared/api/phanTrang";
 import { TIEN_TO_KHOA } from "@/shared/api/tienToKhoa";
 import type {
+  GiaTriThietBi,
+  GiaTriThietBiRequest,
   LoaiThietBi,
   LoaiThietBiCapNhatRequest,
   LoaiThietBiTaoMoiRequest,
@@ -30,8 +32,10 @@ import {
   qtDsLoaiThietBi,
   qtDsNhaCungCap,
   qtDsPhongThietBi,
+  qtCapNhatGiaTriThietBi,
   qtDsThietBi,
   qtNgungSuDungLoaiThietBi,
+  qtNgungSuDungThietBi,
   qtSuaLoaiThietBi,
   qtSuaPhongThietBi,
   qtSuaThietBi,
@@ -39,6 +43,7 @@ import {
   qtTaoPhongThietBi,
   qtTaoThietBi,
   qtXoaLoaiThietBi,
+  qtXoaThietBi,
   type DsLoaiParams,
   type DsPhongParams,
   type DsThietBiParams,
@@ -196,6 +201,58 @@ export function useLuuThietBiMutation(tuyChon: TuyChonGhi<ThietBi> = {}) {
       bien.ma === null
         ? qtTaoThietBi(bien.yeuCau)
         : qtSuaThietBi(bien.ma, bien.yeuCau),
+    onSuccess: (duLieu) => {
+      void queryClient.invalidateQueries({
+        queryKey: TIEN_TO_KHOA.quanTriThietBi,
+      });
+      tuyChon.onSuccess?.(duLieu);
+    },
+    onError: tuyChon.onError,
+  });
+}
+
+export function useXoaThietBiMutation(tuyChon: TuyChonGhi<void> = {}) {
+  const queryClient = useQueryClient();
+  return useMutation<void, ApiError, string>({
+    mutationFn: qtXoaThietBi,
+    onSuccess: () => {
+      void queryClient.invalidateQueries({
+        queryKey: TIEN_TO_KHOA.quanTriThietBi,
+      });
+      tuyChon.onSuccess?.();
+    },
+    onError: tuyChon.onError,
+  });
+}
+
+export function useNgungSuDungThietBiMutation(
+  tuyChon: TuyChonGhi<ThietBi> = {},
+) {
+  const queryClient = useQueryClient();
+  return useMutation<ThietBi, ApiError, string>({
+    mutationFn: qtNgungSuDungThietBi,
+    onSuccess: (duLieu) => {
+      void queryClient.invalidateQueries({
+        queryKey: TIEN_TO_KHOA.quanTriThietBi,
+      });
+      tuyChon.onSuccess?.(duLieu);
+    },
+    onError: tuyChon.onError,
+  });
+}
+
+export type CapNhatGiaTriBien = { ma: string; yeuCau: GiaTriThietBiRequest };
+
+/**
+ * Cập nhật giá trị qua endpoint riêng (BR-17): máy chủ thêm bản ghi lịch sử giá trị; giá trị hiện
+ * hành mới lấy từ phản hồi và danh sách tải lại, client không tự tính.
+ */
+export function useCapNhatGiaTriThietBiMutation(
+  tuyChon: TuyChonGhi<GiaTriThietBi> = {},
+) {
+  const queryClient = useQueryClient();
+  return useMutation<GiaTriThietBi, ApiError, CapNhatGiaTriBien>({
+    mutationFn: ({ ma, yeuCau }) => qtCapNhatGiaTriThietBi(ma, yeuCau),
     onSuccess: (duLieu) => {
       void queryClient.invalidateQueries({
         queryKey: TIEN_TO_KHOA.quanTriThietBi,

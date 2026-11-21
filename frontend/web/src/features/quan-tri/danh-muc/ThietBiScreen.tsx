@@ -4,7 +4,8 @@
 // Bảng thiết bị phân trang với bộ lọc Tên, Loại, Phòng, Tình trạng (một giá trị hoặc Tất cả); đổi
 // bộ lọc tải lại từ trang 1 và bộ lọc đang áp dụng luôn có cách xóa (FA 3.10). Nút "Nhập kho thiết
 // bị" và hành động "Sửa" mở ngăn biểu mẫu bên phải (ThietBiNgan).
-// D09-T bổ sung "Cập nhật giá trị" và "Xóa" (→ Ngưng sử dụng) vào menu Thao tác của dòng.
+// Menu Thao tác của dòng giữ đủ ba hành động (Wireframes SCR-QT-04): Sửa; Cập nhật giá trị (hộp
+// nhỏ, PUT .../gia-tri); Xóa (409 có lịch sử → đề nghị Ngưng sử dụng, như SCR-QT-03).
 // Giá trị hiện hành và tình trạng là số liệu máy chủ; client chỉ định dạng (NT-01).
 import { useState, type FormEvent } from "react";
 import {
@@ -32,7 +33,9 @@ import {
   useTatCaPhongQuery,
   useThietBiQuery,
 } from "./hooks";
-import { THONG_DIEP_DANH_MUC } from "./thongDiep";
+import { CapNhatGiaTriDialog } from "./components/CapNhatGiaTriDialog";
+import { XoaThietBiDialog } from "./components/XoaThietBiDialog";
+import { THONG_DIEP_DANH_MUC, daCapNhatGiaTri } from "./thongDiep";
 
 /** Thứ tự lựa chọn Tình trạng theo UI-Screens 7.4 (DS 7.2). */
 const DS_TINH_TRANG = [
@@ -74,7 +77,10 @@ function hienThiKeTu(
   return `${ke ?? GIA_TRI_THIEU}/${tu ?? GIA_TRI_THIEU}`;
 }
 
-type NganDangMo = { thietBi: ThietBi | null };
+type HopDangMo =
+  | { loai: "NGAN"; thietBi: ThietBi | null }
+  | { loai: "GIA_TRI"; thietBi: ThietBi }
+  | { loai: "XOA"; thietBi: ThietBi };
 
 export function ThietBiScreen() {
   const [trang, setTrang] = useState(1);
@@ -91,7 +97,7 @@ export function ThietBiScreen() {
   });
   const truyVanLoai = useTatCaLoaiQuery();
   const truyVanPhong = useTatCaPhongQuery();
-  const [ngan, setNgan] = useState<NganDangMo | null>(null);
+  const [hop, setHop] = useState<HopDangMo | null>(null);
   const [thongBao, setThongBao] = useState<ThongBao | null>(null);
 
   // Trang vượt quá số trang (dữ liệu bị xóa bớt) → lùi về trang cuối (điều chỉnh khi render).
@@ -140,13 +146,18 @@ export function ThietBiScreen() {
     );
   };
 
-  const moNgan = (thietBi: ThietBi | null) => {
+  const moHop = (moi: HopDangMo) => {
     setThongBao(null);
-    setNgan({ thietBi });
+    setHop(moi);
+  };
+
+  const ketThucHop = (tb: ThongBao) => {
+    setHop(null);
+    setThongBao(tb);
   };
 
   const khongConTonTai = () => {
-    setNgan(null);
+    setHop(null);
     setThongBao({
       tong: "warning",
       noiDung: THONG_DIEP_DANH_MUC.KHONG_CON_TON_TAI,
@@ -179,7 +190,10 @@ export function ThietBiScreen() {
           >
             Làm mới
           </Button>
-          <Button bienThe="primary" onClick={() => moNgan(null)}>
+          <Button
+            bienThe="primary"
+            onClick={() => moHop({ loai: "NGAN", thietBi: null })}
+          >
             Nhập kho thiết bị
           </Button>
         </div>
@@ -324,7 +338,17 @@ export function ThietBiScreen() {
             : { thongDiep: THONG_DIEP_DANH_MUC.THIET_BI_RONG },
         )}
         dangTaiLai={truyVan.isFetching && !truyVan.isPending}
-        hanhDongDong={(tb) => [{ nhan: "Sửa", onClick: () => moNgan(tb) }]}
+        hanhDongDong={(tb) => [
+          { nhan: "Sửa", onClick: () => moHop({ loai: "NGAN", thietBi: tb }) },
+          {
+            nhan: "Cập nhật giá trị",
+            onClick: () => moHop({ loai: "GIA_TRI", thietBi: tb }),
+          },
+          {
+            nhan: "Xóa",
+            onClick: () => moHop({ loai: "XOA", thietBi: tb }),
+          },
+        ]}
       />
 
       {truyVan.data !== undefined ? (
@@ -337,15 +361,40 @@ export function ThietBiScreen() {
         />
       ) : null}
 
-      {ngan !== null ? (
+      {hop?.loai === "NGAN" ? (
         <ThietBiNgan
           // Dựng lại khi đổi thiết bị: biểu mẫu và khu ảnh chỉ đọc dữ liệu lúc khởi tạo.
-          key={ngan.thietBi?.maThietBi ?? "them-moi"}
-          thietBi={ngan.thietBi}
-          onDong={() => setNgan(null)}
+          key={hop.thietBi?.maThietBi ?? "them-moi"}
+          thietBi={hop.thietBi}
+          onDong={() => setHop(null)}
           layBanMoiNhat={layBanMoiNhat}
           taiLaiDanhSach={taiLaiDanhSach}
           onKhongConTonTai={khongConTonTai}
+        />
+      ) : null}
+      {hop?.loai === "GIA_TRI" ? (
+        <CapNhatGiaTriDialog
+          thietBi={hop.thietBi}
+          onDong={() => setHop(null)}
+          onXong={(banGhi) =>
+            ketThucHop({
+              tong: "success",
+              noiDung: daCapNhatGiaTri(
+                hop.thietBi.tenThietBi,
+                formatTien(banGhi.giaTri),
+              ),
+            })
+          }
+          taiLaiDanhSach={taiLaiDanhSach}
+          onKhongConTonTai={khongConTonTai}
+        />
+      ) : null}
+      {hop?.loai === "XOA" ? (
+        <XoaThietBiDialog
+          thietBi={hop.thietBi}
+          onDong={() => setHop(null)}
+          onXong={ketThucHop}
+          taiLaiDanhSach={taiLaiDanhSach}
         />
       ) : null}
     </main>
