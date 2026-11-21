@@ -1,6 +1,7 @@
 // DataTable — CMP-18 Bảng dữ liệu (DS 8.4; FC 5.2). Sở hữu: Thịnh (shared core).
 // Bảng thật (caption, th scope), hàng tiêu đề cố định khi cuộn, cuộn ngang trong khung, trạng thái
-// thân bằng StateView. Hành động ở dòng: tối đa 2 nút văn bản sm, từ 3 gom vào Menu (ĐX-DS-14).
+// thân bằng StateView. Kiểu (ĐX-DS-17): không khung bao, tiêu đề cột không nền, chỉ đường kẻ ngang
+// giữa các dòng, dòng cao size.table.row. Hành động ở dòng: tối đa 2 nút văn bản sm, từ 3 gom vào Menu (ĐX-DS-14).
 // Phần còn lại của hợp đồng (dòng mở rộng, cột chọn, chọn dòng, làm nổi bật) nằm ở contracts.ts,
 // bổ sung ở ngày dùng đến.
 import type { ReactNode } from "react";
@@ -51,20 +52,20 @@ export function DataTable<TDong>({
   const soCot = dsCot.length + (coHanhDong ? 1 : 0);
 
   return (
-    <div className="overflow-x-auto rounded-md border border-border-subtle bg-surface-default">
+    <div className="overflow-x-auto bg-surface-default">
       <table
         className="w-full border-collapse"
         aria-busy={dangTaiLai || undefined}
       >
         <caption className="sr-only">{tieuDe}</caption>
-        <thead className="sticky top-0 z-[var(--ds-z-sticky)] bg-surface-muted">
+        <thead className="sticky top-0 z-[var(--ds-z-sticky)] border-b border-border-subtle bg-surface-default">
           <tr>
             {dsCot.map((cot) => (
               <th
                 key={cot.khoa}
                 scope="col"
                 className={classNames(
-                  "px-3 py-2 type-label text-text-secondary",
+                  "px-4 py-3 type-label-sm text-text-secondary",
                   cot.canLe === "right" ? "text-right" : "text-left",
                 )}
               >
@@ -74,7 +75,7 @@ export function DataTable<TDong>({
             {coHanhDong ? (
               <th
                 scope="col"
-                className="px-3 py-2 text-right type-label text-text-secondary"
+                className="px-4 py-3 text-right type-label-sm text-text-secondary"
               >
                 <span className="sr-only">Thao tác</span>
               </th>
@@ -98,13 +99,13 @@ export function DataTable<TDong>({
               return (
                 <tr
                   key={khoaDong(dong)}
-                  className="h-table-row border-t border-border-subtle hover:bg-surface-subtle"
+                  className="h-table-row border-b border-border-subtle transition-colors hover:bg-surface-subtle"
                 >
                   {dsCot.map((cot) => (
                     <td
                       key={cot.khoa}
                       className={classNames(
-                        "px-3 py-2 type-body text-text-primary",
+                        "px-4 py-3 type-body text-text-primary",
                         cot.canLe === "right" && "text-right tabular-nums",
                         cot.khongXuongDong && "whitespace-nowrap",
                       )}
@@ -113,7 +114,7 @@ export function DataTable<TDong>({
                     </td>
                   ))}
                   {coHanhDong ? (
-                    <td className="px-3 py-2 text-right whitespace-nowrap">
+                    <td className="px-4 py-3 text-right whitespace-nowrap">
                       {gomVaoMenu ? (
                         <Menu dsMuc={dsHanhDong} />
                       ) : (
