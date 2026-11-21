@@ -1,0 +1,117 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+    SCR-CM-01 Đăng nhập sinh viên (UI-Screens 4.4, Wireframes, DS CMP-04, CMP-01, CMP-24). Không có thanh
+    tiêu đề và thanh điều hướng dưới (MainActivity ẩn chúng). Không có liên kết đăng ký, quên mật khẩu hay
+    đổi mật khẩu (UI-Screens 4.4, BR-08). Nút Đăng nhập ghim dưới đáy; phần biểu mẫu cuộn được khi bàn phím mở.
+    Nhãn là TextView riêng phía trên ô (D05-L, CMP-04). Thông báo "Thông tin đăng nhập không đúng" đặt dưới ô
+    mật khẩu (til_mat_khau.setError); các thông báo khác dùng BannerView ở đầu biểu mẫu.
+-->
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical">
+
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1"
+        android:fillViewport="true">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:padding="@dimen/ds_space_gutter">
+
+            <TextView
+                android:id="@+id/tv_ten_ung_dung"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/ds_space_section"
+                android:text="@string/ung_dung_ten"
+                android:textAppearance="@style/TextAppearance.Ds.TitleScreen" />
+
+            <com.nhom13.quanlymuontra.common.widget.BannerView
+                android:id="@+id/banner_dang_nhap"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/ds_space_4"
+                android:visibility="gone" />
+
+            <TextView
+                android:id="@+id/tv_bat_buoc"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/ds_space_section"
+                android:text="@string/bieu_mau_bat_buoc"
+                android:textAppearance="@style/TextAppearance.Ds.Caption"
+                android:textColor="@color/ds_color_text_secondary" />
+
+            <TextView
+                android:id="@+id/tv_mssv_nhan"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/ds_space_4"
+                android:labelFor="@+id/et_mssv"
+                android:text="@string/dang_nhap_mssv_nhan"
+                android:textAppearance="@style/TextAppearance.Ds.Label" />
+
+            <com.google.android.material.textfield.TextInputLayout
+                android:id="@+id/til_mssv"
+                style="@style/Widget.Ds.TextField"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/ds_space_field_label">
+
+                <com.google.android.material.textfield.TextInputEditText
+                    android:id="@+id/et_mssv"
+                    style="@style/Widget.Ds.TextField.Input"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:imeOptions="actionNext"
+                    android:inputType="text"
+                    android:maxLines="1" />
+
+            </com.google.android.material.textfield.TextInputLayout>
+
+            <TextView
+                android:id="@+id/tv_mat_khau_nhan"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/ds_space_4"
+                android:labelFor="@+id/et_mat_khau"
+                android:text="@string/dang_nhap_mat_khau_nhan"
+                android:textAppearance="@style/TextAppearance.Ds.Label" />
+
+            <com.google.android.material.textfield.TextInputLayout
+                android:id="@+id/til_mat_khau"
+                style="@style/Widget.Ds.TextField"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/ds_space_field_label">
+
+                <com.google.android.material.textfield.TextInputEditText
+                    android:id="@+id/et_mat_khau"
+                    style="@style/Widget.Ds.TextField.Input"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:imeOptions="actionDone"
+                    android:inputType="textPassword"
+                    android:maxLines="1" />
+
+            </com.google.android.material.textfield.TextInputLayout>
+
+        </LinearLayout>
+
+    </ScrollView>
+
+    <com.google.android.material.button.MaterialButton
+        android:id="@+id/btn_dang_nhap"
+        style="@style/Widget.Ds.Button.Primary"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_margin="@dimen/ds_space_gutter"
+        android:enabled="false"
+        android:text="@string/dang_nhap_hanh_dong" />
+
+</LinearLayout>

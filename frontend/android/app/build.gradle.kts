@@ -7,6 +7,8 @@ import org.gradle.api.tasks.TaskAction
 plugins {
     alias(libs.plugins.android.application)
     alias(libs.plugins.openapi.generator)
+    // D06-L (FA 5.3): Safe Args sinh lớp *Directions và *Args (bản Java) cho nav graph.
+    alias(libs.plugins.androidx.navigation.safeargs)
 }
 
 // D02-L (ĐX-FC-21, FA 3.2, FC 6.4): tạo bản hợp đồng dành riêng cho Android trong thư mục build
@@ -109,6 +111,24 @@ android {
     buildFeatures {
         // ĐX-FA-12: giao diện XML Views kèm ViewBinding.
         viewBinding = true
+        // D06-L (FA 5.8): BuildConfig.API_BASE_URL khai báo theo buildType.
+        buildConfig = true
+    }
+
+    buildTypes {
+        // D06-L (FA 5.5, 5.8; FC 10.2): địa chỉ gốc API theo buildType, không có /api/v1 (hằng số của
+        // data/api, FA 3.2) và kết thúc bằng dấu "/" (Retrofit yêu cầu).
+        getByName("debug") {
+            // 10.0.2.2 là localhost của máy tính nhìn từ emulator Android; 5283 là cổng http của backend
+            // trong launchSettings.json. Thiết bị thật không dùng được địa chỉ này.
+            buildConfigField("String", "API_BASE_URL", "\"http://10.0.2.2:5283/\"")
+        }
+        getByName("release") {
+            // Chưa có máy chủ production (triển khai lần đầu thuộc D12-K). Tên miền .invalid được RFC 2606
+            // dành riêng và không bao giờ phân giải, nên bản release không thể gọi nhầm máy chủ nào cho
+            // tới khi nhóm điền địa chỉ thật.
+            buildConfigField("String", "API_BASE_URL", "\"https://chua-cau-hinh.invalid/\"")
+        }
     }
 
     sourceSets {
@@ -181,6 +201,8 @@ dependencies {
     implementation(libs.androidx.lifecycle.livedata)
     implementation(libs.androidx.annotation)
     implementation(libs.material)
+    implementation(libs.androidx.navigation.fragment)
+    implementation(libs.retrofit.converter.gson)
     implementation(libs.jakarta.annotation)
     compileOnly(libs.findbugs.jsr305)
 

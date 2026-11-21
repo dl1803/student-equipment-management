@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- CMP-27: biểu tượng dạng đặc khi mục đang chọn, dạng viền khi không chọn (DS CMP-27). -->
+<selector xmlns:android="http://schemas.android.com/apk/res/android">
+    <item android:state_checked="true" android:drawable="@drawable/ic_notifications_filled" />
+    <item android:drawable="@drawable/ic_notifications" />
+</selector>

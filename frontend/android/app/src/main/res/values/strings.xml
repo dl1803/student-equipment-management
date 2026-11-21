@@ -110,4 +110,37 @@
     <string name="trang_thai_ma_theo_doi">Mã theo dõi: %1$s</string>
     <string name="trang_thai_dang_tai">Đang tải</string>
     <string name="trang_thai_khoi_dong_cham">Hệ thống đang khởi động, vui lòng chờ</string>
+
+    <!-- D06-L (DS 9.8, CMP-01, CMP-26): chữ của nút Hủy và trạng thái đang xử lý của nút; nguyên văn DS 9.8. -->
+    <string name="hanh_dong_huy">Hủy</string>
+    <string name="hanh_dong_dang_xu_ly">Đang xử lý</string>
+
+    <!--
+        D06-L (DS 9.8, 9.4; UI-Screens 4.4; User-Flows 3.1): chữ của màn hình đăng nhập và tiêu đề các tab gốc.
+        Nguyên văn từ tài liệu: "* Bắt buộc" (DS 9.8); "Phiên đăng nhập đã hết hạn, vui lòng đăng nhập lại" (DS 9.4,
+        UI-Screens 4.4); "Thông tin đăng nhập không đúng" (UI-Screens 4.4). Hai câu do Architect viết vì tài liệu chỉ nêu ý
+        và chờ nhóm xác nhận: qua_nhieu_yeu_cau ("chờ rồi thử lại", DS 9.4, UI-Screens 4.4) và loi_ket_noi_may_chu (lỗi
+        mạng khi thao tác, DS 9.4).
+    -->
+    <string name="ung_dung_ten">Hệ thống mượn trả thiết bị</string>
+    <string name="bieu_mau_bat_buoc">* Bắt buộc</string>
+    <string name="dang_nhap_mssv_nhan">Mã số sinh viên *</string>
+    <string name="dang_nhap_mat_khau_nhan">Mật khẩu *</string>
+    <string name="dang_nhap_hanh_dong">Đăng nhập</string>
+    <string name="dang_nhap_sai">Thông tin đăng nhập không đúng</string>
+    <string name="phien_het_han">Phiên đăng nhập đã hết hạn, vui lòng đăng nhập lại</string>
+    <string name="qua_nhieu_yeu_cau">Bạn thao tác quá nhiều lần, vui lòng chờ một lúc rồi thử lại</string>
+    <string name="loi_ket_noi_may_chu">Không kết nối được máy chủ. Kiểm tra kết nối rồi thử lại.</string>
+    <string name="trang_chu_tieu_de">Trang chủ</string>
+    <string name="tra_cuu_thiet_bi_tieu_de">Tra cứu thiết bị</string>
+    <string name="thong_bao_tieu_de">Thông báo</string>
+    <string name="ho_so_muon_tieu_de">Hồ sơ mượn</string>
+
+    <!-- D06-L (UI-Screens 4.1, DS 9.8): nút Quay lại của thanh tiêu đề và tên bốn mục của thanh điều hướng dưới. -->
+    <string name="hanh_dong_quay_lai">Quay lại</string>
+    <string name="dieu_huong_trang_chu">Trang chủ</string>
+    <string name="dieu_huong_tra_cuu">Tra cứu</string>
+    <string name="dieu_huong_thong_bao">Thông báo</string>
+    <string name="dieu_huong_ho_so">Hồ sơ</string>
+
 </resources>

@@ -1,0 +1,5 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- SCR-SV-13 Thông báo (tab Thông báo). Khung rỗng của D06-L để bốn tab chuyển được; nội dung cài ở ngày của SCR-SV-13 theo BANG_THEO_DOI_40_NGAY.md. -->
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent" />

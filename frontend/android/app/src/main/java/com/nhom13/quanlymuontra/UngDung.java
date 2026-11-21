@@ -11,7 +11,7 @@ public class UngDung extends Application {
     @Override
     public void onCreate() {
         super.onCreate();
-        appContainer = new AppContainer();
+        appContainer = AppContainer.taoChoUngDung(this);
     }
 
     @NonNull

@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+    CMP-27 bốn mục của thanh điều hướng dưới (UI-Screens 4.1). Mã mục trùng mã điểm đến trong nav_graph.xml
+    để MainActivity chuyển tab bằng đúng mã này. Thứ tự: Trang chủ, Tra cứu, Thông báo, Hồ sơ.
+-->
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+    <item
+        android:id="@id/trangChuFragment"
+        android:icon="@drawable/ds_nav_trang_chu"
+        android:title="@string/dieu_huong_trang_chu" />
+    <item
+        android:id="@id/traCuuThietBiFragment"
+        android:icon="@drawable/ic_search"
+        android:title="@string/dieu_huong_tra_cuu" />
+    <item
+        android:id="@id/thongBaoFragment"
+        android:icon="@drawable/ds_nav_thong_bao"
+        android:title="@string/dieu_huong_thong_bao" />
+    <item
+        android:id="@id/hoSoMuonFragment"
+        android:icon="@drawable/ds_nav_ho_so"
+        android:title="@string/dieu_huong_ho_so" />
+</menu>

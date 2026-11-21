@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<manifest xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <!--
+        D06-L (FA 5.8, FC 6.8): chỉ bản debug được gọi lưu lượng không mã hóa, và chỉ tới địa chỉ máy chủ
+        dev của emulator (10.0.2.2, xem network_security_config_debug.xml). Bản release dùng manifest
+        của main: usesCleartextTraffic=false và không có cấu hình mạng riêng.
+    -->
+    <application android:networkSecurityConfig="@xml/network_security_config_debug" />
+
+</manifest>

@@ -8,6 +8,8 @@
 # D04-L: khóa thêm mockwebserver (chỉ cho kiểm thử), dùng chung khóa phiên bản `okhttp`.
 # Đề xuất của Architect, chờ nhóm xác nhận.
 # D05-L: khóa Material Components (task đầu tiên dùng, FC 1.4). Đề xuất của Architect, chờ nhóm xác nhận.
+# D06-L: khóa Navigation (navigation-fragment), plugin Safe Args cùng phiên bản, và converter-gson dùng
+# chung khóa `retrofit`. Đề xuất của Architect, chờ nhóm xác nhận.
 [versions]
 # AGP 8.13.2 đi cùng Gradle 8.13, JDK 17 trở lên, hỗ trợ compileSdk 36.
 agp = "8.13.2"
@@ -24,9 +26,14 @@ junit = "4.13.2"
 # Material Components 1.14.0 (bản ổn định 13/05/2026) yêu cầu compileSdk 35 trở lên và minSdk 23 trở lên,
 # dựng bằng AGP 8.11.1 và Gradle 8.13; tương thích với compileSdk 36, minSdk 26 và AGP 8.13.2 của dự án.
 material = "1.14.0"
+# Navigation 2.9.8 (bản ổn định 22/04/2026, dòng 2.9). Plugin Safe Args của dòng này tương thích AGP từ 8.4.2
+# trở lên. Không dùng 2.10.x vì chưa kiểm chứng được yêu cầu compileSdk của các thư viện AndroidX đi kèm:
+# androidx.core 1.19.0 trở lên yêu cầu compileSdk 37 trong khi dự án đang dùng compileSdk 36.
+navigation = "2.9.8"
 
 [libraries]
 retrofit = { module = "com.squareup.retrofit2:retrofit", version.ref = "retrofit" }
+retrofit-converter-gson = { module = "com.squareup.retrofit2:converter-gson", version.ref = "retrofit" }
 okhttp = { module = "com.squareup.okhttp3:okhttp", version.ref = "okhttp" }
 gson = { module = "com.google.code.gson:gson", version.ref = "gson" }
 gson-fire = { module = "io.gsonfire:gson-fire", version.ref = "gsonFire" }
@@ -38,7 +45,9 @@ findbugs-jsr305 = { module = "com.google.code.findbugs:jsr305", version.ref = "f
 junit = { module = "junit:junit", version.ref = "junit" }
 mockwebserver = { module = "com.squareup.okhttp3:mockwebserver", version.ref = "okhttp" }
 material = { module = "com.google.android.material:material", version.ref = "material" }
+androidx-navigation-fragment = { module = "androidx.navigation:navigation-fragment", version.ref = "navigation" }
 
 [plugins]
 android-application = { id = "com.android.application", version.ref = "agp" }
 openapi-generator = { id = "org.openapi.generator", version.ref = "openapiGenerator" }
+androidx-navigation-safeargs = { id = "androidx.navigation.safeargs", version.ref = "navigation" }

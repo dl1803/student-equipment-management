@@ -134,4 +134,48 @@
         <item name="contentPadding">@dimen/ds_space_card</item>
     </style>
 
+    <!-- CMP-28 Thanh tiêu đề (MaterialToolbar): cao ds_size_appbar_height, nền mặt phẳng, tiêu đề type.title-section
+         một dòng, nút Quay lại là biểu tượng màu chữ phụ. Đường kẻ dưới là một View riêng trong activity_main.xml
+         (Toolbar không có viền dưới). Mỗi nơi dùng đặt android:layout_height bằng ds_size_appbar_height. -->
+    <style name="Widget.Ds.TopBar" parent="Widget.MaterialComponents.Toolbar">
+        <item name="android:background">@color/ds_color_surface_default</item>
+        <item name="android:minHeight">@dimen/ds_size_appbar_height</item>
+        <item name="android:elevation">0dp</item>
+        <item name="titleTextAppearance">@style/TextAppearance.Ds.TitleSection</item>
+        <item name="navigationIconTint">@color/ds_icon_tint_secondary</item>
+    </style>
+
+    <!-- CMP-27 Thanh điều hướng dưới (BottomNavigationView): nền mặt phẳng, bốn mục có nhãn, biểu tượng
+         ds_size_icon_lg, chữ type.label-sm. Mục đang chọn: biểu tượng dạng đặc (do selector drawable của từng
+         mục), chữ và biểu tượng color.text.link, nền chỉ báo color.nav.indicator dạng radius.full. Đường kẻ
+         trên là một View riêng trong activity_main.xml. -->
+    <style name="Widget.Ds.BottomNav" parent="Widget.MaterialComponents.BottomNavigationView">
+        <item name="android:background">@color/ds_color_surface_default</item>
+        <item name="android:elevation">0dp</item>
+        <item name="labelVisibilityMode">labeled</item>
+        <item name="itemIconSize">@dimen/ds_size_icon_lg</item>
+        <item name="itemIconTint">@color/ds_nav_item</item>
+        <item name="itemTextColor">@color/ds_nav_item</item>
+        <item name="itemTextAppearanceActive">@style/TextAppearance.Ds.LabelSm</item>
+        <item name="itemTextAppearanceInactive">@style/TextAppearance.Ds.LabelSm</item>
+        <item name="itemRippleColor">@color/ds_color_overlay_pressed</item>
+        <item name="itemActiveIndicatorStyle">@style/Widget.Ds.BottomNav.ActiveIndicator</item>
+    </style>
+
+    <!-- Nền chỉ báo mục đang chọn. DS CMP-27 chỉ nêu màu và radius.full, không nêu kích thước: dùng hai token sẵn
+         có, rộng ds_size_touch_min và cao ds_size_chip_height. Bo tròn hoàn toàn (radius.full) bằng
+         50% theo cách của ShapeAppearance, thay cho token ds_radius_full để không phụ thuộc cách cắt góc
+         của bộ vẽ khi giá trị token lớn hơn kích thước nền. -->
+    <style name="Widget.Ds.BottomNav.ActiveIndicator" parent="">
+        <item name="android:color">@color/ds_color_nav_indicator</item>
+        <item name="android:width">@dimen/ds_size_touch_min</item>
+        <item name="android:height">@dimen/ds_size_chip_height</item>
+        <item name="shapeAppearance">@style/ShapeAppearance.Ds.NavIndicator</item>
+    </style>
+
+    <style name="ShapeAppearance.Ds.NavIndicator" parent="">
+        <item name="cornerFamily">rounded</item>
+        <item name="cornerSize">50%</item>
+    </style>
+
 </resources>

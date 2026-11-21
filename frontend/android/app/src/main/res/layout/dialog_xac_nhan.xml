@@ -1,0 +1,87 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+    CMP-26 Hộp xác nhận (DS CMP-26, 9.2; UI-Screens 3.5). Lớp nền phủ toàn màn hình bằng color.overlay.scrim;
+    hộp canh giữa, rộng bằng màn hình trừ lề ds_space_6 mỗi bên và tối đa ds_size_dialog_max (XacNhanDialogFragment
+    đặt chiều rộng). Nút xác nhận có hai bản (chính và hủy bỏ), chỉ một bản hiện (DS 9.2). Nút Hủy đứng trước để
+    tiêu điểm ban đầu rơi vào nút Hủy.
+-->
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/fl_nen"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/ds_color_overlay_scrim"
+    android:padding="@dimen/ds_space_6">
+
+    <LinearLayout
+        android:id="@+id/ll_hop"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:background="@drawable/ds_dialog_nen"
+        android:elevation="@dimen/ds_shadow_dialog"
+        android:orientation="vertical"
+        android:padding="@dimen/ds_space_dialog">
+
+        <TextView
+            android:id="@+id/tv_tieu_de"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:textAppearance="@style/TextAppearance.Ds.TitleSection" />
+
+        <TextView
+            android:id="@+id/tv_tom_tat"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/ds_space_3"
+            android:textAppearance="@style/TextAppearance.Ds.Body" />
+
+        <TextView
+            android:id="@+id/tv_he_qua"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/ds_space_3"
+            android:textAppearance="@style/TextAppearance.Ds.Body"
+            android:textColor="@color/ds_color_text_secondary" />
+
+        <com.nhom13.quanlymuontra.common.widget.BannerView
+            android:id="@+id/banner_nhan_manh"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/ds_space_3"
+            android:visibility="gone" />
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/ds_space_6"
+            android:gravity="end"
+            android:orientation="horizontal">
+
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/btn_huy"
+                style="@style/Widget.Ds.Button.Secondary"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:focusable="true"
+                android:text="@string/hanh_dong_huy" />
+
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/btn_xac_nhan"
+                style="@style/Widget.Ds.Button.Primary"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="@dimen/ds_space_3" />
+
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/btn_xac_nhan_huy_bo"
+                style="@style/Widget.Ds.Button.Destructive"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="@dimen/ds_space_3"
+                android:visibility="gone" />
+
+        </LinearLayout>
+
+    </LinearLayout>
+
+</FrameLayout>

@@ -1,0 +1,71 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+    D06-L (FA 5.3): nav graph duy nhất của ứng dụng; điểm bắt đầu là KhoiDongFragment (SCR-CM-03).
+    Mã điểm đến trùng tên lớp Fragment (camelCase), mã hành động theo action_{nguon}_to_{dich} (FC 3.3).
+    Các màn hình mở chồng (SCR-SV-03 đến SCR-SV-12) và nav graph con soạn phiếu thêm ở các ngày sau.
+-->
+<navigation xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/nav_graph"
+    app:startDestination="@id/khoiDongFragment">
+
+    <!-- FA 5.3 quy tắc 5: phiên kết thúc thì về đăng nhập và xóa toàn bộ ngăn xếp quay lại. -->
+    <action
+        android:id="@+id/action_global_to_dangNhapSinhVienFragment"
+        app:destination="@id/dangNhapSinhVienFragment"
+        app:popUpTo="@id/nav_graph"
+        app:popUpToInclusive="true" />
+
+    <fragment
+        android:id="@+id/khoiDongFragment"
+        android:name="com.nhom13.quanlymuontra.ui.khoidong.KhoiDongFragment"
+        tools:layout="@layout/fragment_khoi_dong">
+        <action
+            android:id="@+id/action_khoiDongFragment_to_trangChuFragment"
+            app:destination="@id/trangChuFragment"
+            app:popUpTo="@id/khoiDongFragment"
+            app:popUpToInclusive="true" />
+        <action
+            android:id="@+id/action_khoiDongFragment_to_dangNhapSinhVienFragment"
+            app:destination="@id/dangNhapSinhVienFragment"
+            app:popUpTo="@id/khoiDongFragment"
+            app:popUpToInclusive="true" />
+    </fragment>
+
+    <fragment
+        android:id="@+id/dangNhapSinhVienFragment"
+        android:name="com.nhom13.quanlymuontra.ui.dangnhap.DangNhapSinhVienFragment"
+        tools:layout="@layout/fragment_dang_nhap_sinh_vien">
+        <action
+            android:id="@+id/action_dangNhapSinhVienFragment_to_trangChuFragment"
+            app:destination="@id/trangChuFragment"
+            app:popUpTo="@id/dangNhapSinhVienFragment"
+            app:popUpToInclusive="true" />
+    </fragment>
+
+    <fragment
+        android:id="@+id/trangChuFragment"
+        android:name="com.nhom13.quanlymuontra.ui.trangchu.TrangChuFragment"
+        android:label="@string/trang_chu_tieu_de"
+        tools:layout="@layout/fragment_trang_chu" />
+
+    <fragment
+        android:id="@+id/traCuuThietBiFragment"
+        android:name="com.nhom13.quanlymuontra.ui.tracuu.TraCuuThietBiFragment"
+        android:label="@string/tra_cuu_thiet_bi_tieu_de"
+        tools:layout="@layout/fragment_tra_cuu_thiet_bi" />
+
+    <fragment
+        android:id="@+id/thongBaoFragment"
+        android:name="com.nhom13.quanlymuontra.ui.thongbao.ThongBaoFragment"
+        android:label="@string/thong_bao_tieu_de"
+        tools:layout="@layout/fragment_thong_bao" />
+
+    <fragment
+        android:id="@+id/hoSoMuonFragment"
+        android:name="com.nhom13.quanlymuontra.ui.hoso.HoSoMuonFragment"
+        android:label="@string/ho_so_muon_tieu_de"
+        tools:layout="@layout/fragment_ho_so_muon" />
+
+</navigation>

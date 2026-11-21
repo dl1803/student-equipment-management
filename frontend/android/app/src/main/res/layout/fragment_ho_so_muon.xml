@@ -1,0 +1,5 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- SCR-SV-14 Hồ sơ mượn (tab Hồ sơ). Khung rỗng của D06-L để bốn tab chuyển được; nội dung và nút Đăng xuất cài ở D07-L. -->
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent" />

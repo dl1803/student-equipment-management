@@ -3,6 +3,9 @@ package com.nhom13.quanlymuontra;
 import androidx.annotation.NonNull;
 import androidx.lifecycle.ViewModel;
 import androidx.lifecycle.ViewModelProvider;
+import com.nhom13.quanlymuontra.ui.dangnhap.DangNhapSinhVienViewModel;
+import com.nhom13.quanlymuontra.ui.khoidong.KhoiDongViewModel;
+import java.time.Clock;
 
 /**
  * Nhà máy duy nhất tạo {@link ViewModel} và đưa phụ thuộc từ {@link AppContainer} vào hàm tạo
@@ -19,7 +22,20 @@ public final class AppViewModelFactory implements ViewModelProvider.Factory {
     @NonNull
     @Override
     public <T extends ViewModel> T create(@NonNull Class<T> modelClass) {
-        // Chưa có ViewModel nào đăng ký: tạo nhầm lớp lạ phải lộ ngay thay vì trả về null.
+        // So sánh đúng lớp (không dùng isAssignableFrom): ViewModel.class hay lớp cha khác phải bị từ chối.
+        if (KhoiDongViewModel.class.equals(modelClass)) {
+            return modelClass.cast(
+                    new KhoiDongViewModel(
+                            appContainer.getSessionManager(),
+                            appContainer.getXacThucRepository(),
+                            Clock.systemUTC()));
+        }
+        if (DangNhapSinhVienViewModel.class.equals(modelClass)) {
+            return modelClass.cast(
+                    new DangNhapSinhVienViewModel(
+                            appContainer.getSessionManager(), appContainer.getXacThucRepository()));
+        }
+        // Lớp chưa đăng ký: tạo nhầm lớp lạ phải lộ ngay thay vì trả về null.
         throw new IllegalArgumentException(
                 "Chưa đăng ký ViewModel trong AppViewModelFactory: " + modelClass.getName());
     }
