@@ -30,6 +30,7 @@ public class FixtureHopDongTest {
 
     private static final Object[][] CAC_FIXTURE_JSON = {
         {"thanh-cong/sv-toi-bi-chan.json", SinhVienTheInfo.class},
+        {"thanh-cong/sv-toi-binh-thuong.json", SinhVienTheInfo.class},
         {"thanh-cong/sv-ds-phieu-muon.json", PhieuMuonTomTatPage.class},
         {"thanh-cong/auth-lam-moi.json", TokenResponse.class},
         {"rong/sv-ds-phieu-muon.json", PhieuMuonTomTatPage.class},

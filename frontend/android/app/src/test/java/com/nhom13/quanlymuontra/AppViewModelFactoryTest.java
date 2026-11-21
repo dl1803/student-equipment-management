@@ -5,6 +5,7 @@ import static org.junit.Assert.assertThrows;
 import static org.junit.Assert.assertTrue;
 
 import androidx.lifecycle.ViewModel;
+import com.nhom13.quanlymuontra.data.repository.HoSoMuonRepository;
 import com.nhom13.quanlymuontra.data.repository.XacThucRepository;
 import com.nhom13.quanlymuontra.data.session.SessionManager;
 import com.nhom13.quanlymuontra.ui.dangnhap.DangNhapSinhVienViewModel;
@@ -24,7 +25,12 @@ public class AppViewModelFactoryTest {
         SessionManager phien = HoTroXacThuc.taoSessionManager();
         XacThucRepository kho =
                 new XacThucRepository(HoTroXacThuc.taoApi(Collections.emptyMap()), phien);
-        nhaMay = new AppViewModelFactory(new AppContainer(phien, kho));
+        nhaMay =
+                new AppViewModelFactory(
+                        new AppContainer(
+                                phien,
+                                kho,
+                                new HoSoMuonRepository(HoTroSinhVienApi.taoApiSvToi())));
     }
 
     @After
