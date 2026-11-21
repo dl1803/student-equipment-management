@@ -39,4 +39,23 @@ public sealed class AvailabilityService : IAvailabilityService
                 """)
             .SingleAsync(ct);
     }
+
+    public async Task<IReadOnlyList<ViTriSanSangDto>> DsViTriSanSangAsync(Guid maPhong, Guid maLoai, CancellationToken ct)
+    {
+        var cacDong = await _db.Database
+            .SqlQuery<DongViTriSanSang>($"""
+                SELECT vi_tri_ke AS "ViTriKe", vi_tri_tu AS "ViTriTu", count(*)::integer AS "SoThietBiSanSang"
+                FROM danh_muc.thiet_bi
+                WHERE ma_phong = {maPhong} AND ma_loai = {maLoai}
+                  AND tinh_trang = 'SAN_SANG' AND ngung_su_dung = false
+                GROUP BY vi_tri_ke, vi_tri_tu
+                """)
+            .ToListAsync(ct);
+
+        return cacDong
+            .OrderBy(d => d.ViTriKe, StringComparer.Ordinal)
+            .ThenBy(d => d.ViTriTu, StringComparer.Ordinal)
+            .Select(d => new ViTriSanSangDto(d.ViTriKe, d.ViTriTu, d.SoThietBiSanSang))
+            .ToList();
+    }
 }

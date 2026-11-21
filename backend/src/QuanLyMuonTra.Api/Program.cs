@@ -85,6 +85,8 @@ builder.Services.AddScoped<FluentValidation.IValidator<DatLaiMatKhauRequest>, Da
 builder.Services.AddScoped<FluentValidation.IValidator<QuyenPhongRequest>, QuyenPhongValidator>();
 builder.Services.AddScoped<FluentValidation.IValidator<GuiYeuCauMuonRequest>, GuiYeuCauMuonValidator>();
 builder.Services.AddScoped<FluentValidation.IValidator<TuChoiRequest>, TuChoiValidator>();
+builder.Services.AddScoped<FluentValidation.IValidator<KiemTraThietBiRequest>, KiemTraThietBiValidator>();
+builder.Services.AddScoped<FluentValidation.IValidator<KiemTraNguonRequest>, KiemTraNguonValidator>();
 
 var app = builder.Build();
 

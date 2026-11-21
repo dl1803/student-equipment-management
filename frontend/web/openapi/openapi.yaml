@@ -1506,6 +1506,8 @@ paths:
           $ref: '#/components/responses/ChuaXacThuc'
         '403':
           $ref: '#/components/responses/KhongDuQuyenNhanVienTheoPhong'
+        '404':
+          $ref: '#/components/responses/KhongTimThay'
         '500':
           $ref: '#/components/responses/LoiHeThong'
   /api/v1/quay/phieu-muon/kiem-tra-thiet-bi:
@@ -1541,6 +1543,8 @@ paths:
           $ref: '#/components/responses/ChuaXacThuc'
         '403':
           $ref: '#/components/responses/KhongDuQuyenNhanVienTheoPhong'
+        '404':
+          $ref: '#/components/responses/KhongTimThay'
         '422':
           description: |-
             Vi phạm quy tắc nghiệp vụ. Mã lỗi (`maLoi`):
