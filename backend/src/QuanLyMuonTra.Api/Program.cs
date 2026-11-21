@@ -8,6 +8,7 @@ using QuanLyMuonTra.Api.Loi;
 using QuanLyMuonTra.Api.MuonTra;
 using QuanLyMuonTra.Api.SinhVien;
 using QuanLyMuonTra.Infrastructure;
+using QuanLyMuonTra.Infrastructure.Email;
 using QuanLyMuonTra.Infrastructure.LuuTru;
 using QuanLyMuonTra.Modules.BaoTri;
 using QuanLyMuonTra.Modules.DanhMuc;
@@ -20,6 +21,7 @@ using QuanLyMuonTra.Modules.SinhVien;
 using QuanLyMuonTra.Modules.TaiKhoan;
 using QuanLyMuonTra.Modules.TaiKhoan.Domain;
 using QuanLyMuonTra.Modules.TaiKhoan.Infrastructure;
+using QuanLyMuonTra.Modules.ThongBao;
 using QuanLyMuonTra.Modules.ViPham;
 using QuanLyMuonTra.SharedKernel;
 
@@ -52,6 +54,10 @@ builder.Services.AddInfrastructure(chuoiKetNoi, assemblyCauHinhEf);
 builder.Services.AddAnhLuuTru(new SupabaseStorageOptions(
     builder.Configuration["Supabase:Url"],
     builder.Configuration["Supabase:ServiceRoleKey"]));
+builder.Services.AddEmailSender(new EmailOptions(
+    builder.Configuration["Email:Provider"],
+    builder.Configuration["Email:ApiKey"],
+    builder.Configuration["Email:From"]));
 builder.Services.AddTaiKhoanModule(jwt);
 builder.Services.AddSinhVienModule();
 builder.Services.AddDanhMucModule();
@@ -60,6 +66,7 @@ builder.Services.AddXacThucJwt(jwt);
 builder.Services.AddChinhSachPhanQuyen();
 builder.Services.AddExceptionHandler<XuLyLoiToanCuc>();
 builder.Services.AddViPhamModule();
+builder.Services.AddThongBaoModule();
 builder.Services.AddBaoTriModule();
 builder.Services.AddMuonTraModule();
 builder.Services.AddScoped<LayHoSoSinhVienHandler>();
