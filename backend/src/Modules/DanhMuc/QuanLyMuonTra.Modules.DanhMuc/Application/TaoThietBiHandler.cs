@@ -59,7 +59,7 @@ public sealed class TaoThietBiHandler
 
         await AnhThietBi.GanMoiAsync(_anh, yeuCau.MaThietBi, yeuCau.DsMaAnh, ct);
 
-        var ketQua = await DocThietBiQuanTri.LayAsync(_db, yeuCau.MaThietBi, ct);
+        var ketQua = await DocThietBiQuanTri.LayAsync(_db, _anh, yeuCau.MaThietBi, ct);
         if (giaoDichRieng is not null)
         {
             await giaoDichRieng.CommitAsync(ct);

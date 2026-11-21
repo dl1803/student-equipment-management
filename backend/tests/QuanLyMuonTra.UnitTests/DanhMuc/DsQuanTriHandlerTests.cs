@@ -25,7 +25,7 @@ public sealed class DsQuanTriHandlerTests
         {
             () => new DsPhongThietBiHandler(db).XuLyAsync(trang, kichThuoc, ct),
             () => new DsLoaiThietBiHandler(db).XuLyAsync(null, trang, kichThuoc, ct),
-            () => new DsThietBiHandler(db).XuLyAsync(null, null, null, null, trang, kichThuoc, ct),
+            () => new DsThietBiHandler(db, new AnhServiceGia()).XuLyAsync(null, null, null, null, trang, kichThuoc, ct),
             () => new DsNhaCungCapHandler(db).XuLyAsync(trang, kichThuoc, ct),
         };
 
@@ -42,7 +42,7 @@ public sealed class DsQuanTriHandlerTests
     public async Task UC12_DsThietBi_TinhTrangKhongThuocNamMa_Nem400()
     {
         using var db = TaoDbContext();
-        var handler = new DsThietBiHandler(db);
+        var handler = new DsThietBiHandler(db, new AnhServiceGia());
 
         var loi = await Assert.ThrowsAsync<LoiNghiepVuException>(
             () => handler.XuLyAsync(null, null, null, "KHONG_CO", 1, 20, CancellationToken.None));
@@ -57,6 +57,7 @@ public sealed class DsQuanTriHandlerTests
         using var dichVu = new ServiceCollection()
             .AddDbContext<KhongKetNoiDbContext>(o => o.UseNpgsql("Host=khong-ket-noi;Database=khong-ket-noi"))
             .AddScoped<DbContext>(sp => sp.GetRequiredService<KhongKetNoiDbContext>())
+            .AddScoped<IAnhService, AnhServiceGia>()
             .AddDanhMucModule()
             .BuildServiceProvider();
         using var phamVi = dichVu.CreateScope();
@@ -66,6 +67,37 @@ public sealed class DsQuanTriHandlerTests
         Assert.NotNull(dv.GetRequiredService<DsLoaiThietBiHandler>());
         Assert.NotNull(dv.GetRequiredService<DsThietBiHandler>());
         Assert.NotNull(dv.GetRequiredService<DsNhaCungCapHandler>());
+    }
+
+    [Fact]
+    public void UC12_Json_ThietBiQuanTriCoDsAnhVoiMaAnhVaUrl()
+    {
+        var maAnh = Guid.NewGuid();
+        var thietBi = new ThietBiQuanTriDto(
+            "TB-01",
+            Guid.Empty,
+            "Loai",
+            Guid.Empty,
+            "Phong",
+            "Ten",
+            null,
+            null,
+            new DateOnly(2026, 1, 5),
+            null,
+            "SAN_SANG",
+            null,
+            null,
+            false,
+            1000,
+            [],
+            [new AnhRefDto(maAnh, "https://luu-tru-gia.test/a.jpg")]);
+
+        var json = JsonSerializer.Serialize(thietBi, TuyChonJson);
+        using var tai = JsonDocument.Parse(json);
+
+        var anh = Assert.Single(tai.RootElement.GetProperty("dsAnh").EnumerateArray());
+        Assert.Equal(maAnh, anh.GetProperty("maAnh").GetGuid());
+        Assert.Equal("https://luu-tru-gia.test/a.jpg", anh.GetProperty("url").GetString());
     }
 
     [Fact]

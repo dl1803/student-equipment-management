@@ -3,6 +3,7 @@ using Microsoft.Extensions.DependencyInjection;
 using QuanLyMuonTra.Modules.DanhMuc;
 using QuanLyMuonTra.Modules.DanhMuc.Application;
 using QuanLyMuonTra.Modules.DanhMuc.Domain;
+using QuanLyMuonTra.SharedKernel;
 using QuanLyMuonTra.SharedKernel.Contracts;
 
 namespace QuanLyMuonTra.UnitTests.DanhMuc;
@@ -38,6 +39,7 @@ public sealed class NgungSuDungUngDungTests
             .AddDbContext<NgungTestDbContext>(o => o.UseNpgsql("Host=khong-ket-noi;Database=khong-ket-noi"))
             .AddScoped<DbContext>(sp => sp.GetRequiredService<NgungTestDbContext>())
             .AddScoped<IAdvisoryLockService, KhoaGia>()
+            .AddScoped<IAnhService, AnhServiceGia>()
             .AddDanhMucModule()
             .BuildServiceProvider();
         using var phamVi = dichVu.CreateScope();
