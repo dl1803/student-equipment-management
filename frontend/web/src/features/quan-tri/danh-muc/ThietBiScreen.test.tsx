@@ -1,7 +1,17 @@
 // @vitest-environment jsdom
-// SCR-QT-04 bằng fixture: chưa nối API thật, giả lập HTTP qua giaLapHttp (D08-T).
-import { fireEvent, screen, waitFor, within } from "@testing-library/react";
+// SCR-QT-04 bằng fixture: chưa nối API thật, giả lập HTTP qua giaLapHttp (D08-T, D09-T).
+// Ảnh: giả lập nén và tải ảnh ở mức mô-đun (như AnhUploader.test) để kiểm khu ảnh trong ngăn.
+import {
+  act,
+  fireEvent,
+  screen,
+  waitFor,
+  within,
+} from "@testing-library/react";
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
+import { anhTai } from "@/shared/anh/api";
+import type * as MoDunNenAnh from "@/shared/anh/nenAnh";
+import { nenAnh } from "@/shared/anh/nenAnh";
 import {
   ganBoChuyenDoi,
   traVe,
@@ -21,6 +31,14 @@ import {
   QUAN_TRI_MAU,
 } from "@/shared/testing/nguCanhKiemThu";
 import { ThietBiScreen } from "./ThietBiScreen";
+
+vi.mock("@/shared/anh/api", () => ({ anhTai: vi.fn() }));
+vi.mock("@/shared/anh/nenAnh", async (goc) => ({
+  ...(await goc<typeof MoDunNenAnh>()),
+  nenAnh: vi.fn(),
+}));
+const anhTaiGia = vi.mocked(anhTai);
+const nenAnhGia = vi.mocked(nenAnh);
 
 const MA_LAPTOP = "019c0000-0000-7000-8000-00000000c001";
 const MA_MAY_CHIEU = "019c0000-0000-7000-8000-00000000c002";
@@ -193,6 +211,31 @@ function dongCua(tenThietBi: string): HTMLElement {
   return dong;
 }
 
+/** Ba hành động của dòng gom vào menu Thao tác (ĐX-DS-14): mở menu rồi chọn mục. */
+function chonHanhDong(tenThietBi: string, nhan: string) {
+  fireEvent.click(
+    within(dongCua(tenThietBi)).getByRole("button", { name: "Thao tác" }),
+  );
+  fireEvent.click(screen.getByRole("menuitem", { name: nhan }));
+}
+
+/** Hộp đang mở trên cùng (hộp chồng lên ngăn là <dialog> mở sau cùng). */
+function hopTrenCung(): HTMLElement {
+  const ds = document.querySelectorAll("dialog[open]");
+  const hop = ds[ds.length - 1];
+  if (!(hop instanceof HTMLElement)) throw new Error("Không có hộp nào mở");
+  return hop;
+}
+
+const LOI_MANG = (cfg: CauHinhYeuCau) =>
+  Promise.reject(
+    Object.assign(new Error("Network Error"), {
+      isAxiosError: true,
+      code: "ERR_NETWORK",
+      config: cfg,
+    }),
+  );
+
 beforeEach(() => {
   vi.stubEnv("NEXT_PUBLIC_API_BASE_URL", "https://api.test");
   xoaPhien();
@@ -230,8 +273,11 @@ describe("ThietBiScreen — bảng và bộ lọc (UI-Screens 7.4)", () => {
     expect(dong2.textContent).toContain("—");
     expect(dong2.textContent).toContain("Đang được mượn");
     expect(dong2.textContent).toContain("Đã ngưng sử dụng");
-    // D08-T: dòng chỉ có Sửa (Cập nhật giá trị, Xóa thuộc D09-T).
-    expect(within(dong2).getByRole("button", { name: "Sửa" })).toBeTruthy();
+    // Wireframes SCR-QT-04: menu Thao tác giữ đủ ba hành động, kể cả thiết bị đã ngưng sử dụng.
+    fireEvent.click(within(dong2).getByRole("button", { name: "Thao tác" }));
+    expect(
+      screen.getAllByRole("menuitem").map((muc) => muc.textContent),
+    ).toEqual(["Sửa", "Cập nhật giá trị", "Xóa"]);
   });
 
   it("FA 3.10: lọc tình trạng, loại, phòng gửi đúng tham số từ trang 1; tên áp dụng khi Enter; Xóa bộ lọc", async () => {
@@ -513,9 +559,7 @@ describe("ThietBiScreen — Nhập kho thiết bị (ngăn biểu mẫu)", () =>
 describe("ThietBiScreen — Sửa thiết bị", () => {
   async function moSua(tenThietBi: string) {
     await screen.findByText(tenThietBi);
-    fireEvent.click(
-      within(dongCua(tenThietBi)).getByRole("button", { name: "Sửa" }),
-    );
+    chonHanhDong(tenThietBi, "Sửa");
     return ngan();
   }
 
@@ -748,5 +792,533 @@ describe("ThietBiScreen — nguồn lựa chọn của bộ lọc", () => {
     expect(screen.getByLabelText("Tình trạng").hasAttribute("disabled")).toBe(
       false,
     );
+  });
+});
+
+// ---------------- D09-T ----------------
+
+const URL_GIA_TRI = "/quan-tri/thiet-bi/LT-001/gia-tri";
+
+describe("ThietBiScreen — Cập nhật giá trị (UI-Screens 7.4; BR-17)", () => {
+  it("hộp nhỏ: giá trị hiện hành chỉ đọc, nêu dùng tính bồi thường, tiêu điểm ở ô giá trị mới", async () => {
+    mayChu();
+    hienThi();
+    await screen.findByText("Laptop Dell Latitude 5440");
+    chonHanhDong("Laptop Dell Latitude 5440", "Cập nhật giá trị");
+
+    const hop = hopTrenCung();
+    expect(
+      within(hop).getByRole("heading", { name: "Cập nhật giá trị" }),
+    ).toBeTruthy();
+    expect(hop.textContent).toContain("LT-001");
+    expect(hop.textContent).toContain("12.000.000 VNĐ".replace(" ", "\u00a0"));
+    expect(within(hop).getByText(/dùng để tính bồi thường/)).toBeTruthy();
+    expect(within(hop).queryByText(/hoàn tác/)).toBeNull();
+    const o = within(hop).getByLabelText(/Giá trị mới/);
+    await waitFor(() => expect(document.activeElement).toBe(o));
+  });
+
+  it("kiểm tra phía client theo openapi: trống, âm, thập phân, có dấu phân cách → không gửi", async () => {
+    const goi = mayChu();
+    hienThi();
+    await screen.findByText("Laptop Dell Latitude 5440");
+    chonHanhDong("Laptop Dell Latitude 5440", "Cập nhật giá trị");
+    const hop = hopTrenCung();
+
+    for (const sai of ["", "-1", "1,5", "12.000.000", "abc"]) {
+      go(hop, /Giá trị mới/, sai);
+      fireEvent.click(within(hop).getByRole("button", { name: "Lưu" }));
+      expect(
+        await within(hop).findByText("Nhập số nguyên không âm"),
+      ).toBeTruthy();
+    }
+    expect(goiTheo(goi, "put", URL_GIA_TRI)).toHaveLength(0);
+  });
+
+  it("gửi PUT .../gia-tri với số nguyên; báo giá trị do MÁY CHỦ trả về và tải lại danh sách", async () => {
+    const goi = mayChu((cfg) =>
+      cfg.method === "put" && cfg.url === URL_GIA_TRI
+        ? traVe(cfg, 200, {
+            maThietBi: "LT-001",
+            giaTri: 13_500_000,
+            ngayCapNhat: "2026-11-22T03:00:00Z",
+          })
+        : undefined,
+    );
+    hienThi();
+    await screen.findByText("Laptop Dell Latitude 5440");
+    const soLanTai = goiTheo(goi, "get", "/quan-tri/thiet-bi").length;
+    chonHanhDong("Laptop Dell Latitude 5440", "Cập nhật giá trị");
+    const hop = hopTrenCung();
+    go(hop, /Giá trị mới/, " 13500000 ");
+    fireEvent.click(within(hop).getByRole("button", { name: "Lưu" }));
+
+    expect(
+      await screen.findByText(
+        /Đã cập nhật giá trị thiết bị Laptop Dell Latitude 5440: 13\.500\.000/,
+      ),
+    ).toBeTruthy();
+    expect(thanYeuCau(goiTheo(goi, "put", URL_GIA_TRI)[0])).toEqual({
+      giaTri: 13_500_000,
+    });
+    // Không gọi PUT sửa thông tin danh mục.
+    expect(goiTheo(goi, "put", "/quan-tri/thiet-bi/LT-001")).toHaveLength(0);
+    expect(document.querySelector("dialog[open]")).toBeNull();
+    await waitFor(() =>
+      expect(goiTheo(goi, "get", "/quan-tri/thiet-bi").length).toBeGreaterThan(
+        soLanTai,
+      ),
+    );
+  });
+
+  it("giá trị 0 hợp lệ (minimum 0)", async () => {
+    const goi = mayChu((cfg) =>
+      cfg.method === "put" && cfg.url === URL_GIA_TRI
+        ? traVe(cfg, 200, { maThietBi: "LT-001", giaTri: 0 })
+        : undefined,
+    );
+    hienThi();
+    await screen.findByText("Laptop Dell Latitude 5440");
+    chonHanhDong("Laptop Dell Latitude 5440", "Cập nhật giá trị");
+    go(hopTrenCung(), /Giá trị mới/, "0");
+    fireEvent.click(within(hopTrenCung()).getByRole("button", { name: "Lưu" }));
+    await waitFor(() =>
+      expect(goiTheo(goi, "put", URL_GIA_TRI)).toHaveLength(1),
+    );
+    expect(thanYeuCau(goiTheo(goi, "put", URL_GIA_TRI)[0])).toEqual({
+      giaTri: 0,
+    });
+  });
+
+  it("400 theo trường → lỗi dưới ô, giữ giá trị đã nhập, hộp vẫn mở", async () => {
+    mayChu((cfg) =>
+      cfg.method === "put" && cfg.url === URL_GIA_TRI
+        ? traVe(cfg, 400, {
+            status: 400,
+            maLoi: "DU_LIEU_KHONG_HOP_LE",
+            errors: { giaTri: ["Giá trị vượt quá mức cho phép."] },
+          })
+        : undefined,
+    );
+    hienThi();
+    await screen.findByText("Laptop Dell Latitude 5440");
+    chonHanhDong("Laptop Dell Latitude 5440", "Cập nhật giá trị");
+    const hop = hopTrenCung();
+    go(hop, /Giá trị mới/, "999999999999999");
+    fireEvent.click(within(hop).getByRole("button", { name: "Lưu" }));
+
+    expect(
+      await within(hop).findByText("Giá trị vượt quá mức cho phép."),
+    ).toBeTruthy();
+    expect(
+      (within(hop).getByLabelText(/Giá trị mới/) as HTMLInputElement).value,
+    ).toBe("999999999999999");
+  });
+
+  it("404 → đóng hộp, báo không còn tồn tại, tải lại danh sách", async () => {
+    const goi = mayChu((cfg) =>
+      cfg.method === "put" && cfg.url === URL_GIA_TRI
+        ? traVe(cfg, 404, { status: 404, maLoi: "KHONG_TIM_THAY" })
+        : undefined,
+    );
+    hienThi();
+    await screen.findByText("Laptop Dell Latitude 5440");
+    const soLanTai = goiTheo(goi, "get", "/quan-tri/thiet-bi").length;
+    chonHanhDong("Laptop Dell Latitude 5440", "Cập nhật giá trị");
+    go(hopTrenCung(), /Giá trị mới/, "1");
+    fireEvent.click(within(hopTrenCung()).getByRole("button", { name: "Lưu" }));
+
+    expect(await screen.findByText(/Không tìm thấy/)).toBeTruthy();
+    expect(document.querySelector("dialog[open]")).toBeNull();
+    await waitFor(() =>
+      expect(goiTheo(goi, "get", "/quan-tri/thiet-bi").length).toBeGreaterThan(
+        soLanTai,
+      ),
+    );
+  });
+
+  it("FA 3.11: mất kết nối sau khi gửi → chưa xác định kết quả, KHÔNG tự gửi lại; Kiểm tra lại tải danh sách rồi đóng", async () => {
+    const goi = mayChu((cfg) =>
+      cfg.method === "put" && cfg.url === URL_GIA_TRI
+        ? LOI_MANG(cfg)
+        : undefined,
+    );
+    hienThi();
+    await screen.findByText("Laptop Dell Latitude 5440");
+    chonHanhDong("Laptop Dell Latitude 5440", "Cập nhật giá trị");
+    const hop = hopTrenCung();
+    go(hop, /Giá trị mới/, "1000");
+    fireEvent.click(within(hop).getByRole("button", { name: "Lưu" }));
+
+    expect(
+      await within(hop).findByText(/Chưa xác định được kết quả/),
+    ).toBeTruthy();
+    fireEvent.click(within(hop).getByRole("button", { name: "Lưu" }));
+    expect(goiTheo(goi, "put", URL_GIA_TRI)).toHaveLength(1);
+
+    fireEvent.click(within(hop).getByRole("button", { name: "Kiểm tra lại" }));
+    await waitFor(() =>
+      expect(document.querySelector("dialog[open]")).toBeNull(),
+    );
+  });
+
+  it("từ ngăn Sửa: nút Cập nhật giá trị mở hộp chồng lên; lưu xong ô chỉ đọc hiện giá trị máy chủ, KHÔNG mất dữ liệu đang nhập ở ngăn", async () => {
+    const goi = mayChu((cfg) =>
+      cfg.method === "put" && cfg.url === URL_GIA_TRI
+        ? traVe(cfg, 200, { maThietBi: "LT-001", giaTri: 15_000_000 })
+        : undefined,
+    );
+    hienThi();
+    await screen.findByText("Laptop Dell Latitude 5440");
+    chonHanhDong("Laptop Dell Latitude 5440", "Sửa");
+    const hopNgan = ngan();
+    go(hopNgan, /Tên thiết bị/, "Tên đang sửa dở");
+
+    fireEvent.click(
+      within(hopNgan).getByRole("button", { name: "Cập nhật giá trị" }),
+    );
+    expect(document.querySelectorAll("dialog[open]")).toHaveLength(2);
+    const hop = hopTrenCung();
+    go(hop, /Giá trị mới/, "15000000");
+    fireEvent.click(within(hop).getByRole("button", { name: "Lưu" }));
+
+    await waitFor(() =>
+      expect(document.querySelectorAll("dialog[open]")).toHaveLength(1),
+    );
+    expect(
+      (within(hopNgan).getByLabelText("Giá trị hiện hành") as HTMLInputElement)
+        .value,
+    ).toBe("15.000.000 VNĐ".replace(" ", "\u00a0"));
+    expect(
+      within(hopNgan).getByText(/Đã cập nhật giá trị thiết bị/),
+    ).toBeTruthy();
+    expect(
+      (within(hopNgan).getByLabelText(/Tên thiết bị/) as HTMLInputElement)
+        .value,
+    ).toBe("Tên đang sửa dở");
+    // Lưu ngăn sau đó vẫn gửi ThietBiCapNhatRequest không có giá trị.
+    fireEvent.click(within(hopNgan).getByRole("button", { name: "Lưu" }));
+    await waitFor(() =>
+      expect(goiTheo(goi, "put", "/quan-tri/thiet-bi/LT-001")).toHaveLength(1),
+    );
+    expect(
+      thanYeuCau(goiTheo(goi, "put", "/quan-tri/thiet-bi/LT-001")[0]),
+    ).not.toHaveProperty("giaTri");
+  });
+});
+
+describe("ThietBiScreen — Xóa và Ngưng sử dụng (UI-Screens 7.4 như 7.3; BR-18)", () => {
+  it("Xóa (hủy bỏ) thành công 204 → báo đã xóa, gọi DELETE đúng đường dẫn, tải lại danh sách", async () => {
+    const goi = mayChu((cfg) =>
+      cfg.method === "delete" ? traVe(cfg, 204) : undefined,
+    );
+    hienThi();
+    await screen.findByText("Laptop Dell Latitude 5440");
+    const soLanTai = goiTheo(goi, "get", "/quan-tri/thiet-bi").length;
+    chonHanhDong("Laptop Dell Latitude 5440", "Xóa");
+
+    const hop = hopTrenCung();
+    expect(
+      within(hop).getByRole("heading", { name: "Xóa thiết bị" }),
+    ).toBeTruthy();
+    expect(hop.textContent).toContain("LT-001");
+    fireEvent.click(within(hop).getByRole("button", { name: "Xóa" }));
+
+    expect(
+      await screen.findByText("Đã xóa thiết bị Laptop Dell Latitude 5440"),
+    ).toBeTruthy();
+    expect(goiTheo(goi, "delete", "/quan-tri/thiet-bi/LT-001")).toHaveLength(1);
+    await waitFor(() =>
+      expect(goiTheo(goi, "get", "/quan-tri/thiet-bi").length).toBeGreaterThan(
+        soLanTai,
+      ),
+    );
+  });
+
+  it("Hủy ở hộp Xóa → không gọi API", async () => {
+    const goi = mayChu();
+    hienThi();
+    await screen.findByText("Laptop Dell Latitude 5440");
+    chonHanhDong("Laptop Dell Latitude 5440", "Xóa");
+    fireEvent.click(within(hopTrenCung()).getByRole("button", { name: "Hủy" }));
+    expect(document.querySelector("dialog[open]")).toBeNull();
+    expect(goi.mock.calls.some((c) => c[0].method === "delete")).toBe(false);
+  });
+
+  it("409 DA_CO_LICH_SU_CHI_NGUNG_SU_DUNG → tải lại danh sách, đề nghị Ngưng sử dụng (không hứa hoàn tác); xác nhận gọi ngung-su-dung", async () => {
+    const goi = mayChu((cfg) => {
+      if (cfg.method === "delete")
+        return traVe(cfg, 409, {
+          status: 409,
+          maLoi: "DA_CO_LICH_SU_CHI_NGUNG_SU_DUNG",
+        });
+      if (cfg.method === "post" && cfg.url?.endsWith("/ngung-su-dung"))
+        return traVe(cfg, 200, { ...LT001, ngungSuDung: true });
+      return undefined;
+    });
+    hienThi();
+    await screen.findByText("Laptop Dell Latitude 5440");
+    const soLanTai = goiTheo(goi, "get", "/quan-tri/thiet-bi").length;
+    chonHanhDong("Laptop Dell Latitude 5440", "Xóa");
+    fireEvent.click(within(hopTrenCung()).getByRole("button", { name: "Xóa" }));
+
+    const hop = within(hopTrenCung());
+    expect(
+      await hop.findByRole("heading", { name: "Ngưng sử dụng thiết bị" }),
+    ).toBeTruthy();
+    expect(hop.getByText(/chỉ có thể ngưng sử dụng/)).toBeTruthy();
+    expect(
+      hop.getByText(
+        "Thiết bị vẫn giữ lịch sử và không còn tính vào số lượng khả dụng.",
+      ),
+    ).toBeTruthy();
+    expect(hop.queryByText(/hoàn tác/)).toBeNull();
+    await waitFor(() =>
+      expect(goiTheo(goi, "get", "/quan-tri/thiet-bi").length).toBeGreaterThan(
+        soLanTai,
+      ),
+    );
+
+    fireEvent.click(hop.getByRole("button", { name: "Ngưng sử dụng" }));
+    expect(
+      await screen.findByText(
+        "Đã ngưng sử dụng thiết bị Laptop Dell Latitude 5440",
+      ),
+    ).toBeTruthy();
+    expect(
+      goiTheo(goi, "post", "/quan-tri/thiet-bi/LT-001/ngung-su-dung"),
+    ).toHaveLength(1);
+  });
+
+  it("thiết bị đã ngưng sử dụng mà Xóa nhận 409 → đóng hộp, báo ở màn hình, KHÔNG đề nghị ngưng lần nữa", async () => {
+    const goi = mayChu((cfg) =>
+      cfg.method === "delete"
+        ? traVe(cfg, 409, {
+            status: 409,
+            maLoi: "DA_CO_LICH_SU_CHI_NGUNG_SU_DUNG",
+          })
+        : undefined,
+    );
+    hienThi();
+    await screen.findByText(TEN_DAI);
+    chonHanhDong(TEN_DAI, "Xóa");
+    fireEvent.click(within(hopTrenCung()).getByRole("button", { name: "Xóa" }));
+
+    expect(
+      await screen.findByText(
+        /không xóa được và đang ở trạng thái ngưng sử dụng/,
+      ),
+    ).toBeTruthy();
+    expect(document.querySelector("dialog[open]")).toBeNull();
+    expect(goi.mock.calls.some((c) => c[0].method === "post")).toBe(false);
+  });
+
+  it("Ngưng sử dụng gặp 409 XUNG_DOT_CAP_NHAT → cảnh báo trong hộp, tải lại danh sách, hộp vẫn mở để thử lại", async () => {
+    const goi = mayChu((cfg) => {
+      if (cfg.method === "delete")
+        return traVe(cfg, 409, {
+          status: 409,
+          maLoi: "DA_CO_LICH_SU_CHI_NGUNG_SU_DUNG",
+        });
+      if (cfg.method === "post")
+        return traVe(cfg, 409, { status: 409, maLoi: "XUNG_DOT_CAP_NHAT" });
+      return undefined;
+    });
+    hienThi();
+    await screen.findByText("Laptop Dell Latitude 5440");
+    chonHanhDong("Laptop Dell Latitude 5440", "Xóa");
+    fireEvent.click(within(hopTrenCung()).getByRole("button", { name: "Xóa" }));
+    const hop = within(hopTrenCung());
+    await hop.findByRole("heading", { name: "Ngưng sử dụng thiết bị" });
+    const soLanTai = goiTheo(goi, "get", "/quan-tri/thiet-bi").length;
+    fireEvent.click(hop.getByRole("button", { name: "Ngưng sử dụng" }));
+
+    expect(
+      await hop.findByText(/kiểm tra thiết bị trước khi ngưng sử dụng lại/),
+    ).toBeTruthy();
+    expect(document.querySelector("dialog[open]")).not.toBeNull();
+    await waitFor(() =>
+      expect(goiTheo(goi, "get", "/quan-tri/thiet-bi").length).toBeGreaterThan(
+        soLanTai,
+      ),
+    );
+    expect(
+      hop
+        .getByRole("button", { name: "Ngưng sử dụng" })
+        .hasAttribute("disabled"),
+    ).toBe(false);
+  });
+
+  it("404 khi Xóa → đóng hộp, báo không còn tồn tại", async () => {
+    mayChu((cfg) =>
+      cfg.method === "delete"
+        ? traVe(cfg, 404, { status: 404, maLoi: "KHONG_TIM_THAY" })
+        : undefined,
+    );
+    hienThi();
+    await screen.findByText("Laptop Dell Latitude 5440");
+    chonHanhDong("Laptop Dell Latitude 5440", "Xóa");
+    fireEvent.click(within(hopTrenCung()).getByRole("button", { name: "Xóa" }));
+    expect(await screen.findByText(/Không tìm thấy/)).toBeTruthy();
+    expect(document.querySelector("dialog[open]")).toBeNull();
+  });
+
+  it("FA 3.11: mất kết nối sau khi gửi Xóa → chưa xác định kết quả, không gửi lại tới khi kiểm tra", async () => {
+    const goi = mayChu((cfg) =>
+      cfg.method === "delete" ? LOI_MANG(cfg) : undefined,
+    );
+    hienThi();
+    await screen.findByText("Laptop Dell Latitude 5440");
+    chonHanhDong("Laptop Dell Latitude 5440", "Xóa");
+    const hop = within(hopTrenCung());
+    fireEvent.click(hop.getByRole("button", { name: "Xóa" }));
+
+    expect(await hop.findByText(/Chưa xác định được kết quả/)).toBeTruthy();
+    fireEvent.click(hop.getByRole("button", { name: "Xóa" }));
+    expect(goiTheo(goi, "delete", "/quan-tri/thiet-bi/LT-001")).toHaveLength(1);
+    fireEvent.click(hop.getByRole("button", { name: "Kiểm tra lại" }));
+    await waitFor(() =>
+      expect(document.querySelector("dialog[open]")).toBeNull(),
+    );
+  });
+});
+
+describe("ThietBiScreen — ảnh trong ngăn Sửa (UI-Screens 7.4; DS CMP-12)", () => {
+  async function choXuLy() {
+    await act(async () => {
+      for (let i = 0; i < 10; i++) await Promise.resolve();
+    });
+  }
+
+  function chonAnh(hop: HTMLElement, ...ten: string[]) {
+    const o = hop.querySelector<HTMLInputElement>('input[type="file"]');
+    if (o === null) throw new Error("thiếu ô chọn tệp");
+    fireEvent.change(o, {
+      target: {
+        files: ten.map((t) => new File(["x"], t, { type: "image/jpeg" })),
+      },
+    });
+  }
+
+  beforeEach(() => {
+    anhTaiGia.mockReset();
+    nenAnhGia.mockReset();
+    nenAnhGia.mockImplementation(
+      async (tep) => new Blob([tep], { type: "image/jpeg" }),
+    );
+    let dem = 0;
+    vi.stubGlobal("URL", {
+      ...URL,
+      createObjectURL: vi.fn(() => `blob:tam-${++dem}`),
+      revokeObjectURL: vi.fn(),
+    });
+  });
+  afterEach(() => {
+    vi.unstubAllGlobals();
+  });
+
+  it("gỡ ảnh có sẵn → dsMaAnh gửi đi không còn ảnh đó", async () => {
+    const goi = mayChu();
+    hienThi();
+    await screen.findByText("Laptop Dell Latitude 5440");
+    chonHanhDong("Laptop Dell Latitude 5440", "Sửa");
+    const hop = ngan();
+    fireEvent.click(within(hop).getByRole("button", { name: "Gỡ ảnh 1" }));
+    fireEvent.click(within(hop).getByRole("button", { name: "Lưu" }));
+
+    await waitFor(() =>
+      expect(goiTheo(goi, "put", "/quan-tri/thiet-bi/LT-001")).toHaveLength(1),
+    );
+    expect(
+      thanYeuCau(goiTheo(goi, "put", "/quan-tri/thiet-bi/LT-001")[0]),
+    ).toMatchObject({ dsMaAnh: [] });
+  });
+
+  it("ảnh đang tải → Lưu vô hiệu; tải xong → gửi kèm ảnh có sẵn và ảnh mới theo thứ tự", async () => {
+    let xong!: (v: { maAnh: string }) => void;
+    anhTaiGia.mockImplementation(
+      () =>
+        new Promise((r) => {
+          xong = r;
+        }),
+    );
+    const goi = mayChu();
+    hienThi();
+    await screen.findByText("Laptop Dell Latitude 5440");
+    chonHanhDong("Laptop Dell Latitude 5440", "Sửa");
+    const hop = ngan();
+    chonAnh(hop, "moi.jpg");
+    await choXuLy();
+
+    const nutLuu = within(hop).getByRole("button", { name: "Lưu" });
+    expect(nutLuu.hasAttribute("disabled")).toBe(true);
+
+    await act(async () => xong({ maAnh: "anh-moi" }));
+    await waitFor(() => expect(nutLuu.hasAttribute("disabled")).toBe(false));
+    fireEvent.click(nutLuu);
+    await waitFor(() =>
+      expect(goiTheo(goi, "put", "/quan-tri/thiet-bi/LT-001")).toHaveLength(1),
+    );
+    expect(
+      thanYeuCau(goiTheo(goi, "put", "/quan-tri/thiet-bi/LT-001")[0]),
+    ).toMatchObject({ dsMaAnh: ["anh-1", "anh-moi"] });
+  });
+
+  it("ảnh tải lỗi → Lưu vô hiệu cho tới khi gỡ ảnh lỗi", async () => {
+    anhTaiGia.mockRejectedValue(new Error("mạng"));
+    const goi = mayChu();
+    hienThi();
+    await screen.findByText("Laptop Dell Latitude 5440");
+    chonHanhDong("Laptop Dell Latitude 5440", "Sửa");
+    const hop = ngan();
+    chonAnh(hop, "loi.jpg");
+    await choXuLy();
+
+    const nutLuu = within(hop).getByRole("button", { name: "Lưu" });
+    await waitFor(() =>
+      expect(within(hop).getByRole("button", { name: "Thử lại" })).toBeTruthy(),
+    );
+    expect(nutLuu.hasAttribute("disabled")).toBe(true);
+
+    fireEvent.click(within(hop).getByRole("button", { name: "Gỡ ảnh 2" }));
+    await waitFor(() => expect(nutLuu.hasAttribute("disabled")).toBe(false));
+    fireEvent.click(nutLuu);
+    await waitFor(() =>
+      expect(goiTheo(goi, "put", "/quan-tri/thiet-bi/LT-001")).toHaveLength(1),
+    );
+    expect(
+      thanYeuCau(goiTheo(goi, "put", "/quan-tri/thiet-bi/LT-001")[0]),
+    ).toMatchObject({ dsMaAnh: ["anh-1"] });
+  });
+
+  it("máy chủ lỗi 500 khi lưu → KHÔNG reset biểu mẫu: giữ dữ liệu đã nhập và ảnh, báo lỗi trong ngăn", async () => {
+    anhTaiGia.mockResolvedValue({ maAnh: "anh-moi" });
+    mayChu((cfg) =>
+      cfg.method === "put" && cfg.url === "/quan-tri/thiet-bi/LT-001"
+        ? traVe(cfg, 500, { status: 500, maLoi: "LOI_HE_THONG" })
+        : undefined,
+    );
+    hienThi();
+    await screen.findByText("Laptop Dell Latitude 5440");
+    chonHanhDong("Laptop Dell Latitude 5440", "Sửa");
+    const hop = ngan();
+    go(hop, /Tên thiết bị/, "Tên mới chưa lưu");
+    chonAnh(hop, "moi.jpg");
+    await choXuLy();
+    await waitFor(() =>
+      expect(
+        within(hop)
+          .getByRole("button", { name: "Lưu" })
+          .hasAttribute("disabled"),
+      ).toBe(false),
+    );
+    fireEvent.click(within(hop).getByRole("button", { name: "Lưu" }));
+
+    expect(await within(hop).findByText(/Đã xảy ra lỗi hệ thống/)).toBeTruthy();
+    expect(document.querySelector("dialog[open]")).toBe(hop);
+    expect(
+      (within(hop).getByLabelText(/Tên thiết bị/) as HTMLInputElement).value,
+    ).toBe("Tên mới chưa lưu");
+    expect(within(hop).getByRole("group", { name: "Ảnh 2" })).toBeTruthy();
   });
 });
