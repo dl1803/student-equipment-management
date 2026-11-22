@@ -8,6 +8,9 @@
   <style>
     body { min-height: 100vh; display: flex; gap: 32px; justify-content: center; align-items: flex-start; padding: 32px 16px; }
     .phone [data-di], .phone [data-quay-lai] { cursor: pointer; }
+    /* Thẻ và liên kết chưa nối trong demo: giữ hình như app thật nhưng không gợi ý bấm được. */
+    .phone .card.tap:not([data-di]), .phone .link:not([data-di]) { cursor: default; }
+    .phone .card.tap:not([data-di]):active { background: var(--surface-default); }
     aside { width: 300px; display: flex; flex-direction: column; gap: 12px; font-size: 14px; line-height: 20px; }
     aside h1 { font-size: 20px; margin: 0; }
     aside .hien-tai { background: #fff; border: 1px solid var(--border-subtle); border-radius: 12px; padding: 12px; }
@@ -20,7 +23,7 @@
   <div id="dien-thoai"></div>
   <aside>
     <h1>Bấm thử app sinh viên</h1>
-    <p class="muted" style="margin:0">Bấm thẻ, nút, thanh điều hướng dưới và nút ‹ để chuyển màn. Các phần tử không dẫn đi đâu là chưa nối trong bản demo.</p>
+    <p class="muted" style="margin:0">Bấm thẻ, nút, thanh điều hướng dưới và nút ‹ để chuyển màn. Thẻ và liên kết không đổi con trỏ khi rê chuột là chưa nối trong bản demo.</p>
     <div class="hien-tai"><div class="ma" id="ma"></div><div id="ten" style="font-weight:500"></div><div class="muted" id="tt"></div></div>
     <label for="chon">Nhảy tới màn hình / trạng thái</label>
     <select id="chon"></select>
@@ -37,6 +40,12 @@
       const m = theoId[id];
       if (!m) return;
       const hienTai = document.querySelector(".phone")?.dataset.man;
+      // Đích chính là màn ngay trước (ví dụ "Sửa" ở Xem lại về Soạn phiếu, "Đóng" hộp thoại): coi như quay
+      // lại, bỏ màn đó khỏi lịch sử để nút ‹ không kẹt qua lại giữa hai màn.
+      if (ghiLichSu && lichSu.at(-1) === id) {
+        lichSu.pop();
+        ghiLichSu = false;
+      }
       if (ghiLichSu && hienTai && hienTai !== id) lichSu.push(hienTai);
       if (m.tab !== null && !m.quayLai) lichSu.length = 0; // màn gốc: không có nút quay lại
       document.getElementById("dien-thoai").innerHTML = dungManHinh(m);
@@ -52,7 +61,11 @@
       const dich = e.target.closest("[data-di]");
       if (dich) mo(dich.dataset.di);
     });
-    chon.addEventListener("change", () => mo(chon.value));
+    // Nhảy thẳng bằng ô chọn: bắt đầu lịch sử mới (nút ‹ của màn chi tiết về Trang chủ).
+    chon.addEventListener("change", () => {
+      lichSu.length = 0;
+      mo(chon.value, false);
+    });
     mo("dang-nhap");
   </script>
 </body>

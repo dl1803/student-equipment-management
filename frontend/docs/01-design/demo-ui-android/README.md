@@ -10,7 +10,7 @@ Mở trực tiếp bằng trình duyệt, không cần mạng hay máy chủ:
 
 | Tệp | Nội dung |
 |---|---|
-| `index.html` | Mọi màn hình cùng lúc (30 khung 360 × 760 dp), chia nhóm; dưới mỗi khung ghi mã màn hình và trạng thái minh họa |
+| `index.html` | Mọi màn hình cùng lúc (28 khung 360 × 760 dp), chia nhóm; dưới mỗi khung ghi mã màn hình và trạng thái minh họa |
 | `app.html` | Bấm thử chuyển màn như app: thẻ, nút, thanh điều hướng dưới, nút ‹; ô chọn để nhảy tới màn hoặc trạng thái bất kỳ |
 | `giao-dien.css` | Token Android (`ds_colors.xml`, `ds_dimens.xml`, `ds_type.xml`) theo ĐX-DS-17, giữ tên token; 1 dp = 1 px |
 | `man-hinh.js` | Nội dung từng màn hình |

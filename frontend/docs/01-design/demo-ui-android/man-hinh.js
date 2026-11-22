@@ -107,12 +107,12 @@ const MAN_HINH = [
         <span>Bạn chưa thể đặt trước hoặc đăng ký chờ.</span>
         <button class="btn secondary sm" style="align-self:flex-start" data-di="ho-so-chan">Xem lý do</button></div></div>
       <div class="grid2">
-        <div class="tile"><span class="ic">${ic("search")}</span>Tra cứu thiết bị</div>
-        <div class="tile"><span class="ic">${ic("event")}</span>Đặt trước thiết bị</div>
-        <div class="tile"><span class="ic">${ic("receipt")}</span>Phiếu yêu cầu của tôi</div>
-        <div class="tile"><span class="ic">${ic("hourglass")}</span>Đăng ký chờ của tôi</div>
+        <div class="tile" data-di="tra-cuu"><span class="ic">${ic("search")}</span>Tra cứu thiết bị</div>
+        <div class="tile" data-di="ho-so-chan"><span class="ic">${ic("event")}</span>Đặt trước thiết bị</div>
+        <div class="tile" data-di="ds-phieu"><span class="ic">${ic("receipt")}</span>Phiếu yêu cầu của tôi</div>
+        <div class="tile" data-di="ds-cho"><span class="ic">${ic("hourglass")}</span>Đăng ký chờ của tôi</div>
       </div>
-      <p class="t-caption" style="margin:0;text-align:center">(tám lối vào như màn Bình thường, vẫn dùng được)</p>`,
+      <p class="t-caption" style="margin:0;text-align:center">(tám lối vào như màn Bình thường, vẫn mở được; Đặt trước dẫn tới Hồ sơ mượn ở chế độ bị chặn)</p>`,
   },
 
   // ---------------- SCR-SV-02 ----------------
@@ -192,7 +192,7 @@ const MAN_HINH = [
       <div><h2 class="t-section">Máy chiếu Epson EB-X51</h2><p class="muted" style="margin:4px 0 0">Epson · Phòng thiết bị B2</p></div>`,
     ghim: `<button class="btn primary" disabled>Đăng ký chờ</button>`,
     lopPhu: `
-      <div class="scrim"><div class="dialog" role="dialog">
+      <div class="scrim"><div class="dialog" role="dialog" aria-modal="true">
         <h2 class="t-section">Đã đăng ký chờ</h2>
         <p class="t-body" style="margin:0"><span class="t-code">ĐK-000007</span> · Máy chiếu Epson EB-X51 · Phòng thiết bị B2</p>
         <div style="display:flex;gap:12px;align-items:center">${nhan("Đang chờ", "info")}<span class="t-label">Số thứ tự chờ: 3</span></div>
@@ -265,7 +265,7 @@ const MAN_HINH = [
       <div class="list-gap">
         <div class="card tap" data-di="chi-tiet-phieu-duyet"><div class="row"><span class="t-card"><span class="t-code">YC-000123</span> · Phòng A1</span>${nhan("Đã duyệt", "success")}</div><span class="t-caption">Gửi: 22/11/2026 08:15</span></div>
         <div class="card tap" data-di="chi-tiet-phieu-moi"><div class="row"><span class="t-card"><span class="t-code">YC-000121</span> · Phòng A1</span>${nhan("Chờ duyệt", "warning")}</div><span class="t-caption">Gửi: 21/11/2026 14:02</span></div>
-        <div class="card tap"><div class="row"><span class="t-card"><span class="t-code">YC-000120</span> · Phòng B2</span>${nhan("Từ chối", "danger")}</div><span class="t-caption">Gửi: 20/11/2026 09:40</span></div>
+        <div class="card tap" data-di="chi-tiet-phieu-tu-choi"><div class="row"><span class="t-card"><span class="t-code">YC-000120</span> · Phòng B2</span>${nhan("Từ chối", "danger")}</div><span class="t-caption">Gửi: 20/11/2026 09:40</span></div>
         <div class="card tap"><div class="row"><span class="t-card"><span class="t-code">YC-000117</span> · Phòng B2</span>${nhan("Hết hạn", "neutral")}</div><span class="t-caption">Gửi: 18/11/2026 16:55</span></div>
       </div>`,
   },
@@ -331,7 +331,7 @@ const MAN_HINH = [
     tab: null, tieuDe: "Đăng ký chờ của tôi",
     noiDung: `<div class="card"><div class="row"><span class="t-card">Máy chiếu Epson EB-X51 · B2</span>${nhan("Đang chờ", "info")}</div><span class="t-label">Số thứ tự chờ: 3</span></div>`,
     lopPhu: `
-      <div class="scrim"><div class="dialog" role="dialog">
+      <div class="scrim"><div class="dialog" role="dialog" aria-modal="true">
         <h2 class="t-section">Rời danh sách chờ?</h2>
         <p class="t-body" style="margin:0">Máy chiếu Epson EB-X51 · Phòng thiết bị B2 · Số thứ tự 3</p>
         <p class="muted" style="margin:0;font-size:14px;line-height:20px">Bạn sẽ mất vị trí trong danh sách. Rời danh sách không tính vi phạm.</p>

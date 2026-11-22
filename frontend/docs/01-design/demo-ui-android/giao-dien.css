@@ -68,8 +68,9 @@ body { margin: 0; font-family: var(--font); color: var(--text-primary); backgrou
 .link { color: var(--text-link); font-weight: 500; text-decoration: underline; cursor: pointer; }
 
 /* ---------- Khung điện thoại 360 × 760 ---------- */
+/* content-box: viền 8px nằm ngoài, vùng hiển thị đúng 360 × 760 dp (không bị co còn 344 × 744). */
 .phone {
-  width: 360px; height: 760px; background: var(--surface-subtle); border-radius: 28px;
+  box-sizing: content-box; width: 360px; height: 760px; background: var(--surface-subtle); border-radius: 28px;
   border: 8px solid #1b212d; overflow: hidden; display: flex; flex-direction: column;
   position: relative; box-shadow: 0 12px 32px rgba(27, 33, 45, 0.25); flex: none;
 }
@@ -87,11 +88,11 @@ body { margin: 0; font-family: var(--font); color: var(--text-primary); backgrou
   border-top: 1px solid var(--border-subtle); display: flex; gap: var(--space-3); }
 .pinned > * { flex: 1; }
 
-/* Thanh điều hướng dưới (4 mục, chỉ báo chanh nhạt) */
-.bottomnav { height: 72px; flex: none; display: grid; grid-template-columns: repeat(4, 1fr);
+/* Thanh điều hướng dưới (4 mục, chỉ báo chanh nhạt); cao ds_size_bottomnav_height = 56dp */
+.bottomnav { height: var(--bottomnav); flex: none; display: grid; grid-template-columns: repeat(4, 1fr);
   background: var(--surface-default); border-top: 1px solid var(--border-subtle); }
 .bottomnav a { display: flex; flex-direction: column; align-items: center; justify-content: center;
-  gap: 4px; font-size: 12px; font-weight: 500; color: var(--text-secondary); text-decoration: none; cursor: pointer; }
+  gap: 2px; font-size: 12px; line-height: 16px; font-weight: 500; color: var(--text-secondary); text-decoration: none; cursor: pointer; }
 .bottomnav .pill { width: 64px; height: 32px; border-radius: 16px; display: grid; place-items: center; }
 .bottomnav a.on { color: var(--nav-selected); font-weight: 700; }
 .bottomnav a.on .pill { background: var(--nav-indicator); }
