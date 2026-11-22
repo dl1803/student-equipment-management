@@ -8,7 +8,6 @@ describe("Header", () => {
     const onDangXuat = vi.fn();
     render(
       <Header
-        tenHeThong="Quản lý mượn trả thiết bị"
         hoTen="Nguyễn Thị Hương"
         nhanVaiTro="Nhân viên quản lý thiết bị"
         onDangXuat={onDangXuat}
@@ -24,7 +23,7 @@ describe("Header", () => {
     expect(document.querySelector("dialog")).toBeNull();
   });
 
-  it("Wireframes 2.3: khung QT không có tên hệ thống → không sinh thẻ văn bản rỗng", () => {
+  it("Wireframes 2.2/2.3: tên hệ thống không nằm ở thanh đầu trang (đã ở đầu thanh menu bên)", () => {
     render(
       <Header
         hoTen="Trần Văn An"
@@ -33,9 +32,8 @@ describe("Header", () => {
       />,
     );
     const thanh = screen.getByRole("banner");
-    expect(
-      [...thanh.querySelectorAll("p")].some((p) => p.textContent === ""),
-    ).toBe(false);
+    expect(thanh.textContent).not.toContain("Quản lý mượn trả thiết bị");
+    expect(thanh.textContent).toContain("Quản trị viên");
   });
 
   it("CMP-30: đang đăng xuất → nút vô hiệu, hiện 'Đang xử lý'", () => {

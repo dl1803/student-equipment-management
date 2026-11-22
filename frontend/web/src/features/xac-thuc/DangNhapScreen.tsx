@@ -7,6 +7,11 @@
 // - Không có liên kết đăng ký, quên hoặc đổi mật khẩu (UI-Screens 2.1).
 // - Đăng nhập mất phản hồi được thử lại bằng tay, không tự retry, không đếm số lần còn lại (ĐX-FA-22).
 // - Thành công: AuthProvider vào phiên; AuthGate chuyển tới trang chủ của vai trò.
+// - Bố cục (Wireframes SCR-CM-02, ĐX-DS-17): hai cột bằng nhau. Trái: tên hệ thống ở góc trên, biểu
+//   mẫu rộng layout.web.login-width nằm chính giữa cột. Phải: khối nền color.surface.subtle chứa ảnh
+//   minh họa trang trí (public/anh/dang-nhap.jpg, alt rỗng), không logo (ĐX-DS-01). Ảnh dùng thẻ <img>
+//   thường, không next/image (ĐX-FA-11). mix-blend-darken: nền ảnh (#FCFCFC, sáng hơn nền khối) hòa
+//   đúng vào nền khối nên không lộ viền ảnh; hình vẽ tối hơn nền giữ nguyên màu.
 import { useRef, useState, type FormEvent } from "react";
 import { useForm, useWatch } from "react-hook-form";
 import type { ApiError } from "@/shared/api/apiError";
@@ -25,6 +30,10 @@ import {
 } from "./thongDiep";
 
 const MAC_DINH: DangNhapNhanVienRequest = { tenDangNhap: "", matKhau: "" };
+
+const TEN_HE_THONG = "Quản lý mượn trả thiết bị";
+/** Ảnh minh họa của màn hình đăng nhập (thư mục public của Next.js). */
+const ANH_DANG_NHAP = "/anh/dang-nhap.jpg";
 
 function KhoiThongBao({ thongBao }: { thongBao: ThongBao }) {
   return (
@@ -88,66 +97,94 @@ export function DangNhapScreen() {
   const thieuTruong = tenDangNhap.trim() === "" || matKhau === "";
 
   return (
-    <main className="flex min-h-screen items-center justify-center bg-surface-subtle px-gutter">
-      <div className="flex w-full max-w-web-login-width flex-col gap-4 rounded-lg border border-border-subtle bg-surface-default p-6">
-        <h1 className="type-title-screen text-text-primary">Đăng nhập</h1>
-        {thongBaoPhien !== null ? (
-          <KhoiThongBao thongBao={thongBaoPhien} />
-        ) : null}
-        {loi !== null ? (
-          <KhoiThongBao thongBao={thongBaoLoiDangNhap(loi)} />
-        ) : null}
-        {loiKhongGanTruong.length > 0 ? (
-          <Banner tong="danger" dsLyDo={loiKhongGanTruong} />
-        ) : null}
-        <form
-          noValidate
-          onSubmit={handleSubmitForm}
-          className="flex flex-col gap-field"
+    <main className="grid min-h-screen grid-cols-2 bg-surface-default">
+      <div className="flex flex-col gap-8 p-12">
+        {/* Tên hệ thống nằm trong luồng bố cục (không absolute) để biểu mẫu cao lên — nhiều thông báo,
+            phóng to trang — không đè lên chữ. */}
+        <p className="shrink-0 type-title-card font-bold text-text-primary">
+          {TEN_HE_THONG}
+        </p>
+        <div className="flex flex-1 items-center justify-center">
+          <div className="flex w-full max-w-web-login-width flex-col gap-4">
+            <h1 className="type-title-screen text-text-primary">Đăng nhập</h1>
+            {thongBaoPhien !== null ? (
+              <KhoiThongBao thongBao={thongBaoPhien} />
+            ) : null}
+            {loi !== null ? (
+              <KhoiThongBao thongBao={thongBaoLoiDangNhap(loi)} />
+            ) : null}
+            {loiKhongGanTruong.length > 0 ? (
+              <Banner tong="danger" dsLyDo={loiKhongGanTruong} />
+            ) : null}
+            <form
+              noValidate
+              onSubmit={handleSubmitForm}
+              className="flex flex-col gap-field"
+            >
+              <p className="type-caption text-text-secondary">* Bắt buộc</p>
+              <FormField
+                id="tenDangNhap"
+                nhan="Tên đăng nhập"
+                batBuoc
+                {...(formState.errors.tenDangNhap?.message !== undefined
+                  ? { loi: formState.errors.tenDangNhap.message }
+                  : {})}
+              >
+                {(tt) => (
+                  <TextField
+                    {...tt}
+                    {...register("tenDangNhap", { required: true })}
+                    autoComplete="username"
+                  />
+                )}
+              </FormField>
+              <FormField
+                id="matKhau"
+                nhan="Mật khẩu"
+                batBuoc
+                {...(formState.errors.matKhau?.message !== undefined
+                  ? { loi: formState.errors.matKhau.message }
+                  : {})}
+              >
+                {(tt) => (
+                  <TextField
+                    {...tt}
+                    {...register("matKhau", { required: true })}
+                    type="password"
+                    autoComplete="current-password"
+                  />
+                )}
+              </FormField>
+              <Button
+                type="submit"
+                bienThe="primary"
+                dangXuLy={dangNhap.isPending}
+                disabled={thieuTruong}
+              >
+                Đăng nhập
+              </Button>
+            </form>
+          </div>
+        </div>
+        {/* Đệm cân đối với dòng tên hệ thống để biểu mẫu nằm chính giữa cột (DS 11.2). */}
+        <p
+          aria-hidden="true"
+          className="invisible shrink-0 type-title-card font-bold"
         >
-          <p className="type-caption text-text-secondary">* Bắt buộc</p>
-          <FormField
-            id="tenDangNhap"
-            nhan="Tên đăng nhập"
-            batBuoc
-            {...(formState.errors.tenDangNhap?.message !== undefined
-              ? { loi: formState.errors.tenDangNhap.message }
-              : {})}
-          >
-            {(tt) => (
-              <TextField
-                {...tt}
-                {...register("tenDangNhap", { required: true })}
-                autoComplete="username"
-              />
-            )}
-          </FormField>
-          <FormField
-            id="matKhau"
-            nhan="Mật khẩu"
-            batBuoc
-            {...(formState.errors.matKhau?.message !== undefined
-              ? { loi: formState.errors.matKhau.message }
-              : {})}
-          >
-            {(tt) => (
-              <TextField
-                {...tt}
-                {...register("matKhau", { required: true })}
-                type="password"
-                autoComplete="current-password"
-              />
-            )}
-          </FormField>
-          <Button
-            type="submit"
-            bienThe="primary"
-            dangXuLy={dangNhap.isPending}
-            disabled={thieuTruong}
-          >
-            Đăng nhập
-          </Button>
-        </form>
+          {TEN_HE_THONG}
+        </p>
+      </div>
+      <div className="m-4 flex items-center justify-center overflow-hidden rounded-lg bg-surface-subtle p-12">
+        {/* eslint-disable-next-line @next/next/no-img-element -- ĐX-FA-11: không dùng next/image. */}
+        <img
+          src={ANH_DANG_NHAP}
+          alt=""
+          // Kích thước gốc của ảnh để trình duyệt giữ chỗ đúng tỉ lệ trước khi ảnh tải xong.
+          width={800}
+          height={624}
+          decoding="async"
+          className="h-auto w-full max-w-dialog-md mix-blend-darken"
+        />
       </div>
     </main>
   );

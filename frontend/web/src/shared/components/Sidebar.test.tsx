@@ -16,7 +16,14 @@ const DS_NHOM = [
 
 describe("Sidebar", () => {
   it("CMP-29: là điều hướng tên 'Menu chính', có tiêu đề nhóm", () => {
-    render(<Sidebar dsNhom={DS_NHOM} tuyenHienTai="/qt" tuyenTrangChu="/qt" />);
+    render(
+      <Sidebar
+        tenHeThong="Quản lý mượn trả thiết bị"
+        dsNhom={DS_NHOM}
+        tuyenHienTai="/qt"
+        tuyenTrangChu="/qt"
+      />,
+    );
     const menu = screen.getByRole("navigation", { name: "Menu chính" });
     expect(within(menu).getByText("Danh mục")).toBeTruthy();
     expect(within(menu).getAllByRole("link")).toHaveLength(3);
@@ -25,6 +32,7 @@ describe("Sidebar", () => {
   it("CMP-29: mục đang chọn khai báo aria-current=page; trang chủ không sáng ở tuyến con", () => {
     render(
       <Sidebar
+        tenHeThong="Quản lý mượn trả thiết bị"
         dsNhom={DS_NHOM}
         tuyenHienTai="/qt/danh-muc/phong"
         tuyenTrangChu="/qt"
@@ -69,4 +77,30 @@ describe("Sidebar", () => {
       );
     },
   );
+
+  it("CMP-29: mục có biểu tượng trước chữ, ẩn với trình đọc màn hình; tên hệ thống dẫn về trang chủ", () => {
+    function IconThu() {
+      return <svg data-testid="bieu-tuong" aria-hidden="true" />;
+    }
+    render(
+      <Sidebar
+        tenHeThong="Quản lý mượn trả thiết bị"
+        dsNhom={[
+          { dsMuc: [{ nhan: "Trang chủ", href: "/qt", bieuTuong: IconThu }] },
+        ]}
+        tuyenHienTai="/qt"
+        tuyenTrangChu="/qt"
+      />,
+    );
+    const muc = screen.getByRole("link", { name: "Trang chủ" });
+    const bieuTuong = within(muc).getByTestId("bieu-tuong");
+    expect(muc.firstElementChild).toBe(bieuTuong);
+    expect(bieuTuong.getAttribute("aria-hidden")).toBe("true");
+    expect(muc.className).toContain("font-bold");
+    expect(
+      screen
+        .getByRole("link", { name: "Quản lý mượn trả thiết bị" })
+        .getAttribute("href"),
+    ).toBe("/qt");
+  });
 });

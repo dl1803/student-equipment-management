@@ -16,6 +16,10 @@
   /* Phông và chuyển động mặc định */
   --font-sans: var(--ds-font-family-sans);
   --font-mono: var(--ds-font-family-mono);
+  /* Độ đậm chữ (DS 4.2): dùng khi cần nhấn trong một vai trò kiểu chữ, ví dụ mục menu đang chọn */
+  --font-weight-regular: var(--ds-font-weight-regular);
+  --font-weight-medium: var(--ds-font-weight-medium);
+  --font-weight-bold: var(--ds-font-weight-bold);
   --default-font-family: var(--ds-font-family-sans);
   --default-mono-font-family: var(--ds-font-family-mono);
   --default-transition-duration: var(--ds-motion-duration-fast);
@@ -48,6 +52,9 @@
   --color-progress-track: var(--ds-color-progress-track);
 
   /* Màu ngữ nghĩa — nút */
+  /* Điều hướng web: mục đang chọn ở thanh menu bên (CMP-29) */
+  --color-nav-selected-bg: var(--ds-color-nav-selected-bg);
+  --color-nav-selected-text: var(--ds-color-nav-selected-text);
   --color-action-primary-bg: var(--ds-color-action-primary-bg);
   --color-action-primary-bg-hover: var(--ds-color-action-primary-bg-hover);
   --color-action-primary-bg-pressed: var(--ds-color-action-primary-bg-pressed);
@@ -118,6 +125,7 @@
   --spacing-3: var(--ds-space-3);
   --spacing-4: var(--ds-space-4);
   --spacing-6: var(--ds-space-6);
+  --spacing-8: var(--ds-space-8);
   --spacing-12: var(--ds-space-12);
   --spacing-gutter: var(--ds-space-gutter);
   --spacing-section: var(--ds-space-section);

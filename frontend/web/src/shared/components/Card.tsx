@@ -1,6 +1,8 @@
 // Card — CMP-15 Thẻ (DS 8.4). Sở hữu: Thịnh (shared core).
 // Bốn biến thể: Tĩnh, Tương tác (cả thẻ là liên kết; lối vào chức năng ở trang chủ),
 // Chọn được (một trong nhiều; nhóm nút chọn), Tông (thẻ quyền mượn). Không đổ bóng.
+// Kiểu (ĐX-DS-17): nền color.surface.subtle, bo radius.lg, đệm space.6; thẻ tĩnh và tương tác không
+// có viền nhìn thấy (viền trong suốt giữ kích thước khi chuyển sang trạng thái được chọn).
 import Link from "next/link";
 import type { ComponentType, ReactNode } from "react";
 import { classNames } from "./classNames";
@@ -33,7 +35,7 @@ export type CardProps =
     }
   | { bienThe: "TONG"; tong: TongThe; tieuDe?: string; children: ReactNode };
 
-const KHUNG = "flex flex-col gap-2 rounded-md border p-card";
+const KHUNG = "flex flex-col gap-2 rounded-lg border p-6";
 
 const LOP_TONG: Record<TongThe, string> = {
   info: "bg-tone-info-bg border-tone-info-border",
@@ -65,10 +67,7 @@ export function Card(props: CardProps) {
     case "TINH":
       return (
         <div
-          className={classNames(
-            KHUNG,
-            "border-border-subtle bg-surface-default",
-          )}
+          className={classNames(KHUNG, "border-transparent bg-surface-subtle")}
         >
           {props.tieuDe !== undefined ? <TieuDe>{props.tieuDe}</TieuDe> : null}
           {props.children}
@@ -80,7 +79,7 @@ export function Card(props: CardProps) {
           href={props.href}
           className={classNames(
             KHUNG,
-            "border-border-subtle bg-surface-default transition-colors hover:border-border-control-hover active:bg-surface-subtle",
+            "border-transparent bg-surface-subtle transition-colors hover:border-border-control-hover active:bg-surface-muted",
           )}
         >
           <span className="flex items-center justify-between gap-2">
@@ -99,10 +98,11 @@ export function Card(props: CardProps) {
           onClick={props.onChon}
           className={classNames(
             KHUNG,
-            "w-full cursor-pointer text-left transition-colors",
+            // Cả hai trạng thái cùng viền border.width.strong để chọn/bỏ chọn không xê dịch nội dung.
+            "w-full cursor-pointer border-[length:var(--ds-border-width-strong)] text-left transition-colors",
             props.duocChon
-              ? "border-[length:var(--ds-border-width-strong)] border-border-selected bg-surface-selected"
-              : "border-border-subtle bg-surface-default hover:border-border-control-hover",
+              ? "border-border-selected bg-surface-selected"
+              : "border-transparent bg-surface-subtle hover:border-border-control-hover",
           )}
         >
           <span className="flex items-center justify-between gap-2">

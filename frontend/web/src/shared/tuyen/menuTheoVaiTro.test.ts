@@ -67,4 +67,12 @@ describe("menuTheoVaiTro", () => {
     expect(loiVaoNv.some((m) => m.href === "/nv")).toBe(false);
     expect(loiVaoCua("QUAN_TRI").flatMap((n) => n.dsMuc)).toHaveLength(11);
   });
+
+  it("DS CMP-29: mọi mục menu của hai vai trò đều có biểu tượng", () => {
+    for (const vaiTro of ["NHAN_VIEN", "QUAN_TRI"] as const) {
+      for (const muc of menuCua(vaiTro).flatMap((n) => n.dsMuc)) {
+        expect(muc.bieuTuong, muc.nhan).toBeTypeOf("function");
+      }
+    }
+  });
 });

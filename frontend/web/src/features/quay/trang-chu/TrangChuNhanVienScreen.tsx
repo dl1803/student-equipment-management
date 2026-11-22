@@ -2,6 +2,8 @@
 
 // SCR-NV-01 Trang chủ nhân viên (UI-Screens 6.1). Sở hữu: Thịnh.
 // Dữ liệu lấy từ GET /auth/toi đã gọi khi đăng nhập/khôi phục (useAuth), không gọi thêm API.
+// Bố cục (Wireframes SCR-NV-01, ĐX-DS-17): phòng được cấp quyền là hàng thẻ tĩnh (tên phòng, cơ sở);
+// lối vào chức năng là lưới thẻ tương tác. Không có thẻ số liệu: API không trả số tổng (NT-01).
 import { Banner } from "@/shared/components/Banner";
 import { Card } from "@/shared/components/Card";
 import { useAuth } from "@/shared/hooks/useAuth";
@@ -28,15 +30,14 @@ export function TrangChuNhanVienScreen() {
             Bạn chưa được cấp quyền phòng thiết bị nào; liên hệ quản trị viên
           </Banner>
         ) : (
-          <ul className="flex flex-col gap-2">
+          <ul className="grid grid-cols-3 gap-6">
             {dsPhong.map((phong) => (
-              <li key={phong.maPhong} className="flex flex-col">
-                <span className="type-body text-text-primary">
-                  {phong.tenPhong}
-                </span>
-                <span className="type-caption text-text-secondary">
-                  {phong.coSo}
-                </span>
+              <li key={phong.maPhong}>
+                <Card bienThe="TINH" tieuDe={phong.tenPhong}>
+                  <span className="type-body text-text-secondary">
+                    {phong.coSo}
+                  </span>
+                </Card>
               </li>
             ))}
           </ul>
@@ -53,7 +54,7 @@ export function TrangChuNhanVienScreen() {
         >
           Chức năng
         </h2>
-        <div className="grid grid-cols-3 gap-4">
+        <div className="grid grid-cols-3 gap-6">
           {loiVaoCua("NHAN_VIEN")
             .flatMap((nhom) => nhom.dsMuc)
             .map((muc) => (

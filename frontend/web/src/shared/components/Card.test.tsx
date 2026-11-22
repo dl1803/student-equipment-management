@@ -31,6 +31,9 @@ describe("Card", () => {
     );
     const nut = screen.getByRole("radio", { name: "Phiếu yêu cầu" });
     expect(nut.getAttribute("aria-checked")).toBe("false");
+    // Cùng độ rộng viền ở cả hai trạng thái để chọn/bỏ chọn không xê dịch nội dung.
+    const VIEN_DAY = "border-[length:var(--ds-border-width-strong)]";
+    expect(nut.className).toContain(VIEN_DAY);
     fireEvent.click(nut);
     expect(onChon).toHaveBeenCalledTimes(1);
 
@@ -43,6 +46,7 @@ describe("Card", () => {
       />,
     );
     expect(nut.getAttribute("aria-checked")).toBe("true");
+    expect(nut.className).toContain(VIEN_DAY);
     expect(nut.querySelector("svg")).not.toBeNull();
   });
 
