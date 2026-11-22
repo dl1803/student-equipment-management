@@ -99,11 +99,11 @@ public sealed class GuiEmailJob(
                 WHERE kenh_gui = 'EMAIL'
                   AND (trang_thai_gui = 'CHO_GUI'
                        OR (trang_thai_gui = 'LOI'
-                           AND lan_thu_cuoi + CASE so_lan_thu
-                                   WHEN 1 THEN {gianCach1}
-                                   WHEN 2 THEN {gianCach2}
-                                   WHEN 3 THEN {gianCach3}
-                                   WHEN 4 THEN {gianCach4}
+                           AND COALESCE(lan_thu_cuoi, thoi_diem_gui) + CASE
+                                   WHEN so_lan_thu <= 1 THEN {gianCach1}
+                                   WHEN so_lan_thu = 2 THEN {gianCach2}
+                                   WHEN so_lan_thu = 3 THEN {gianCach3}
+                                   ELSE {gianCach4}
                                END <= {bayGio}))
                 ORDER BY thoi_diem_gui, ma_thong_bao
                 LIMIT {SoDongToiDa}
@@ -124,21 +124,21 @@ public sealed class GuiEmailJob(
         }
 
         var soLanThuMoi = dong.SoLanThu + 1;
-        var diaChi = await TraDiaChiAsync(dong, emailSv, emailNv, ct);
-        if (diaChi is null)
-        {
-            await GhiKetQuaAsync(db, dong.MaThongBao, LoiVinhVien);
-            nhatKy.LogWarning(
-                "Email {MaThongBao} loại {LoaiThongBao} không còn địa chỉ nhận, chuyển LOI_VINH_VIEN.",
-                dong.MaThongBao,
-                dong.LoaiThongBao);
-
-            return true;
-        }
-
         string trangThai;
         try
         {
+            var diaChi = await TraDiaChiAsync(dong, emailSv, emailNv, ct);
+            if (diaChi is null)
+            {
+                await GhiKetQuaAsync(db, dong.MaThongBao, LoiVinhVien);
+                nhatKy.LogWarning(
+                    "Email {MaThongBao} loại {LoaiThongBao} không còn địa chỉ nhận, chuyển LOI_VINH_VIEN.",
+                    dong.MaThongBao,
+                    dong.LoaiThongBao);
+
+                return true;
+            }
+
             await guiEmail.GuiAsync(diaChi, MauThongBao.TieuDe(dong.LoaiThongBao), dong.NoiDung, ct);
             trangThai = DaGui;
         }

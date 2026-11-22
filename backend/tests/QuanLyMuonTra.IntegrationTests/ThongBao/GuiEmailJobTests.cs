@@ -152,6 +152,53 @@ public sealed class GuiEmailJobTests
         Assert.Contains(moiTruong.NhatKy.Dong, d => d.Muc == LogLevel.Warning && d.NoiDung.Contains("không còn địa chỉ nhận"));
     }
 
+    [Fact]
+    public async Task UC17_J7_DocDiaChiLoi_KhongLamSapBatch_DoiSangLoiVaTiepTucDongKhac()
+    {
+        var emailSvGia = new SinhVienEmailReaderDieuKhien { SoLanGoiNemLoi = 1 };
+        await using var moiTruong = await MoiTruong.TaoAsync(dichVu =>
+        {
+            dichVu.AddScoped<ISinhVienEmailReader>(_ => emailSvGia);
+        });
+
+        var ma1 = await moiTruong.ChenEmailAsync("CHO_GUI", 0, null);
+        var ma2 = await moiTruong.ChenEmailAsync("CHO_GUI", 0, null);
+
+        var soDaXuLy = await moiTruong.Job.ChayAsync(CancellationToken.None);
+        Assert.Equal(2, soDaXuLy);
+
+        var dong1 = await moiTruong.DocAsync(ma1);
+        Assert.Equal("LOI", dong1.TrangThaiGui);
+        Assert.Equal(1, dong1.SoLanThu);
+
+        var dong2 = await moiTruong.DocAsync(ma2);
+        Assert.Equal("DA_GUI", dong2.TrangThaiGui);
+        Assert.Equal(1, dong2.SoLanThu);
+
+        var goi = Assert.Single(moiTruong.Email.DsGoi);
+        Assert.Equal(EmailSv, goi.NguoiNhan);
+        Assert.Contains(moiTruong.NhatKy.Dong, d => d.Muc == LogLevel.Warning && d.NoiDung.Contains("Lỗi đọc địa chỉ email giả lập"));
+    }
+
+    [Fact]
+    public async Task UC17_J7_CaseSoLanThuBatThuong_HoacLanThuCuoiNull_VanDuocChonLai()
+    {
+        await using var moiTruong = await MoiTruong.TaoAsync();
+        var ma1 = await moiTruong.ChenEmailBatThuongAsync("LOI", 0, null, MocDau.AddMinutes(-2));
+        var ma2 = await moiTruong.ChenEmailBatThuongAsync("LOI", 5, MocDau.AddMinutes(-65), MocDau.AddHours(-2));
+
+        var soDaXuLy = await moiTruong.Job.ChayAsync(CancellationToken.None);
+        Assert.Equal(2, soDaXuLy);
+
+        var dong1 = await moiTruong.DocAsync(ma1);
+        Assert.Equal("DA_GUI", dong1.TrangThaiGui);
+        Assert.Equal(1, dong1.SoLanThu);
+
+        var dong2 = await moiTruong.DocAsync(ma2);
+        Assert.Equal("DA_GUI", dong2.TrangThaiGui);
+        Assert.Equal(6, dong2.SoLanThu);
+    }
+
     private sealed class DongHoDieuKhien : IClock
     {
         public DateTimeOffset UtcNow { get; set; }
@@ -193,6 +240,24 @@ public sealed class GuiEmailJobTests
             {
                 throw new InvalidOperationException("Lỗi email giả lập.");
             }
+        }
+    }
+
+    private sealed class SinhVienEmailReaderDieuKhien : ISinhVienEmailReader
+    {
+        private int _soLanGoi;
+
+        public int SoLanGoiNemLoi { get; set; }
+
+        public Task<string?> LayEmailAsync(string maSv, CancellationToken ct)
+        {
+            _soLanGoi++;
+            if (_soLanGoi <= SoLanGoiNemLoi)
+            {
+                throw new InvalidOperationException("Lỗi đọc địa chỉ email giả lập.");
+            }
+
+            return Task.FromResult<string?>(EmailSv);
         }
     }
 
@@ -255,7 +320,7 @@ public sealed class GuiEmailJobTests
 
         public string MaSv { get; private set; } = string.Empty;
 
-        public static async Task<MoiTruong> TaoAsync()
+        public static async Task<MoiTruong> TaoAsync(Action<IServiceCollection>? cauHinhDichVu = null)
         {
             var dongHo = new DongHoDieuKhien { UtcNow = MocDau };
             var email = new EmailGia();
@@ -267,11 +332,32 @@ public sealed class GuiEmailJobTests
             dichVu.AddScoped<ISinhVienEmailReader, SinhVienEmailReader>();
             dichVu.AddScoped<INhanVienEmailReader, NhanVienEmailReader>();
 
+            cauHinhDichVu?.Invoke(dichVu);
+
             var moiTruong = new MoiTruong(dichVu.BuildServiceProvider(), dongHo, email, new NhatKyThuThap());
             await moiTruong.CoLapEmailTonDongAsync();
             await moiTruong.TaoSinhVienAsync();
 
             return moiTruong;
+        }
+
+        public async Task<Guid> ChenEmailBatThuongAsync(
+            string trangThai,
+            int soLanThu,
+            DateTimeOffset? lanThuCuoi,
+            DateTimeOffset thoiDiemGui)
+        {
+            var ma = Guid.CreateVersion7();
+            await ThucThiAsync($"""
+                INSERT INTO thong_bao.thong_bao
+                    (ma_thong_bao, loai_thong_bao, noi_dung, kenh_gui, thoi_diem_gui, ma_sv_nhan,
+                     trang_thai_gui, so_lan_thu, lan_thu_cuoi)
+                VALUES
+                    ({ma}, 'DUYET_HOAC_TU_CHOI', {NoiDungEmail}, 'EMAIL', {thoiDiemGui}, {MaSv},
+                     {trangThai}, {soLanThu}, {lanThuCuoi})
+                """);
+
+            return ma;
         }
 
         public async Task<Guid> ChenEmailAsync(string trangThai, int soLanThu, DateTimeOffset? lanThuCuoi, Guid? maNv = null)

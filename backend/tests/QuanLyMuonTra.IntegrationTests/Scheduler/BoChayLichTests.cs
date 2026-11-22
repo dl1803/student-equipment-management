@@ -96,8 +96,62 @@ public sealed class BoChayLichTests
 
         await giaoDichGiu.RollbackAsync();
 
+        moiTruong.DongHo.UtcNow = MocDau.AddMinutes(1);
         await moiTruong.BoChay.ChayCacJobDenLuotAsync(CancellationToken.None);
         Assert.Equal(1, job.SoLanChay);
+    }
+
+    [Fact]
+    public async Task UC17_KhoaDangDuocGiu_GhiNhanLanChay_TranhDoubleRunNhipKeTiep()
+    {
+        var jobGio = new GhiNhanJob();
+        await using var moiTruong = MoiTruong.Tao(MocDau, ("JGioMulti", TimeSpan.FromHours(1), jobGio));
+
+        await using var ketNoi = await KetNoiKiemThu.MoAsync();
+        await using var giaoDichGiu = await ketNoi.BeginTransactionAsync();
+        await using (var lenh = new NpgsqlCommand("SELECT pg_advisory_xact_lock(@khoa)", ketNoi, giaoDichGiu))
+        {
+            lenh.Parameters.AddWithValue("khoa", BoChayLich.SuyKhoaJob("JGioMulti"));
+            await lenh.ExecuteNonQueryAsync();
+        }
+
+        // Nhịp 1 (phút 0): Khóa bị instance khác giữ -> bỏ qua tick nhưng ghi nhận lần chạy để tránh double-run
+        await moiTruong.BoChay.ChayCacJobDenLuotAsync(CancellationToken.None);
+        Assert.Equal(0, jobGio.SoLanChay);
+        Assert.Contains(moiTruong.NhatKy.Dong, d => d.NoiDung.Contains("bỏ qua tick"));
+
+        // Instance khác xử lý xong và nhả khóa
+        await giaoDichGiu.RollbackAsync();
+
+        // Nhịp 2 (phút 1): Khóa đã nhả, nhưng vì chu kỳ là 1 giờ nên instance này KHÔNG chạy lại ngay ở phút 1
+        moiTruong.DongHo.UtcNow = MocDau.AddMinutes(1);
+        await moiTruong.BoChay.ChayCacJobDenLuotAsync(CancellationToken.None);
+        Assert.Equal(0, jobGio.SoLanChay);
+
+        // Nhịp 3 (sau 1 giờ): Đúng chu kỳ 1 giờ, job mới chạy lại
+        moiTruong.DongHo.UtcNow = MocDau.AddHours(1);
+        await moiTruong.BoChay.ChayCacJobDenLuotAsync(CancellationToken.None);
+        Assert.Equal(1, jobGio.SoLanChay);
+    }
+
+    [Fact]
+    public async Task UC17_JobLoi_KhongGhiNhanLanChay_ChoPhepRetryNhipKeTiep()
+    {
+        var jobGio = new GhiNhanJob { NemLoi = true };
+        await using var moiTruong = MoiTruong.Tao(MocDau, ("JGioLoi", TimeSpan.FromHours(1), jobGio));
+
+        // Nhịp 1: Job chạy và bị lỗi ngoại lệ (transient error)
+        await moiTruong.BoChay.ChayCacJobDenLuotAsync(CancellationToken.None);
+        Assert.Equal(1, jobGio.SoLanChay);
+        Assert.Contains(moiTruong.NhatKy.Dong, d => d.Muc == LogLevel.Warning && d.NoiDung.Contains("JGioLoi"));
+
+        // Lỗi kết nối được khắc phục
+        jobGio.NemLoi = false;
+
+        // Nhịp 2 (1 phút sau): Vì lần trước lỗi không ghi nhận mốc chạy thành công, job được retry ngay ở phút 1 thay vì chờ 1 giờ
+        moiTruong.DongHo.UtcNow = MocDau.AddMinutes(1);
+        await moiTruong.BoChay.ChayCacJobDenLuotAsync(CancellationToken.None);
+        Assert.Equal(2, jobGio.SoLanChay);
     }
 
     [Fact]
@@ -136,7 +190,7 @@ public sealed class BoChayLichTests
 
         public bool CoGiaoDichKhiChay { get; set; }
 
-        public bool NemLoi { get; init; }
+        public bool NemLoi { get; set; }
     }
 
     private sealed class JobGia(string ten, TimeSpan chuKy, GhiNhanJob ghiNhan, DbContext db) : IJob

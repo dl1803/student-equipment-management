@@ -49,8 +49,8 @@ Ngày họp: ____ · Người ghi: Đinh Nhật Khôi · Người tham dự: ___
 | Nguồn/mục | Kế hoạch G4; KT 10.2; CV 13.2; DDL `thong_bao.thong_bao`; sổ C0 dòng G4 |
 | Phương án | Một giao dịch cho cả lần chạy · Chiếm từng dòng và commit ngay kèm phục hồi theo hạn · Khác |
 | Người quyết định | Khôi; Vương review giao dịch |
-| Ngày/trạng thái | 2026-11-22 · ĐÃ CHỐT (K-39); Vương review trong PR D10-K |
-| Quyết định | Chiếm từng dòng bằng UPDATE có điều kiện và commit ngay; gửi ngoài giao dịch; ghi kết quả bằng UPDATE có điều kiện; hạn giữ quyền xử lý 5 phút (≥ 10 lần timeout 30 giây của HttpClient); đầu mỗi lần chạy phục hồi `DANG_GUI` quá hạn về `LOI` (hoặc `LOI_VINH_VIEN` khi đã đủ 5 lần, lần thử bỏ dở vẫn được tính); chấp nhận gửi lặp, tối đa 1 dòng đang gửi mỗi sự cố |
+| Ngày/trạng thái | 2026-11-22 · ĐÃ CHỐT (K-39); Vương review và hoàn thiện trong PR D10-K |
+| Quyết định | Chiếm từng dòng bằng UPDATE có điều kiện và commit ngay; gửi ngoài giao dịch; ghi kết quả bằng UPDATE có điều kiện; bao bọc đọc địa chỉ trong try-catch chống sập batch; bổ sung COALESCE và ELSE trong điều kiện chọn retry; hạn giữ quyền xử lý 5 phút (≥ 10 lần timeout 30 giây của HttpClient); đầu mỗi lần chạy phục hồi `DANG_GUI` quá hạn về `LOI` (hoặc `LOI_VINH_VIEN` khi đã đủ 5 lần, lần thử bỏ dở vẫn được tính); chấp nhận gửi lặp, tối đa 1 dòng đang gửi mỗi sự cố |
 | Thay đổi API/DB/UI | Không đổi API, không đổi schema. `ix_tb_gui_cho` không phủ `DANG_GUI`: kiểm bằng EXPLAIN ở D24-K/D25-N, chỉ xử lý nếu có số đo |
 | Dữ liệu thử và kết quả mong đợi | Dòng `DANG_GUI` quá hạn → `LOI` rồi gửi lại đúng lịch; `DANG_GUI` còn hạn giữ nguyên; `DANG_GUI` đủ 5 lần → `LOI_VINH_VIEN`; hai lần chạy song song không gửi lặp |
 | Công việc bị ảnh hưởng | D10-K (J7), D12-K (đặt `Scheduler__Bat`), D20-K (email thật), D24-K (dừng tiến trình, hai instance, độ trễ) |

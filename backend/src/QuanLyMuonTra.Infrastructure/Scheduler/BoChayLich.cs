@@ -87,13 +87,15 @@ public sealed class BoChayLich(IServiceScopeFactory nhaMayPhamVi, IClock dongHo,
                     job.MaJob,
                     tenJob);
 
+                _lanChayCuoi[tenJob] = bayGio;
+
                 return;
             }
 
-            _lanChayCuoi[tenJob] = bayGio;
-
             var soPhanTu = await job.ChayAsync(ct);
             await giaoDich.CommitAsync(ct);
+
+            _lanChayCuoi[tenJob] = bayGio;
 
             nhatKy.LogInformation(
                 "Job {MaJob} {TenJob} xử lý {SoPhanTu} phần tử trong {ThoiLuongMs} ms.",
