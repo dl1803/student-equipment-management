@@ -79,4 +79,31 @@ describe("Tabs (CMP-09)", () => {
     fireEvent.keyDown(ds, { key: "Home" });
     expect(tab("Đang mượn").getAttribute("aria-selected")).toBe("true");
   });
+
+  it("phím kèm Alt/Ctrl/Meta/Shift để trình duyệt xử lý: không đổi tab, không chặn mặc định", () => {
+    const onDoiTab = vi.fn();
+    render(<VeThu onDoiTab={onDoiTab} />);
+    const ds = screen.getByRole("tablist");
+    tab("Đang mượn").focus();
+
+    for (const [key, boTro] of [
+      ["ArrowLeft", { altKey: true }],
+      ["ArrowRight", { metaKey: true }],
+      ["Home", { ctrlKey: true }],
+      ["End", { ctrlKey: true }],
+      ["ArrowRight", { shiftKey: true }],
+    ] as const) {
+      // fireEvent trả false khi trình xử lý gọi preventDefault.
+      expect(fireEvent.keyDown(ds, { key, ...boTro })).toBe(true);
+    }
+    expect(onDoiTab).not.toHaveBeenCalled();
+    expect(tab("Đang mượn").getAttribute("aria-selected")).toBe("true");
+  });
+
+  it("WCAG 2.4.7: tabpanel nhận tiêu điểm và KHÔNG tắt vòng tiêu điểm chung", () => {
+    render(<VeThu />);
+    const panel = screen.getByRole("tabpanel");
+    expect(panel.tabIndex).toBe(0);
+    expect(panel.className).not.toContain("outline-none");
+  });
 });

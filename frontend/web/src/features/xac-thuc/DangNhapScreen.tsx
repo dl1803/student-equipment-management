@@ -98,8 +98,10 @@ export function DangNhapScreen() {
 
   return (
     <main className="grid min-h-screen grid-cols-2 bg-surface-default">
-      <div className="relative flex flex-col p-12">
-        <p className="absolute top-12 left-12 type-title-card font-bold text-text-primary">
+      <div className="flex flex-col gap-8 p-12">
+        {/* Tên hệ thống nằm trong luồng bố cục (không absolute) để biểu mẫu cao lên — nhiều thông báo,
+            phóng to trang — không đè lên chữ. */}
+        <p className="shrink-0 type-title-card font-bold text-text-primary">
           {TEN_HE_THONG}
         </p>
         <div className="flex flex-1 items-center justify-center">
@@ -164,13 +166,24 @@ export function DangNhapScreen() {
             </form>
           </div>
         </div>
+        {/* Đệm cân đối với dòng tên hệ thống để biểu mẫu nằm chính giữa cột (DS 11.2). */}
+        <p
+          aria-hidden="true"
+          className="invisible shrink-0 type-title-card font-bold"
+        >
+          {TEN_HE_THONG}
+        </p>
       </div>
       <div className="m-4 flex items-center justify-center overflow-hidden rounded-lg bg-surface-subtle p-12">
         {/* eslint-disable-next-line @next/next/no-img-element -- ĐX-FA-11: không dùng next/image. */}
         <img
           src={ANH_DANG_NHAP}
           alt=""
-          className="w-full max-w-dialog-md mix-blend-darken"
+          // Kích thước gốc của ảnh để trình duyệt giữ chỗ đúng tỉ lệ trước khi ảnh tải xong.
+          width={800}
+          height={624}
+          decoding="async"
+          className="h-auto w-full max-w-dialog-md mix-blend-darken"
         />
       </div>
     </main>

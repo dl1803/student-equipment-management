@@ -98,9 +98,10 @@ export function Card(props: CardProps) {
           onClick={props.onChon}
           className={classNames(
             KHUNG,
-            "w-full cursor-pointer text-left transition-colors",
+            // Cả hai trạng thái cùng viền border.width.strong để chọn/bỏ chọn không xê dịch nội dung.
+            "w-full cursor-pointer border-[length:var(--ds-border-width-strong)] text-left transition-colors",
             props.duocChon
-              ? "border-[length:var(--ds-border-width-strong)] border-border-selected bg-surface-selected"
+              ? "border-border-selected bg-surface-selected"
               : "border-transparent bg-surface-subtle hover:border-border-control-hover",
           )}
         >

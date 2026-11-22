@@ -5,9 +5,11 @@
 // dưới border.width.strong màu color.border.selected (dấu hiệu ngoài màu); tab khác: chữ
 // color.text.secondary. Cao size.control.lg (ĐX-DS-17: kiểu tab gạch chân).
 // Mẫu tab của WAI-ARIA, kích hoạt tự động: ←/→ di chuyển vòng và chọn luôn, Home/End về đầu/cuối;
-// chỉ tab đang chọn nhận Tab (roving tabindex). Nội dung tab đang chọn nằm trong một tabpanel gắn
-// với tab đó. Đổi tab thì màn hình tải lại dữ liệu của tab (DS CMP-09) qua onDoiTab.
-import { useId, useRef, type KeyboardEvent, type ReactNode } from "react";
+// chỉ tab đang chọn nhận Tab (roving tabindex). Phím có kèm Alt/Ctrl/Meta/Shift để trình duyệt xử lý
+// (ví dụ Alt+← quay lại, Ctrl+Home cuộn đầu trang). Nội dung tab đang chọn nằm trong một tabpanel gắn
+// với tab đó; tabpanel nhận tiêu điểm (APG) và hiện vòng tiêu điểm chung (WCAG 2.4.7).
+// Đổi tab thì màn hình tải lại dữ liệu của tab (DS CMP-09) qua onDoiTab.
+import { useId, type KeyboardEvent, type ReactNode } from "react";
 import { classNames } from "./classNames";
 
 export type MucTab<T extends string = string> = {
@@ -33,7 +35,6 @@ export function Tabs<T extends string = string>({
   children,
 }: TabsProps<T>) {
   const goc = useId();
-  const dsRef = useRef<HTMLDivElement>(null);
   const idTab = (khoa: string) => `${goc}-tab-${khoa}`;
   const idPanel = `${goc}-panel`;
 
@@ -47,6 +48,8 @@ export function Tabs<T extends string = string>({
   const phim = (suKien: KeyboardEvent<HTMLDivElement>) => {
     const n = dsTab.length;
     if (n === 0) return;
+    if (suKien.altKey || suKien.ctrlKey || suKien.metaKey || suKien.shiftKey)
+      return;
     const hienTai = dsTab.findIndex((t) => t.khoa === tabDangChon);
     switch (suKien.key) {
       case "ArrowRight":
@@ -71,7 +74,6 @@ export function Tabs<T extends string = string>({
   return (
     <div className="flex flex-col gap-section">
       <div
-        ref={dsRef}
         role="tablist"
         aria-label={tenNhom}
         onKeyDown={phim}
@@ -106,7 +108,6 @@ export function Tabs<T extends string = string>({
         role="tabpanel"
         aria-labelledby={idTab(tabDangChon)}
         tabIndex={0}
-        className="focus-visible:outline-none"
       >
         {children}
       </div>
