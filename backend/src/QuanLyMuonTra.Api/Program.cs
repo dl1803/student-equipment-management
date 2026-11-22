@@ -10,6 +10,7 @@ using QuanLyMuonTra.Api.SinhVien;
 using QuanLyMuonTra.Infrastructure;
 using QuanLyMuonTra.Infrastructure.Email;
 using QuanLyMuonTra.Infrastructure.LuuTru;
+using QuanLyMuonTra.Infrastructure.Scheduler;
 using QuanLyMuonTra.Modules.BaoTri;
 using QuanLyMuonTra.Modules.DanhMuc;
 using QuanLyMuonTra.Modules.DanhMuc.Infrastructure;
@@ -69,6 +70,10 @@ builder.Services.AddViPhamModule();
 builder.Services.AddThongBaoModule();
 builder.Services.AddBaoTriModule();
 builder.Services.AddMuonTraModule();
+if (builder.Configuration.GetValue<bool>("Scheduler:Bat"))
+{
+    builder.Services.AddScheduler();
+}
 builder.Services.AddScoped<LayHoSoSinhVienHandler>();
 if (dsMienChoPhep.Length > 0)
 {
