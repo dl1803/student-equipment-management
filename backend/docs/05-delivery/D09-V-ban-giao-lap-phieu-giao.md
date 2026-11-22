@@ -30,13 +30,14 @@ Người lập: Nguyễn Đại Vương · Ngày: 21/11/2026 · Giờ thực t�
 
 ## 4. Kiểm thử và kết quả thật
 - Đơn vị `KiemTraGiaoThietBiTests`: Passed 14 / Failed 0 / Skipped 0 (tổng UnitTests: 481 Passed / 0 Failed).
-- Tích hợp PostgreSQL `GiaoThietBiTests`: Passed 18 / Failed 0 / Skipped 0 (môi trường: Supabase test, ngày 21/11/2026; tổng IntegrationTests: 465 Passed / 0 Failed / 2 Skipped do bucket storage).
+- Tích hợp PostgreSQL `GiaoThietBiTests`: Passed 19 / Failed 0 / Skipped 0 (bao gồm ca test giao dịch độc lập tự mở transaction và commit thật `UC07_GiaoDichDocLap_TuMoVaCommitGiaoDichThanhCong`; môi trường: Supabase test, ngày 22/11/2026; tổng IntegrationTests: 466 Passed / 0 Failed / 2 Skipped do bucket storage).
 - `LapPhieuMuonValidatorTests`: Passed 8. `GiaoThietBiHttpTests` (401, 403): Passed 2 / Skipped 0.
 - `ManifestOperationTests`: Passed (xác nhận `POST /api/v1/quay/phieu-muon` khớp manifest `DA_CAI`).
+- Frontend Web: Đã chạy `npm run gen:api` đồng bộ `frontend/web/src/shared/api/schema.d.ts` với OpenAPI.
 
 ## 5. Cổng thật chưa đạt
-- HTTP 201 với nhân viên thật và dữ liệu commit: chưa kiểm.
-- Hoàn tác khi lỗi giữa chừng trong giao dịch riêng của handler và tương tranh (cùng thiết bị, duyệt + giao…): chưa kiểm (cần dữ liệu commit) — D10-V/NFR-06.
+- HTTP 201 với nhân viên thật qua endpoint HTTP: chưa kiểm.
+- Tương tranh thực tế (cùng thiết bị, duyệt + giao…): chưa kiểm (cần dữ liệu commit đồng thời nhiều thread) — D10-V/NFR-06.
 - Ảnh: mới kiểm bằng `IAnhService` giả; `AnhService` thật + URL ký: D10-V.
 - Đối chiếu SV theo G1 do FE thực hiện: chưa kiểm chứng.
 - Bản ghi nhật ký thật (`nhat_ky_he_thong`) chưa kiểm vì test dùng `IAuditLogger` giả.
