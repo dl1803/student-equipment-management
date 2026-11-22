@@ -87,11 +87,11 @@ Lưu ý: tình trạng `DANG_DUOC_MUON` trong dữ liệu thử đặt trực ti
 | Hạng mục | Trạng thái |
 |---|---|
 | `dotnet build -c Release`, `dotnet format --verify-no-changes` | Đạt (0 warning, 0 error), 13/11/2026, .NET SDK 9.0.305 |
-| Dữ liệu thử + oracle trên PostgreSQL | Chưa kiểm chứng trên PostgreSQL thật — BLOCKED bởi môi trường test (K-1 còn OPEN) |
+| Dữ liệu thử + oracle trên PostgreSQL | Chưa kiểm chứng trên PostgreSQL thật — BLOCKED bởi môi trường test (K-1 còn OPEN) (đã chạy ngày 23/11/2026 trên DB cá nhân, xem mục 18) |
 | Test mô hình EF `MoHinhEf` (không kết nối DB) | Đạt 29/29 (22 DanhMuc + 7 QuyDinh) — 14/11/2026 — .NET SDK 9.0.305 |
-| Seed bắt buộc tách riêng, seed NCC trên PostgreSQL | Chưa kiểm chứng — BLOCKED bởi K-1 |
+| Seed bắt buộc tách riêng, seed NCC trên PostgreSQL | Chưa kiểm chứng — BLOCKED bởi K-1 (đã chạy ngày 23/11/2026 trên DB cá nhân, xem mục 18) |
 | Test đơn vị D03-N (`UnitTests.QuyDinh` 58 ca, `UnitTests.Di` 2 ca) | Đạt 60/60 (58 QuyDinh + 2 Di) — 15/11/2026 — .NET SDK 9.0.305 |
-| Test tích hợp D03-N (`IntegrationTests.QuyDinh` 5 ca) trên PostgreSQL | Chưa kiểm chứng — BLOCKED bởi K-1 |
+| Test tích hợp D03-N (`IntegrationTests.QuyDinh` 5 ca) trên PostgreSQL | Chưa kiểm chứng — BLOCKED bởi K-1 (đã chạy ngày 23/11/2026 trên DB cá nhân, xem mục 18) |
 
 ## 9. Bàn giao ánh xạ EF cho tích hợp (D02-N)
 
@@ -270,5 +270,24 @@ Lưu ý: tình trạng `DANG_DUOC_MUON` trong dữ liệu thử đặt trực ti
 | `IntegrationTests` `ThietBiAnhCsdlTests` trên PostgreSQL | Chưa kiểm chứng — BLOCKED bởi K-1 (8 ca Skipped) |
 | Storage thật (Supabase) với ảnh thiết bị | Chưa kiểm chứng trong D10-N — dùng `SupabaseAnhStorageThatTests` của D08-K khi có cấu hình |
 | Quyền `QuanTri` và `dsAnh` qua HTTP | Chưa kiểm chứng — BLOCKED (chưa có endpoint DanhMuc) |
+
+## 18. Bàn giao D11-N cho Khôi, Vương và tích hợp
+
+| Mục | Nội dung |
+|---|---|
+| Đã bàn giao | Kết quả chạy UC-12/13 trên PostgreSQL thật (Supabase cá nhân) và Storage adapter thật, xem `D11-N-tich-hop-danh-muc-va-cau-hinh.md` |
+| Đã sửa | Không có (không phát sinh lỗi loại A khi chạy trên PostgreSQL thật, bỏ qua Commit 1) |
+| Migration / snapshot | Không thay đổi |
+| Việc cho Host (Khôi) | Map 24 thao tác UC-12/13, policy, `KiemTraDuLieuFilter<T>` theo mục 12–15 và 17, cập nhật `C0-manifest-operation.csv` |
+| Chưa làm / BLOCKED | Quyền thật qua HTTP; Storage qua luồng thiết bị; Q1 (ngưng/xóa vs giữ chỗ); Q1–Q3 quy định mượn; D10-K/D10-V; K-1 môi trường chung |
+
+| Hạng mục kiểm chứng (D11-N) | Trạng thái |
+|---|---|
+| `dotnet format`, `dotnet build -c Release` | Đạt (0 error, 0 warning) — 23/11/2026 — .NET SDK 9.0.321 |
+| `IntegrationTests.DanhMuc.` | Đạt 65/65 Passed (Failed: 0, Skipped: 0) — 23/11/2026 |
+| `IntegrationTests.QuyDinh.` | Đạt 20/20 Passed (Failed: 0, Skipped: 0) — 23/11/2026 |
+| `SupabaseAnhStorageThatTests` | 2 ca Skipped (chưa cấu hình trong user-secrets) |
+| Quyền thật qua HTTP | Chưa kiểm chứng — BLOCKED (chờ endpoint từ Khôi) |
+
 
 
