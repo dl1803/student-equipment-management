@@ -147,10 +147,11 @@ public sealed class GiaoThietBiHandler(
     {
         var moGiaoDich = db.Database.CurrentTransaction is null;
         var giaoDich = moGiaoDich ? await db.Database.BeginTransactionAsync(ct) : null;
-        KetQuaGhi ketQua;
+        PhieuMuonDayDuDto ketQuaDto;
         try
         {
-            ketQua = await GhiAsync(maNv, nguon, dsThietBi, ct);
+            var ketQua = await GhiAsync(maNv, nguon, dsThietBi, ct);
+            ketQuaDto = await DungKetQuaAsync(ketQua, ct);
 
             if (giaoDich is not null)
             {
@@ -169,7 +170,7 @@ public sealed class GiaoThietBiHandler(
             }
         }
 
-        return await DungKetQuaAsync(ketQua, ct);
+        return ketQuaDto;
     }
 
     private async Task<KetQuaGhi> GhiAsync(

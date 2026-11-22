@@ -1,5 +1,6 @@
 using Microsoft.EntityFrameworkCore;
 using Npgsql;
+using QuanLyMuonTra.IntegrationTests.Database;
 using QuanLyMuonTra.Modules.DanhMuc.Infrastructure;
 using QuanLyMuonTra.Modules.MuonTra.Application;
 using QuanLyMuonTra.Modules.MuonTra.Domain;
@@ -577,5 +578,64 @@ public class GiaoThietBiTests
         Assert.Single(chiTietX1.DsAnhBanDau);
         Assert.Empty(chiTietX2.DsAnhBanDau);
         Assert.Empty(chiTietX1.DsAnhKhiTra);
+    }
+
+    [CanKetNoiTestFact]
+    public async Task UC07_GiaoDichDocLap_TuMoVaCommitGiaoDichThanhCong()
+    {
+        var chuoiKetNoi = KetNoiKiemThu.LayChuoiKetNoi();
+        await using var ketNoi = new NpgsqlConnection(chuoiKetNoi);
+        await ketNoi.OpenAsync();
+
+        const string sqlXoa = """
+            DELETE FROM muon_tra.chi_tiet_phieu_muon WHERE ma_thiet_bi LIKE 'D09-TB-%';
+            DELETE FROM muon_tra.phieu_muon WHERE ma_sv LIKE 'D09-SV-%';
+            DELETE FROM muon_tra.chi_tiet_yeu_cau_muon WHERE ma_yeu_cau LIKE 'YC-261121-998%';
+            DELETE FROM muon_tra.dang_ky_cho WHERE ma_dang_ky LIKE 'DK-261121-998%';
+            DELETE FROM muon_tra.phieu_yeu_cau_muon WHERE ma_yeu_cau LIKE 'YC-261121-998%';
+            DELETE FROM danh_muc.lich_su_gia_tri WHERE ma_thiet_bi LIKE 'D09-TB-%';
+            DELETE FROM danh_muc.thiet_bi WHERE ma_thiet_bi LIKE 'D09-TB-%';
+            DELETE FROM danh_muc.loai_thiet_bi WHERE ma_loai IN ('019c0000-0000-7000-8000-0000000d9c01', '019c0000-0000-7000-8000-0000000d9c02', '019c0000-0000-7000-8000-0000000d9c03');
+            DELETE FROM danh_muc.phong_thiet_bi WHERE ma_phong IN ('019c0000-0000-7000-8000-0000000d9b01', '019c0000-0000-7000-8000-0000000d9b02');
+            DELETE FROM tai_khoan.nhan_vien_quan_ly WHERE ma_nguoi_dung IN ('019c0000-0000-7000-8000-0000000d9a01', '019c0000-0000-7000-8000-0000000d9a02');
+            DELETE FROM tai_khoan.nguoi_dung_he_thong WHERE ma_nguoi_dung IN ('019c0000-0000-7000-8000-0000000d9a01', '019c0000-0000-7000-8000-0000000d9a02');
+            DELETE FROM sinh_vien.sinh_vien WHERE ma_sv LIKE 'D09-SV-%';
+            DELETE FROM quy_dinh.quy_dinh_muon WHERE ma_nhom = 'D09-NHOM';
+            DELETE FROM sinh_vien.nhom_sinh_vien WHERE ma_nhom = 'D09-NHOM';
+            """;
+
+        await using (var lenhXoaTruoc = new NpgsqlCommand(sqlXoa, ketNoi))
+        {
+            await lenhXoaTruoc.ExecuteNonQueryAsync();
+        }
+
+        var duongDan = Path.Combine(AppContext.BaseDirectory, "MuonTra", FileDuLieu);
+        var sqlNap = await File.ReadAllTextAsync(duongDan);
+        await using (var lenhNap = new NpgsqlCommand(sqlNap, ketNoi))
+        {
+            await lenhNap.ExecuteNonQueryAsync();
+        }
+
+        var options = new DbContextOptionsBuilder<YeuCauMuonSvTests.YeuCauMuonTestContext>().UseNpgsql(ketNoi).Options;
+        await using var db = new YeuCauMuonSvTests.YeuCauMuonTestContext(options);
+        var bo = new BoXuLy(db, [P1]);
+
+        try
+        {
+            Assert.Null(db.Database.CurrentTransaction);
+            var phieu = await bo.Giao.GiaoTheoPhieuYeuCauAsync(Nv1, YcHopLe, Ds(X1, X2, Y1), Ct);
+
+            Assert.Null(db.Database.CurrentTransaction);
+            Assert.False(string.IsNullOrWhiteSpace(phieu.MaPhieu));
+            Assert.Equal("DANG_DUOC_MUON", await TinhTrangThietBiAsync(db, X1));
+            Assert.Equal("DANG_DUOC_MUON", await TinhTrangThietBiAsync(db, X2));
+            Assert.Equal("DANG_DUOC_MUON", await TinhTrangThietBiAsync(db, Y1));
+            Assert.Equal("DA_NHAN", await TrangThaiYeuCauAsync(db, YcHopLe));
+        }
+        finally
+        {
+            await using var lenhDon = new NpgsqlCommand(sqlXoa, ketNoi);
+            await lenhDon.ExecuteNonQueryAsync();
+        }
     }
 }
