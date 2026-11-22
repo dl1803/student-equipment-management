@@ -47,7 +47,7 @@ Quy ước: "Đã có trong nguồn" là điều tài liệu dự án nêu. "OPE
 | `IEmailSender` | `SharedKernel` (port, K-29); hiện thực `HttpEmailSender`, `LogEmailSender` ở `Infrastructure/Email` (KT 10.3) | Gửi qua HTTP API (không SMTP); cấu hình `Email__Provider`, `Email__ApiKey`, `Email__From`; `Log` cho dev, `Http` cho production; `GuiAsync(nguoiNhan, tieuDe, noiDungHtml, ct)`. Do J7 (D10-K) gọi, handler nghiệp vụ không gọi | Đã chốt ở K-29, K-32 | Ngoài giao dịch DB (job gửi sau) | Thử lại tối đa 5 lần, giãn cách 1, 5, 15, 60 phút; sau đó `LOI_VINH_VIEN` (KT 10.2) | Bộ gửi giả cho tests; `LogEmailSender` là bản dev, không phải bản giả test | D09 |
 | Sự kiện miền | Khai báo trong `Contracts` của module phát (KT 4.5, CV 3.2) | `GiuChoHetHan`, `PhieuYeuCauDaDuyet`, `BienBanDaLap`, `ThietBiDenHanBaoTri`, `ViPhamDaGhiNhan`; gửi **trước khi commit**, cùng giao dịch | Cơ chế phát/nhận chưa làm ở D09, hoãn tới D17-K (K-33) | Cùng giao dịch | Không | Không | Hoãn D17 |
 | Mẫu nội dung | Nhúng trong ứng dụng | Tiếng Việt, mỗi loại một mẫu HTML, chỉ chứa thông tin cần thiết (KT 10.2). Sáu loại có mẫu trong `MauThongBao` (K-30) | Đã chốt ở K-30 | Không | Không | Không | D09 |
-| Phục hồi `DANG_GUI` | — | Không có quy tắc trong nguồn | **G4** | — | — | — | D03 |
+| Phục hồi `DANG_GUI` | — | Không có quy tắc trong nguồn | Đã chốt G4 = K-39 (D10-K) | Từng câu UPDATE tự commit, gửi ngoài giao dịch | — | — | D10 |
 
 > **Ghi chú cho D10-V:** Chuyển `ThongBaoDuyetHoacTuChoi` thành `YeuCauGhiThongBao` loại `DUYET_HOAC_TU_CHOI` với tham số `maYeuCau`, `ketQua` (ví dụ "đã được duyệt"/"đã bị từ chối"), `chiTiet` (hạn giữ chỗ hoặc lý do), khóa `DUYET:{maYeuCau}`; ghi trong cùng giao dịch của handler duyệt/từ chối.
 
@@ -55,8 +55,8 @@ Quy ước: "Đã có trong nguồn" là điều tài liệu dự án nêu. "OPE
 
 | Thành phần | Vị trí | Đã có trong nguồn | OPEN | Ranh giới giao dịch | Lỗi | Bản giả kiểm thử | Chốt |
 |---|---|---|---|---|---|---|---|
-| `SchedulerHostedService` | `Infrastructure` (KT 4.1: phần chạy lịch ở hạ tầng; CV 3.2) | `BackgroundService` + `PeriodicTimer`; quét mỗi phút; tick đầu sau khi khởi động chạy mọi job ngay; job viết theo mốc thời gian nên tự bắt kịp; mỗi job chạy lại không tạo kết quả trùng (KT-07, KT 3.4, FR-41) | Interface của job (nguồn không đặt tên) | Mỗi job tự quản giao dịch | Lỗi job không dừng scheduler (cần xác nhận ở D10) | Bộ chạy với đồng hồ giả (CV 17.1) | D10 |
-| Khóa từng job | `Infrastructure` | Có "khóa tư vấn" trong danh sách kiểm thử job (CV 17.1) | Cách lấy khóa và tên khóa | Theo job | Không | Tích hợp thật trên CI | D10 |
+| `SchedulerHostedService` | `Infrastructure` (KT 4.1: phần chạy lịch ở hạ tầng; CV 3.2) | `BackgroundService` + `PeriodicTimer`; quét mỗi phút; tick đầu sau khi khởi động chạy mọi job ngay; job viết theo mốc thời gian nên tự bắt kịp; mỗi job chạy lại không tạo kết quả trùng (KT-07, KT 3.4, FR-41) | Đã chốt K-34 | Bộ chạy mở giao dịch giữ khóa; job ghi trong giao dịch đó hoặc tự mở scope và commit từng bước như J7 (KT 9.1, K-35, K-41) | Lỗi job không dừng scheduler (đã kiểm D10-K) | Bộ chạy với đồng hồ giả (CV 17.1) | D10 |
+| Khóa từng job | `Infrastructure` | Có "khóa tư vấn" trong danh sách kiểm thử job (CV 17.1) | Đã chốt K-35 | Theo job | Không | Tích hợp thật trên CI | D10 |
 | Job J1–J9 | Module sở hữu dữ liệu tương ứng (KT 4.1, 9.2) | Tên job: `NhacHanTra`, `DanhDauQuaHan`, `KhoaQuyenMuon`, `HetHanGiuCho`, `HetHieuLucPhieuChoDuyet`, `NhacBaoTri`, `GuiEmail`, `DongBoSinhVien`, `DonAnhMoCo`; `GuiEmail` là J7 (KT 9.2) | Ánh xạ J-số cho các job còn lại: xem KT 9.2 khi viết | Theo job | Không | Không | D10 |
 | Test harness | `tests/` | Kiểm thử job bằng đồng hồ giả lập và scheduler thật (CV 17.1; kế hoạch mục 5, NFR-08) | Khung dùng chung | Không | Không | Đồng hồ giả | D10 |
 
