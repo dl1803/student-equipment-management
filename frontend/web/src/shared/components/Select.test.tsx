@@ -68,6 +68,25 @@ describe("Select — nguồn lựa chọn tải từ máy chủ (DS CMP-06)", ()
     expect(o.textContent).toBe("Đang tải");
     expect(o.hasAttribute("disabled")).toBe(true);
   });
+  it("nhanTatCa đổi chữ của mục Tất cả; chọn lại mục đó trả null", () => {
+    const onChange = vi.fn();
+    render(
+      <Select
+        id="loc"
+        dsLuaChon={[{ giaTri: "a", nhan: "Phòng A" }]}
+        giaTri="a"
+        onChange={onChange}
+        coMucTatCa
+        nhanTatCa="Tất cả phòng được cấp quyền"
+      />,
+    );
+    const o = screen.getByRole("combobox");
+    expect(
+      screen.getByRole("option", { name: "Tất cả phòng được cấp quyền" }),
+    ).toBeTruthy();
+    fireEvent.change(o, { target: { value: "" } });
+    expect(onChange).toHaveBeenCalledWith(null);
+  });
 });
 
 describe("TextArea (CMP-04 nhiều dòng)", () => {

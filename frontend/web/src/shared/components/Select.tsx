@@ -29,6 +29,8 @@ export type SelectProps<T extends string = string> = {
   onChange: (giaTri: T | null) => void;
   /** Bộ lọc có mục "Tất cả" đầu danh sách (DS CMP-06). */
   coMucTatCa?: boolean;
+  /** Chữ của mục "Tất cả" khi cần cụ thể hơn, ví dụ "Tất cả phòng được cấp quyền" (SCR-NV-02). */
+  nhanTatCa?: string;
   /**
    * Chữ gợi ý khi chưa chọn (không có mục Tất cả và giaTri = null). Mục gợi ý không chọn lại
    * được, để ô không tự hiện lựa chọn đầu tiên trong khi giá trị thật vẫn là null.
@@ -51,6 +53,7 @@ export function Select<T extends string = string>({
   giaTri,
   onChange,
   coMucTatCa = false,
+  nhanTatCa = "Tất cả",
   goiY = "Chọn",
   disabled,
   required,
@@ -81,7 +84,7 @@ export function Select<T extends string = string>({
     >
       {coMucTatCa ? (
         <option value={GIA_TRI_TAT_CA}>
-          {dangTaiLuaChon ? CHU_NGUON_LUA_CHON.DANG_TAI : "Tất cả"}
+          {dangTaiLuaChon ? CHU_NGUON_LUA_CHON.DANG_TAI : nhanTatCa}
         </option>
       ) : giaTri === null ? (
         <option value={GIA_TRI_TAT_CA} disabled>

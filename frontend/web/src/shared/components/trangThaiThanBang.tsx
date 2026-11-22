@@ -1,4 +1,5 @@
-// Trạng thái thân bảng danh mục (FC 5.2; DS 9.3, 9.5): đang tải → lỗi → rỗng → dữ liệu.
+// Trạng thái thân bảng (FC 5.2; DS 9.3, 9.5): đang tải → lỗi → rỗng → dữ liệu. Sở hữu: Thịnh (shared
+// core). Dùng chung cho bảng danh mục (SCR-QT-02..04) và bảng quầy (SCR-NV-02).
 // Khi tải lại mà đã có dữ liệu thì giữ dữ liệu cũ (placeholderData), không quay về đang tải.
 import type { ReactNode } from "react";
 import { laApiError } from "@/shared/api/apiError";

@@ -21,7 +21,7 @@ import { formatTien } from "@/shared/format/formatSo";
 import { GIA_TRI_THIEU } from "@/shared/format/formatThoiGian";
 import { type ThongBao } from "@/shared/labels/thongDiepLoi";
 import { LoaiThietBiDialog } from "./components/LoaiThietBiDialog";
-import { trangThaiThanBang } from "./components/trangThaiThanBang";
+import { trangThaiThanBang } from "@/shared/components/trangThaiThanBang";
 import { XoaLoaiThietBiDialog } from "./components/XoaLoaiThietBiDialog";
 import { useLoaiThietBiQuery } from "./hooks";
 import { THONG_DIEP_DANH_MUC } from "./thongDiep";
