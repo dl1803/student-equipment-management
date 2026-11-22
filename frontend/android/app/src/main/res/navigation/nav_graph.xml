@@ -3,6 +3,10 @@
     D06-L (FA 5.3): nav graph duy nhất của ứng dụng; điểm bắt đầu là KhoiDongFragment (SCR-CM-03).
     Mã điểm đến trùng tên lớp Fragment (camelCase), mã hành động theo action_{nguon}_to_{dich} (FC 3.3).
     Các màn hình mở chồng (SCR-SV-03 đến SCR-SV-12) và nav graph con soạn phiếu thêm ở các ngày sau.
+    D07-L: hoSoMuonFragment (SCR-SV-14) nhận ba tham số chế độ. cheDoBiChan và hanhDongDaChon theo FA 5.3 (chế độ bị
+    chặn từ SCR-SV-03, 04, 05); coNutQuayLai là cờ chế độ thứ ba do D07-L thêm để thanh tiêu đề hiện nút Quay lại khi mở
+    từ Xem lý do hoặc từ ô Hồ sơ mượn ở Trang chủ (Wireframes ĐX-WF-14). Mở từ thanh điều hướng dưới thì giữ mặc định
+    false nên không có nút Quay lại. Hai hành động của trangChuFragment mở chồng lên Trang chủ, không xóa ngăn xếp.
 -->
 <navigation xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
@@ -48,7 +52,14 @@
         android:id="@+id/trangChuFragment"
         android:name="com.nhom13.quanlymuontra.ui.trangchu.TrangChuFragment"
         android:label="@string/trang_chu_tieu_de"
-        tools:layout="@layout/fragment_trang_chu" />
+        tools:layout="@layout/fragment_trang_chu">
+        <action
+            android:id="@+id/action_trangChuFragment_to_traCuuThietBiFragment"
+            app:destination="@id/traCuuThietBiFragment" />
+        <action
+            android:id="@+id/action_trangChuFragment_to_hoSoMuonFragment"
+            app:destination="@id/hoSoMuonFragment" />
+    </fragment>
 
     <fragment
         android:id="@+id/traCuuThietBiFragment"
@@ -66,6 +77,20 @@
         android:id="@+id/hoSoMuonFragment"
         android:name="com.nhom13.quanlymuontra.ui.hoso.HoSoMuonFragment"
         android:label="@string/ho_so_muon_tieu_de"
-        tools:layout="@layout/fragment_ho_so_muon" />
+        tools:layout="@layout/fragment_ho_so_muon">
+        <argument
+            android:name="cheDoBiChan"
+            android:defaultValue="false"
+            app:argType="boolean" />
+        <argument
+            android:name="hanhDongDaChon"
+            android:defaultValue="@null"
+            app:argType="string"
+            app:nullable="true" />
+        <argument
+            android:name="coNutQuayLai"
+            android:defaultValue="false"
+            app:argType="boolean" />
+    </fragment>
 
 </navigation>

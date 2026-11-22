@@ -16,6 +16,7 @@ import androidx.navigation.fragment.NavHostFragment;
 import com.nhom13.quanlymuontra.data.session.SessionManager;
 import com.nhom13.quanlymuontra.data.session.TrangThaiPhien;
 import com.nhom13.quanlymuontra.databinding.ActivityMainBinding;
+import com.nhom13.quanlymuontra.ui.hoso.HoSoMuonFragmentArgs;
 
 /**
  * Activity duy nhất (FA 5.3): chứa {@code NavHostFragment}, thanh tiêu đề (CMP-28) và thanh điều hướng
@@ -26,6 +27,11 @@ import com.nhom13.quanlymuontra.databinding.ActivityMainBinding;
  * các tùy chọn (một bản duy nhất, lưu và khôi phục trạng thái) nhưng đưa ngăn xếp về {@code trangChuFragment}
  * (màn hình gốc luôn nằm ở đáy ngăn xếp sau khi khởi động/đăng nhập), giúp phím Back ở các tab phụ quay về
  * Trang chủ trước khi thoát ứng dụng (FA 5.3).
+ *
+ * <p>D07-L: (1) SCR-SV-14 là màn hình gốc nhưng có nút Quay lại khi mở từ Xem lý do, từ ô Hồ sơ mượn ở Trang
+ * chủ hoặc ở chế độ bị chặn (Wireframes ĐX-WF-14); mở từ thanh điều hướng thì không có. (2) Chạm tab Hồ sơ
+ * không khôi phục trạng thái đã lưu, vì bản đã lưu có thể mang {@code coNutQuayLai=true} của lần mở trước và làm
+ * hiện nút Quay lại sai khi chạm tab.
  */
 public class MainActivity extends AppCompatActivity {
 
@@ -68,7 +74,7 @@ public class MainActivity extends AppCompatActivity {
         caiThanhTieuDe();
         caiThanhDieuHuong();
         dieuHuong.addOnDestinationChangedListener(
-                (boDieuHuong, dich, thamSo) -> capNhatKhung(dich));
+                (boDieuHuong, dich, thamSo) -> capNhatKhung(dich, thamSo));
 
         // Tiến trình bị hệ điều hành hủy rồi dựng lại: ngăn xếp điều hướng được khôi phục nhưng
         // SessionManager mới còn trống. Đọc lại phiên; nếu không còn thì trạng thái KHONG_CO_PHIEN đưa
@@ -86,20 +92,27 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void caiThanhDieuHuong() {
-        NavOptions tuyChonTab =
-                new NavOptions.Builder()
-                        .setLaunchSingleTop(true)
-                        .setRestoreState(true)
-                        .setPopUpTo(R.id.trangChuFragment, false, true)
-                        .build();
+        NavOptions tuyChonKhoiPhuc = taoTuyChonTab(true);
+        // D07-L: tab Hồ sơ luôn mở mới, không khôi phục bản đã lưu (xem Javadoc của lớp).
+        NavOptions tuyChonMoi = taoTuyChonTab(false);
         binding.bnvDieuHuong.setOnItemSelectedListener(
                 muc -> {
-                    dieuHuong.navigate(muc.getItemId(), null, tuyChonTab);
+                    NavOptions tuyChon =
+                            muc.getItemId() == R.id.hoSoMuonFragment ? tuyChonMoi : tuyChonKhoiPhuc;
+                    dieuHuong.navigate(muc.getItemId(), null, tuyChon);
                     return true;
                 });
         // Chạm lại tab đang chọn: về màn hình gốc của tab, không tải lại.
         binding.bnvDieuHuong.setOnItemReselectedListener(
                 muc -> dieuHuong.popBackStack(muc.getItemId(), false));
+    }
+
+    private static NavOptions taoTuyChonTab(boolean khoiPhucTrangThai) {
+        return new NavOptions.Builder()
+                .setLaunchSingleTop(true)
+                .setRestoreState(khoiPhucTrangThai)
+                .setPopUpTo(R.id.trangChuFragment, false, true)
+                .build();
     }
 
     /**
@@ -124,7 +137,7 @@ public class MainActivity extends AppCompatActivity {
     }
 
     /** Bật hoặc ẩn thanh tiêu đề, thanh điều hướng dưới và nút Quay lại theo điểm đến (UI-Screens 4.1). */
-    private void capNhatKhung(NavDestination dich) {
+    private void capNhatKhung(NavDestination dich, @Nullable Bundle thamSo) {
         int ma = dich.getId();
         boolean laManHinhChung = ma == R.id.khoiDongFragment || ma == R.id.dangNhapSinhVienFragment;
         boolean laTabGoc = laTabGoc(ma);
@@ -133,11 +146,11 @@ public class MainActivity extends AppCompatActivity {
         binding.tbManHinh.setVisibility(hienTieuDe);
         binding.vDuongKeDuoiTieuDe.setVisibility(hienTieuDe);
         binding.tbManHinh.setTitle(dich.getLabel());
-        // Màn hình gốc không có nút Quay lại; màn hình mở chồng có.
-        if (laTabGoc) {
-            binding.tbManHinh.setNavigationIcon((Drawable) null);
-        } else {
+        // Màn hình gốc không có nút Quay lại, trừ SCR-SV-14 ở ngữ cảnh được quy định; màn hình mở chồng có.
+        if (coNutQuayLai(ma, laTabGoc, thamSo)) {
             binding.tbManHinh.setNavigationIcon(R.drawable.ic_arrow_back);
+        } else {
+            binding.tbManHinh.setNavigationIcon((Drawable) null);
         }
 
         int hienDieuHuong = laTabGoc ? View.VISIBLE : View.GONE;
@@ -146,6 +159,21 @@ public class MainActivity extends AppCompatActivity {
         if (laTabGoc) {
             binding.bnvDieuHuong.getMenu().findItem(ma).setChecked(true);
         }
+    }
+
+    /**
+     * Nút Quay lại (ĐX-WF-14): màn hình không phải tab gốc luôn có; SCR-SV-14 chỉ có khi mở từ Xem lý do,
+     * từ ô Hồ sơ mượn ở Trang chủ ({@code coNutQuayLai}) hoặc ở chế độ bị chặn ({@code cheDoBiChan}).
+     */
+    private static boolean coNutQuayLai(int ma, boolean laTabGoc, @Nullable Bundle thamSo) {
+        if (!laTabGoc) {
+            return true;
+        }
+        if (ma != R.id.hoSoMuonFragment || thamSo == null) {
+            return false;
+        }
+        HoSoMuonFragmentArgs args = HoSoMuonFragmentArgs.fromBundle(thamSo);
+        return args.getCoNutQuayLai() || args.getCheDoBiChan();
     }
 
     private static boolean laTabGoc(int ma) {

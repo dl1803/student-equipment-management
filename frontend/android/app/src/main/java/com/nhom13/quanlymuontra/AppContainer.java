@@ -3,10 +3,12 @@ package com.nhom13.quanlymuontra;
 import android.content.Context;
 import androidx.annotation.NonNull;
 import com.nhom13.quanlymuontra.data.api.OkHttpClientFactory;
+import com.nhom13.quanlymuontra.data.repository.HoSoMuonRepository;
 import com.nhom13.quanlymuontra.data.repository.XacThucRepository;
 import com.nhom13.quanlymuontra.data.session.SessionManager;
 import com.nhom13.quanlymuontra.data.session.TokenStore;
 import com.nhom13.quanlymuontra.generated.JSON;
+import com.nhom13.quanlymuontra.generated.api.SinhVienApi;
 import com.nhom13.quanlymuontra.generated.api.XacThucApi;
 import okhttp3.HttpUrl;
 import okhttp3.OkHttpClient;
@@ -22,17 +24,21 @@ import retrofit2.converter.gson.GsonConverterFactory;
  * phụ thuộc qua {@link AppViewModelFactory}, không tự truy cập lớp này.
  *
  * <p>Hàm tạo nhận sẵn các thành phần để kiểm thử dựng bằng bản giả; bản dùng thật do {@link
- * #taoChoUngDung(Context)} lắp ráp.
+ * #taoChoUngDung(Context)} lắp ráp. D07-L thêm {@link HoSoMuonRepository}.
  */
 public final class AppContainer {
 
     private final SessionManager sessionManager;
     private final XacThucRepository xacThucRepository;
+    private final HoSoMuonRepository hoSoMuonRepository;
 
     public AppContainer(
-            @NonNull SessionManager sessionManager, @NonNull XacThucRepository xacThucRepository) {
+            @NonNull SessionManager sessionManager,
+            @NonNull XacThucRepository xacThucRepository,
+            @NonNull HoSoMuonRepository hoSoMuonRepository) {
         this.sessionManager = sessionManager;
         this.xacThucRepository = xacThucRepository;
+        this.hoSoMuonRepository = hoSoMuonRepository;
     }
 
     /**
@@ -53,7 +59,9 @@ public final class AppContainer {
                         .build();
         XacThucRepository xacThucRepository =
                 new XacThucRepository(retrofit.create(XacThucApi.class), sessionManager);
-        return new AppContainer(sessionManager, xacThucRepository);
+        HoSoMuonRepository hoSoMuonRepository =
+                new HoSoMuonRepository(retrofit.create(SinhVienApi.class));
+        return new AppContainer(sessionManager, xacThucRepository, hoSoMuonRepository);
     }
 
     @NonNull
@@ -64,5 +72,10 @@ public final class AppContainer {
     @NonNull
     public XacThucRepository getXacThucRepository() {
         return xacThucRepository;
+    }
+
+    @NonNull
+    public HoSoMuonRepository getHoSoMuonRepository() {
+        return hoSoMuonRepository;
     }
 }

@@ -134,6 +134,16 @@
         <item name="contentPadding">@dimen/ds_space_card</item>
     </style>
 
+    <!-- CMP-15 Thẻ, biến thể Tương tác (D07-L): cả thẻ bấm được, cao tối thiểu bằng chiều cao dòng danh sách
+         (lớn hơn vùng chạm tối thiểu), gợn sóng khi nhấn. Biểu tượng chevron_right nằm trong nội dung thẻ do nơi
+         dùng khai báo. Biến thể Tông không có style riêng: nền và viền đổi bằng TheTong. -->
+    <style name="Widget.Ds.Card.Interactive">
+        <item name="android:clickable">true</item>
+        <item name="android:focusable">true</item>
+        <item name="android:minHeight">@dimen/ds_size_list_row_min</item>
+        <item name="rippleColor">@color/ds_color_overlay_pressed</item>
+    </style>
+
     <!-- CMP-28 Thanh tiêu đề (MaterialToolbar): cao ds_size_appbar_height, nền mặt phẳng, tiêu đề type.title-section
          một dòng, nút Quay lại là biểu tượng màu chữ phụ. Đường kẻ dưới là một View riêng trong activity_main.xml
          (Toolbar không có viền dưới). Mỗi nơi dùng đặt android:layout_height bằng ds_size_appbar_height. -->

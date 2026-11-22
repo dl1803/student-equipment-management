@@ -80,6 +80,10 @@ public class NavGraphD06Test {
         Set<String> daThay = new HashSet<>();
         for (Element hanhDong : cacPhanTu(tai, "action")) {
             String ma = maId(hanhDong.getAttribute("android:id"));
+            // D07-L: hành động mở chồng của Trang chủ không xóa ngăn xếp; cấu trúc của chúng do NavGraphD07Test kiểm.
+            if (ma.startsWith("action_trangChuFragment_to_")) {
+                continue;
+            }
             if (ma.equals("action_global_to_dangNhapSinhVienFragment")) {
                 // Quy tắc 5: phiên kết thúc xóa toàn bộ ngăn xếp (kể cả graph gốc).
                 assertEquals("@id/nav_graph", hanhDong.getAttribute("app:popUpTo"));
