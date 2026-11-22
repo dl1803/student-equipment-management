@@ -101,6 +101,60 @@ public sealed class AnhThietBiUngDungTests
     }
 
     [Fact]
+    public async Task UC12_Thay_QuaNamAnh_Nem400()
+    {
+        var anh = new AnhServiceGia();
+        var dsQua5 = new[]
+        {
+            Guid.NewGuid(),
+            Guid.NewGuid(),
+            Guid.NewGuid(),
+            Guid.NewGuid(),
+            Guid.NewGuid(),
+            Guid.NewGuid(),
+        };
+
+        var ex = await Assert.ThrowsAsync<LoiNghiepVuException>(() =>
+            AnhThietBi.ThayAsync(anh, MaThietBi, dsQua5, CancellationToken.None));
+
+        Assert.Equal("DU_LIEU_KHONG_HOP_LE", ex.MaLoi);
+        Assert.Equal("Mỗi thiết bị tối đa 5 ảnh.", ex.Message);
+        Assert.Empty(anh.LichSuGoi);
+    }
+
+    [Fact]
+    public async Task UC12_Thay_AnhTrung_Nem400()
+    {
+        var anh = new AnhServiceGia();
+
+        var ex = await Assert.ThrowsAsync<LoiNghiepVuException>(() =>
+            AnhThietBi.ThayAsync(anh, MaThietBi, [A, A], CancellationToken.None));
+
+        Assert.Equal("DU_LIEU_KHONG_HOP_LE", ex.MaLoi);
+        Assert.Equal("Danh sách mã ảnh có mã trùng.", ex.Message);
+        Assert.Empty(anh.LichSuGoi);
+    }
+
+    [Fact]
+    public async Task UC12_Thay_QuaNamAnhNhungCoTrung_Nem400QuaNamAnh()
+    {
+        var anh = new AnhServiceGia();
+        var dsQua5CoTrung = new[]
+        {
+            A, A, B, C,
+            Guid.NewGuid(),
+            Guid.NewGuid(),
+        };
+
+        var ex = await Assert.ThrowsAsync<LoiNghiepVuException>(() =>
+            AnhThietBi.ThayAsync(anh, MaThietBi, dsQua5CoTrung, CancellationToken.None));
+
+        Assert.Equal("DU_LIEU_KHONG_HOP_LE", ex.MaLoi);
+        Assert.Equal("Mỗi thiết bị tối đa 5 ảnh.", ex.Message);
+        Assert.Empty(anh.LichSuGoi);
+    }
+
+    [Fact]
     public async Task UC12_GoTatCa_ThietBiCoAnh_GoMoiAnhDanhMuc()
     {
         var anh = new AnhServiceGia();

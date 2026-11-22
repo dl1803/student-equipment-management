@@ -21,6 +21,16 @@ internal static class AnhThietBi
             return;
         }
 
+        if (dsMaAnhMoi.Count > 5)
+        {
+            throw new LoiNghiepVuException("DU_LIEU_KHONG_HOP_LE", "Mỗi thiết bị tối đa 5 ảnh.");
+        }
+
+        if (dsMaAnhMoi.Distinct().Count() != dsMaAnhMoi.Count)
+        {
+            throw new LoiNghiepVuException("DU_LIEU_KHONG_HOP_LE", "Danh sách mã ảnh có mã trùng.");
+        }
+
         var dsHienCo = await LayMaHienCoAsync(anh, maThietBi, ct);
         var thayDoi = TinhThayDoi(dsHienCo, dsMaAnhMoi);
         if (thayDoi.CanGo.Count > 0)
