@@ -4627,6 +4627,7 @@ export interface operations {
             400: components["responses"]["DuLieuKhongHopLe"];
             401: components["responses"]["ChuaXacThuc"];
             403: components["responses"]["KhongDuQuyenNhanVienTheoPhong"];
+            404: components["responses"]["KhongTimThay"];
             /**
              * @description Xung đột. Mã lỗi (`maLoi`):
              *     - `GIU_CHO_HET_HAN`: Giữ chỗ đã quá hạn, không giao theo phiếu cũ
@@ -4836,6 +4837,7 @@ export interface operations {
             400: components["responses"]["DuLieuKhongHopLe"];
             401: components["responses"]["ChuaXacThuc"];
             403: components["responses"]["KhongDuQuyenNhanVienTheoPhong"];
+            404: components["responses"]["KhongTimThay"];
             500: components["responses"]["LoiHeThong"];
         };
     };
@@ -4864,6 +4866,7 @@ export interface operations {
             400: components["responses"]["DuLieuKhongHopLe"];
             401: components["responses"]["ChuaXacThuc"];
             403: components["responses"]["KhongDuQuyenNhanVienTheoPhong"];
+            404: components["responses"]["KhongTimThay"];
             /**
              * @description Vi phạm quy tắc nghiệp vụ. Mã lỗi (`maLoi`):
              *     - `THIET_BI_KHONG_SAN_SANG`: Thiết bị không ở tình trạng Sẵn sàng cho mượn
