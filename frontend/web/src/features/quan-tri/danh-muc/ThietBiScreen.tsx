@@ -27,7 +27,7 @@ import { GIA_TRI_THIEU } from "@/shared/format/formatThoiGian";
 import { type ThongBao } from "@/shared/labels/thongDiepLoi";
 import { nhanTrangThai, thongTinNhanPhatSinh } from "@/shared/labels/trangThai";
 import { ThietBiNgan } from "./components/ThietBiNgan";
-import { trangThaiThanBang } from "./components/trangThaiThanBang";
+import { trangThaiThanBang } from "@/shared/components/trangThaiThanBang";
 import {
   useTatCaLoaiQuery,
   useTatCaPhongQuery,

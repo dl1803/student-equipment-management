@@ -15,7 +15,7 @@ import { IconRefresh } from "@/shared/components/icons/IconRefresh";
 import { Pagination } from "@/shared/components/Pagination";
 import { type ThongBao } from "@/shared/labels/thongDiepLoi";
 import { PhongDialog } from "./components/PhongDialog";
-import { trangThaiThanBang } from "./components/trangThaiThanBang";
+import { trangThaiThanBang } from "@/shared/components/trangThaiThanBang";
 import { usePhongThietBiQuery } from "./hooks";
 import { THONG_DIEP_DANH_MUC } from "./thongDiep";
 

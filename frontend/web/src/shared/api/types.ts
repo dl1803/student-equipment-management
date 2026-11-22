@@ -41,6 +41,12 @@ export type AnhRef = Schemas["AnhRef"];
 // Mã trạng thái (họ trạng thái theo DS 7.2, FC 3.5)
 export type TinhTrangThietBi = Schemas["TinhTrangThietBi"];
 export type TrangThaiPhieuYeuCauMuon = Schemas["TrangThaiPhieuYeuCauMuon"];
+
+// Phiếu yêu cầu ở quầy (SCR-NV-02, NV-03)
+export type PhieuYeuCauMuonQuay = Schemas["PhieuYeuCauMuonQuay"];
+export type PhieuYeuCauMuonQuayPage = Schemas["PhieuYeuCauMuonQuayPage"];
+export type KetQuaKiemTraPhieu = Schemas["KetQuaKiemTraPhieu"];
+export type KhaDungTheoLoai = Schemas["KhaDungTheoLoai"];
 export type TrangThaiPhieuMuon = Schemas["TrangThaiPhieuMuon"];
 export type TrangThaiDangKyCho = Schemas["TrangThaiDangKyCho"];
 export type KetQuaKiemTra = Schemas["KetQuaKiemTra"];
