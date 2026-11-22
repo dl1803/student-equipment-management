@@ -6,7 +6,7 @@ namespace QuanLyMuonTra.Modules.DanhMuc.Application;
 
 internal static class DocThietBiQuanTri
 {
-    internal static async Task<ThietBiQuanTriDto> LayAsync(DbContext db, string maThietBi, CancellationToken ct)
+    internal static async Task<ThietBiQuanTriDto> LayAsync(DbContext db, IAnhService anh, string maThietBi, CancellationToken ct)
     {
         var d = await (
             from t in db.Set<ThietBi>().AsNoTracking()
@@ -47,6 +47,8 @@ internal static class DocThietBiQuanTri
             select new NhaCungCapQuanTriDto(n.MaNCC, n.TenNCC, n.ThongTinLienHe))
             .ToListAsync(ct);
 
+        var dsAnh = await anh.LayDsAnhCongKhaiAsync(MaDoiTuongAnh.ThietBi, maThietBi, ct);
+
         return new ThietBiQuanTriDto(
             d.MaThietBi,
             d.MaLoai,
@@ -63,6 +65,7 @@ internal static class DocThietBiQuanTri
             d.ViTriTu,
             d.NgungSuDung,
             (long)(d.GiaTri ?? 0m),
-            dsNcc);
+            dsNcc,
+            dsAnh);
     }
 }

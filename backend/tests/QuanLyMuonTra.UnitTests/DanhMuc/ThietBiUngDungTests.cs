@@ -149,33 +149,13 @@ public sealed class ThietBiUngDungTests
     public async Task UC12_TaoThietBi_DuLieuSai_Nem400TruocKhiTruyCapCsdl(string ma, long giaTri)
     {
         using var db = TaoDbContext();
-        var handler = new TaoThietBiHandler(db, new DongHoCoDinh());
+        var handler = new TaoThietBiHandler(db, new DongHoCoDinh(), new AnhServiceGia());
 
         var loi = await Assert.ThrowsAsync<LoiNghiepVuException>(
             () => handler.XuLyAsync(YeuCauTao(ma: ma, giaTri: giaTri), CancellationToken.None));
 
         Assert.Equal("DU_LIEU_KHONG_HOP_LE", loi.MaLoi);
         Assert.Equal(400, loi.MaHttp);
-    }
-
-    [Fact]
-    public async Task UC12_TaoThietBi_CoMaAnh_TuChoiAnToanTruocKhiTruyCapCsdl()
-    {
-        using var db = TaoDbContext();
-        var handler = new TaoThietBiHandler(db, new DongHoCoDinh());
-
-        await Assert.ThrowsAsync<InvalidOperationException>(
-            () => handler.XuLyAsync(YeuCauTao(dsAnh: TaoDanhSach(1)), CancellationToken.None));
-    }
-
-    [Fact]
-    public async Task UC12_SuaThietBi_CoMaAnh_TuChoiAnToanTruocKhiTruyCapCsdl()
-    {
-        using var db = TaoDbContext();
-        var handler = new SuaThietBiHandler(db, new KhoaGia());
-
-        await Assert.ThrowsAsync<InvalidOperationException>(
-            () => handler.XuLyAsync("TB-01", YeuCauSua(dsAnh: TaoDanhSach(1)), CancellationToken.None));
     }
 
     [Theory]
@@ -201,6 +181,7 @@ public sealed class ThietBiUngDungTests
             .AddScoped<DbContext>(sp => sp.GetRequiredService<ThietBiKhongKetNoiDbContext>())
             .AddSingleton<IClock, DongHoCoDinh>()
             .AddScoped<IAdvisoryLockService, KhoaGia>()
+            .AddScoped<IAnhService, AnhServiceGia>()
             .AddDanhMucModule()
             .BuildServiceProvider();
         using var phamVi = dichVu.CreateScope();

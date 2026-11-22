@@ -106,7 +106,7 @@ public sealed class DsQuanTriCsdlTests
         await using var gd = await GiaoDichTestRollback.BatDauAsync();
         await C3TestSupport.NapDuLieuThuAsync(gd);
         await using var db = await C3TestSupport.TaoContextAsync(gd);
-        var handler = new DsThietBiHandler(db);
+        var handler = new DsThietBiHandler(db, new AnhServiceRong());
         var ct = CancellationToken.None;
         var loai = Guid.Parse(MaLoaiLaptop);
         var phong = Guid.Parse(MaPhongA);
@@ -134,7 +134,7 @@ public sealed class DsQuanTriCsdlTests
         await using var gd = await GiaoDichTestRollback.BatDauAsync();
         await C3TestSupport.NapDuLieuThuAsync(gd);
         await using var db = await C3TestSupport.TaoContextAsync(gd);
-        var handler = new DsThietBiHandler(db);
+        var handler = new DsThietBiHandler(db, new AnhServiceRong());
         var ct = CancellationToken.None;
 
         var sanSang = await handler.XuLyAsync(null, null, Guid.Parse(MaPhongA), "SAN_SANG", 1, 100, ct);
@@ -157,7 +157,7 @@ public sealed class DsQuanTriCsdlTests
             gd,
             "INSERT INTO danh_muc.lich_su_gia_tri (ma_lich_su, ma_thiet_bi, gia_tri, ngay_cap_nhat) VALUES ('019c0000-0000-7000-8000-0000000f0002', 'TEST-LAP-002', 17000000, now() + interval '1 hour')");
         await using var db = await C3TestSupport.TaoContextAsync(gd);
-        var handler = new DsThietBiHandler(db);
+        var handler = new DsThietBiHandler(db, new AnhServiceRong());
 
         var ketQua = await handler.XuLyAsync(null, null, Guid.Parse(MaPhongA), null, 1, 100, CancellationToken.None);
 

@@ -250,3 +250,25 @@ Lưu ý: tình trạng `DANG_DUOC_MUON` trong dữ liệu thử đặt trực ti
 | `qtLayQuyDinhMuon`, `qtCapNhatQuyDinhMuon` | Chưa kiểm chứng — BLOCKED bởi Q1–Q3 |
 | Quyền `QuanTri` thật qua HTTP | Chưa kiểm chứng — BLOCKED (chờ endpoint D09-N từ Host) |
 
+## 17. Bàn giao D10-N cho Khôi, Vương và tích hợp
+
+| Mục | Nội dung |
+|---|---|
+| Đã bàn giao | `TaoThietBiHandler` gắn ảnh `THIET_BI` sau khi ghi thiết bị; `SuaThietBiHandler` thay danh sách ảnh (`dsMaAnh`: không gửi = giữ nguyên, `[]` = gỡ hết, có phần tử = thay đúng danh sách; gỡ ảnh bỏ đi trước, gắn ảnh mới sau); `XoaThietBiHandler` gỡ liên kết mọi ảnh `THIET_BI` của thiết bị; tất cả trong giao dịch của handler, lỗi gắn ảnh làm rollback cả thiết bị |
+| `dsAnh` | `ThietBiQuanTriDto.DsAnh` (`AnhRefDto(MaAnh, Url)`) do `LayDsAnhCongKhaiAsync`; URL công khai, không lưu URL ở CSDL; áp dụng cho tạo, sửa, ngưng sử dụng và danh sách thiết bị. Đóng O7 |
+| Hàm tạo đổi | `TaoThietBiHandler(db, dongHo, anh)`, `SuaThietBiHandler(db, khoa, anh)`, `XoaThietBiHandler(db, khoa, cacProvider, anh)`, `NgungSuDungThietBiHandler(db, khoa, anh)`, `DsThietBiHandler(db, anh)`; `DocThietBiQuanTri.LayAsync(db, anh, ma, ct)` |
+| Lỗi | Ảnh không hợp lệ (không tồn tại, đã gắn nơi khác, sai giai đoạn/bucket, quá 5) → 400 `DU_LIEU_KHONG_HOP_LE` từ `AnhService`; handler không xóa object Storage |
+| Việc cho Host | Đăng ký `AddAnhLuuTru` đã có; bọc endpoint thiết bị vẫn chờ (xem mục 14–15). Sau D10-N khi bọc `qtTaoThietBi`/`qtSuaThietBi`/`qtLayDsThietBi` request `dsMaAnh` đã dùng được |
+| Đọc giá trị theo mốc | Không thêm API; kiểm bằng truy vấn `DatabaseDesign.md` 11.2 trên dữ liệu do handler ghi. Nếu D14/D15 cần hàm đọc theo mốc → mở OPEN thay đổi hợp đồng `IDanhMucReader` |
+| OPEN | P1 (ngữ nghĩa PUT khi không gửi danh sách) — mặc định giữ nguyên, chờ nhóm xác nhận; `dsAnh` cho danh sách gọi từng thiết bị (tối đa 100 truy vấn/trang), tối ưu cần hàm gộp trong `IAnhService` (Khôi) |
+
+| Hạng mục kiểm chứng (D10-N) | Trạng thái |
+|---|---|
+| `dotnet format --verify-no-changes`, `dotnet build -c Release` | Đạt (0 error, 0 warning) — 21/11/2026 — .NET SDK 9.0.321 |
+| `UnitTests` | Đạt 476/476 Passed (11 ca mới: 10 AnhThietBiUngDung + 1 Json ThietBiQuanTri; 2 ca chặn bị xóa) — 21/11/2026 |
+| `IntegrationTests` `ProviderThamChieuHostTests` | Đạt 1/1 Passed |
+| `IntegrationTests` `ThietBiAnhCsdlTests` trên PostgreSQL | Chưa kiểm chứng — BLOCKED bởi K-1 (8 ca Skipped) |
+| Storage thật (Supabase) với ảnh thiết bị | Chưa kiểm chứng trong D10-N — dùng `SupabaseAnhStorageThatTests` của D08-K khi có cấu hình |
+| Quyền `QuanTri` và `dsAnh` qua HTTP | Chưa kiểm chứng — BLOCKED (chưa có endpoint DanhMuc) |
+
+

@@ -7,10 +7,12 @@ namespace QuanLyMuonTra.Modules.DanhMuc.Application;
 public sealed class DsThietBiHandler
 {
     private readonly DbContext _db;
+    private readonly IAnhService _anh;
 
-    public DsThietBiHandler(DbContext db)
+    public DsThietBiHandler(DbContext db, IAnhService anh)
     {
         _db = db;
+        _anh = anh;
     }
 
     public async Task<KetQuaPhanTrang<ThietBiQuanTriDto>> XuLyAsync(
@@ -98,6 +100,11 @@ public sealed class DsThietBiHandler
             select new { g.MaThietBi, n.MaNCC, n.TenNCC, n.ThongTinLienHe })
             .ToListAsync(ct);
         var nccTheoThietBi = cacNcc.ToLookup(x => x.MaThietBi);
+        var anhTheoThietBi = new Dictionary<string, IReadOnlyList<AnhRefDto>>();
+        foreach (var ma in dsMa)
+        {
+            anhTheoThietBi[ma] = await _anh.LayDsAnhCongKhaiAsync(MaDoiTuongAnh.ThietBi, ma, ct);
+        }
 
         var danhSach = cacDong.Select(d => new ThietBiQuanTriDto(
             d.MaThietBi,
@@ -117,7 +124,8 @@ public sealed class DsThietBiHandler
             (long)(d.GiaTri ?? 0m),
             nccTheoThietBi[d.MaThietBi]
                 .Select(n => new NhaCungCapQuanTriDto(n.MaNCC, n.TenNCC, n.ThongTinLienHe))
-                .ToList())).ToList();
+                .ToList(),
+            anhTheoThietBi[d.MaThietBi])).ToList();
 
         return new KetQuaPhanTrang<ThietBiQuanTriDto>(tongSo, trang, kichThuoc, danhSach);
     }
