@@ -162,7 +162,46 @@ public static class TraCuuEndpoints
             .AddEndpointFilter<KiemTraDuLieuFilter<KiemTraNguonRequest>>()
             .RequireAuthorization(ChinhSach.NhanVien);
 
+        nhomQuay.MapPost("/phieu-muon", async (
+                LapPhieuMuonRequest yeuCau,
+                [FromServices] ICurrentUser nguoiDung,
+                [FromServices] GiaoThietBiHandler boXuLy,
+                CancellationToken ct) =>
+            {
+                var phieu = await LapPhieuAsync(yeuCau, LayMaNv(nguoiDung), boXuLy, ct);
+
+                return Results.Created($"/api/v1/quay/phieu-muon/{phieu.MaPhieu}", phieu);
+            })
+            .AddEndpointFilter<KiemTraDuLieuFilter<LapPhieuMuonRequest>>()
+            .RequireAuthorization(ChinhSach.NhanVien);
+
         return duongDan;
+    }
+
+    private static Task<PhieuMuonDayDuDto> LapPhieuAsync(
+        LapPhieuMuonRequest yeuCau,
+        Guid maNv,
+        GiaoThietBiHandler boXuLy,
+        CancellationToken ct)
+    {
+        var dsThietBi = yeuCau.DsThietBi
+            .Where(t => t is not null)
+            .Select(t => new ThietBiGiaoYeuCau(t.MaThietBi!, t.MoTa!, t.DsMaAnh))
+            .ToList();
+
+        return yeuCau.Nguon switch
+        {
+            LapPhieuMuonRequest.PhieuYeuCau => boXuLy.GiaoTheoPhieuYeuCauAsync(maNv, yeuCau.MaYeuCau!, dsThietBi, ct),
+            LapPhieuMuonRequest.DangKyCho => boXuLy.GiaoTheoDangKyChoAsync(maNv, yeuCau.MaDangKy!, dsThietBi, ct),
+            LapPhieuMuonRequest.TrucTiep => boXuLy.GiaoTrucTiepAsync(
+                maNv,
+                yeuCau.MaSV!,
+                yeuCau.MaPhong!.Value,
+                yeuCau.DsLoaiVaSoLuong.Select(d => new LoaiVaSoLuongYeuCau(d.MaLoai, d.SoLuong)).ToList(),
+                dsThietBi,
+                ct),
+            _ => throw new InvalidOperationException($"Nguồn giao không hợp lệ: {yeuCau.Nguon}.")
+        };
     }
 
     private static Task<KetQuaKiemTraNguonDto> KiemTraNguonAsync(

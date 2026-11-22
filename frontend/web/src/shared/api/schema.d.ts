@@ -4627,6 +4627,7 @@ export interface operations {
             400: components["responses"]["DuLieuKhongHopLe"];
             401: components["responses"]["ChuaXacThuc"];
             403: components["responses"]["KhongDuQuyenNhanVienTheoPhong"];
+            404: components["responses"]["KhongTimThay"];
             /**
              * @description Xung đột. Mã lỗi (`maLoi`):
              *     - `GIU_CHO_HET_HAN`: Giữ chỗ đã quá hạn, không giao theo phiếu cũ
