@@ -1,0 +1,184 @@
+/* Demo UI ứng dụng Android sinh viên — KHÔNG phải mã app, chỉ để tham khảo bố cục.
+   Token lấy từ frontend/android/app/src/main/res/values (ds_colors, ds_dimens, ds_type) theo
+   Design-System ĐX-DS-17: 1dp = 1px, 1sp = 1px. Tên biến giữ như tên token Android. */
+:root {
+  --ds_color_gray_0: #ffffff;
+  --ds_color_gray_50: #fafafa;
+  --ds_color_gray_100: #f5f5f5;
+  --ds_color_gray_200: #e9ebee;
+  --ds_color_gray_300: #cbd0d8;
+  --ds_color_gray_400: #808998;
+  --ds_color_gray_500: #6b7482;
+  --ds_color_gray_600: #5f6b7a;
+  --ds_color_gray_700: #3a414d;
+  --ds_color_gray_900: #1b212d;
+  --ds_color_lime_50: #f3fbdd;
+  --ds_color_lime_100: #e7f7c3;
+  --ds_color_lime_400: #c8ee44;
+  --ds_color_emerald_600: #1e7f5c;
+  --ds_color_emerald_700: #197050;
+
+  /* Ngữ nghĩa */
+  --text-primary: var(--ds_color_gray_900);
+  --text-secondary: var(--ds_color_gray_600);
+  --text-link: var(--ds_color_emerald_700);
+  --surface-default: var(--ds_color_gray_0);
+  --surface-subtle: var(--ds_color_gray_50);
+  --surface-muted: var(--ds_color_gray_100);
+  --border-subtle: var(--ds_color_gray_200);
+  --border-control: var(--ds_color_gray_400);
+  --nav-indicator: var(--ds_color_lime_100);
+  --nav-selected: var(--ds_color_emerald_700);
+  --primary-bg: var(--ds_color_lime_400);
+  --primary-text: var(--ds_color_gray_900);
+  --disabled-bg: var(--ds_color_gray_100);
+  --disabled-text: var(--ds_color_gray_500);
+  --destructive-bg: #c62f2f;
+  --scrim: rgba(27, 33, 45, 0.5);
+
+  --info-bg: #eef4fb; --info-border: #d6e4f5; --info-text: #184380; --info-icon: #1f5499;
+  --success-bg: #e7f5ec; --success-border: #cdebd8; --success-text: #146236; --success-icon: #1b7a43;
+  --warning-bg: #fff4db; --warning-border: #ffe5a8; --warning-text: #8a4a00; --warning-icon: #b45f06;
+  --danger-bg: #fdecec; --danger-border: #f9d0d0; --danger-text: #a12020; --danger-icon: #c62f2f;
+  --neutral-bg: #f5f5f5; --neutral-border: #cbd0d8; --neutral-text: #3a414d; --neutral-icon: #5f6b7a;
+
+  /* Kích thước (dp) */
+  --space-1: 4px; --space-2: 8px; --space-3: 12px; --space-4: 16px; --space-6: 24px; --space-8: 32px;
+  --radius-sm: 6px; --radius-md: 10px; --radius-lg: 16px;
+  --appbar: 56px; --bottomnav: 56px; --button: 48px; --input: 56px; --badge: 24px;
+
+  --font: Roboto, "Segoe UI", system-ui, -apple-system, sans-serif;
+  --mono: "Roboto Mono", Consolas, ui-monospace, monospace;
+}
+
+* { box-sizing: border-box; }
+body { margin: 0; font-family: var(--font); color: var(--text-primary); background: #e4e7ec; }
+
+/* ---------- Kiểu chữ (ds_type.xml) ---------- */
+.t-screen { font-size: 24px; line-height: 32px; font-weight: 700; margin: 0; }
+.t-section { font-size: 20px; line-height: 28px; font-weight: 500; margin: 0; }
+.t-card { font-size: 16px; line-height: 24px; font-weight: 500; margin: 0; }
+.t-body { font-size: 16px; line-height: 24px; }
+.t-strong { font-size: 16px; line-height: 24px; font-weight: 500; }
+.t-label { font-size: 14px; line-height: 20px; font-weight: 500; }
+.t-caption { font-size: 12px; line-height: 16px; color: var(--text-secondary); }
+.t-code { font-family: var(--mono); font-size: 14px; }
+.t-num { font-size: 28px; line-height: 36px; font-weight: 700; font-variant-numeric: tabular-nums; }
+.muted { color: var(--text-secondary); }
+.link { color: var(--text-link); font-weight: 500; text-decoration: underline; cursor: pointer; }
+
+/* ---------- Khung điện thoại 360 × 760 ---------- */
+.phone {
+  width: 360px; height: 760px; background: var(--surface-subtle); border-radius: 28px;
+  border: 8px solid #1b212d; overflow: hidden; display: flex; flex-direction: column;
+  position: relative; box-shadow: 0 12px 32px rgba(27, 33, 45, 0.25); flex: none;
+}
+.statusbar { height: 24px; flex: none; display: flex; justify-content: space-between; align-items: center;
+  padding: 0 16px; font-size: 12px; font-weight: 500; background: var(--surface-default); }
+.appbar { height: var(--appbar); flex: none; display: flex; align-items: center; gap: var(--space-2);
+  padding: 0 var(--space-4); background: var(--surface-default); border-bottom: 1px solid var(--border-subtle); }
+.appbar h1 { font-size: 20px; line-height: 28px; font-weight: 500; margin: 0; }
+.appbar .back { width: 40px; height: 40px; margin-left: -8px; display: grid; place-items: center;
+  border-radius: 50%; cursor: pointer; }
+.content { flex: 1; overflow-y: auto; padding: var(--space-4); display: flex; flex-direction: column;
+  gap: var(--space-4); }
+.content::-webkit-scrollbar { width: 0; }
+.pinned { flex: none; padding: var(--space-3) var(--space-4); background: var(--surface-default);
+  border-top: 1px solid var(--border-subtle); display: flex; gap: var(--space-3); }
+.pinned > * { flex: 1; }
+
+/* Thanh điều hướng dưới (4 mục, chỉ báo chanh nhạt) */
+.bottomnav { height: 72px; flex: none; display: grid; grid-template-columns: repeat(4, 1fr);
+  background: var(--surface-default); border-top: 1px solid var(--border-subtle); }
+.bottomnav a { display: flex; flex-direction: column; align-items: center; justify-content: center;
+  gap: 4px; font-size: 12px; font-weight: 500; color: var(--text-secondary); text-decoration: none; cursor: pointer; }
+.bottomnav .pill { width: 64px; height: 32px; border-radius: 16px; display: grid; place-items: center; }
+.bottomnav a.on { color: var(--nav-selected); font-weight: 700; }
+.bottomnav a.on .pill { background: var(--nav-indicator); }
+
+/* ---------- Thành phần ---------- */
+.icon { width: 20px; height: 20px; fill: currentColor; flex: none; }
+.icon.sm { width: 16px; height: 16px; }
+.icon.lg { width: 24px; height: 24px; }
+
+.card { background: var(--surface-default); border: 1px solid var(--border-subtle); border-radius: var(--radius-lg);
+  padding: var(--space-4); display: flex; flex-direction: column; gap: var(--space-2); }
+.card.tap { cursor: pointer; }
+.card.tap:active { background: var(--surface-muted); }
+.card .row { display: flex; justify-content: space-between; align-items: flex-start; gap: var(--space-2); }
+.card.disabled { opacity: 1; background: var(--surface-muted); }
+.card.disabled .t-card { color: var(--disabled-text); }
+
+.btn { height: var(--button); border-radius: var(--radius-md); border: 1px solid transparent; padding: 0 var(--space-4);
+  font: 500 16px/24px var(--font); display: inline-flex; align-items: center; justify-content: center;
+  gap: var(--space-2); cursor: pointer; }
+.btn.primary { background: var(--primary-bg); color: var(--primary-text); }
+.btn.secondary { background: var(--surface-default); border-color: var(--border-control); color: var(--text-primary); }
+.btn.tertiary { background: transparent; color: var(--text-link); padding: 0 var(--space-2); height: 40px; }
+.btn.destructive { background: var(--destructive-bg); color: #fff; }
+.btn[disabled] { background: var(--disabled-bg); color: var(--disabled-text); border-color: var(--border-subtle); cursor: not-allowed; }
+.btn.full { width: 100%; }
+.btn.sm { height: 36px; font-size: 14px; }
+
+.field { display: flex; flex-direction: column; gap: var(--space-1); }
+.field label { font-size: 14px; line-height: 20px; font-weight: 500; }
+.input { height: var(--input); border: 1px solid var(--border-control); border-radius: var(--radius-md);
+  background: var(--surface-default); padding: 0 var(--space-4); display: flex; align-items: center;
+  justify-content: space-between; font-size: 16px; }
+.input.placeholder { color: var(--ds_color_gray_500); }
+.input.error { border: 2px solid var(--danger-icon); }
+.field .err { color: var(--danger-text); font-size: 12px; display: flex; gap: 4px; align-items: center; }
+
+.badge { height: var(--badge); border-radius: 12px; padding: 0 var(--space-2); display: inline-flex; align-items: center;
+  gap: 4px; font-size: 12px; font-weight: 500; border: 1px solid; white-space: nowrap; flex: none; }
+.badge.strong { font-weight: 700; }
+.tone-info { background: var(--info-bg); border-color: var(--info-border); color: var(--info-text); }
+.tone-success { background: var(--success-bg); border-color: var(--success-border); color: var(--success-text); }
+.tone-warning { background: var(--warning-bg); border-color: var(--warning-border); color: var(--warning-text); }
+.tone-danger { background: var(--danger-bg); border-color: var(--danger-border); color: var(--danger-text); }
+.tone-neutral { background: var(--neutral-bg); border-color: var(--neutral-border); color: var(--neutral-text); }
+
+.banner { border: 1px solid; border-radius: var(--radius-lg); padding: var(--space-3) var(--space-4);
+  display: flex; gap: var(--space-3); align-items: flex-start; font-size: 14px; line-height: 20px; color: var(--text-primary); }
+.banner .t-card { font-size: 16px; }
+.banner ul { margin: 4px 0 0; padding-left: 20px; }
+
+.kv { display: grid; grid-template-columns: 128px 1fr; gap: 6px var(--space-3); font-size: 14px; line-height: 20px; }
+.kv dt { color: var(--text-secondary); }
+.kv dd { margin: 0; }
+
+.grid2 { display: grid; grid-template-columns: 1fr 1fr; gap: var(--space-3); }
+.tile { background: var(--surface-default); border: 1px solid var(--border-subtle); border-radius: var(--radius-lg);
+  padding: var(--space-4) var(--space-3); min-height: 96px; display: flex; flex-direction: column; gap: var(--space-2);
+  font-size: 14px; line-height: 20px; font-weight: 500; cursor: pointer; }
+.tile .ic { width: 36px; height: 36px; border-radius: 10px; background: var(--ds_color_lime_50); display: grid;
+  place-items: center; color: var(--ds_color_emerald_700); }
+
+.photos { display: flex; gap: var(--space-2); overflow-x: auto; scrollbar-width: none; }
+.photos::-webkit-scrollbar { display: none; }
+.photo { width: 88px; height: 88px; border-radius: var(--radius-md); background: linear-gradient(135deg, #dfe6ee, #c8d1dc);
+  display: grid; place-items: center; color: var(--ds_color_gray_500); flex: none; }
+.photo.big { width: 100%; height: 168px; }
+
+.stepper { display: flex; align-items: center; gap: var(--space-3); }
+.stepper .sq { width: 40px; height: 40px; border: 1px solid var(--border-control); border-radius: var(--radius-md);
+  display: grid; place-items: center; background: var(--surface-default); }
+.stepper .val { min-width: 24px; text-align: center; font-weight: 500; }
+
+.countdown { font-family: var(--mono); font-weight: 700; font-size: 20px; color: var(--success-text); }
+.divider { height: 1px; background: var(--border-subtle); }
+.state { flex: 1; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: var(--space-3);
+  text-align: center; color: var(--text-secondary); padding: var(--space-12, 48px) var(--space-4); }
+.state .icon { width: 48px; height: 48px; color: var(--ds_color_gray_400); }
+
+.scrim { position: absolute; inset: 0; background: var(--scrim); display: grid; place-items: center; padding: var(--space-6); z-index: 5; }
+.dialog { background: var(--surface-default); border-radius: var(--radius-lg); padding: var(--space-6); width: 100%;
+  display: flex; flex-direction: column; gap: var(--space-3); box-shadow: 0 8px 24px rgba(27, 33, 45, 0.3); }
+.dialog .actions { display: flex; justify-content: flex-end; gap: var(--space-2); margin-top: var(--space-2); }
+
+.chip { height: 40px; border: 1px solid var(--border-control); border-radius: var(--radius-md); padding: 0 var(--space-3);
+  display: inline-flex; align-items: center; justify-content: space-between; gap: 6px; font-size: 14px; background: var(--surface-default); }
+.chips { display: flex; flex-wrap: wrap; gap: var(--space-2); }
+.list-gap { display: flex; flex-direction: column; gap: var(--space-2); }
+.spinner { width: 20px; height: 20px; border-radius: 50%; border: 3px solid var(--ds_color_gray_200);
+  border-top-color: var(--ds_color_emerald_600); }
