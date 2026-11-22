@@ -5,6 +5,7 @@
     đều hai ô; lề trái phải do TrangChuFragment đặt. Chiều cao theo ô cao nhất của hàng, chữ dài xuống dòng.
 -->
 <com.google.android.material.card.MaterialCardView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     style="@style/Widget.Ds.Card.Interactive"
     android:layout_width="0dp"
     android:layout_height="match_parent"
@@ -31,7 +32,7 @@
             android:layout_marginStart="@dimen/ds_space_2"
             android:importantForAccessibility="no"
             android:src="@drawable/ic_chevron_right"
-            android:tint="@color/ds_icon_tint_secondary" />
+            app:tint="@color/ds_icon_tint_secondary" />
 
     </LinearLayout>
 

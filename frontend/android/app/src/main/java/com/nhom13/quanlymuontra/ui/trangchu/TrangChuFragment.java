@@ -115,7 +115,13 @@ public class TrangChuFragment extends Fragment {
                 LoiVaoTrangChu loiVao = dsLoiVao[i];
                 ItemLoiVaoBinding o = ItemLoiVaoBinding.inflate(inflater, hang, false);
                 o.tvNhan.setText(loiVao.getNhanResId());
-                o.getRoot().setOnClickListener(nut -> moLoiVao(loiVao));
+                boolean coDich = loiVao == LoiVaoTrangChu.TRA_CUU || loiVao == LoiVaoTrangChu.HO_SO;
+                o.getRoot().setEnabled(coDich);
+                o.getRoot().setClickable(coDich);
+                o.getRoot().setFocusable(coDich);
+                if (coDich) {
+                    o.getRoot().setOnClickListener(nut -> moLoiVao(loiVao));
+                }
                 LinearLayout.LayoutParams tham = (LinearLayout.LayoutParams) o.getRoot().getLayoutParams();
                 if (i % 2 == 0) {
                     tham.setMarginEnd(nuaKhoang);
