@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+    CMP-06 nền ô chọn: khung viền control bo radius.md. Trạng thái activated là trạng thái lỗi (viền màu lỗi);
+    vô hiệu (đang tải hoặc lỗi) dùng nền nhạt và viền nhạt. Gợn sóng nhấn là color.overlay.pressed (DS mục 6).
+-->
+<selector xmlns:android="http://schemas.android.com/apk/res/android">
+    <item android:state_activated="true">
+        <shape android:shape="rectangle">
+            <solid android:color="@color/ds_color_surface_muted" />
+            <stroke
+                android:width="@dimen/ds_border_width_default"
+                android:color="@color/ds_color_border_error" />
+            <corners android:radius="@dimen/ds_radius_md" />
+        </shape>
+    </item>
+    <item android:state_enabled="false">
+        <shape android:shape="rectangle">
+            <solid android:color="@color/ds_color_surface_muted" />
+            <stroke
+                android:width="@dimen/ds_border_width_default"
+                android:color="@color/ds_color_border_subtle" />
+            <corners android:radius="@dimen/ds_radius_md" />
+        </shape>
+    </item>
+    <item>
+        <ripple android:color="@color/ds_color_overlay_pressed">
+            <item>
+                <shape android:shape="rectangle">
+                    <solid android:color="@color/ds_color_surface_default" />
+                    <stroke
+                        android:width="@dimen/ds_border_width_default"
+                        android:color="@color/ds_color_border_control" />
+                    <corners android:radius="@dimen/ds_radius_md" />
+                </shape>
+            </item>
+        </ripple>
+    </item>
+</selector>

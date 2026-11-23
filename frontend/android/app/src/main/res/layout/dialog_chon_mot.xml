@@ -1,0 +1,62 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+    CMP-06 danh sách chọn ở dạng hộp thoại (DS CMP-06). Cùng khung với hộp xác nhận (CMP-26): lớp nền phủ bằng
+    color.overlay.scrim, hộp canh giữa rộng bằng màn hình trừ lề ds_space_6 mỗi bên và tối đa ds_size_dialog_max
+    (ChonMotDialogFragment đặt chiều rộng). Danh sách cuộn khi dài; nút Đóng ở cuối.
+-->
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/fl_nen"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/ds_color_overlay_scrim"
+    android:padding="@dimen/ds_space_6">
+
+    <LinearLayout
+        android:id="@+id/ll_hop"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:background="@drawable/ds_dialog_nen"
+        android:elevation="@dimen/ds_shadow_dialog"
+        android:orientation="vertical"
+        android:padding="@dimen/ds_space_dialog">
+
+        <TextView
+            android:id="@+id/tv_tieu_de"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:textAppearance="@style/TextAppearance.Ds.TitleSection" />
+
+        <ScrollView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/ds_space_3"
+            android:layout_weight="1">
+
+            <LinearLayout
+                android:id="@+id/ll_danh_sach"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical" />
+
+        </ScrollView>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/ds_space_6"
+            android:gravity="end"
+            android:orientation="horizontal">
+
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/btn_dong"
+                style="@style/Widget.Ds.Button.Secondary"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/hanh_dong_dong" />
+
+        </LinearLayout>
+
+    </LinearLayout>
+
+</FrameLayout>

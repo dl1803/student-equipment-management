@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- D08-L: search_off, biểu tượng của trạng thái rỗng do bộ lọc (CMP-25, SCR-SV-02). Hình lấy từ demo-ui-android/man-hinh.js. -->
+<vector xmlns:android="http://schemas.android.com/apk/res/android"
+    android:width="24dp"
+    android:height="24dp"
+    android:viewportWidth="24"
+    android:viewportHeight="24">
+    <path
+        android:fillColor="@color/ds_color_text_primary"
+        android:pathData="M15.5 14h-.79l-.28-.27A6.47 6.47 0 0 0 16 9.5 6.5 6.5 0 1 0 9.5 16c1.61 0 3.09-.59 4.23-1.57l.27.28v.79l5 4.99L20.49 19l-4.99-5zm-6 0C7.01 14 5 11.99 5 9.5S7.01 5 9.5 5 14 7.01 14 9.5 11.99 14 9.5 14zm-2.5-6.29L8.29 7 9.5 8.21 10.71 7 12 8.29 10.79 9.5 12 10.71 10.71 12 9.5 10.79 8.29 12 7 10.71 8.21 9.5z" />
+</vector>

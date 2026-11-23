@@ -193,4 +193,7 @@
     <string name="ho_so_huong_dan_cam_muon_dai_han">Chỉ quản trị viên gỡ cấm mượn dài hạn</string>
     <string name="ho_so_dang_xuat">Đăng xuất</string>
 
+    <!-- D08-L: chữ của thành phần dùng chung (DS 9.8). "Đóng" nguyên văn DS 9.8. -->
+    <string name="hanh_dong_dong">Đóng</string>
+
 </resources>

@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- CMP-06 nền một mục trong danh sách chọn: mục đang chọn (state_selected) dùng color.surface.selected. -->
+<selector xmlns:android="http://schemas.android.com/apk/res/android">
+    <item android:state_selected="true">
+        <ripple android:color="@color/ds_color_overlay_pressed">
+            <item>
+                <shape android:shape="rectangle">
+                    <solid android:color="@color/ds_color_surface_selected" />
+                </shape>
+            </item>
+        </ripple>
+    </item>
+    <item>
+        <ripple android:color="@color/ds_color_overlay_pressed">
+            <item>
+                <shape android:shape="rectangle">
+                    <solid android:color="@color/ds_color_surface_default" />
+                </shape>
+            </item>
+        </ripple>
+    </item>
+</selector>

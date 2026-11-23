@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+    CMP-06 một mục của danh sách chọn: cao tối thiểu ds_size_touch_min; hai thông tin (tên phòng và cơ sở) hiển thị tên
+    ở dòng trên, cơ sở ở dòng dưới bằng type.caption; mục đang chọn có nền selected và biểu tượng check (DS CMP-06).
+-->
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/ll_dong"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:background="@drawable/ds_lua_chon_nen"
+    android:clickable="true"
+    android:focusable="true"
+    android:gravity="center_vertical"
+    android:minHeight="@dimen/ds_size_touch_min"
+    android:orientation="horizontal"
+    android:paddingStart="@dimen/ds_space_3"
+    android:paddingTop="@dimen/ds_space_2"
+    android:paddingEnd="@dimen/ds_space_3"
+    android:paddingBottom="@dimen/ds_space_2">
+
+    <LinearLayout
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_weight="1"
+        android:orientation="vertical">
+
+        <TextView
+            android:id="@+id/tv_ten"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:textAppearance="@style/TextAppearance.Ds.Body" />
+
+        <TextView
+            android:id="@+id/tv_phu_de"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:textAppearance="@style/TextAppearance.Ds.Caption"
+            android:textColor="@color/ds_color_text_secondary"
+            android:visibility="gone" />
+
+    </LinearLayout>
+
+    <ImageView
+        android:id="@+id/img_check"
+        android:layout_width="@dimen/ds_size_icon_lg"
+        android:layout_height="@dimen/ds_size_icon_lg"
+        android:layout_marginStart="@dimen/ds_space_2"
+        android:importantForAccessibility="no"
+        android:src="@drawable/ic_check"
+        android:visibility="gone"
+        app:tint="@color/ds_color_text_link" />
+
+</LinearLayout>
