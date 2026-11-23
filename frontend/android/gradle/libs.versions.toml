@@ -11,6 +11,8 @@
 # D06-L: khóa Navigation (navigation-fragment), plugin Safe Args cùng phiên bản, và converter-gson dùng
 # chung khóa `retrofit`. Đề xuất của Architect, chờ nhóm xác nhận.
 # D07-L: khóa SwipeRefreshLayout (kéo để làm mới, FC 6.6). Đề xuất của Architect, chờ nhóm xác nhận.
+# D08-L: khóa RecyclerView (danh sách SCR-SV-02, FA 2.4). Phiên bản đúng bằng bản Material 1.14.0 đang kéo vào
+# (đo bằng :app:dependencies); không nâng. Đề xuất của Architect, chờ nhóm xác nhận.
 [versions]
 # AGP 8.13.2 đi cùng Gradle 8.13, JDK 17 trở lên, hỗ trợ compileSdk 36.
 agp = "8.13.2"
@@ -33,6 +35,7 @@ material = "1.14.0"
 navigation = "2.9.8"
 # SwipeRefreshLayout 1.1.0 (bản ổn định): FC 6.6 bắt buộc kéo để làm mới ở màn hình có dữ liệu máy chủ.
 swiperefreshlayout = "1.1.0"
+recyclerview = "1.2.1"
 
 [libraries]
 retrofit = { module = "com.squareup.retrofit2:retrofit", version.ref = "retrofit" }
@@ -50,6 +53,7 @@ mockwebserver = { module = "com.squareup.okhttp3:mockwebserver", version.ref = "
 material = { module = "com.google.android.material:material", version.ref = "material" }
 androidx-navigation-fragment = { module = "androidx.navigation:navigation-fragment", version.ref = "navigation" }
 androidx-swiperefreshlayout = { module = "androidx.swiperefreshlayout:swiperefreshlayout", version.ref = "swiperefreshlayout" }
+androidx-recyclerview = { module = "androidx.recyclerview:recyclerview", version.ref = "recyclerview" }
 
 [plugins]
 android-application = { id = "com.android.application", version.ref = "agp" }
