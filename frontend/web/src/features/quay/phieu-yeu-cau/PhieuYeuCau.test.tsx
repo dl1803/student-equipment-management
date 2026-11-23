@@ -1,5 +1,5 @@
 // @vitest-environment jsdom
-// SCR-NV-02, SCR-NV-03 bằng fixture: chưa nối API thật, giả lập HTTP qua giaLapHttp (D10-T).
+// SCR-NV-02, SCR-NV-03 bằng fixture: chưa nối API thật, giả lập HTTP qua giaLapHttp (D10-T, D11-T).
 import { fireEvent, screen, waitFor, within } from "@testing-library/react";
 import { useMemo, useState, type ReactNode } from "react";
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
@@ -148,6 +148,19 @@ function mayChu(ghiDe: Route = () => undefined) {
 function goiTheo(goi: ReturnType<typeof mayChu>, url: string) {
   return goi.mock.calls.map((c) => c[0]).filter((c) => c.url === url);
 }
+
+function thanYeuCau(cfg: CauHinhYeuCau | undefined): unknown {
+  return typeof cfg?.data === "string" ? JSON.parse(cfg.data) : cfg?.data;
+}
+
+const LOI_MANG = (cfg: CauHinhYeuCau) =>
+  Promise.reject(
+    Object.assign(new Error("Network Error"), {
+      isAxiosError: true,
+      code: "ERR_NETWORK",
+      config: cfg,
+    }),
+  );
 
 const URL_DS = "/quay/phieu-yeu-cau-muon";
 
@@ -479,12 +492,403 @@ describe("SCR-NV-03 Xem phiếu và kết quả kiểm tra điều kiện (UI-Sc
     fireEvent.click(screen.getByRole("button", { name: "Về danh sách" }));
     expect(dieuHuong.push).toHaveBeenCalledWith("/nv/phieu-yeu-cau");
   });
+});
 
-  it("D10-T chưa có thao tác chốt: không có nút Duyệt hay Từ chối", async () => {
-    mayChu();
+// ---------------- D11-T: Duyệt, Từ chối có xác nhận ----------------
+
+const URL_DUYET = "/quay/phieu-yeu-cau-muon/YC-0002/duyet";
+const URL_TU_CHOI = "/quay/phieu-yeu-cau-muon/YC-0002/tu-choi";
+const URL_KIEM_TRA = "/quay/phieu-yeu-cau-muon/YC-0002/kiem-tra";
+
+const DA_DUYET = phieu("YC-0002", {
+  thoiGianGui: "2026-11-22T01:00:00Z",
+  trangThai: "DA_DUYET",
+  thoiDiemDuyet: "2026-11-22T03:00:00Z",
+  // Máy chủ đặt hạn giữ chỗ (= duyệt + thoiGianGiuChoPhut); cố ý 45 phút để thấy client không tự tính.
+  hanGiuCho: "2026-11-22T03:45:00Z",
+});
+
+function hop(): HTMLElement {
+  const ds = document.querySelectorAll("dialog[open]");
+  const h = ds[ds.length - 1];
+  if (!(h instanceof HTMLElement)) throw new Error("Không có hộp nào mở");
+  return h;
+}
+
+describe("SCR-NV-03 Duyệt và Từ chối có xác nhận (UI-Screens 6.3; UF-NV-01; D11-T)", () => {
+  function hienThiDuyet(phieuBanDau: PhieuYeuCauMuonQuay | null = YC_CU) {
+    const onBoChon = vi.fn<(tb: ThongBao | null) => void>();
+    const kq = hienThiVoiNguCanh(
+      <NguCanhCoPhieu phieuBanDau={phieuBanDau} onBoChon={onBoChon}>
+        <DuyetPhieuYeuCauScreen />
+      </NguCanhCoPhieu>,
+    );
+    return { ...kq, onBoChon };
+  }
+
+  const nut = (ten: string) => screen.getByRole("button", { name: ten });
+
+  it("A1: duocDuyet=false → Duyệt vô hiệu, Từ chối vẫn bật; duocDuyet=true → cả hai bật", async () => {
+    mayChu((cfg) =>
+      cfg.url === URL_KIEM_TRA ? traVe(cfg, 200, KQ_KHONG_DAT) : undefined,
+    );
+    hienThiDuyet();
+    await screen.findByText("Không được duyệt");
+    expect(nut("Duyệt").hasAttribute("disabled")).toBe(true);
+    expect(nut("Từ chối").hasAttribute("disabled")).toBe(false);
+  });
+
+  it("Duyệt mở hộp xác nhận nêu SV, phòng, loại và số lượng, hệ quả giữ chỗ; Hủy không gửi", async () => {
+    const goi = mayChu();
     hienThiDuyet();
     await screen.findByText("Được duyệt");
+    fireEvent.click(nut("Duyệt"));
+    const h = within(hop());
+    expect(
+      h.getByRole("heading", { name: "Duyệt phiếu yêu cầu" }),
+    ).toBeTruthy();
+    expect(h.getByText("Lê Thị Ánh Dương (22520001)")).toBeTruthy();
+    expect(h.getByText("Phòng thiết bị A1")).toBeTruthy();
+    expect(h.getByText("Laptop × 2")).toBeTruthy();
+    expect(h.getByText("Máy chiếu × 1")).toBeTruthy();
+    expect(h.getByText(/giữ chỗ từng loại thiết bị/)).toBeTruthy();
+    fireEvent.click(h.getByRole("button", { name: "Hủy" }));
+    expect(document.querySelector("dialog[open]")).toBeNull();
+    expect(goiTheo(goi, URL_DUYET)).toHaveLength(0);
+  });
+
+  it("Duyệt thành công: POST không thân; hiển thị hạn giữ chỗ TỪ PHẢN HỒI; đánh dấu lỗi thời đúng khóa, KHÔNG kiểm tra lại phiếu vừa duyệt", async () => {
+    const goi = mayChu((cfg) =>
+      cfg.method === "post" && cfg.url === URL_DUYET
+        ? traVe(cfg, 200, DA_DUYET)
+        : undefined,
+    );
+    const { queryClient } = hienThiDuyet();
+    await screen.findByText("Được duyệt");
+    const danhDau = vi.spyOn(queryClient, "invalidateQueries");
+    fireEvent.click(nut("Duyệt"));
+    fireEvent.click(within(hop()).getByRole("button", { name: "Duyệt" }));
+
+    expect(await screen.findByText("Đã duyệt phiếu YC-0002")).toBeTruthy();
+    expect(goiTheo(goi, URL_DUYET)).toHaveLength(1);
+    expect(goiTheo(goi, URL_DUYET)[0]?.data).toBeUndefined();
+    // 03:45Z = 10:45 giờ Việt Nam: đúng giá trị máy chủ trả, không phải "duyệt + 30 phút".
+    expect(screen.getByText("22/11/2026 10:45")).toBeTruthy();
+    expect(screen.getByText("Sinh viên đã được thông báo.")).toBeTruthy();
+    // FA 4.7: quay/phieu-yeu-cau, quay/loai-thiet-bi, quay/danh-sach-cho.
+    const dsKhoa = danhDau.mock.calls.map((c) => c[0]?.queryKey);
+    expect(dsKhoa).toEqual(
+      expect.arrayContaining([
+        ["quay", "phieu-yeu-cau"],
+        ["quay", "loai-thiet-bi"],
+        ["quay", "danh-sach-cho"],
+      ]),
+    );
+    // Phiếu đã xử lý: không gọi lại kiem-tra (sẽ 404 và đẩy NV khỏi màn hình), không quay về danh sách.
+    await new Promise((r) => setTimeout(r, 20));
+    expect(goiTheo(goi, URL_KIEM_TRA)).toHaveLength(1);
+    expect(dieuHuong.replace).not.toHaveBeenCalled();
     expect(screen.queryByRole("button", { name: "Duyệt" })).toBeNull();
     expect(screen.queryByRole("button", { name: "Từ chối" })).toBeNull();
+  });
+
+  it("Next giữ trạng thái tuyến: duyệt xong rồi chọn phiếu KHÁC → không còn kết quả của phiếu trước, kiểm tra phiếu mới", async () => {
+    const goi = mayChu((cfg) =>
+      cfg.method === "post" && cfg.url === URL_DUYET
+        ? traVe(cfg, 200, DA_DUYET)
+        : undefined,
+    );
+    function ChonPhieuMoi() {
+      const { chonPhieu } = useNguCanh();
+      return (
+        <button type="button" onClick={() => chonPhieu(YC_MOI)}>
+          Chọn phiếu khác
+        </button>
+      );
+    }
+    hienThiVoiNguCanh(
+      <NguCanhCoPhieu phieuBanDau={YC_CU} onBoChon={vi.fn()}>
+        <ChonPhieuMoi />
+        <DuyetPhieuYeuCauScreen />
+      </NguCanhCoPhieu>,
+    );
+    await screen.findByText("Được duyệt");
+    fireEvent.click(nut("Duyệt"));
+    fireEvent.click(within(hop()).getByRole("button", { name: "Duyệt" }));
+    await screen.findByText("Đã duyệt phiếu YC-0002");
+
+    fireEvent.click(nut("Chọn phiếu khác"));
+    expect(await screen.findByText("Được duyệt")).toBeTruthy();
+    expect(screen.queryByText(/Đã duyệt phiếu/)).toBeNull();
+    expect(nut("Duyệt").hasAttribute("disabled")).toBe(false);
+    expect(
+      goiTheo(goi, "/quay/phieu-yeu-cau-muon/YC-0001/kiem-tra"),
+    ).toHaveLength(1);
+  });
+
+  it("bấm đúp nút Duyệt trong hộp → chỉ gửi MỘT yêu cầu", async () => {
+    const goi = mayChu((cfg) =>
+      cfg.method === "post" && cfg.url === URL_DUYET
+        ? traVe(cfg, 200, DA_DUYET)
+        : undefined,
+    );
+    hienThiDuyet();
+    await screen.findByText("Được duyệt");
+    fireEvent.click(nut("Duyệt"));
+    const nutXacNhan = within(hop()).getByRole("button", { name: "Duyệt" });
+    fireEvent.click(nutXacNhan);
+    fireEvent.click(nutXacNhan);
+    await screen.findByText("Đã duyệt phiếu YC-0002");
+    expect(goiTheo(goi, URL_DUYET)).toHaveLength(1);
+  });
+
+  it.each([
+    [409, "SO_LUONG_KHA_DUNG_THAY_DOI"],
+    [422, "SV_THE_HET_HAN"],
+    [422, "SV_KHONG_CON_THEO_HOC"],
+    [422, "SV_BI_KHOA_QUYEN_MUON"],
+    [422, "VUOT_GIOI_HAN_THIET_BI"],
+    [422, "VUOT_THOI_GIAN_MUON_TOI_DA"],
+  ])(
+    "E3: Duyệt nhận %i %s → đóng hộp, tải lại kiểm tra, hiển thị như không được duyệt; KHÔNG tự gửi lại",
+    async (ma, maLoi) => {
+      let lanKiemTra = 0;
+      const goi = mayChu((cfg) => {
+        if (cfg.url === URL_KIEM_TRA)
+          return traVe(cfg, 200, lanKiemTra++ === 0 ? KQ_DAT : KQ_KHONG_DAT);
+        if (cfg.method === "post" && cfg.url === URL_DUYET)
+          return traVe(cfg, ma, { status: ma, maLoi });
+        return undefined;
+      });
+      hienThiDuyet();
+      await screen.findByText("Được duyệt");
+      fireEvent.click(nut("Duyệt"));
+      fireEvent.click(within(hop()).getByRole("button", { name: "Duyệt" }));
+
+      expect(await screen.findByText(/Không duyệt được/)).toBeTruthy();
+      expect(await screen.findByText("Không được duyệt")).toBeTruthy();
+      expect(screen.getByText("Thẻ sinh viên đã hết hạn")).toBeTruthy();
+      expect(document.querySelector("dialog[open]")).toBeNull();
+      expect(goiTheo(goi, URL_KIEM_TRA)).toHaveLength(2);
+      expect(goiTheo(goi, URL_DUYET)).toHaveLength(1);
+      expect(nut("Duyệt").hasAttribute("disabled")).toBe(true);
+      expect(nut("Từ chối").hasAttribute("disabled")).toBe(false);
+    },
+  );
+
+  it("409 XUNG_DOT_CAP_NHAT khi Duyệt → cảnh báo, tải lại kiểm tra, không tự gửi lại", async () => {
+    const goi = mayChu((cfg) =>
+      cfg.method === "post" && cfg.url === URL_DUYET
+        ? traVe(cfg, 409, { status: 409, maLoi: "XUNG_DOT_CAP_NHAT" })
+        : undefined,
+    );
+    hienThiDuyet();
+    await screen.findByText("Được duyệt");
+    fireEvent.click(nut("Duyệt"));
+    fireEvent.click(within(hop()).getByRole("button", { name: "Duyệt" }));
+    expect(await screen.findByText(/Dữ liệu vừa được thay đổi/)).toBeTruthy();
+    await waitFor(() => expect(goiTheo(goi, URL_KIEM_TRA)).toHaveLength(2));
+    expect(goiTheo(goi, URL_DUYET)).toHaveLength(1);
+  });
+
+  it.each([
+    ["DUYET", 409, "TRANG_THAI_KHONG_HOP_LE", /không còn chờ duyệt/],
+    ["DUYET", 404, "KHONG_TIM_THAY", /không còn chờ duyệt/],
+    ["DUYET", 403, "PHONG_CHUA_CAP_QUYEN", /chưa được cấp quyền/],
+    ["TU_CHOI", 409, "TRANG_THAI_KHONG_HOP_LE", /không còn chờ duyệt/],
+    ["TU_CHOI", 403, "PHONG_CHUA_CAP_QUYEN", /chưa được cấp quyền/],
+  ] as const)(
+    "E1/E2: %s nhận %i %s → báo ở danh sách và quay về",
+    async (hanhDong, ma, maLoi, thongDiep) => {
+      mayChu((cfg) =>
+        cfg.method === "post"
+          ? traVe(cfg, ma, { status: ma, maLoi })
+          : undefined,
+      );
+      const { onBoChon } = hienThiDuyet();
+      await screen.findByText("Được duyệt");
+      if (hanhDong === "DUYET") {
+        fireEvent.click(nut("Duyệt"));
+        fireEvent.click(within(hop()).getByRole("button", { name: "Duyệt" }));
+      } else {
+        fireEvent.click(nut("Từ chối"));
+        fireEvent.change(within(hop()).getByLabelText(/Lý do từ chối/), {
+          target: { value: "Phòng đang kiểm kê" },
+        });
+        fireEvent.click(within(hop()).getByRole("button", { name: "Từ chối" }));
+      }
+      await waitFor(() =>
+        expect(dieuHuong.replace).toHaveBeenCalledWith("/nv/phieu-yeu-cau"),
+      );
+      expect(onBoChon.mock.calls[0]?.[0]?.noiDung).toMatch(thongDiep);
+    },
+  );
+
+  it("FA 3.11: Duyệt mất phản hồi → chưa xác định kết quả, khóa cả hai nút kể cả khi đóng hộp; chỉ cho kiểm tra danh sách", async () => {
+    const goi = mayChu((cfg) =>
+      cfg.method === "post" && cfg.url === URL_DUYET
+        ? LOI_MANG(cfg)
+        : undefined,
+    );
+    const { onBoChon } = hienThiDuyet();
+    await screen.findByText("Được duyệt");
+    fireEvent.click(nut("Duyệt"));
+    fireEvent.click(within(hop()).getByRole("button", { name: "Duyệt" }));
+
+    expect(await screen.findByText(/Chưa xác định được kết quả/)).toBeTruthy();
+    expect(document.querySelector("dialog[open]")).toBeNull();
+    expect(nut("Duyệt").hasAttribute("disabled")).toBe(true);
+    expect(nut("Từ chối").hasAttribute("disabled")).toBe(true);
+    expect(nut("Kiểm tra lại").hasAttribute("disabled")).toBe(true);
+    expect(goiTheo(goi, URL_DUYET)).toHaveLength(1);
+
+    fireEvent.click(nut("Kiểm tra danh sách"));
+    expect(dieuHuong.replace).toHaveBeenCalledWith("/nv/phieu-yeu-cau");
+    expect(onBoChon.mock.calls[0]?.[0]?.noiDung).toMatch(
+      /Chưa xác định được kết quả duyệt phiếu YC-0002/,
+    );
+  });
+
+  it("A2: Từ chối phiếu ĐỦ điều kiện; lý do bắt buộc (trống/chỉ khoảng trắng không gửi); gửi lý do đã cắt; hiển thị lý do từ phản hồi", async () => {
+    const goi = mayChu((cfg) =>
+      cfg.method === "post" && cfg.url === URL_TU_CHOI
+        ? traVe(cfg, 200, {
+            ...YC_CU,
+            trangThai: "TU_CHOI",
+            lyDoTuChoi: "Phòng A1 đang kiểm kê thiết bị",
+          })
+        : undefined,
+    );
+    const { queryClient } = hienThiDuyet();
+    await screen.findByText("Được duyệt");
+    const danhDau = vi.spyOn(queryClient, "invalidateQueries");
+    fireEvent.click(nut("Từ chối"));
+    const h = within(hop());
+    expect(
+      h.getByRole("heading", { name: "Từ chối phiếu yêu cầu" }),
+    ).toBeTruthy();
+    expect(
+      h.getByText(/chuyển Từ chối và sinh viên được thông báo/),
+    ).toBeTruthy();
+    const oLyDo = h.getByLabelText(/Lý do từ chối/);
+    await waitFor(() => expect(document.activeElement).toBe(oLyDo));
+
+    for (const sai of ["", "   "]) {
+      fireEvent.change(oLyDo, { target: { value: sai } });
+      fireEvent.click(h.getByRole("button", { name: "Từ chối" }));
+      expect(await h.findByText("Nhập lý do từ chối")).toBeTruthy();
+    }
+    expect(goiTheo(goi, URL_TU_CHOI)).toHaveLength(0);
+
+    fireEvent.change(oLyDo, {
+      target: { value: "  Phòng A1 đang kiểm kê thiết bị  " },
+    });
+    fireEvent.click(h.getByRole("button", { name: "Từ chối" }));
+    expect(await screen.findByText("Đã từ chối phiếu YC-0002")).toBeTruthy();
+    expect(thanYeuCau(goiTheo(goi, URL_TU_CHOI)[0])).toEqual({
+      lyDo: "Phòng A1 đang kiểm kê thiết bị",
+    });
+    expect(screen.getByText("Phòng A1 đang kiểm kê thiết bị")).toBeTruthy();
+    expect(danhDau.mock.calls.map((c) => c[0]?.queryKey)).toEqual(
+      expect.arrayContaining([
+        ["quay", "phieu-yeu-cau"],
+        ["quay", "loai-thiet-bi"],
+        ["quay", "danh-sach-cho"],
+      ]),
+    );
+  });
+
+  it("A1: Từ chối được phiếu KHÔNG đủ điều kiện", async () => {
+    const goi = mayChu((cfg) => {
+      if (cfg.url === URL_KIEM_TRA) return traVe(cfg, 200, KQ_KHONG_DAT);
+      if (cfg.method === "post" && cfg.url === URL_TU_CHOI)
+        return traVe(cfg, 200, {
+          ...YC_CU,
+          trangThai: "TU_CHOI",
+          lyDoTuChoi: "Thẻ hết hạn",
+        });
+      return undefined;
+    });
+    hienThiDuyet();
+    await screen.findByText("Không được duyệt");
+    fireEvent.click(nut("Từ chối"));
+    fireEvent.change(within(hop()).getByLabelText(/Lý do từ chối/), {
+      target: { value: "Thẻ hết hạn" },
+    });
+    fireEvent.click(within(hop()).getByRole("button", { name: "Từ chối" }));
+    expect(await screen.findByText("Đã từ chối phiếu YC-0002")).toBeTruthy();
+    expect(goiTheo(goi, URL_TU_CHOI)).toHaveLength(1);
+  });
+
+  it("Từ chối: 400 gắn lỗi dưới ô lý do; 409 XUNG_DOT_CAP_NHAT giữ hộp và lý do đã nhập, tải lại kiểm tra", async () => {
+    let lan = 0;
+    const goi = mayChu((cfg) =>
+      cfg.method === "post" && cfg.url === URL_TU_CHOI
+        ? lan++ === 0
+          ? traVe(cfg, 400, {
+              status: 400,
+              maLoi: "DU_LIEU_KHONG_HOP_LE",
+              errors: { lyDo: ["Lý do tối đa 500 ký tự."] },
+            })
+          : traVe(cfg, 409, { status: 409, maLoi: "XUNG_DOT_CAP_NHAT" })
+        : undefined,
+    );
+    hienThiDuyet();
+    await screen.findByText("Được duyệt");
+    fireEvent.click(nut("Từ chối"));
+    const h = within(hop());
+    fireEvent.change(h.getByLabelText(/Lý do từ chối/), {
+      target: { value: "Lý do dài" },
+    });
+    fireEvent.click(h.getByRole("button", { name: "Từ chối" }));
+    expect(await h.findByText("Lý do tối đa 500 ký tự.")).toBeTruthy();
+
+    fireEvent.click(h.getByRole("button", { name: "Từ chối" }));
+    expect(await h.findByText(/Dữ liệu vừa được thay đổi/)).toBeTruthy();
+    expect(
+      (h.getByLabelText(/Lý do từ chối/) as HTMLTextAreaElement).value,
+    ).toBe("Lý do dài");
+    await waitFor(() => expect(goiTheo(goi, URL_KIEM_TRA)).toHaveLength(2));
+    expect(goiTheo(goi, URL_TU_CHOI)).toHaveLength(2);
+  });
+
+  it("FA 3.11: Từ chối mất phản hồi → khóa ở màn hình, chỉ cho kiểm tra danh sách", async () => {
+    const goi = mayChu((cfg) =>
+      cfg.method === "post" && cfg.url === URL_TU_CHOI
+        ? LOI_MANG(cfg)
+        : undefined,
+    );
+    const { onBoChon } = hienThiDuyet();
+    await screen.findByText("Được duyệt");
+    fireEvent.click(nut("Từ chối"));
+    fireEvent.change(within(hop()).getByLabelText(/Lý do từ chối/), {
+      target: { value: "Phòng đang kiểm kê" },
+    });
+    fireEvent.click(within(hop()).getByRole("button", { name: "Từ chối" }));
+    expect(await screen.findByText(/Chưa xác định được kết quả/)).toBeTruthy();
+    expect(nut("Từ chối").hasAttribute("disabled")).toBe(true);
+    expect(nut("Duyệt").hasAttribute("disabled")).toBe(true);
+    fireEvent.click(nut("Kiểm tra danh sách"));
+    expect(onBoChon.mock.calls[0]?.[0]?.noiDung).toMatch(
+      /Chưa xác định được kết quả từ chối phiếu YC-0002/,
+    );
+    expect(goiTheo(goi, URL_TU_CHOI)).toHaveLength(1);
+  });
+
+  it("lỗi hệ thống khi Duyệt → báo trong hộp kèm mã theo dõi, hộp vẫn mở", async () => {
+    mayChu((cfg) =>
+      cfg.method === "post" && cfg.url === URL_DUYET
+        ? // Hợp đồng: lỗi 500 không có maLoi, chỉ có traceId.
+          traVe(cfg, 500, { status: 500, traceId: "abc-123" })
+        : undefined,
+    );
+    hienThiDuyet();
+    await screen.findByText("Được duyệt");
+    fireEvent.click(nut("Duyệt"));
+    fireEvent.click(within(hop()).getByRole("button", { name: "Duyệt" }));
+    expect(
+      await within(hop()).findByText(/Đã xảy ra lỗi hệ thống/),
+    ).toBeTruthy();
+    expect(within(hop()).getByText(/abc-123/)).toBeTruthy();
   });
 });

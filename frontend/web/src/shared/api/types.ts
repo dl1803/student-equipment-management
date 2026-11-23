@@ -46,6 +46,7 @@ export type TrangThaiPhieuYeuCauMuon = Schemas["TrangThaiPhieuYeuCauMuon"];
 export type PhieuYeuCauMuonQuay = Schemas["PhieuYeuCauMuonQuay"];
 export type PhieuYeuCauMuonQuayPage = Schemas["PhieuYeuCauMuonQuayPage"];
 export type KetQuaKiemTraPhieu = Schemas["KetQuaKiemTraPhieu"];
+export type TuChoiRequest = Schemas["TuChoiRequest"];
 export type KhaDungTheoLoai = Schemas["KhaDungTheoLoai"];
 export type TrangThaiPhieuMuon = Schemas["TrangThaiPhieuMuon"];
 export type TrangThaiDangKyCho = Schemas["TrangThaiDangKyCho"];

@@ -6,7 +6,9 @@ import { TIEN_TO_KHOA } from "@/shared/api/tienToKhoa";
 import type {
   KetQuaKiemTraPhieu,
   operations,
+  PhieuYeuCauMuonQuay,
   PhieuYeuCauMuonQuayPage,
+  TuChoiRequest,
 } from "@/shared/api/types";
 
 type TuChon = { signal?: AbortSignal };
@@ -40,6 +42,27 @@ export async function quayKiemTraPhieuYeuCauMuon(
   const res = await apiClient.get<KetQuaKiemTraPhieu>(
     `/quay/phieu-yeu-cau-muon/${encodeURIComponent(maYeuCau)}/kiem-tra`,
     { signal: tuyChon?.signal },
+  );
+  return res.data;
+}
+
+/** Duyệt và giữ chỗ (không có thân); hạn giữ chỗ do máy chủ đặt, trả trong phiếu sau khi duyệt. */
+export async function quayDuyetPhieuYeuCauMuon(
+  maYeuCau: string,
+): Promise<PhieuYeuCauMuonQuay> {
+  const res = await apiClient.post<PhieuYeuCauMuonQuay>(
+    `/quay/phieu-yeu-cau-muon/${encodeURIComponent(maYeuCau)}/duyet`,
+  );
+  return res.data;
+}
+
+export async function quayTuChoiPhieuYeuCauMuon(
+  maYeuCau: string,
+  yeuCau: TuChoiRequest,
+): Promise<PhieuYeuCauMuonQuay> {
+  const res = await apiClient.post<PhieuYeuCauMuonQuay>(
+    `/quay/phieu-yeu-cau-muon/${encodeURIComponent(maYeuCau)}/tu-choi`,
+    yeuCau,
   );
   return res.data;
 }
