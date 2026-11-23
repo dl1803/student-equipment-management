@@ -65,4 +65,29 @@ public class ThongBaoDuyetOutboxTests
 
         Assert.Empty(outbox.DaGhi);
     }
+
+    [Fact]
+    public async Task UC06_ThongBaoNull_NemLoi()
+    {
+        var outbox = new OutboxGhiNho();
+
+        await Assert.ThrowsAsync<ArgumentNullException>(() => new ThongBaoDuyetOutbox(outbox).GhiAsync(
+            null!,
+            CancellationToken.None));
+    }
+
+    [Theory]
+    [InlineData(null)]
+    [InlineData("")]
+    [InlineData("   ")]
+    public async Task UC06_TuChoiThieuLyDo_NemLoiVaKhongGhi(string? lyDo)
+    {
+        var outbox = new OutboxGhiNho();
+
+        await Assert.ThrowsAsync<InvalidOperationException>(() => new ThongBaoDuyetOutbox(outbox).GhiAsync(
+            new ThongBaoDuyetHoacTuChoi("YC-4", "SV-4", false, null, lyDo),
+            CancellationToken.None));
+
+        Assert.Empty(outbox.DaGhi);
+    }
 }

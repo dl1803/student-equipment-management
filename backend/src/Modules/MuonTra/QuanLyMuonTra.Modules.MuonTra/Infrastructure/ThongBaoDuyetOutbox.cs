@@ -12,6 +12,8 @@ public sealed class ThongBaoDuyetOutbox(IThongBaoOutbox outbox) : IThongBaoDuyet
 
     public Task GhiAsync(ThongBaoDuyetHoacTuChoi thongBao, CancellationToken ct)
     {
+        ArgumentNullException.ThrowIfNull(thongBao);
+
         var yeuCau = new YeuCauGhiThongBao(
             MaLoaiThongBao.DuyetHoacTuChoi,
             thongBao.MaSv,
