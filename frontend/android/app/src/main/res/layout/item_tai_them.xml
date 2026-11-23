@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+    Dòng cuối danh sách của SV (DS CMP-16 "Tải thêm", FA 5.6): vòng quay khi đang tải thêm; khi lỗi hiện "Không tải thêm được"
+    kèm nút Thử lại mà các dòng đã có vẫn giữ nguyên.
+-->
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:gravity="center_horizontal"
+    android:orientation="vertical"
+    android:paddingTop="@dimen/ds_space_2"
+    android:paddingBottom="@dimen/ds_space_2">
+
+    <com.google.android.material.progressindicator.CircularProgressIndicator
+        android:id="@+id/pi_tai_them"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:contentDescription="@string/trang_thai_dang_tai"
+        android:indeterminate="true"
+        android:visibility="gone"
+        app:indicatorColor="@color/ds_color_progress_indicator"
+        app:trackColor="@color/ds_color_progress_track" />
+
+    <LinearLayout
+        android:id="@+id/ll_loi_tai_them"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:gravity="center_horizontal"
+        android:orientation="vertical"
+        android:visibility="gone">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:gravity="center"
+            android:text="@string/tra_cuu_khong_tai_them"
+            android:textAppearance="@style/TextAppearance.Ds.Body" />
+
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/btn_thu_lai_tai_them"
+            style="@style/Widget.Ds.Button.Tertiary"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/hanh_dong_thu_lai" />
+
+    </LinearLayout>
+
+</LinearLayout>

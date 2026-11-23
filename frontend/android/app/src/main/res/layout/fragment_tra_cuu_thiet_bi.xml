@@ -1,5 +1,22 @@
 <?xml version="1.0" encoding="utf-8"?>
-<!-- SCR-SV-02 Tra cứu thiết bị (tab Tra cứu). Khung rỗng của D06-L để bốn tab chuyển được; nội dung cài ở D08-L. -->
-<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<!--
+    SCR-SV-02 Tra cứu thiết bị (UI-Screens 5.2, Wireframes SCR-SV-02 và ĐX-WF-15, DS 9.5). Một danh sách duy nhất; ô tìm
+    và các bộ lọc là đầu danh sách (view_tra_cuu_bo_loc.xml) nên cuộn cùng danh sách. Kéo xuống để làm mới (ĐX-UF-04).
+    Thanh tiêu đề và thanh điều hướng dưới do MainActivity đặt.
+-->
+<androidx.swiperefreshlayout.widget.SwipeRefreshLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/srl_lam_moi"
     android:layout_width="match_parent"
-    android:layout_height="match_parent" />
+    android:layout_height="match_parent">
+
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/rv_ket_qua"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:clipToPadding="false"
+        android:paddingStart="@dimen/ds_space_gutter"
+        android:paddingTop="@dimen/ds_space_gutter"
+        android:paddingEnd="@dimen/ds_space_gutter"
+        android:paddingBottom="@dimen/ds_space_gutter" />
+
+</androidx.swiperefreshlayout.widget.SwipeRefreshLayout>

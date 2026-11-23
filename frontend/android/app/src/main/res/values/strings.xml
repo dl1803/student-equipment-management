@@ -196,4 +196,28 @@
     <!-- D08-L: chữ của thành phần dùng chung (DS 9.8). "Đóng" nguyên văn DS 9.8. -->
     <string name="hanh_dong_dong">Đóng</string>
 
+    <!--
+        D08-L, SCR-SV-02 (UI-Screens 5.2, DS 9.8, demo-ui-android). Nguyên văn tài liệu: "Tìm theo tên thiết bị" (DS 9.8),
+        "Không tìm thấy thiết bị phù hợp" (UI-Screens 5.2), "Xóa bộ lọc" (DS 9.8), "Không tải thêm được" (DS 9.8),
+        tên ba bộ lọc, Tất cả/Còn hàng/Hết hàng, "Loại: ...", "Phòng: ...", "Còn: n" (demo). Do Architect viết, chờ nhóm
+        xác nhận: tra_cuu_tim_kiem_goi_y (chữ gợi ý lấy từ demo và Wireframes), tra_cuu_xoa_noi_dung, tra_cuu_chip_xoa.
+    -->
+    <string name="tra_cuu_tim_kiem_nhan">Tìm theo tên thiết bị</string>
+    <string name="tra_cuu_tim_kiem_goi_y">Tìm theo tên loại thiết bị</string>
+    <string name="tra_cuu_xoa_noi_dung">Xóa nội dung tìm kiếm</string>
+    <string name="tra_cuu_loc_loai">Loại thiết bị</string>
+    <string name="tra_cuu_loc_phong">Phòng thiết bị</string>
+    <string name="tra_cuu_loc_tinh_trang">Tình trạng hàng</string>
+    <string name="tra_cuu_tat_ca">Tất cả</string>
+    <string name="tra_cuu_con_hang">Còn hàng</string>
+    <string name="tra_cuu_het_hang">Hết hàng</string>
+    <string name="tra_cuu_chip_loai">Loại: %1$s</string>
+    <string name="tra_cuu_chip_phong">Phòng: %1$s</string>
+    <string name="tra_cuu_chip_xoa">Xóa bộ lọc %1$s</string>
+    <string name="tra_cuu_xoa_bo_loc">Xóa bộ lọc</string>
+    <string name="tra_cuu_rong">Không tìm thấy thiết bị phù hợp</string>
+    <string name="tra_cuu_khong_tai_them">Không tải thêm được</string>
+    <string name="tra_cuu_ghep_hai">%1$s · %2$s</string>
+    <string name="tra_cuu_kha_dung">Còn: %1$s</string>
+
 </resources>
