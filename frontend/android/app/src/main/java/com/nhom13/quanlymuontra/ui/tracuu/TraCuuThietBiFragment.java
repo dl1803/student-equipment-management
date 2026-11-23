@@ -69,6 +69,7 @@ public class TraCuuThietBiFragment extends Fragment {
             @Nullable ViewGroup container,
             @Nullable Bundle savedInstanceState) {
         _binding = FragmentTraCuuThietBiBinding.inflate(inflater, container, false);
+        binding().rvKetQua.setLayoutManager(new LinearLayoutManager(requireContext()));
         dau = ViewTraCuuBoLocBinding.inflate(inflater, binding().rvKetQua, false);
         return _binding.getRoot();
     }
