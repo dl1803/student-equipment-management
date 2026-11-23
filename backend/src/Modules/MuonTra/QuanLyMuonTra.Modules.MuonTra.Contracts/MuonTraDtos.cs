@@ -1,10 +1,9 @@
 namespace QuanLyMuonTra.Modules.MuonTra.Contracts;
 
 public record PhieuMuonDto(
-    Guid MaPhieu,
+    string MaPhieu,
     string MaSv,
-    Guid MaPhong,
-    Guid MaNvGiao,
+    Guid MaNvLap,
     DateTimeOffset NgayGioMuon,
     DateTimeOffset NgayGioHenTra,
     string TrangThai
@@ -12,7 +11,7 @@ public record PhieuMuonDto(
 
 public record ChiTietPhieuMuonDto(
     Guid MaChiTiet,
-    Guid MaPhieu,
+    string MaPhieu,
     string MaThietBi,
     decimal PhiTreMoiNgay,
     string TinhTrangBanDau,
