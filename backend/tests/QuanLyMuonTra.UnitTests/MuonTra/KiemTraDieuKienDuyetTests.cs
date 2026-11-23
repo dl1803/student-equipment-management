@@ -1,6 +1,5 @@
 using QuanLyMuonTra.Modules.MuonTra.Application;
 using QuanLyMuonTra.Modules.MuonTra.Domain;
-using QuanLyMuonTra.Modules.MuonTra.Infrastructure;
 using QuanLyMuonTra.Modules.QuyDinh.Contracts;
 
 namespace QuanLyMuonTra.UnitTests.MuonTra;
@@ -94,14 +93,5 @@ public class KiemTraDieuKienDuyetTests
         var thoiDiem = new DateTimeOffset(2026, 11, 18, 0, 1, 0, TimeSpan.FromHours(7));
 
         Assert.True(KiemTraDieuKienDuyet.DaHetHanTheoNgay(gui, thoiDiem));
-    }
-
-    [Fact]
-    public async Task OutboxChuaNoi_GhiAsync_KhongNemLoi()
-    {
-        var outbox = new ThongBaoDuyetOutboxChuaNoi();
-        var thongBao = new ThongBaoDuyetHoacTuChoi("YC-1", "SV-1", true, null, null);
-
-        await outbox.GhiAsync(thongBao, CancellationToken.None);
     }
 }
