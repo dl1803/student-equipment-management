@@ -24,7 +24,7 @@ Người lập: Nguyễn Đại Vương · Ngày: 23/11/2026 · Giờ thực t�
 - `dotnet format --verify-no-changes`: Passed (0 thay đổi).
 - `dotnet build -c Release`: Succeeded (0 Warning, 0 Error).
 - Test đơn vị:
-  * `QuanLyMuonTra.UnitTests`: Passed 495 / Failed 0 / Skipped 0 / Total 495 (thêm 3 test `ThongBaoDuyetOutboxTests`, xóa 1 test bản chưa nối).
+  * `QuanLyMuonTra.UnitTests`: Passed 499 / Failed 0 / Skipped 0 / Total 499 (bổ sung test kiểm tra null và ca kiểm thử biên lý do từ chối).
 - Test tích hợp:
   * `DiRuntimeKhongBanGiaTests`: Passed 1 / Failed 0 / Skipped 0.
   * `TichHopThatDuyetGiaoTests`: Passed 7 / Failed 0 / Skipped 0.
