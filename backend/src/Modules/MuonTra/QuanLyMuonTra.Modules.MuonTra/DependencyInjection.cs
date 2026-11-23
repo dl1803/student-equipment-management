@@ -31,7 +31,7 @@ public static class DependencyInjection
         services.AddScoped<ChiTietPhieuYeuCauMuonSvHandler>();
         services.AddScoped<DsPhieuYeuCauMuonQuayHandler>();
         services.AddScoped<KiemTraPhieuYeuCauMuonHandler>();
-        services.AddScoped<IThongBaoDuyetOutbox, ThongBaoDuyetOutboxChuaNoi>();
+        services.AddScoped<IThongBaoDuyetOutbox, ThongBaoDuyetOutbox>();
         services.AddScoped<TuChoiPhieuYeuCauMuonHandler>();
         services.AddScoped<DuyetPhieuYeuCauMuonHandler>();
         services.AddScoped<KiemTraThietBiGiaoHandler>();
