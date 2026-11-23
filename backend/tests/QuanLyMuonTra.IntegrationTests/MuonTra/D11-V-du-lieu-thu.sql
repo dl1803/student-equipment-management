@@ -1,0 +1,82 @@
+INSERT INTO sinh_vien.nhom_sinh_vien (ma_nhom, ten_nhom)
+VALUES ('D11-NHOM', 'Nhóm D11');
+
+INSERT INTO sinh_vien.sinh_vien (ma_sv, ho_ten, lop, khoa, email, ma_nhom, han_the, trang_thai_hoc, trang_thai_quyen_muon, hoc_ky)
+VALUES
+    ('D11-SV-A', 'Sinh viên D11 A', 'L1', 'K1', 'd11-a@example.test', 'D11-NHOM', DATE '2030-12-31', 'DANG_HOC', 'BINH_THUONG', '2026-1'),
+    ('D11-SV-B', 'Sinh viên D11 B', 'L1', 'K1', 'd11-b@example.test', 'D11-NHOM', DATE '2030-12-31', 'DANG_HOC', 'BINH_THUONG', '2026-1'),
+    ('D11-SV-C', 'Sinh viên D11 C', 'L2', 'K1', 'd11-c@example.test', 'D11-NHOM', DATE '2030-12-31', 'DANG_HOC', 'BINH_THUONG', '2026-1');
+
+INSERT INTO tai_khoan.nguoi_dung_he_thong (ma_nguoi_dung, ten_dang_nhap, mat_khau_bam, ho_ten)
+VALUES
+    ('019c0000-0000-7000-8000-0000000d11a1', 'd11-nv1', 'khong-dung-de-dang-nhap', 'Nhân viên D11 1'),
+    ('019c0000-0000-7000-8000-0000000d11a2', 'd11-nv2', 'khong-dung-de-dang-nhap', 'Nhân viên D11 2');
+
+INSERT INTO tai_khoan.nhan_vien_quan_ly (ma_nguoi_dung, ma_nv)
+VALUES
+    ('019c0000-0000-7000-8000-0000000d11a1', 'D11-NV1'),
+    ('019c0000-0000-7000-8000-0000000d11a2', 'D11-NV2');
+
+INSERT INTO danh_muc.phong_thiet_bi (ma_phong, ten_phong, co_so)
+VALUES
+    ('019c0000-0000-7000-8000-0000000d11b1', 'D11 Phong P1', 'D11 Co so'),
+    ('019c0000-0000-7000-8000-0000000d11b2', 'D11 Phong P2', 'D11 Co so');
+
+INSERT INTO danh_muc.loai_thiet_bi (ma_loai, ten_loai, chu_ky_bao_tri, phi_tre_moi_ngay, ngung_su_dung)
+VALUES
+    ('019c0000-0000-7000-8000-0000000d11c1', 'D11 Loai X', 30, 50000, false),
+    ('019c0000-0000-7000-8000-0000000d11c2', 'D11 Loai Y', 30, 30000, false);
+
+INSERT INTO danh_muc.thiet_bi (ma_thiet_bi, ma_loai, ma_phong, ten_thiet_bi, ngay_nhap_kho, tinh_trang, ngung_su_dung)
+VALUES
+    ('D11-TB-T1', '019c0000-0000-7000-8000-0000000d11c1', '019c0000-0000-7000-8000-0000000d11b1', 'T1', DATE '2026-01-01', 'DANG_DUOC_MUON', false),
+    ('D11-TB-T2', '019c0000-0000-7000-8000-0000000d11c1', '019c0000-0000-7000-8000-0000000d11b1', 'T2', DATE '2026-01-01', 'SAN_SANG', false),
+    ('D11-TB-T3', '019c0000-0000-7000-8000-0000000d11c1', '019c0000-0000-7000-8000-0000000d11b1', 'T3', DATE '2026-01-01', 'DANG_DUOC_MUON', false),
+    ('D11-TB-T4', '019c0000-0000-7000-8000-0000000d11c1', '019c0000-0000-7000-8000-0000000d11b1', 'T4', DATE '2026-01-01', 'DANG_DUOC_MUON', false),
+    ('D11-TB-T5', '019c0000-0000-7000-8000-0000000d11c2', '019c0000-0000-7000-8000-0000000d11b2', 'T5', DATE '2026-01-01', 'DANG_DUOC_MUON', false),
+    ('D11-TB-T6', '019c0000-0000-7000-8000-0000000d11c2', '019c0000-0000-7000-8000-0000000d11b1', 'T6', DATE '2026-01-01', 'SAN_SANG', false),
+    ('D11-TB-T7', '019c0000-0000-7000-8000-0000000d11c2', '019c0000-0000-7000-8000-0000000d11b1', 'T7', DATE '2026-01-01', 'DA_BAO_MAT', false),
+    ('D11-TB-T8', '019c0000-0000-7000-8000-0000000d11c1', '019c0000-0000-7000-8000-0000000d11b1', 'T8', DATE '2026-01-01', 'DANG_DUOC_MUON', false);
+
+INSERT INTO danh_muc.lich_su_gia_tri (ma_lich_su, ma_thiet_bi, gia_tri)
+VALUES
+    ('019c0000-0000-7000-8000-0000000d11e1', 'D11-TB-T1', 10000000),
+    ('019c0000-0000-7000-8000-0000000d11e2', 'D11-TB-T2', 10000000),
+    ('019c0000-0000-7000-8000-0000000d11e3', 'D11-TB-T3', 10000000),
+    ('019c0000-0000-7000-8000-0000000d11e4', 'D11-TB-T4', 10000000),
+    ('019c0000-0000-7000-8000-0000000d11e5', 'D11-TB-T5', 10000000),
+    ('019c0000-0000-7000-8000-0000000d11e6', 'D11-TB-T6', 10000000),
+    ('019c0000-0000-7000-8000-0000000d11e7', 'D11-TB-T7', 10000000),
+    ('019c0000-0000-7000-8000-0000000d11e8', 'D11-TB-T8', 10000000);
+
+INSERT INTO muon_tra.phieu_muon (ma_phieu, ma_sv, ma_nv_lap, ngay_gio_muon, ngay_gio_hen_tra, trang_thai)
+VALUES
+    ('PM-261023-997001', 'D11-SV-A', '019c0000-0000-7000-8000-0000000d11a1', TIMESTAMPTZ '2026-10-23 01:00:00+00', TIMESTAMPTZ '2026-10-23 09:00:00+00', 'QUA_HAN'),
+    ('PM-261024-997002', 'D11-SV-B', '019c0000-0000-7000-8000-0000000d11a1', TIMESTAMPTZ '2026-10-23 17:00:00+00', TIMESTAMPTZ '2026-10-23 17:30:00+00', 'QUA_HAN'),
+    ('PM-261023-997003', 'D11-SV-B', '019c0000-0000-7000-8000-0000000d11a1', TIMESTAMPTZ '2026-10-23 08:00:00+00', TIMESTAMPTZ '2026-10-23 16:30:00+00', 'QUA_HAN'),
+    ('PM-261001-997004', 'D11-SV-C', '019c0000-0000-7000-8000-0000000d11a2', TIMESTAMPTZ '2026-10-01 01:00:00+00', TIMESTAMPTZ '2026-10-01 09:00:00+00', 'QUA_HAN'),
+    ('PM-261010-997005', 'D11-SV-C', '019c0000-0000-7000-8000-0000000d11a1', TIMESTAMPTZ '2026-10-10 01:00:00+00', TIMESTAMPTZ '2026-10-10 09:00:00+00', 'DA_TRA'),
+    ('PM-261123-997006', 'D11-SV-A', '019c0000-0000-7000-8000-0000000d11a1', TIMESTAMPTZ '2026-11-23 01:00:00+00', TIMESTAMPTZ '2026-11-23 09:00:00+00', 'DANG_MUON');
+
+INSERT INTO muon_tra.chi_tiet_phieu_muon
+    (ma_chi_tiet, ma_phieu, ma_thiet_bi, tinh_trang_ban_dau, phi_tre_moi_ngay, tinh_trang_khi_tra, ket_qua_kiem_tra, ngay_gio_tra_thuc_te, ma_nv_nhan_tra, ma_khung)
+VALUES
+    ('019c0000-0000-7000-8000-0000000d11f1', 'PM-261023-997001', 'D11-TB-T1', 'Còn tốt', 50000, NULL, NULL, NULL, NULL, NULL),
+    ('019c0000-0000-7000-8000-0000000d11f2', 'PM-261023-997001', 'D11-TB-T2', 'Còn tốt', 50000, 'Nguyên vẹn', 'NGUYEN_VEN', TIMESTAMPTZ '2026-10-23 08:00:00+00', '019c0000-0000-7000-8000-0000000d11a1', NULL),
+    ('019c0000-0000-7000-8000-0000000d11f3', 'PM-261024-997002', 'D11-TB-T3', 'Còn tốt', 50000, NULL, NULL, NULL, NULL, NULL),
+    ('019c0000-0000-7000-8000-0000000d11f4', 'PM-261023-997003', 'D11-TB-T4', 'Còn tốt', 50000, NULL, NULL, NULL, NULL, NULL),
+    ('019c0000-0000-7000-8000-0000000d11f5', 'PM-261001-997004', 'D11-TB-T5', 'Còn tốt', 30000, NULL, NULL, NULL, NULL, NULL),
+    ('019c0000-0000-7000-8000-0000000d11f6', 'PM-261010-997005', 'D11-TB-T6', 'Còn tốt', 30000, 'Nguyên vẹn', 'NGUYEN_VEN', TIMESTAMPTZ '2026-10-12 05:00:00+00', '019c0000-0000-7000-8000-0000000d11a1', NULL),
+    ('019c0000-0000-7000-8000-0000000d11f7', 'PM-261010-997005', 'D11-TB-T7', 'Còn tốt', 30000, NULL, 'MAT', NULL, '019c0000-0000-7000-8000-0000000d11a1', NULL),
+    ('019c0000-0000-7000-8000-0000000d11f8', 'PM-261123-997006', 'D11-TB-T8', 'Còn tốt', 50000, NULL, NULL, NULL, NULL, NULL);
+
+INSERT INTO vi_pham.bien_ban_vi_pham (ma_bien_ban, ma_phieu_muon, ma_nv_lap, ngay_lap, tong_tien, trang_thai, thoi_diem_nop)
+VALUES
+    ('BB-261024-997001', 'PM-261010-997005', '019c0000-0000-7000-8000-0000000d11a1', TIMESTAMPTZ '2026-10-24 03:00:00+00', 10100000, 'CHUA_NOP', NULL),
+    ('BB-261025-997002', 'PM-261010-997005', '019c0000-0000-7000-8000-0000000d11a1', TIMESTAMPTZ '2026-10-25 03:00:00+00', 100000, 'DA_HUY', NULL);
+
+INSERT INTO vi_pham.chi_tiet_bien_ban (ma_bien_ban, ma_phieu_muon, ma_thiet_bi, loai_vi_pham, so_ngay_tre, so_tien, ma_khung, bien_ban_da_huy)
+VALUES
+    ('BB-261024-997001', 'PM-261010-997005', 'D11-TB-T6', 'TRA_TRE', 2, 100000, NULL, false),
+    ('BB-261024-997001', 'PM-261010-997005', 'D11-TB-T7', 'MAT', NULL, 10000000, NULL, false),
+    ('BB-261025-997002', 'PM-261010-997005', 'D11-TB-T6', 'TRA_TRE', 2, 100000, NULL, true);
