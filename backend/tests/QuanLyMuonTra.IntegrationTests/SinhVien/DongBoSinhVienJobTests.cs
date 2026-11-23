@@ -109,7 +109,7 @@ public sealed class DongBoSinhVienJobTests
     }
 
     [Fact]
-    public async Task UC19_J8_MotSvLoi_KhongChanSvKhacVaGiuNguyenMoc()
+    public async Task UC19_J8_MotSvLoi_KhongChanSvKhacVaTienMocTheoBanGhiThanhCong()
     {
         await using var dichVu = DongBoSinhVienTestSupport.TaoDichVu();
         await using var phamVi = dichVu.CreateAsyncScope();
@@ -129,7 +129,36 @@ public sealed class DongBoSinhVienJobTests
         Assert.NotNull(tot);
         Assert.Equal("SV Tot", tot.HoTen);
         Assert.Null(await DongBoSinhVienTestSupport.DocSvUngDungAsync(db, maLoi));
-        Assert.Equal(1, await DongBoSinhVienTestSupport.DemMocAsync(db, moc));
+        Assert.Equal(1, await DongBoSinhVienTestSupport.DemMocAsync(db, moc.AddDays(2)));
+    }
+
+    [Fact]
+    public async Task UC19_J8_BanGhiThieuCapNhatLuc_BoQuaVaTienMocTheoBanGhiHopLe()
+    {
+        await using var dichVu = DongBoSinhVienTestSupport.TaoDichVu();
+        await using var phamVi = dichVu.CreateAsyncScope();
+        var db = phamVi.ServiceProvider.GetRequiredService<AppDbContext>();
+        await using var giaoDich = await db.Database.BeginTransactionAsync();
+        var moc = DongBoSinhVienTestSupport.MocGoc;
+        await DongBoSinhVienTestSupport.DatMocAsync(db, moc);
+        var maTot = DongBoSinhVienTestSupport.TaoMa("SV-D11-VALID");
+        var maThieuMoc = DongBoSinhVienTestSupport.TaoMa("SV-D11-NOMOC");
+
+        var svList = new List<SinhVienTruongDto>
+        {
+            new(maThieuMoc, "SV Thieu Moc", "Lop", "Khoa", "nomoc@truong.local", "DAI_HOC", new DateOnly(2027, 12, 31), "DANG_HOC", "HK1", "Dai Hoc", null),
+            new(maTot, "SV Co Moc", "Lop", "Khoa", "valid@truong.local", "DAI_HOC", new DateOnly(2027, 12, 31), "DANG_HOC", "HK1", "Dai Hoc", moc.AddDays(3))
+        };
+
+        var truongMock = new TruongTuyChinh(svList);
+        var job = new DongBoSinhVienJob(db, truongMock, NullLogger<DongBoSinhVienJob>.Instance);
+
+        var soDaXuLy = await job.ChayAsync(CancellationToken.None);
+
+        Assert.Equal(1, soDaXuLy);
+        Assert.NotNull(await DongBoSinhVienTestSupport.DocSvUngDungAsync(db, maTot));
+        Assert.Null(await DongBoSinhVienTestSupport.DocSvUngDungAsync(db, maThieuMoc));
+        Assert.Equal(1, await DongBoSinhVienTestSupport.DemMocAsync(db, moc.AddDays(3)));
     }
 
     [Fact]
@@ -157,6 +186,18 @@ public sealed class DongBoSinhVienJobTests
     private static DongBoSinhVienJob TaoJob(AppDbContext db) =>
         new(db, new MockSchoolDirectory(db), NullLogger<DongBoSinhVienJob>.Instance);
 
+    private sealed class TruongTuyChinh(IReadOnlyList<SinhVienTruongDto> ds) : ISchoolDirectory
+    {
+        public Task<KetQuaXacThucTruong> XacThucAsync(string mssv, string matKhau, CancellationToken ct) =>
+            throw new NotSupportedException();
+
+        public Task<SinhVienTruongDto?> LayTheoMssvAsync(string mssv, CancellationToken ct) =>
+            throw new NotSupportedException();
+
+        public Task<IReadOnlyList<SinhVienTruongDto>> LayThayDoiTuAsync(DateTimeOffset? moc, CancellationToken ct) =>
+            Task.FromResult(ds);
+    }
+
     private sealed class TruongLoi : ISchoolDirectory
     {
         public Task<KetQuaXacThucTruong> XacThucAsync(string mssv, string matKhau, CancellationToken ct) =>
@@ -169,4 +210,3 @@ public sealed class DongBoSinhVienJobTests
             throw new InvalidOperationException("Trường giả lập lỗi.");
     }
 }
-

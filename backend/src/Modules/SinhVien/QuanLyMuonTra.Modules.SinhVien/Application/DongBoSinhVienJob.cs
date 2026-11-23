@@ -23,12 +23,39 @@ public sealed class DongBoSinhVienJob(DbContext db, ISchoolDirectory truong, ILo
             return 0;
         }
 
+        var dsNhom = dsThayDoi
+            .Where(sv => !string.IsNullOrWhiteSpace(sv.MaNhom))
+            .GroupBy(sv => sv.MaNhom)
+            .Select(g => g.First())
+            .ToList();
+
+        foreach (var nhom in dsNhom)
+        {
+            ct.ThrowIfCancellationRequested();
+            var tenNhom = string.IsNullOrWhiteSpace(nhom.TenNhom) ? nhom.MaNhom : nhom.TenNhom;
+            await db.Database.ExecuteSqlInterpolatedAsync($"""
+                INSERT INTO sinh_vien.nhom_sinh_vien AS n (ma_nhom, ten_nhom)
+                VALUES ({nhom.MaNhom}, {tenNhom})
+                ON CONFLICT (ma_nhom) DO UPDATE SET ten_nhom = EXCLUDED.ten_nhom
+                WHERE n.ten_nhom IS DISTINCT FROM EXCLUDED.ten_nhom
+                """, ct);
+        }
+
         var giaoDich = db.Database.CurrentTransaction;
         var soThanhCong = 0;
         var soLoi = 0;
+        DateTimeOffset? mocThanhCongToiDa = null;
+
         foreach (var sv in dsThayDoi)
         {
             ct.ThrowIfCancellationRequested();
+
+            if (sv.CapNhatLuc is null)
+            {
+                soLoi++;
+                nhatKy.LogWarning("Đồng bộ sinh viên: Bản ghi {MaSv} thiếu thời điểm cập nhật (CapNhatLuc is null); bỏ qua.", sv.MaSv);
+                continue;
+            }
 
             if (giaoDich is not null)
             {
@@ -45,6 +72,10 @@ public sealed class DongBoSinhVienJob(DbContext db, ISchoolDirectory truong, ILo
                 }
 
                 soThanhCong++;
+                if (mocThanhCongToiDa is null || sv.CapNhatLuc.Value > mocThanhCongToiDa.Value)
+                {
+                    mocThanhCongToiDa = sv.CapNhatLuc.Value;
+                }
             }
             catch (OperationCanceledException) when (ct.IsCancellationRequested)
             {
@@ -67,16 +98,14 @@ public sealed class DongBoSinhVienJob(DbContext db, ISchoolDirectory truong, ILo
         if (soLoi > 0)
         {
             nhatKy.LogWarning(
-                "Đồng bộ sinh viên: {SoLoi} sinh viên lỗi, giữ nguyên mốc đồng bộ để kéo lại ở lần chạy sau.",
-                soLoi);
-
-            return soThanhCong;
+                "Đồng bộ sinh viên: {SoLoi} sinh viên lỗi trong lô. Có {SoThanhCong} sinh viên thành công.",
+                soLoi,
+                soThanhCong);
         }
 
-        var mocMoi = dsThayDoi.Max(sv => sv.CapNhatLuc);
-        if (mocMoi is not null)
+        if (mocThanhCongToiDa is not null)
         {
-            await GhiMocAsync(mocMoi.Value, ct);
+            await GhiMocAsync(mocThanhCongToiDa.Value, ct);
         }
 
         return soThanhCong;
@@ -94,15 +123,6 @@ public sealed class DongBoSinhVienJob(DbContext db, ISchoolDirectory truong, ILo
 
     private async Task GhiMotSinhVienAsync(SinhVienTruongDto sv, CancellationToken ct)
     {
-        var tenNhom = string.IsNullOrWhiteSpace(sv.TenNhom) ? sv.MaNhom : sv.TenNhom;
-
-        await db.Database.ExecuteSqlInterpolatedAsync($"""
-            INSERT INTO sinh_vien.nhom_sinh_vien AS nhom (ma_nhom, ten_nhom)
-            VALUES ({sv.MaNhom}, {tenNhom})
-            ON CONFLICT (ma_nhom) DO UPDATE SET ten_nhom = EXCLUDED.ten_nhom
-            WHERE nhom.ten_nhom IS DISTINCT FROM EXCLUDED.ten_nhom
-            """, ct);
-
         await db.Database.ExecuteSqlInterpolatedAsync($"""
             INSERT INTO sinh_vien.sinh_vien (ma_sv, ho_ten, lop, khoa, email, ma_nhom, han_the, trang_thai_hoc, hoc_ky)
             VALUES ({sv.MaSv}, {sv.HoTen}, {sv.Lop}::text, {sv.Khoa}::text, {sv.Email}, {sv.MaNhom}, {sv.HanThe}, {sv.TrangThaiHoc}, {sv.HocKy})
@@ -133,4 +153,3 @@ public sealed class DongBoSinhVienJob(DbContext db, ISchoolDirectory truong, ILo
         public DateTimeOffset? Moc { get; set; }
     }
 }
-
