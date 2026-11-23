@@ -7,6 +7,8 @@ using QuanLyMuonTra.IntegrationTests.MuonTra;
 using QuanLyMuonTra.Modules.DanhMuc;
 using QuanLyMuonTra.Modules.DanhMuc.Application;
 using QuanLyMuonTra.Modules.DanhMuc.Domain;
+using QuanLyMuonTra.Modules.MuonTra;
+using QuanLyMuonTra.Modules.MuonTra.Infrastructure;
 using QuanLyMuonTra.SharedKernel;
 
 namespace QuanLyMuonTra.IntegrationTests.DanhMuc;
@@ -75,12 +77,35 @@ public sealed class CapNhatPhiTreCsdlTests
         Assert.Equal(404, loi.MaHttp);
     }
 
+    [CanKetNoiTestFact]
+    public async Task UC13_CapNhatPhiTre_CoPhieuMuonTruocDo_KhongLamThayDoiPhiTreTrongChiTietPhieuMuon()
+    {
+        await using var dichVu = TaoDichVu();
+        await using var phamVi = dichVu.CreateAsyncScope();
+        var db = phamVi.ServiceProvider.GetRequiredService<AppDbContext>();
+        await using var giaoDich = await db.Database.BeginTransactionAsync();
+        var duongDan = Path.Combine(AppContext.BaseDirectory, "MuonTra", "D02-V-du-lieu-thu.sql");
+        await db.Database.ExecuteSqlRawAsync(await File.ReadAllTextAsync(duongDan));
+        var capNhat = phamVi.ServiceProvider.GetRequiredService<CapNhatPhiTreHandler>();
+        var maLoai = Guid.Parse("019c0000-0000-7000-8000-0000000d0c01");
+
+        await capNhat.XuLyAsync(maLoai, new PhiTreRequest(99000), CancellationToken.None);
+
+        var phiMoiLoai = await LayChuoiAsync(db, $"""SELECT phi_tre_moi_ngay::text AS "Value" FROM danh_muc.loai_thiet_bi WHERE ma_loai = {maLoai}""");
+        Assert.Equal("99000", Assert.Single(phiMoiLoai));
+
+        var phiChiTietPhieuMuon = await LayChuoiAsync(db, $"""
+            SELECT phi_tre_moi_ngay::text AS "Value" FROM muon_tra.chi_tiet_phieu_muon WHERE ma_chi_tiet = '019c0000-0000-7000-8000-0000000d0e01'
+            """);
+        Assert.Equal("50000", Assert.Single(phiChiTietPhieuMuon));
+    }
+
     private static Task<List<string>> LayChuoiAsync(AppDbContext db, FormattableString sql) =>
         db.Database.SqlQuery<string>(sql).ToListAsync();
 
     private static ServiceProvider TaoDichVu() =>
         new ServiceCollection()
-            .AddInfrastructure(KetNoiKiemThu.LayChuoiKetNoi(), [typeof(PhongThietBi).Assembly])
+            .AddInfrastructure(KetNoiKiemThu.LayChuoiKetNoi(), [typeof(PhongThietBi).Assembly, typeof(ThamChieuMuonTraProvider).Assembly])
             .AddDanhMucModule()
             .BuildServiceProvider();
 }

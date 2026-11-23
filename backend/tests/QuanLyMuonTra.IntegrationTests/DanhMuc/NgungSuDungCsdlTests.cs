@@ -1,3 +1,4 @@
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
 using QuanLyMuonTra.Infrastructure.Persistence;
 using QuanLyMuonTra.IntegrationTests.MuonTra;
@@ -129,6 +130,41 @@ public sealed class NgungSuDungCsdlTests
             () => handler.XuLyAsync(Guid.NewGuid(), CancellationToken.None));
 
         Assert.Equal(404, loi.MaHttp);
+    }
+
+    [CanKetNoiTestFact]
+    public async Task UC12_NgungSuDungThietBi_KhaDungKhongDuDoGiuCho_Nem409VaKhongDoiDong()
+    {
+        await using var dichVu = XoaNgungTestSupport.TaoDichVuDayDu();
+        await using var phamVi = dichVu.CreateAsyncScope();
+        var db = phamVi.ServiceProvider.GetRequiredService<AppDbContext>();
+        await using var giaoDich = await db.Database.BeginTransactionAsync();
+        await XoaNgungTestSupport.NapDuLieuThuAsync(db);
+        var khaDung = phamVi.ServiceProvider.GetRequiredService<IAvailabilityService>();
+        var handler = phamVi.ServiceProvider.GetRequiredService<NgungSuDungThietBiHandler>();
+        var maPhong = Guid.Parse(MaPhongP1);
+        var maLoai = Guid.Parse(MaLoaiL1);
+        var truoc = await khaDung.TinhKhaDungAsync(maPhong, maLoai, CancellationToken.None);
+
+        await db.Database.ExecuteSqlInterpolatedAsync($"""
+            INSERT INTO muon_tra.phieu_yeu_cau_muon (ma_yeu_cau, ma_sv, ma_phong, trang_thai, ma_nv_duyet, thoi_diem_duyet, han_giu_cho, thoi_gian_muon_du_kien_gio)
+            VALUES ('YC-261123-999001', 'D02-SV-A', {maPhong}, 'DA_DUYET', '019c0000-0000-7000-8000-0000000d0a01', now(), now() + interval '1 hour', 4);
+            INSERT INTO muon_tra.chi_tiet_yeu_cau_muon (ma_yeu_cau, ma_loai, so_luong)
+            VALUES ('YC-261123-999001', {maLoai}, {truoc});
+            """);
+
+        Assert.Equal(0, await khaDung.TinhKhaDungAsync(maPhong, maLoai, CancellationToken.None));
+
+        var loi = await Assert.ThrowsAsync<LoiNghiepVuException>(
+            () => handler.XuLyAsync(MaThietBi, CancellationToken.None));
+
+        Assert.Equal("SO_LUONG_KHA_DUNG_THAY_DOI", loi.MaLoi);
+        Assert.Equal(409, loi.MaHttp);
+
+        var ngungSuDung = await XoaNgungTestSupport.LayChuoiAsync(db, $"""
+            SELECT ngung_su_dung::text AS "Value" FROM danh_muc.thiet_bi WHERE ma_thiet_bi = {MaThietBi}
+            """);
+        Assert.Equal("false", Assert.Single(ngungSuDung));
     }
 
     private static Task<int> DemKhoaTuVanAsync(AppDbContext db) =>

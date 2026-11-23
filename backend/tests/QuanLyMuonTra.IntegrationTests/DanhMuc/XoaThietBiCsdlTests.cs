@@ -7,6 +7,7 @@ using QuanLyMuonTra.Modules.DanhMuc.Application;
 using QuanLyMuonTra.Modules.MuonTra;
 using QuanLyMuonTra.Modules.ViPham;
 using QuanLyMuonTra.SharedKernel;
+using QuanLyMuonTra.SharedKernel.Contracts;
 
 namespace QuanLyMuonTra.IntegrationTests.DanhMuc;
 
@@ -156,6 +157,45 @@ public sealed class XoaThietBiCsdlTests
             () => xoa.XuLyAsync("KHONG-CO-D08", CancellationToken.None));
 
         Assert.Equal(404, loi.MaHttp);
+    }
+
+    [CanKetNoiTestFact]
+    public async Task UC12_XoaThietBi_KhaDungKhongDuDoGiuCho_Nem409VaKhongXoa()
+    {
+        await using var dichVu = XoaNgungTestSupport.TaoDichVuDayDu();
+        await using var phamVi = dichVu.CreateAsyncScope();
+        var db = phamVi.ServiceProvider.GetRequiredService<AppDbContext>();
+        await using var giaoDich = await db.Database.BeginTransactionAsync();
+        await XoaNgungTestSupport.NapDuLieuThuAsync(db);
+        var khaDung = phamVi.ServiceProvider.GetRequiredService<IAvailabilityService>();
+        var xoa = phamVi.ServiceProvider.GetRequiredService<XoaThietBiHandler>();
+        var maPhong = Guid.Parse("019c0000-0000-7000-8000-0000000d0b01");
+        var maLoai = Guid.Parse("019c0000-0000-7000-8000-0000000d0c01");
+
+        // Tạo thiết bị mới hoàn toàn không có tham chiếu
+        await db.Database.ExecuteSqlInterpolatedAsync($"""
+            INSERT INTO danh_muc.thiet_bi (ma_thiet_bi, ma_phong, ma_loai, ten_thiet_bi, tinh_trang, ngung_su_dung, ngay_nhap_kho)
+            VALUES ('D08-TB-MOI', {maPhong}, {maLoai}, 'Thiet bi test giu cho', 'SAN_SANG', false, '2026-01-01');
+            """);
+
+        var tongKhaDung = await khaDung.TinhKhaDungAsync(maPhong, maLoai, CancellationToken.None);
+
+        // Tạo giữ chỗ hết hạn ngạch (khaDung = 0)
+        await db.Database.ExecuteSqlInterpolatedAsync($"""
+            INSERT INTO muon_tra.phieu_yeu_cau_muon (ma_yeu_cau, ma_sv, ma_phong, trang_thai, ma_nv_duyet, thoi_diem_duyet, han_giu_cho, thoi_gian_muon_du_kien_gio)
+            VALUES ('YC-261123-999002', 'D02-SV-A', {maPhong}, 'DA_DUYET', '019c0000-0000-7000-8000-0000000d0a01', now(), now() + interval '1 hour', 4);
+            INSERT INTO muon_tra.chi_tiet_yeu_cau_muon (ma_yeu_cau, ma_loai, so_luong)
+            VALUES ('YC-261123-999002', {maLoai}, {tongKhaDung});
+            """);
+
+        Assert.Equal(0, await khaDung.TinhKhaDungAsync(maPhong, maLoai, CancellationToken.None));
+
+        var loi = await Assert.ThrowsAsync<LoiNghiepVuException>(
+            () => xoa.XuLyAsync("D08-TB-MOI", CancellationToken.None));
+
+        Assert.Equal("SO_LUONG_KHA_DUNG_THAY_DOI", loi.MaLoi);
+        Assert.Equal(409, loi.MaHttp);
+        Assert.Equal(1, await DemAsync(db, $"""SELECT count(*)::int AS "Value" FROM danh_muc.thiet_bi WHERE ma_thiet_bi = 'D08-TB-MOI'"""));
     }
 
     private static async Task Nem409VaGiuThietBiAsync(AsyncServiceScope phamVi, AppDbContext db, string ma)
