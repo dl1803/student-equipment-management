@@ -276,17 +276,17 @@ Lưu ý: tình trạng `DANG_DUOC_MUON` trong dữ liệu thử đặt trực ti
 | Mục | Nội dung |
 |---|---|
 | Đã bàn giao | Kết quả chạy UC-12/13 trên PostgreSQL thật (Supabase cá nhân) và Storage adapter thật, xem `D11-N-tich-hop-danh-muc-va-cau-hinh.md` |
-| Đã sửa | Không có (không phát sinh lỗi loại A khi chạy trên PostgreSQL thật, bỏ qua Commit 1) |
+| Đã sửa | Bảo vệ bất biến `khaDung >= 0` khi ngưng/xóa thiết bị sẵn sàng theo ĐX-KT-13 (từ chối 409 `SO_LUONG_KHA_DUNG_THAY_DOI`); bổ sung ca test CSDL thật đổi phí trễ không đổi phiếu đã lập theo BR-43/FR-37 |
 | Migration / snapshot | Không thay đổi |
 | Việc cho Host (Khôi) | Map 24 thao tác UC-12/13, policy, `KiemTraDuLieuFilter<T>` theo mục 12–15 và 17, cập nhật `C0-manifest-operation.csv` |
-| Chưa làm / BLOCKED | Quyền thật qua HTTP; Storage qua luồng thiết bị; Q1 (ngưng/xóa vs giữ chỗ); Q1–Q3 quy định mượn; D10-K/D10-V; K-1 môi trường chung |
+| Chưa làm / BLOCKED | Quyền thật qua HTTP; Storage qua luồng thiết bị; Q1–Q3 quy định mượn; D10-K/D10-V; K-1 môi trường chung |
 
 | Hạng mục kiểm chứng (D11-N) | Trạng thái |
 |---|---|
 | `dotnet format`, `dotnet build -c Release` | Đạt (0 error, 0 warning) — 23/11/2026 — .NET SDK 9.0.321 |
-| `IntegrationTests.DanhMuc.` | Đạt 65/65 Passed (Failed: 0, Skipped: 0) — 23/11/2026 |
+| `IntegrationTests.DanhMuc.` | Đạt 67/67 Passed (Failed: 0, Skipped: 0) — 23/11/2026 |
 | `IntegrationTests.QuyDinh.` | Đạt 20/20 Passed (Failed: 0, Skipped: 0) — 23/11/2026 |
-| `SupabaseAnhStorageThatTests` | 2 ca Skipped (chưa cấu hình trong user-secrets) |
+| `SupabaseAnhStorageThatTests` | 2 ca Skipped (môi trường dev cục bộ chưa cấu hình khóa dịch vụ trong user-secrets) |
 | Quyền thật qua HTTP | Chưa kiểm chứng — BLOCKED (chờ endpoint từ Khôi) |
 
 

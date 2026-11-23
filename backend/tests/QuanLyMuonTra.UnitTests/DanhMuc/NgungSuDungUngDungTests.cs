@@ -40,6 +40,7 @@ public sealed class NgungSuDungUngDungTests
             .AddScoped<DbContext>(sp => sp.GetRequiredService<NgungTestDbContext>())
             .AddScoped<IAdvisoryLockService, KhoaGia>()
             .AddScoped<IAnhService, AnhServiceGia>()
+            .AddScoped<IAvailabilityService, AvailabilityServiceGia>()
             .AddDanhMucModule()
             .BuildServiceProvider();
         using var phamVi = dichVu.CreateScope();

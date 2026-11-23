@@ -10,12 +10,18 @@ public sealed class NgungSuDungThietBiHandler
     private readonly DbContext _db;
     private readonly IAdvisoryLockService _khoa;
     private readonly IAnhService _anh;
+    private readonly IAvailabilityService _khaDung;
 
-    public NgungSuDungThietBiHandler(DbContext db, IAdvisoryLockService khoa, IAnhService anh)
+    public NgungSuDungThietBiHandler(
+        DbContext db,
+        IAdvisoryLockService khoa,
+        IAnhService anh,
+        IAvailabilityService khaDung)
     {
         _db = db;
         _khoa = khoa;
         _anh = anh;
+        _khaDung = khaDung;
     }
 
     public async Task<ThietBiQuanTriDto> XuLyAsync(string ma, CancellationToken ct)
@@ -37,6 +43,17 @@ public sealed class NgungSuDungThietBiHandler
         if (thietBi.MaPhong != cap.MaPhong || thietBi.MaLoai != cap.MaLoai)
         {
             throw XungDot();
+        }
+
+        if (thietBi.TinhTrang == TinhTrangThietBi.SanSang && !thietBi.NgungSuDung)
+        {
+            var soLuongKhaDung = await _khaDung.TinhKhaDungAsync(cap.MaPhong, cap.MaLoai, ct);
+            if (soLuongKhaDung <= 0)
+            {
+                throw new LoiNghiepVuException(
+                    "SO_LUONG_KHA_DUNG_THAY_DOI",
+                    "Thiết bị đang thuộc hạn ngạch giữ chỗ của phiếu mượn hoặc đăng ký chờ, không thể ngưng sử dụng.");
+            }
         }
 
         thietBi.NgungSuDungHoa();

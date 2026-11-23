@@ -38,6 +38,7 @@ internal static class XoaNgungTestSupport
             .AddScoped<IAnhService, AnhService>()
             .AddLogging()
             .AddScoped<IAdvisoryLockService, AdvisoryLockService>()
+            .AddScoped<IAvailabilityService, AvailabilityService>()
             .AddDanhMucModule();
         return (themModule is null ? dichVu : themModule(dichVu)).BuildServiceProvider();
     }

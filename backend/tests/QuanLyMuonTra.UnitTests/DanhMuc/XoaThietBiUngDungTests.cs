@@ -13,7 +13,7 @@ public sealed class XoaThietBiUngDungTests
             new DbContextOptionsBuilder<XoaThietBiKhongKetNoiDbContext>()
                 .UseNpgsql("Host=khong-ket-noi;Database=khong-ket-noi")
                 .Options);
-        var handler = new XoaThietBiHandler(db, new KhoaGia(), [], new AnhServiceGia());
+        var handler = new XoaThietBiHandler(db, new KhoaGia(), [], new AnhServiceGia(), new AvailabilityServiceGia());
 
         await Assert.ThrowsAsync<InvalidOperationException>(
             () => handler.XuLyAsync("TB-01", CancellationToken.None));

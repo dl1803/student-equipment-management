@@ -12,17 +12,20 @@ public sealed class XoaThietBiHandler
     private readonly IAdvisoryLockService _khoa;
     private readonly IReadOnlyList<IThamChieuDanhMucProvider> _cacProvider;
     private readonly IAnhService _anh;
+    private readonly IAvailabilityService _khaDung;
 
     public XoaThietBiHandler(
         DbContext db,
         IAdvisoryLockService khoa,
         IEnumerable<IThamChieuDanhMucProvider> cacProvider,
-        IAnhService anh)
+        IAnhService anh,
+        IAvailabilityService khaDung)
     {
         _db = db;
         _khoa = khoa;
         _cacProvider = cacProvider.ToList();
         _anh = anh;
+        _khaDung = khaDung;
     }
 
     public async Task XuLyAsync(string ma, CancellationToken ct)
@@ -62,6 +65,17 @@ public sealed class XoaThietBiHandler
             if (await provider.CoThamChieuThietBiAsync(ma, ct))
             {
                 throw ConLichSu();
+            }
+        }
+
+        if (!thietBi.NgungSuDung)
+        {
+            var soLuongKhaDung = await _khaDung.TinhKhaDungAsync(cap.MaPhong, cap.MaLoai, ct);
+            if (soLuongKhaDung <= 0)
+            {
+                throw new LoiNghiepVuException(
+                    "SO_LUONG_KHA_DUNG_THAY_DOI",
+                    "Thiết bị đang thuộc hạn ngạch giữ chỗ của phiếu mượn hoặc đăng ký chờ, không thể xóa.");
             }
         }
 
