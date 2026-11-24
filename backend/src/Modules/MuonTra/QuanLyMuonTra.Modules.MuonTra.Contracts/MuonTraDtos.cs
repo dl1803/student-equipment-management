@@ -1,18 +1,23 @@
 namespace QuanLyMuonTra.Modules.MuonTra.Contracts;
 
+/// <summary>
+/// Thông tin phiếu mượn liên module.
+/// </summary>
 public record PhieuMuonDto(
-    Guid MaPhieu,
+    string MaPhieu,
     string MaSv,
-    Guid MaPhong,
-    Guid MaNvGiao,
+    Guid MaNvLap,
     DateTimeOffset NgayGioMuon,
     DateTimeOffset NgayGioHenTra,
     string TrangThai
 );
 
+/// <summary>
+/// Chi tiết thiết bị trong phiếu mượn liên module.
+/// </summary>
 public record ChiTietPhieuMuonDto(
     Guid MaChiTiet,
-    Guid MaPhieu,
+    string MaPhieu,
     string MaThietBi,
     decimal PhiTreMoiNgay,
     string TinhTrangBanDau,
@@ -22,6 +27,9 @@ public record ChiTietPhieuMuonDto(
     Guid? MaKhung
 );
 
+/// <summary>
+/// Thông tin đăng ký chờ nhận thiết bị.
+/// </summary>
 public record DangKyChoDto(
     Guid MaDangKy,
     string MaSv,

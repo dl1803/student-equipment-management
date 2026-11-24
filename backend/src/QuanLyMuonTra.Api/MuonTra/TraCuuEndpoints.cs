@@ -88,6 +88,23 @@ public static class TraCuuEndpoints
                 Results.Ok(await boXuLy.XuLyAsync(LayMaSv(nguoiDung), ma, ct)))
             .RequireAuthorization(ChinhSach.SinhVien);
 
+        nhomSv.MapGet("/phieu-muon", async (
+                [FromServices] ICurrentUser nguoiDung,
+                [FromServices] DsPhieuMuonSvHandler boXuLy,
+                CancellationToken ct,
+                [FromQuery] int trang = 1,
+                [FromQuery] int kichThuoc = 20) =>
+                Results.Ok(await boXuLy.XuLyAsync(LayMaSv(nguoiDung), trang, kichThuoc, ct)))
+            .RequireAuthorization(ChinhSach.SinhVien);
+
+        nhomSv.MapGet("/phieu-muon/{ma}", async (
+                string ma,
+                [FromServices] ICurrentUser nguoiDung,
+                [FromServices] ChiTietPhieuMuonSvHandler boXuLy,
+                CancellationToken ct) =>
+                Results.Ok(await boXuLy.XuLyAsync(LayMaSv(nguoiDung), ma, ct)))
+            .RequireAuthorization(ChinhSach.SinhVien);
+
         var nhomQuay = duongDan.MapGroup("/api/v1/quay");
 
         nhomQuay.MapGet("/loai-thiet-bi", async (
@@ -173,6 +190,36 @@ public static class TraCuuEndpoints
                 return Results.Created($"/api/v1/quay/phieu-muon/{phieu.MaPhieu}", phieu);
             })
             .AddEndpointFilter<KiemTraDuLieuFilter<LapPhieuMuonRequest>>()
+            .RequireAuthorization(ChinhSach.NhanVien);
+
+        nhomQuay.MapGet("/phieu-muon", async (
+                [FromQuery(Name = "maSV")] string? maSv,
+                [FromQuery] string? trangThai,
+                [FromQuery] Guid? maPhong,
+                [FromServices] ICurrentUser nguoiDung,
+                [FromServices] DsPhieuMuonQuayHandler boXuLy,
+                CancellationToken ct,
+                [FromQuery] int trang = 1,
+                [FromQuery] int kichThuoc = 20) =>
+                Results.Ok(await boXuLy.XuLyAsync(LayMaNv(nguoiDung), maSv, trangThai, maPhong, trang, kichThuoc, ct)))
+            .RequireAuthorization(ChinhSach.NhanVien);
+
+        nhomQuay.MapGet("/phieu-muon/qua-han-30-ngay", async (
+                [FromQuery] Guid? maPhong,
+                [FromServices] ICurrentUser nguoiDung,
+                [FromServices] DsPhieuQuaHan30NgayHandler boXuLy,
+                CancellationToken ct,
+                [FromQuery] int trang = 1,
+                [FromQuery] int kichThuoc = 20) =>
+                Results.Ok(await boXuLy.XuLyAsync(LayMaNv(nguoiDung), maPhong, trang, kichThuoc, ct)))
+            .RequireAuthorization(ChinhSach.NhanVien);
+
+        nhomQuay.MapGet("/phieu-muon/{ma}", async (
+                string ma,
+                [FromServices] ICurrentUser nguoiDung,
+                [FromServices] ChiTietPhieuMuonQuayHandler boXuLy,
+                CancellationToken ct) =>
+                Results.Ok(await boXuLy.XuLyAsync(LayMaNv(nguoiDung), ma, ct)))
             .RequireAuthorization(ChinhSach.NhanVien);
 
         return duongDan;
