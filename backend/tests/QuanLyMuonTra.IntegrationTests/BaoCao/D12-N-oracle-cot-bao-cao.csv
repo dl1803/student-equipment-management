@@ -1,0 +1,56 @@
+Loai,Stt,KhoaJson,RongDuoc,TieuDeCot
+tinh-trang-kho,1,maLoai,KHONG,Mã loại
+tinh-trang-kho,2,tenLoai,KHONG,Tên loại
+tinh-trang-kho,3,maPhong,KHONG,Mã phòng
+tinh-trang-kho,4,tenPhong,KHONG,Phòng
+tinh-trang-kho,5,soSanSang,KHONG,Sẵn sàng
+tinh-trang-kho,6,soDangDuocMuon,KHONG,Đang mượn
+tinh-trang-kho,7,soDangBaoTriSuaChua,KHONG,Bảo trì/sửa chữa
+tinh-trang-kho,8,soDaThanhLy,KHONG,Đã thanh lý
+tinh-trang-kho,9,soDaBaoMat,KHONG,Đã báo mất
+tinh-trang-kho,10,tong,KHONG,Tổng
+qua-han,1,maPhieu,KHONG,Mã phiếu mượn
+qua-han,2,maSV,KHONG,MSSV
+qua-han,3,hoTen,KHONG,Họ tên
+qua-han,4,lop,CO,Lớp
+qua-han,5,ngayGioMuon,KHONG,Ngày giờ mượn
+qua-han,6,ngayGioHenTra,KHONG,Hẹn trả
+qua-han,7,soNgayTre,KHONG,Số ngày trễ
+qua-han,8,maThietBi,KHONG,Mã thiết bị
+qua-han,9,tenThietBi,KHONG,Tên thiết bị
+qua-han,10,tenPhong,KHONG,Phòng
+hu-hong-mat,1,maThietBi,KHONG,Mã thiết bị
+hu-hong-mat,2,tenThietBi,KHONG,Tên thiết bị
+hu-hong-mat,3,tenLoai,KHONG,Loại
+hu-hong-mat,4,tenPhong,KHONG,Phòng
+hu-hong-mat,5,ketQuaKiemTra,KHONG,Kết quả kiểm tra
+hu-hong-mat,6,tinhTrangKhiTra,CO,Tình trạng khi trả
+hu-hong-mat,7,maPhieu,KHONG,Mã phiếu mượn
+hu-hong-mat,8,maSV,KHONG,MSSV
+hu-hong-mat,9,hoTen,KHONG,Họ tên
+hu-hong-mat,10,ngayGioMuon,KHONG,Ngày giờ mượn
+hu-hong-mat,11,ngayGioTraThucTe,CO,Ngày giờ trả
+hu-hong-mat,12,maBienBan,CO,Mã biên bản
+tan-suat-muon,1,maLoai,KHONG,Mã loại
+tan-suat-muon,2,tenLoai,KHONG,Tên loại
+tan-suat-muon,3,soLuotMuon,KHONG,Số lượt mượn
+tan-suat-muon,4,soPhieuMuon,KHONG,Số phiếu mượn
+vi-pham-sinh-vien,1,maSV,KHONG,MSSV
+vi-pham-sinh-vien,2,hoTen,KHONG,Họ tên
+vi-pham-sinh-vien,3,lop,CO,Lớp
+vi-pham-sinh-vien,4,soTraTre,KHONG,Trả trễ
+vi-pham-sinh-vien,5,soHuHong,KHONG,Hư hỏng
+vi-pham-sinh-vien,6,soMat,KHONG,Mất
+vi-pham-sinh-vien,7,soKhongDenNhan,KHONG,Không đến nhận
+vi-pham-sinh-vien,8,tongSoViPham,KHONG,Tổng số vi phạm
+bao-tri-thanh-ly,1,loaiBanGhi,KHONG,Loại bản ghi
+bao-tri-thanh-ly,2,maThietBi,KHONG,Mã thiết bị
+bao-tri-thanh-ly,3,tenThietBi,KHONG,Tên thiết bị
+bao-tri-thanh-ly,4,tenPhong,KHONG,Phòng
+bao-tri-thanh-ly,5,loaiThucHien,CO,Loại thực hiện
+bao-tri-thanh-ly,6,ngayLap,CO,Ngày lập
+bao-tri-thanh-ly,7,ngayHoanThanh,CO,Ngày hoàn thành
+bao-tri-thanh-ly,8,ketQuaBaoTri,CO,Kết quả
+bao-tri-thanh-ly,9,noiDungThucHien,CO,Nội dung thực hiện
+bao-tri-thanh-ly,10,maQuyetDinh,CO,Mã quyết định thanh lý
+bao-tri-thanh-ly,11,ngayThanhLy,CO,Ngày thanh lý
