@@ -1,5 +1,8 @@
 namespace QuanLyMuonTra.Modules.MuonTra.Contracts;
 
+/// <summary>
+/// Thông tin phiếu mượn liên module.
+/// </summary>
 public record PhieuMuonDto(
     string MaPhieu,
     string MaSv,
@@ -9,6 +12,9 @@ public record PhieuMuonDto(
     string TrangThai
 );
 
+/// <summary>
+/// Chi tiết thiết bị trong phiếu mượn liên module.
+/// </summary>
 public record ChiTietPhieuMuonDto(
     Guid MaChiTiet,
     string MaPhieu,
@@ -21,6 +27,9 @@ public record ChiTietPhieuMuonDto(
     Guid? MaKhung
 );
 
+/// <summary>
+/// Thông tin đăng ký chờ nhận thiết bị.
+/// </summary>
 public record DangKyChoDto(
     Guid MaDangKy,
     string MaSv,

@@ -1,6 +1,7 @@
 using Microsoft.EntityFrameworkCore;
+using QuanLyMuonTra.Modules.MuonTra.Application;
 
-namespace QuanLyMuonTra.Modules.MuonTra.Application;
+namespace QuanLyMuonTra.Modules.MuonTra.Infrastructure;
 
 internal static class BienBanPhieuTruyVan
 {

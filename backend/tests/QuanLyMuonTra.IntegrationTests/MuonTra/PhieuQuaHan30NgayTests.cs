@@ -86,4 +86,29 @@ public class PhieuQuaHan30NgayTests
 
         Assert.Equal(new[] { PmA3 }, ketQua.DanhSach.Select(p => p.MaPhieu).ToArray());
     }
+
+    [CanKetNoiTestFact]
+    public async Task UC09_QuaHan30_KhongRoRiPhieuCoThietBiChuaTraChiThuocPhongKhac()
+    {
+        await using var gd = await GiaoDichTestRollback.BatDauAsync();
+        await using var db = await TaoContextAsync(gd);
+
+        var maChiTietP1 = Guid.NewGuid();
+        await db.Database.ExecuteSqlAsync($"""
+            INSERT INTO muon_tra.chi_tiet_phieu_muon (
+                ma_chi_tiet, ma_phieu, ma_thiet_bi, tinh_trang_ban_dau, phi_tre_moi_ngay,
+                tinh_trang_khi_tra, ket_qua_kiem_tra, ngay_gio_tra_thuc_te, ma_nv_nhan_tra)
+            VALUES (
+                {maChiTietP1}, {PmA4}, 'D11-TB-T2', 'Còn tốt', 50000,
+                'Nguyên vẹn', 'NGUYEN_VEN', {BayGio}, {Nv1})
+            """, Ct);
+
+        var ketQuaP1 = await TaoBoXuLy(db, P1).XuLyAsync(Nv1, null, 1, 20, Ct);
+        Assert.DoesNotContain(ketQuaP1.DanhSach, p => p.MaPhieu == PmA4);
+
+        var ketQuaP2 = await TaoBoXuLy(db, P2).XuLyAsync(Nv2, null, 1, 20, Ct);
+        var p4 = Assert.Single(ketQuaP2.DanhSach, p => p.MaPhieu == PmA4);
+        var tbChuaTra = Assert.Single(p4.DsThietBiChuaTra);
+        Assert.Equal("D11-TB-T5", tbChuaTra.MaThietBi);
+    }
 }

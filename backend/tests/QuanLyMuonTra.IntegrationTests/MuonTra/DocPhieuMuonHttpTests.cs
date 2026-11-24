@@ -6,8 +6,10 @@ using System.Text;
 using System.Text.Json;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc.Testing;
+using Microsoft.Extensions.DependencyInjection;
 using Microsoft.IdentityModel.Tokens;
 using QuanLyMuonTra.IntegrationTests.Database;
+using QuanLyMuonTra.Modules.TaiKhoan.Contracts;
 
 namespace QuanLyMuonTra.IntegrationTests.MuonTra;
 
@@ -55,6 +57,10 @@ public sealed class DocPhieuMuonHttpTests : IAsyncLifetime
                 builder.UseSetting("Jwt:Audience", DoiTuongNhan);
                 builder.UseSetting("Jwt:ExpiryMinutes", "60");
                 builder.UseSetting("Jwt:RefreshTokenDays", "7");
+                builder.ConfigureServices(services =>
+                {
+                    services.AddScoped<ITrangThaiTaiKhoanReader, TrangThaiTaiKhoanGia>();
+                });
             });
         _client = _factory.CreateClient();
         return Task.CompletedTask;
@@ -138,6 +144,53 @@ public sealed class DocPhieuMuonHttpTests : IAsyncLifetime
 
             Assert.Equal(HttpStatusCode.Forbidden, phanHoi.StatusCode);
             Assert.Equal("KHONG_DU_QUYEN", (await DocJsonAsync(phanHoi)).GetProperty("maLoi").GetString());
+        }
+    }
+
+    [CanKetNoiTestFact]
+    public async Task TokenSinhVien_GoiDsPhieuMuon_Tra200()
+    {
+        var phanHoi = await GoiAsync("/api/v1/sv/phieu-muon?trang=1&kichThuoc=10", TaoToken("D11-SV-A", "SINH_VIEN"));
+
+        Assert.Equal(HttpStatusCode.OK, phanHoi.StatusCode);
+        var json = await DocJsonAsync(phanHoi);
+        Assert.Equal(1, json.GetProperty("trang").GetInt32());
+        Assert.Equal(10, json.GetProperty("kichThuoc").GetInt32());
+        Assert.True(json.GetProperty("tongSo").GetInt32() >= 0);
+        Assert.Equal(JsonValueKind.Array, json.GetProperty("danhSach").ValueKind);
+    }
+
+    [CanKetNoiTestFact]
+    public async Task TokenNhanVien_GoiQuaHan30Ngay_Tra200UuTienTruocMa()
+    {
+        var phanHoi = await GoiAsync("/api/v1/quay/phieu-muon/qua-han-30-ngay?trang=1&kichThuoc=10", TaoToken(Guid.NewGuid().ToString(), "NHAN_VIEN"));
+
+        Assert.Equal(HttpStatusCode.OK, phanHoi.StatusCode);
+        var json = await DocJsonAsync(phanHoi);
+        Assert.Equal(1, json.GetProperty("trang").GetInt32());
+        Assert.Equal(10, json.GetProperty("kichThuoc").GetInt32());
+        Assert.True(json.GetProperty("tongSo").GetInt32() >= 0);
+        Assert.Equal(JsonValueKind.Array, json.GetProperty("danhSach").ValueKind);
+    }
+
+    [CanKetNoiTestFact]
+    public async Task TokenNhanVien_GoiDsPhieuMuonQuay_Tra200()
+    {
+        var phanHoi = await GoiAsync("/api/v1/quay/phieu-muon?trang=1&kichThuoc=10", TaoToken(Guid.NewGuid().ToString(), "NHAN_VIEN"));
+
+        Assert.Equal(HttpStatusCode.OK, phanHoi.StatusCode);
+        var json = await DocJsonAsync(phanHoi);
+        Assert.Equal(1, json.GetProperty("trang").GetInt32());
+        Assert.Equal(10, json.GetProperty("kichThuoc").GetInt32());
+        Assert.True(json.GetProperty("tongSo").GetInt32() >= 0);
+        Assert.Equal(JsonValueKind.Array, json.GetProperty("danhSach").ValueKind);
+    }
+
+    private sealed class TrangThaiTaiKhoanGia : ITrangThaiTaiKhoanReader
+    {
+        public Task<string?> LayTrangThaiKhoaAsync(Guid maNguoiDung, CancellationToken ct)
+        {
+            return Task.FromResult<string?>("HOAT_DONG");
         }
     }
 }

@@ -50,13 +50,17 @@ public sealed class DsPhieuQuaHan30NgayHandler(
             .OrderBy(c => c.MaThietBi)
             .ToListAsync(ct);
 
-        var tenThietBi = new Dictionary<string, string>();
+        var thietBiTheoMa = new Dictionary<string, ThietBiDto>();
         foreach (var maThietBi in dsChuaTra.Select(c => c.MaThietBi).Distinct())
         {
             var thietBi = await danhMuc.LayThietBiAsync(maThietBi, ct)
                 ?? throw new InvalidOperationException($"Thiếu thiết bị {maThietBi} của phiếu mượn quá hạn.");
-            tenThietBi[maThietBi] = thietBi.TenThietBi;
+            thietBiTheoMa[maThietBi] = thietBi;
         }
+
+        var dsChuaTraHopLe = dsChuaTra
+            .Where(c => thietBiTheoMa.TryGetValue(c.MaThietBi, out var tb) && dsMaPhong.Contains(tb.MaPhong))
+            .ToList();
 
         var theoMaSv = await PhieuMuonTruyVan.LaySinhVienAsync(db, dong.Select(d => d.MaSv).ToList(), ct);
 
@@ -66,9 +70,9 @@ public sealed class DsPhieuQuaHan30NgayHandler(
                 PhieuMuonTruyVan.SinhVienHoacRong(theoMaSv, d.MaSv),
                 d.NgayGioHenTra,
                 homNay.DayNumber - VnTime.NgayLich(d.NgayGioHenTra).DayNumber,
-                dsChuaTra
+                dsChuaTraHopLe
                     .Where(c => c.MaPhieu == d.MaPhieu)
-                    .Select(c => new ThietBiTomTatDto(c.MaThietBi, tenThietBi[c.MaThietBi]))
+                    .Select(c => new ThietBiTomTatDto(c.MaThietBi, thietBiTheoMa[c.MaThietBi].TenThietBi))
                     .ToList()))
             .ToList();
 

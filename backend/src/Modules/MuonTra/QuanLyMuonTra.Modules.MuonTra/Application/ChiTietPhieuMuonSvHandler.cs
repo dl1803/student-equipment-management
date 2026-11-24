@@ -1,6 +1,7 @@
 using Microsoft.EntityFrameworkCore;
 using QuanLyMuonTra.Modules.DanhMuc.Contracts;
 using QuanLyMuonTra.Modules.MuonTra.Domain;
+using QuanLyMuonTra.Modules.MuonTra.Infrastructure;
 using QuanLyMuonTra.SharedKernel;
 
 namespace QuanLyMuonTra.Modules.MuonTra.Application;

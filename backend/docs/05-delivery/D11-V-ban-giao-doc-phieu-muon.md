@@ -20,6 +20,7 @@ Danh sách commit:
 4. `feat(backend): bổ sung danh sách phiếu chưa trả quá 30 ngày`
 5. `feat(backend): hiện thực IPhieuMuonReader cho module ViPham`
 6. `docs(backend): bàn giao D11-V đọc phiếu mượn và IPhieuMuonReader`
+7. `fix(backend): khắc phục phân quyền phòng quá hạn, clean architecture và bổ sung test http pipeline`
 
 ## 2. Hợp đồng IPhieuMuonReader
 
@@ -37,7 +38,7 @@ Danh sách commit:
 
 | Mã | Vấn đề | Đề xuất áp dụng | Lý do / nguồn | Vị trí code |
 |---|---|---|---|---|
-| **Q-1** | `dsBienBan` của `GET /sv/phieu-muon/{ma}` | SQL chỉ-đọc `vi_pham.bien_ban_vi_pham` + `vi_pham.chi_tiet_bien_ban` trong lớp riêng | Ngoại lệ tạm của CV 4.4; trả dữ liệu thật cho SV đối chiếu (BR-80); chờ Khôi thay bằng reader ViPham ở D14-K | `BienBanPhieuTruyVan.cs` |
+| **Q-1** | `dsBienBan` của `GET /sv/phieu-muon/{ma}` | SQL chỉ-đọc `vi_pham.bien_ban_vi_pham` + `vi_pham.chi_tiet_bien_ban` đặt ở Infrastructure | Ngoại lệ tạm được chỉ định rõ tại mục 1.3 của kế hoạch D11-V; trả dữ liệu thật cho SV đối chiếu (BR-80); chờ Khôi thay bằng reader ViPham ở D14-K | `Infrastructure/BienBanPhieuTruyVan.cs` |
 | **Q-2** | Lọc danh sách quầy theo phòng thiết bị | SQL chỉ-đọc `EXISTS` trên `danh_muc.thiet_bi` | Ngoại lệ tạm của CV 4.4; tránh nạp toàn bộ vào RAM; chờ Lợi cung cấp reader lọc phòng nếu cần | `PhieuMuonTruyVan.cs` |
 | Q-3 | Phiếu có thiết bị nhiều phòng | NV thấy phiếu nếu có ít nhất 1 thiết bị thuộc phòng được cấp; chi tiết trả đủ thiết bị của phiếu | API-Notes ĐX-API-25 | `PhieuMuonTruyVan.cs`, `ChiTietPhieuMuonQuayHandler.cs` |
 | Q-4 | Biên bản trạng thái `DA_HUY` | Hiện mọi trạng thái kèm `trangThai` để đối chiếu | BR-80, OpenAPI | `BienBanPhieuTruyVan.cs` |
@@ -87,7 +88,7 @@ Môi trường: Windows 10, PowerShell, .NET 9.0, PostgreSQL test (`ConnectionSt
 
 - **Bị chặn:** URL ảnh ký bằng Supabase Storage thật (chưa có cấu hình bucket thật; test dùng `AnhServiceGhiNhan` kiểm chứng đúng thứ tự kiểm quyền trước khi ký URL).
 - **Bị chặn / tạm:** `dsBienBan` lấy qua SQL trực tiếp bảng `vi_pham.*` với fixture chèn tay, chưa phải tích hợp module ViPham thật (Khôi làm D14-K).
-- **Chưa kiểm chứng:** HTTP 200/201 với tài khoản SV/NV thật và route `/phieu-muon/qua-han-30-ngay` trước `{ma}` ở mức gọi HTTP 200 (mới kiểm chứng HTTP 401/403 qua pipeline).
+- **Đã bổ sung kiểm chứng:** HTTP 200 pipeline đầy đủ qua `DocPhieuMuonHttpTests.cs` (kiểm tra token SV/NV, claims, quyền phòng và route `/phieu-muon/qua-han-30-ngay` ưu tiên trước `{ma}`).
 - **Chưa đo:** Hiệu năng truy vấn danh sách quầy / quá hạn (NFR-03 không yêu cầu đo ở D11-V).
 
 ## 6. Bàn giao và việc cho người khác
