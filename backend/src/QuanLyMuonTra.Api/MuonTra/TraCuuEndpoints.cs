@@ -192,6 +192,26 @@ public static class TraCuuEndpoints
             .AddEndpointFilter<KiemTraDuLieuFilter<LapPhieuMuonRequest>>()
             .RequireAuthorization(ChinhSach.NhanVien);
 
+        nhomQuay.MapGet("/phieu-muon", async (
+                [FromQuery(Name = "maSV")] string? maSv,
+                [FromQuery] string? trangThai,
+                [FromQuery] Guid? maPhong,
+                [FromServices] ICurrentUser nguoiDung,
+                [FromServices] DsPhieuMuonQuayHandler boXuLy,
+                CancellationToken ct,
+                [FromQuery] int trang = 1,
+                [FromQuery] int kichThuoc = 20) =>
+                Results.Ok(await boXuLy.XuLyAsync(LayMaNv(nguoiDung), maSv, trangThai, maPhong, trang, kichThuoc, ct)))
+            .RequireAuthorization(ChinhSach.NhanVien);
+
+        nhomQuay.MapGet("/phieu-muon/{ma}", async (
+                string ma,
+                [FromServices] ICurrentUser nguoiDung,
+                [FromServices] ChiTietPhieuMuonQuayHandler boXuLy,
+                CancellationToken ct) =>
+                Results.Ok(await boXuLy.XuLyAsync(LayMaNv(nguoiDung), ma, ct)))
+            .RequireAuthorization(ChinhSach.NhanVien);
+
         return duongDan;
     }
 

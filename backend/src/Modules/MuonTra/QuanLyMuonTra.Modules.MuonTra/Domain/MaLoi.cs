@@ -9,6 +9,7 @@ public static class MaLoi
     public const string KhongTimThay = "KHONG_TIM_THAY";
     public const string ChuaXacThuc = "CHUA_XAC_THUC";
     public const string KhongDuQuyen = "KHONG_DU_QUYEN";
+    public const string PhongChuaCapQuyen = "PHONG_CHUA_CAP_QUYEN";
     public const string SvTheHetHan = "SV_THE_HET_HAN";
     public const string SvKhongConTheoHoc = "SV_KHONG_CON_THEO_HOC";
     public const string SvBiKhoaQuyenMuon = "SV_BI_KHOA_QUYEN_MUON";

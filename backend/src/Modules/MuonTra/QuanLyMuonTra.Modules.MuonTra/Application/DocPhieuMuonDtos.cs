@@ -40,3 +40,15 @@ public sealed record PhieuMuonSvDto(
     int SoThietBi,
     IReadOnlyList<ChiTietPhieuMuonDayDuDto> DsChiTiet,
     IReadOnlyList<BienBanViPhamDto> DsBienBan);
+
+public sealed record PhieuMuonQuayTomTatDto(
+    string MaPhieu,
+    string MaSV,
+    string? MaYeuCau,
+    string? MaDangKy,
+    DateTimeOffset NgayGioMuon,
+    DateTimeOffset NgayGioHenTra,
+    int SoLanGiaHan,
+    string TrangThai,
+    int SoThietBi,
+    SinhVienTomTatDto SinhVien);
