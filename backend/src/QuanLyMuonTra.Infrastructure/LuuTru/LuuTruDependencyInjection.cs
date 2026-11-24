@@ -9,6 +9,7 @@ public static class LuuTruDependencyInjection
     {
         services.AddSingleton<IAnhStorage>(_ => new SupabaseAnhStorage(TaoHttpClient(), tuyChon));
         services.AddScoped<IAnhService, AnhService>();
+        services.AddScoped<IJob, DonAnhMoCoJob>();
 
         return services;
     }

@@ -28,6 +28,17 @@ using QuanLyMuonTra.SharedKernel;
 
 var builder = WebApplication.CreateBuilder(args);
 
+var congLangNghe = builder.Configuration["PORT"];
+if (!string.IsNullOrWhiteSpace(congLangNghe))
+{
+    if (!int.TryParse(congLangNghe, out var cong) || cong is < 1 or > 65535)
+    {
+        throw new InvalidOperationException("Biến PORT phải là số nguyên từ 1 đến 65535.");
+    }
+
+    builder.WebHost.UseUrls($"http://0.0.0.0:{cong}");
+}
+
 var chuoiKetNoi = builder.Configuration.GetConnectionString("Default");
 if (string.IsNullOrWhiteSpace(chuoiKetNoi))
 {

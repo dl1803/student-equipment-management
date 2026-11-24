@@ -28,6 +28,7 @@
 
   <ItemGroup>
     <None Include="..\..\docs\05-delivery\C0-manifest-operation.csv" Link="C0-manifest-operation.csv" CopyToOutputDirectory="PreserveNewest" />
+    <None Include="..\..\docs\04-api\openapi.yaml" Link="openapi.yaml" CopyToOutputDirectory="PreserveNewest" />
     <None Include="..\..\db\seed-required\quy-dinh-bat-buoc.sql" Link="quy-dinh-bat-buoc.sql" CopyToOutputDirectory="PreserveNewest" />
     <None Include="..\..\db\seed-demo\C3-du-lieu-thu.sql" Link="C3-du-lieu-thu.sql" CopyToOutputDirectory="PreserveNewest" />
     <None Include="..\..\db\seed-demo\C3-du-lieu-thu-ncc.sql" Link="C3-du-lieu-thu-ncc.sql" CopyToOutputDirectory="PreserveNewest" />
