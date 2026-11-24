@@ -188,4 +188,82 @@
         <item name="cornerSize">50%</item>
     </style>
 
+    <!-- D08-L CMP-05 Ô tìm kiếm (SCR-SV-02): CMP-04 một dòng, biểu tượng search ở đầu, nút xóa nội dung ở cuối khi có chữ.
+         Nhãn nhìn thấy là TextView riêng phía trên ô (như CMP-04). -->
+    <style name="Widget.Ds.SearchField" parent="Widget.Ds.TextField">
+        <item name="startIconDrawable">@drawable/ic_search</item>
+        <item name="startIconTint">@color/ds_icon_tint_secondary</item>
+        <item name="endIconMode">clear_text</item>
+        <item name="endIconTint">@color/ds_icon_tint_secondary</item>
+    </style>
+
+    <!-- D08-L CMP-06 Ô chọn: khung của vùng bấm mở danh sách chọn (SelectView). Cao tối thiểu bằng ô nhập. -->
+    <style name="Widget.Ds.Select" parent="">
+        <item name="android:background">@drawable/ds_o_chon_nen</item>
+        <item name="android:minHeight">@dimen/ds_size_input_height</item>
+        <item name="android:paddingStart">@dimen/ds_space_3</item>
+        <item name="android:paddingEnd">@dimen/ds_space_3</item>
+        <item name="android:paddingTop">@dimen/ds_space_2</item>
+        <item name="android:paddingBottom">@dimen/ds_space_2</item>
+        <item name="android:gravity">center_vertical</item>
+        <item name="android:orientation">horizontal</item>
+        <item name="android:clickable">true</item>
+        <item name="android:focusable">true</item>
+    </style>
+
+    <!-- D08-L CMP-08 Điều khiển phân đoạn: nhóm ô liền nhau, chọn một, luôn có một ô được chọn. Viền dày và dấu check
+         của ô đang chọn do mã màn hình đặt (MaterialButton không có độ dày viền theo trạng thái). -->
+    <style name="Widget.Ds.SegmentedControl" parent="Widget.MaterialComponents.MaterialButtonToggleGroup">
+        <item name="singleSelection">true</item>
+        <item name="selectionRequired">true</item>
+    </style>
+
+    <style name="Widget.Ds.SegmentedControl.Button" parent="Widget.MaterialComponents.Button.OutlinedButton">
+        <item name="android:minHeight">@dimen/ds_size_input_height</item>
+        <item name="android:insetTop">0dp</item>
+        <item name="android:insetBottom">0dp</item>
+        <item name="android:paddingLeft">@dimen/ds_space_2</item>
+        <item name="android:paddingRight">@dimen/ds_space_2</item>
+        <item name="android:textAppearance">@style/TextAppearance.Ds.Label</item>
+        <item name="android:textAllCaps">false</item>
+        <item name="android:textColor">@color/ds_color_text_primary</item>
+        <item name="cornerRadius">@dimen/ds_radius_md</item>
+        <item name="backgroundTint">@color/ds_segment_bg</item>
+        <item name="strokeColor">@color/ds_segment_stroke</item>
+        <item name="strokeWidth">@dimen/ds_border_width_default</item>
+        <item name="iconGravity">textStart</item>
+        <item name="iconSize">@dimen/ds_size_icon_sm</item>
+        <item name="iconPadding">@dimen/ds_space_1</item>
+        <item name="iconTint">@color/ds_color_text_link</item>
+        <item name="rippleColor">@color/ds_color_overlay_pressed</item>
+    </style>
+
+    <style name="ShapeAppearance.Ds.Full" parent="">
+        <item name="cornerFamily">rounded</item>
+        <item name="cornerSize">50%</item>
+    </style>
+
+    <!-- D08-L CMP-17 Chip bộ lọc: nền selected, viền selected, chữ liên kết, bo tròn, cao ds_size_chip_height; vùng chạm
+         tối thiểu do Chip bảo đảm (ensureMinTouchTargetSize mặc định). Biểu tượng close ở cuối. -->
+    <style name="Widget.Ds.FilterChip" parent="Widget.MaterialComponents.Chip.Entry">
+        <item name="android:textAppearance">@style/TextAppearance.Ds.Label</item>
+        <item name="android:textColor">@color/ds_color_text_link</item>
+        <item name="chipBackgroundColor">@color/ds_color_surface_selected</item>
+        <item name="chipStrokeColor">@color/ds_color_border_selected</item>
+        <item name="chipStrokeWidth">@dimen/ds_border_width_default</item>
+        <item name="chipMinHeight">@dimen/ds_size_chip_height</item>
+        <item name="shapeAppearance">@style/ShapeAppearance.Ds.Full</item>
+        <item name="closeIcon">@drawable/ic_close</item>
+        <item name="closeIconTint">@color/ds_color_text_link</item>
+        <item name="closeIconSize">@dimen/ds_size_icon_sm</item>
+        <item name="rippleColor">@color/ds_color_overlay_pressed</item>
+    </style>
+
+    <!-- D08-L CMP-16 Dòng danh sách: thẻ cao tối thiểu ds_size_list_row_min, bo radius.lg theo demo UI và DS 4.4. Áp
+         dụng cho gốc của item_{ten}.xml (FC Phụ lục A). -->
+    <style name="Widget.Ds.ListRow" parent="Widget.Ds.Card">
+        <item name="cardCornerRadius">@dimen/ds_radius_lg</item>
+        <item name="android:minHeight">@dimen/ds_size_list_row_min</item>
+    </style>
+
 </resources>

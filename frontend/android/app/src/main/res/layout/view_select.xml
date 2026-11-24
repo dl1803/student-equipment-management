@@ -1,0 +1,74 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+    CMP-06 Ô chọn: nhãn trên ô (type.label), ô bấm gồm giá trị và biểu tượng expand_more, và khối lỗi tải lựa chọn kèm
+    Thử lại (DS CMP-06 "Lỗi tải lựa chọn"). Nội dung bên trong SelectView (LinearLayout dọc). Giá trị dài xuống dòng.
+-->
+<merge xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    tools:parentTag="android.widget.LinearLayout">
+
+    <TextView
+        android:id="@+id/tv_nhan"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="@dimen/ds_space_field_label"
+        android:textAppearance="@style/TextAppearance.Ds.Label" />
+
+    <LinearLayout
+        android:id="@+id/ll_o_chon"
+        style="@style/Widget.Ds.Select"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <TextView
+            android:id="@+id/tv_gia_tri"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:textAppearance="@style/TextAppearance.Ds.Body" />
+
+        <ImageView
+            android:id="@+id/img_mo"
+            android:layout_width="@dimen/ds_size_icon_lg"
+            android:layout_height="@dimen/ds_size_icon_lg"
+            android:layout_marginStart="@dimen/ds_space_2"
+            android:importantForAccessibility="no"
+            android:src="@drawable/ic_expand_more"
+            app:tint="@color/ds_icon_tint_secondary" />
+
+    </LinearLayout>
+
+    <LinearLayout
+        android:id="@+id/ll_loi"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/ds_space_1"
+        android:orientation="vertical"
+        android:visibility="gone">
+
+        <TextView
+            android:id="@+id/tv_thong_diep_loi"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:textAppearance="@style/TextAppearance.Ds.Caption"
+            android:textColor="@color/ds_color_tone_danger_text" />
+
+        <TextView
+            android:id="@+id/tv_ma_theo_doi"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:textAppearance="@style/TextAppearance.Ds.Code"
+            android:textIsSelectable="true"
+            android:visibility="gone" />
+
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/btn_thu_lai"
+            style="@style/Widget.Ds.Button.Tertiary"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/hanh_dong_thu_lai" />
+
+    </LinearLayout>
+
+</merge>

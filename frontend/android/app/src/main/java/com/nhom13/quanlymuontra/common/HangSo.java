@@ -23,5 +23,20 @@ public final class HangSo {
     /** Chữ hiển thị khi giá trị không có dữ liệu: dấu gạch dài U+2014 (ĐX-DS-12, FC 7.2). */
     public static final String GIA_TRI_THIEU = "\u2014";
 
+    /**
+     * Độ trễ gõ của ô tìm theo tên loại thiết bị, tính bằng mili giây: gửi sau khi ngừng gõ chừng này
+     * (ĐX-FA-05, FA 3.10, FC 7.1).
+     */
+    public static final int DO_TRE_GO_TIM_KIEM_MS = 400;
+
+    /** Kích thước trang mặc định của danh sách (UI-Screens 3.7, FC 7.1). */
+    public static final int KICH_THUOC_TRANG = 20;
+
+    /**
+     * Kích thước trang tối đa mà API chấp nhận (UI-Screens 3.7); dùng để tải trọn nguồn của bộ lọc ở
+     * SCR-SV-02 bằng ít yêu cầu nhất.
+     */
+    public static final int KICH_THUOC_TRANG_TOI_DA = 100;
+
     private HangSo() {}
 }

@@ -6,11 +6,13 @@ import static org.junit.Assert.assertTrue;
 
 import androidx.lifecycle.ViewModel;
 import com.nhom13.quanlymuontra.data.repository.HoSoMuonRepository;
+import com.nhom13.quanlymuontra.data.repository.TraCuuRepository;
 import com.nhom13.quanlymuontra.data.repository.XacThucRepository;
 import com.nhom13.quanlymuontra.data.session.SessionManager;
 import com.nhom13.quanlymuontra.ui.dangnhap.DangNhapSinhVienViewModel;
 import com.nhom13.quanlymuontra.ui.hoso.HoSoMuonViewModel;
 import com.nhom13.quanlymuontra.ui.khoidong.KhoiDongViewModel;
+import com.nhom13.quanlymuontra.ui.tracuu.TraCuuThietBiViewModel;
 import com.nhom13.quanlymuontra.ui.trangchu.TrangChuViewModel;
 import java.util.Collections;
 import org.junit.After;
@@ -32,7 +34,8 @@ public class AppViewModelFactoryTest {
                         new AppContainer(
                                 phien,
                                 kho,
-                                new HoSoMuonRepository(HoTroSinhVienApi.taoApiSvToi())));
+                                new HoSoMuonRepository(HoTroSinhVienApi.taoApiSvToi()),
+                                new TraCuuRepository(HoTroSinhVienApi.taoApiSvToi())));
     }
 
     @After
@@ -66,5 +69,10 @@ public class AppViewModelFactoryTest {
     @Test
     public void FA51_HoSoMuonViewModel_DuocTaoTuAppContainer() {
         assertNotNull(nhaMay.create(HoSoMuonViewModel.class));
+    }
+
+    @Test
+    public void FA51_TraCuuThietBiViewModel_DuocTaoTuAppContainer() {
+        assertNotNull(nhaMay.create(TraCuuThietBiViewModel.class));
     }
 }

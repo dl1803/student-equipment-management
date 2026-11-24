@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- CMP-08 viền ô phân đoạn: đang chọn color.border.selected, còn lại color.border.control. -->
+<selector xmlns:android="http://schemas.android.com/apk/res/android">
+    <item android:color="@color/ds_color_border_selected" android:state_checked="true" />
+    <item android:color="@color/ds_color_border_control" />
+</selector>

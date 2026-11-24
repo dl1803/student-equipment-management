@@ -23,7 +23,8 @@
 | Phiên bản thư viện (D05-L) | `com.google.android.material:material` 1.14.0, khóa `material` trong `gradle/libs.versions.toml` | Đề xuất của Architect, chờ nhóm xác nhận | FC 1.4, FC 10.2; xem mục 10 |
 | Phiên bản thư viện (D06-L) | `androidx.navigation:navigation-fragment` 2.9.8 và plugin Safe Args `androidx.navigation.safeargs` 2.9.8 (khóa `navigation`); `com.squareup.retrofit2:converter-gson` 3.0.0 (dùng chung khóa `retrofit`) | Đề xuất của Architect, chờ nhóm xác nhận | FC 1.4, FC 10.2; xem mục 11 |
 | Phiên bản thư viện (D07-L) | `androidx.swiperefreshlayout:swiperefreshlayout` 1.1.0 (khóa `swiperefreshlayout`) | Đề xuất của Architect, chờ nhóm xác nhận | FC 1.4, FC 6.6 (kéo để làm mới); xem mục 12 |
-| Phiên bản thư viện khác | Chưa khóa (Glide...); MockWebServer đã khóa ở D04-L, Navigation ở D06-L | OPEN | FC 1.4: khóa khi task đầu tiên dùng và phải được nhóm duyệt |
+| Phiên bản thư viện (D08-L) | `androidx.recyclerview:recyclerview` `1.2.1` (khóa `recyclerview`), đúng bản `material` 1.14.0 đang kéo vào, đo bằng `:app:dependencies` | Đề xuất của Architect, chờ nhóm xác nhận | FC 1.4, FC 6.6 (`ListAdapter`, `DiffUtil`); xem mục 13 |
+| Phiên bản thư viện khác | Chưa khóa (Glide...); MockWebServer đã khóa ở D04-L, Navigation ở D06-L, RecyclerView ở D08-L | OPEN | FC 1.4: khóa khi task đầu tiên dùng và phải được nhóm duyệt |
 
 Lý do chọn AGP 8.13.2 thay vì dòng 9.x: AGP 9 đổi mô hình DSL và bỏ API cũ mà một số plugin còn dùng. Plugin sinh client (D02-L) và Safe Args (D06-L) chưa được kiểm chứng với AGP 9 trong tài liệu này. Chuyển lên AGP 9 là một quyết định riêng của nhóm.
 
@@ -307,4 +308,30 @@ Lối vào đã có chữ nhưng **chưa nối** (nối ở ngày của màn hì
 | Vi phạm | SCR-SV-12 | D15-L |
 
 Phạm vi kiểm chứng của D07-L: test trong `src/test` chạy trên JVM và kiểm repository (đường dẫn, lỗi, không đệm), logic tải của `ViewModel`, đăng xuất, bảng chữ, cấu trúc layout và nav graph, quy tắc mã. **Không** chứng minh hình thức thật, bố cục ở 320/360/412 dp và cỡ chữ 1,3 lần, TalkBack, nút Quay lại, khôi phục tab, chế độ bị chặn: cần thiết bị hoặc emulator (FC 9.4, TC-05, TC-06). Chế độ bị chặn chỉ kiểm được khi có lối vào (D09-L, D10-L). Kiểm với backend thật (`/sv/toi`) thuộc gate tích hợp, giữ **OPEN**.
+
+## 13. Quyết định D08-L
+
+Nguồn: UI-Screens 5.2, 3.7, 3.9; User-Flows UF-SV-01; Wireframes SCR-SV-02, ĐX-WF-15; FA 3.10, 5.6; FC 3.3, 6.2, 6.3, 6.6, 7.1, 9; DS CMP-05, 06, 08, 16, 17, 9.5, 9.8; demo-ui-android; `BANG_THEO_DOI_40_NGAY.md` D08-L. Mọi quyết định dưới đây là đề xuất của Architect, chờ nhóm xác nhận.
+
+| # | Quyết định | Lý do và căn cứ |
+|---|---|---|
+| 1 | Khóa `androidx.recyclerview:recyclerview` cùng phiên bản mà Material 1.14.0 đang kéo vào | FC 1.4: khóa khi task đầu tiên dùng; không đổi phiên bản đang chạy |
+| 2 | Hằng số `HangSo.DO_TRE_GO_TIM_KIEM_MS` = 400, `KICH_THUOC_TRANG` = 20 (FC 7.1) và thêm `KICH_THUOC_TRANG_TOI_DA` = 100 | UI-Screens 3.7 (tối đa 100); dùng để tải trọn nguồn bộ lọc |
+| 3 | Nguồn bộ lọc Loại và Phòng tải **trọn mọi trang** (kichThuoc 100) trong ViewModel; lỗi nguồn nào chỉ làm ô đó lỗi kèm Thử lại | OpenAPI: hai nguồn phân trang; UI-Screens 5.2 |
+| 4 | Ô tìm kiếm không thành chip; nút Xóa bộ lọc hiện khi có ≥ 1 trong 4 bộ lọc (tên, loại, phòng, tình trạng) và xóa cả bốn | UI-Screens 5.2; DS 9.5 chỉ nói "có ít nhất một chip". **Cần nhóm xác nhận** |
+| 5 | Đổi tìm kiếm/bộ lọc xóa dòng cũ và hiện đang tải; kéo làm mới giữ dòng cũ; lỗi trang đầu hiện `ErrorView`, không giữ dòng cũ | FA 5.1, 3.10: dòng cũ không khớp bộ lọc mới |
+| 6 | Debounce ở ViewModel qua giao diện `BoHenGio` (`ui/tracuu`), phím tìm gửi ngay, đổi bộ lọc khác khi đang chờ thì chốt tên và chỉ gửi một yêu cầu | FA 5.6; kiểm thử JVM không cần Looper |
+| 7 | Ô tìm và bộ lọc nằm trong view đầu của `RecyclerView` (view dựng sẵn bọc bằng ViewHolder) | Wireframes ĐX-WF-15; ô nhập không bị bind lại |
+| 8 | `SelectView`, `ChonMotDialogFragment` (`common/widget`) cho CMP-06; hộp chọn trả kết quả theo mã bằng Fragment Result; `BoHenGio` ở `ui/tracuu`. Cần ghi vào FC Phụ lục A khi nhóm duyệt | DS CMP-06 "hộp thoại hoặc trang dưới"; FC 3.4 |
+| 9 | Style: `Widget.Ds.SearchField`, `Select`, `SegmentedControl(.Button)`, `FilterChip`, `ListRow`, `ShapeAppearance.Ds.Full`; `ListRow` dùng `ds_radius_lg` | FC Phụ lục A; DS 4.4, demo |
+| 10 | Phân đoạn: viền dày và dấu check của ô đang chọn đặt bằng Java | `MaterialButton` không có độ dày viền theo trạng thái |
+| 11 | Dòng kết quả theo demo (tên loại · hãng, chevron, phòng · cơ sở, "Còn: n" hoặc nhãn Hết hàng); chevron chỉ là hình thức, dòng chưa bấm được vì SCR-SV-03 thuộc D09-L | Demo; tiền lệ D07-L |
+| 12 | Chữ do Architect viết: `tra_cuu_tim_kiem_goi_y`, `tra_cuu_xoa_noi_dung`, `tra_cuu_chip_xoa` | DS 9.8 không nêu |
+| 13 | Tiền tố id mới `sel_`, `tg_`, `cg_` | FC 3.3 chưa có; cần bổ sung khi nhóm duyệt |
+| 14 | Biểu tượng `ic_expand_more`, `ic_search_off` chép từ demo; `ic_close`, `ic_check` là Material Icons Outlined (Apache License 2.0), **chưa so bằng mắt**: xem trước trong Android Studio |  |
+| 15 | Ghi nhận, không sửa: `Widget.Ds.Card` dùng `ds_radius_md` trong khi DS 4.4 và demo dùng `radius.lg` cho thẻ | Báo nhóm quyết định |
+
+Phạm vi kiểm chứng của D08-L: test trong `src/test` chạy trên JVM (293 test): `TraCuuRepository` bằng MockWebServer (đường dẫn và tên tham số), logic `TraCuuThietBiViewModel` (debounce 400 ms, hủy yêu cầu cũ và bỏ phản hồi muộn, tải thêm theo `tongSo`, lỗi tải thêm giữ dòng cũ, lỗi nguồn bộ lọc độc lập, xóa một/tất cả bộ lọc, kết quả rỗng, nguồn nhiều trang), cấu trúc layout, style và quy tắc mã. **Không** chứng minh hình thức thật, bố cục ở 320/360/412 dp, cỡ chữ 1,3 lần, vùng chạm 48 dp, TalkBack, cuộn cùng đầu danh sách, tiêu điểm ô tìm, hiển thị phân đoạn/chip/hộp chọn: cần thiết bị hoặc emulator (FC 9.4, TC-05, TC-06): **chưa chạy**. Kiểm với backend thật (`/sv/tra-cuu/thiet-bi`, `/sv/loai-thiet-bi`, `/sv/phong-thiet-bi`) thuộc gate tích hợp D05-V, D07-K: **OPEN**.
+
+Chưa có trong D08-L (thuộc ngày sau): mở SCR-SV-03 khi chọn dòng (D09-L), Glide và ảnh (D09-L), Đặt trước (D10-L), tích hợp thật (D17-L), lint và spotless (D19-L).
 

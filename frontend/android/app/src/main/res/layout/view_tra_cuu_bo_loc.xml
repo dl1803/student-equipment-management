@@ -1,0 +1,141 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+    Đầu danh sách của SCR-SV-02 (Wireframes ĐX-WF-15: ô tìm và bộ lọc cuộn cùng danh sách). Từ trên xuống: ô tìm (CMP-05),
+    hai ô chọn Loại và Phòng cùng hàng (CMP-06), phân đoạn Tình trạng hàng (CMP-08), chip bộ lọc đang áp dụng (CMP-17), nút
+    Xóa bộ lọc, rồi trạng thái đang tải / lỗi / rỗng của danh sách (CMP-25). View này được dựng một lần và bọc làm
+    ViewHolder đầu tiên của RecyclerView, nên ô nhập không bị bind lại và không mất tiêu điểm khi cuộn.
+-->
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical"
+    android:paddingBottom="@dimen/ds_space_2">
+
+    <TextView
+        android:id="@+id/tv_tim_kiem_nhan"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="@dimen/ds_space_field_label"
+        android:labelFor="@+id/et_tim_kiem"
+        android:text="@string/tra_cuu_tim_kiem_nhan"
+        android:textAppearance="@style/TextAppearance.Ds.Label" />
+
+    <com.google.android.material.textfield.TextInputLayout
+        android:id="@+id/til_tim_kiem"
+        style="@style/Widget.Ds.SearchField"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:endIconContentDescription="@string/tra_cuu_xoa_noi_dung">
+
+        <com.google.android.material.textfield.TextInputEditText
+            android:id="@+id/et_tim_kiem"
+            style="@style/Widget.Ds.TextField.Input"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:imeOptions="actionSearch"
+            android:inputType="text"
+            android:maxLines="1" />
+
+    </com.google.android.material.textfield.TextInputLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/ds_space_4"
+        android:orientation="horizontal">
+
+        <com.nhom13.quanlymuontra.common.widget.SelectView
+            android:id="@+id/sel_loai"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginEnd="@dimen/ds_space_1"
+            android:layout_weight="1" />
+
+        <com.nhom13.quanlymuontra.common.widget.SelectView
+            android:id="@+id/sel_phong"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="@dimen/ds_space_1"
+            android:layout_weight="1" />
+
+    </LinearLayout>
+
+    <TextView
+        android:id="@+id/tv_tinh_trang_nhan"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/ds_space_4"
+        android:layout_marginBottom="@dimen/ds_space_field_label"
+        android:text="@string/tra_cuu_loc_tinh_trang"
+        android:textAppearance="@style/TextAppearance.Ds.Label" />
+
+    <com.google.android.material.button.MaterialButtonToggleGroup
+        android:id="@+id/tg_tinh_trang"
+        style="@style/Widget.Ds.SegmentedControl"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/btn_tinh_trang_tat_ca"
+            style="@style/Widget.Ds.SegmentedControl.Button"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="@string/tra_cuu_tat_ca" />
+
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/btn_tinh_trang_con_hang"
+            style="@style/Widget.Ds.SegmentedControl.Button"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="@string/tra_cuu_con_hang" />
+
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/btn_tinh_trang_het_hang"
+            style="@style/Widget.Ds.SegmentedControl.Button"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="@string/tra_cuu_het_hang" />
+
+    </com.google.android.material.button.MaterialButtonToggleGroup>
+
+    <com.google.android.material.chip.ChipGroup
+        android:id="@+id/cg_bo_loc"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/ds_space_4"
+        android:visibility="gone"
+        app:chipSpacingHorizontal="@dimen/ds_space_2"
+        app:chipSpacingVertical="@dimen/ds_space_2" />
+
+    <com.google.android.material.button.MaterialButton
+        android:id="@+id/btn_xoa_bo_loc"
+        style="@style/Widget.Ds.Button.Tertiary"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/ds_space_2"
+        android:text="@string/tra_cuu_xoa_bo_loc"
+        android:visibility="gone" />
+
+    <com.nhom13.quanlymuontra.common.widget.LoadingView
+        android:id="@+id/lv_ket_qua"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:visibility="gone" />
+
+    <com.nhom13.quanlymuontra.common.widget.ErrorView
+        android:id="@+id/ev_ket_qua"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:visibility="gone" />
+
+    <com.nhom13.quanlymuontra.common.widget.EmptyView
+        android:id="@+id/ev_rong"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:visibility="gone" />
+
+</LinearLayout>

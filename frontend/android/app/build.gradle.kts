@@ -203,6 +203,7 @@ dependencies {
     implementation(libs.material)
     implementation(libs.androidx.navigation.fragment)
     implementation(libs.androidx.swiperefreshlayout)
+    implementation(libs.androidx.recyclerview)
     implementation(libs.retrofit.converter.gson)
     implementation(libs.jakarta.annotation)
     compileOnly(libs.findbugs.jsr305)
