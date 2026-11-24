@@ -1043,7 +1043,7 @@ Môi trường: `dev` (máy cá nhân kết nối PostgreSQL trên Supabase, kh�
 
 | Nội dung | Quy tắc |
 |---|---|
-| Docker | Dockerfile nhiều giai đoạn: `dotnet/sdk:10.0` để publish `src/QuanLyMuonTra.Api`, `dotnet/aspnet:10.0` để chạy; `ASPNETCORE_ENVIRONMENT=Production` |
+| Docker | Dockerfile nhiều giai đoạn: `dotnet/sdk:9.0` để publish `src/QuanLyMuonTra.Api`, `dotnet/aspnet:9.0` để chạy; `ASPNETCORE_ENVIRONMENT=Production` |
 | Cổng | Ứng dụng lắng nghe cổng đọc từ biến `PORT` (Render mặc định 10000), ví dụ `builder.WebHost.UseUrls($"http://0.0.0.0:{port}")` |
 | Render | `render.yaml`: dịch vụ web `runtime: docker`, `plan: free`, `healthCheckPath: /health`, `autoDeploy: true`; các biến bí mật đặt `sync: false` |
 | Frontend | Web NV/QT trên Vercel gọi API qua HTTPS; miền Vercel production thêm vào `Cors__AllowedOrigins`; miền preview chỉ cho phép ở dev hoặc staging |

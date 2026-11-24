@@ -43,7 +43,7 @@ Mọi dòng dưới đây đang **OPEN**. Một quyết định OPEN chặn đú
 | K-2 | Vị trí các cổng dùng chung `ICurrentUser`, `IAuditLogger`, `IAnhStorage` (L7): SharedKernel hay nơi khác; cần nhóm duyệt vì KT 4.4 chưa liệt kê | Khôi, nhóm | D02 (ICurrentUser), D03 (IAuditLogger), D08 (IAnhStorage) |
 | K-3 | Tránh chu trình khi MuonTra/SinhVien cần reader nợ của ViPham (L8) | Khôi, Vương | Trước D03 |
 | K-4 | Hướng tham chiếu `Infrastructure` ↔ module (nạp cấu hình EF, runner job) | Khôi | D02 |
-| K-5 | Dòng Dockerfile `10.0` (KT 16.1, CV 18.2) và cách triển khai Render khi nhóm không muốn đụng Docker | Nhóm | Khi nhóm quyết định |
+| K-5 | Dòng Dockerfile `10.0` (KT 16.1, CV 18.2) và cách triển khai Render khi nhóm không muốn đụng Docker (đóng phần phiên bản Dockerfile bằng K-49) | Nhóm | Khi nhóm quyết định |
 
 ### Quyết định D03-K cho K-2, K-3, K-4
 
@@ -135,6 +135,19 @@ Mọi dòng dưới đây đang **OPEN**. Một quyết định OPEN chặn đú
 | K-45 | Mốc J8: kéo `cap_nhat_luc` lớn hơn mốc, sắp theo `cap_nhat_luc, ma_sv`, không giới hạn số dòng. Mốc mới = lớn nhất của các bản ghi thành công trong lô (điều chỉnh theo review của Vương: tránh kẹt mốc vô hạn/Watermark Starvation khi có bản ghi lỗi; mốc tiến theo bản ghi an toàn). Mốc rỗng = kéo tất cả. Tách upsert nhóm duy nhất (`DistinctBy`) giảm bão round-trip mạng. Bản ghi thiếu `CapNhatLuc` được bắt và bỏ qua an toàn. Giới hạn đã biết: trigger phía trường dùng `now()` là giờ bắt đầu giao dịch nên giao dịch của trường bắt đầu trước mốc nhưng commit sau có thể bị bỏ sót (chỉ là mô phỏng); đổi tên nhóm ở trường mà không có SV đổi thì J8 không kéo | Khôi hoàn thiện theo review Vương | 2026-11-23 |
 | K-46 | `DongBoSinhVienJob` (J8, mã `J8`, chu kỳ 30 phút) ở `SinhVien/Application`, đăng ký `AddScoped<IJob, DongBoSinhVienJob>`; dùng `DbContext` của scope bộ chạy (cùng giao dịch giữ khóa). Dùng savepoint cho từng SV khi có giao dịch; SV lỗi được log cảnh báo, các SV khác vẫn ghi, mốc giữ nguyên. J8 không ghi nhật ký kiểm toán (không thuộc danh sách KT 12.1) và không dùng `IClock`. J8 không ghi `trang_thai_quyen_muon` | Khôi đề xuất, chờ nhóm xác nhận | 2026-11-23 |
 | K-47 | J8 upsert nhóm bằng `ON CONFLICT (ma_nhom) DO UPDATE` khi tên đổi, tên lấy từ port. `XacThucSinhVien` giữ nguyên. Đính chính K-10: câu K-10 "không upsert `nhom_sinh_vien`" chưa khớp code, vì đăng nhập SV hiện có `INSERT INTO sinh_vien.nhom_sinh_vien ... ON CONFLICT DO NOTHING` (có test `UC19_SinhVienCoNhomMoi...`) | Khôi đề xuất, chờ nhóm xác nhận | 2026-11-23 |
+
+### Quyết định D12-K cho K-48 đến K-55
+
+| Mã | Quyết định | Trạng thái | Ngày |
+|---|---|---|---|
+| K-48 | J9 đặt ở `Infrastructure/LuuTru/DonAnhMoCoJob.cs`; mã `J9`, tên `DonAnhMoCo`, chu kỳ 1 ngày. Chạy trong giao dịch của bộ chạy (như J8/K-46), bắt buộc có giao dịch mở. Chọn tối đa 200 dòng `doi_tuong_id IS NULL AND thoi_diem < now − 24h` bằng `FOR UPDATE SKIP LOCKED`, xóa object Storage trước, xóa dòng sau. Lỗi Storage của một dòng: ghi cảnh báo, giữ dòng, thử lại lần sau. Không ghi nhật ký kiểm toán (như K-46; KT 12.1 không liệt kê xóa ảnh mồ côi) | Khôi đề xuất, chờ nhóm xác nhận | 2026-11-24 |
+| K-49 | `backend/Dockerfile` dùng image `9.0` (không `10.0` như KT 16.1/CV 18.2), sửa 2 dòng `10.0 → 9.0` trong KT 16.1 và CV 18.2. Không build image ở máy (Q4: không dùng Docker Desktop); lần build đầu tiên là trên Render | Khôi đề xuất, chờ nhóm xác nhận | 2026-11-24 |
+| K-50 | `Program.cs` đọc biến `PORT` (Render cấp) → `UseUrls("http://0.0.0.0:{PORT}")`; sai định dạng thì dừng khi khởi động | Khôi đề xuất, chờ nhóm xác nhận | 2026-11-24 |
+| K-51 | `render.yaml` ở gốc repo, `runtime: docker`, `branch: develop`, `autoDeploy: false` (deploy tay lần đầu, sau khi migration xong); đổi sang tự triển khai theo CI ở D25-K. Biến bí mật `sync: false` | Khôi đề xuất, chờ nhóm xác nhận | 2026-11-24 |
+| K-52 | Gói migration nền = workflow `backend-migrate.yml` chạy `schema.sql` bằng `psql` trên CSDL trống (tự bỏ qua nếu đã có schema). Không tạo migration EF/`efbundle` ở D12 | Khôi đề xuất, chờ nhóm xác nhận | 2026-11-24 |
+| K-53 | Supabase: dự án #1 dùng chung dev+test (đang dùng); dự án #2 = triển khai thử/prod | Khôi đề xuất, chờ nhóm xác nhận | 2026-11-24 |
+| K-54 | Thêm test manifest ↔ `openapi.yaml` đọc YAML bằng `Regex`, không thêm package | Khôi đề xuất, chờ nhóm xác nhận | 2026-11-24 |
+| K-55 | Lần triển khai đầu: `Email__Provider=Log`, `Scheduler__Bat=true`, `Cors__AllowedOrigins=http://localhost:3000` (tạm), không đặt giới hạn tần suất auth | Khôi đề xuất, chờ nhóm xác nhận | 2026-11-24 |
 
 ## 5. Mâu thuẫn giữa các nguồn đã phát hiện
 
