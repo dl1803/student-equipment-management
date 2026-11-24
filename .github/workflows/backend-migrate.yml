@@ -26,11 +26,18 @@ jobs:
 
       - name: Khởi tạo CSDL nền bằng schema.sql
         env:
-          DB_URL: ${{ inputs.muc_tieu == 'prod' && secrets.DB_ADMIN_PROD || secrets.DB_ADMIN_TEST }}
+          MUC_TIEU: ${{ inputs.muc_tieu }}
+          DB_ADMIN_PROD: ${{ secrets.DB_ADMIN_PROD }}
+          DB_ADMIN_TEST: ${{ secrets.DB_ADMIN_TEST }}
         run: |
           set -euo pipefail
+          if [ "$MUC_TIEU" = "prod" ]; then
+            DB_URL="$DB_ADMIN_PROD"
+          else
+            DB_URL="$DB_ADMIN_TEST"
+          fi
           if [ -z "$DB_URL" ]; then
-            echo "Thiếu secret DB_ADMIN_PROD hoặc DB_ADMIN_TEST."
+            echo "Lỗi: Thiếu secret kết nối cho môi trường $MUC_TIEU."
             exit 1
           fi
           so_schema=$(psql "$DB_URL" -tAc "SELECT count(*) FROM pg_namespace WHERE nspname = 'tai_khoan'")
