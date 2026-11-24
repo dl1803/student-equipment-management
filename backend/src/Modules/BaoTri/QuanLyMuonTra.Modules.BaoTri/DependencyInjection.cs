@@ -1,4 +1,5 @@
 using Microsoft.Extensions.DependencyInjection;
+using QuanLyMuonTra.Modules.BaoTri.Application;
 using QuanLyMuonTra.Modules.BaoTri.Infrastructure;
 using QuanLyMuonTra.Modules.DanhMuc.Contracts;
 
@@ -9,6 +10,8 @@ public static class DependencyInjection
     public static IServiceCollection AddBaoTriModule(this IServiceCollection services)
     {
         services.AddScoped<IThamChieuDanhMucProvider, ThamChieuBaoTriProvider>();
+        services.AddScoped<DsThietBiDenHanBaoTriHandler>();
+        services.AddScoped<DsChoTiepNhanSuaChuaHandler>();
         return services;
     }
 }
