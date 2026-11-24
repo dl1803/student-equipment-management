@@ -102,4 +102,29 @@ internal static class PhieuMuonTruyVan
     {
         return theoMa.TryGetValue(maSv, out var sv) ? sv : new SinhVienTomTatDto(maSv, string.Empty, null);
     }
+
+    public static IQueryable<DongPhieuMuon> DongQuaHan30Ngay(
+        DbContext db,
+        DateOnly homNay,
+        bool khongLocPhong,
+        Guid[] dsMaPhong)
+    {
+        return db.Database.SqlQuery<DongPhieuMuon>($"""
+            SELECT p.ma_phieu AS "MaPhieu", p.ma_sv AS "MaSv", p.ma_nv_lap AS "MaNvLap",
+                   p.ma_yeu_cau AS "MaYeuCau", p.ma_dang_ky AS "MaDangKy",
+                   p.ngay_gio_muon AS "NgayGioMuon", p.ngay_gio_hen_tra AS "NgayGioHenTra",
+                   p.so_lan_gia_han AS "SoLanGiaHan", p.trang_thai AS "TrangThai",
+                   (SELECT count(*)::integer FROM muon_tra.chi_tiet_phieu_muon c WHERE c.ma_phieu = p.ma_phieu) AS "SoThietBi"
+            FROM muon_tra.phieu_muon p
+            WHERE ({homNay}::date - (p.ngay_gio_hen_tra AT TIME ZONE 'Asia/Ho_Chi_Minh')::date) > 30
+              AND EXISTS (
+                  SELECT 1 FROM muon_tra.chi_tiet_phieu_muon c
+                  WHERE c.ma_phieu = p.ma_phieu AND c.ket_qua_kiem_tra IS NULL)
+              AND ({khongLocPhong} OR EXISTS (
+                  SELECT 1
+                  FROM muon_tra.chi_tiet_phieu_muon c
+                  JOIN danh_muc.thiet_bi t ON t.ma_thiet_bi = c.ma_thiet_bi
+                  WHERE c.ma_phieu = p.ma_phieu AND t.ma_phong = ANY({dsMaPhong})))
+            """);
+    }
 }

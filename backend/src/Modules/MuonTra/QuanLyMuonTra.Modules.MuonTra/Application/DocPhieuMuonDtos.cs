@@ -52,3 +52,12 @@ public sealed record PhieuMuonQuayTomTatDto(
     string TrangThai,
     int SoThietBi,
     SinhVienTomTatDto SinhVien);
+
+public sealed record ThietBiTomTatDto(string MaThietBi, string TenThietBi);
+
+public sealed record PhieuQuaHan30NgayDto(
+    string MaPhieu,
+    SinhVienTomTatDto SinhVien,
+    DateTimeOffset NgayGioHenTra,
+    int SoNgayTre,
+    IReadOnlyList<ThietBiTomTatDto> DsThietBiChuaTra);
