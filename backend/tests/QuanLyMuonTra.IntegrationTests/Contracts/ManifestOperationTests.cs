@@ -30,6 +30,60 @@ public class ManifestOperationTests(ITestOutputHelper output)
         Assert.Empty(daCai.Where(k => !trongMa.Contains(k)).Order());
     }
 
+    [Fact]
+    public void Manifest_KhopChinhXacVoiCacThaoTacTrongOpenApi()
+    {
+        var manifest = DocManifest().Select(m => m.Khoa).ToHashSet();
+        var openApi = DocThaoTacOpenApi();
+
+        output.WriteLine($"OpenAPI: {openApi.Count}; manifest: {manifest.Count}");
+
+        Assert.True(openApi.Count >= 88);
+        Assert.Empty(openApi.Where(k => !manifest.Contains(k)).Order().ToList());
+        Assert.Empty(manifest.Where(k => !openApi.Contains(k)).Order().ToList());
+    }
+
+    private static HashSet<string> DocThaoTacOpenApi()
+    {
+        var ketQua = new HashSet<string>();
+        var trongPaths = false;
+        string? duongDan = null;
+
+        foreach (var dong in File.ReadLines(Path.Combine(AppContext.BaseDirectory, "openapi.yaml")))
+        {
+            if (dong.StartsWith("paths:", StringComparison.Ordinal))
+            {
+                trongPaths = true;
+                continue;
+            }
+
+            if (!trongPaths)
+            {
+                continue;
+            }
+
+            if (dong.Length > 0 && !char.IsWhiteSpace(dong[0]))
+            {
+                break;
+            }
+
+            var khopDuongDan = Regex.Match(dong, @"^  (/[^\s:]*):\s*$");
+            if (khopDuongDan.Success)
+            {
+                duongDan = khopDuongDan.Groups[1].Value;
+                continue;
+            }
+
+            var khopPhuongThuc = Regex.Match(dong, @"^    (get|post|put|delete|patch):\s*$");
+            if (khopPhuongThuc.Success && duongDan is not null)
+            {
+                ketQua.Add($"{khopPhuongThuc.Groups[1].Value.ToUpperInvariant()} {duongDan}");
+            }
+        }
+
+        return ketQua;
+    }
+
     private static List<(string Khoa, string TrangThai)> DocManifest()
     {
         var duongDan = Path.Combine(AppContext.BaseDirectory, "C0-manifest-operation.csv");
