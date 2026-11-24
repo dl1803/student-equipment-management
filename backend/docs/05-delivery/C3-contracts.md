@@ -69,7 +69,7 @@ Lưu ý: tình trạng `DANG_DUOC_MUON` trong dữ liệu thử đặt trực ti
 
 ## 6. Oracle báo cáo
 
-`backend/db/seed-demo/C3-oracle-tinh-trang-kho.csv`: oracle `tinh-trang-kho` (API-Notes 9.1), 10 cột đúng thứ tự, 4 dòng, tổng 10 thiết bị. So sánh theo tập dòng. Oracle chi tiết 5 báo cáo còn lại: N12, N17–19.
+`backend/db/seed-demo/C3-oracle-tinh-trang-kho.csv`: oracle `tinh-trang-kho` (API-Notes 9.1), 10 cột đúng thứ tự, 4 dòng, tổng 10 thiết bị. So sánh theo tập dòng. Oracle cột, mốc ngày và số đếm của cả sáu báo cáo (N12): `backend/tests/QuanLyMuonTra.IntegrationTests/BaoCao/D12-N-oracle-cot-bao-cao.csv`, `D12-N-oracle-moc-ngay-bao-cao.csv`, `D12-N-oracle-bien-ngay.csv`. Oracle dữ liệu từng dòng của năm báo cáo còn lại: N17–19.
 
 ## 7. OPEN
 
