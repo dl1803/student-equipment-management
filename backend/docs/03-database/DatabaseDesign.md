@@ -1241,7 +1241,7 @@ Mã chứng từ có dạng `{tiềnTố}-{yyMMdd}-{6 chữ số}`, ngày theo m
 | `vi_pham.seq_ma_bien_ban` | `ma_bien_ban` | `BB-261026-000001` |
 | `bao_tri.seq_ma_quyet_dinh` | `ma_quyet_dinh` | `QD-261026-000001` |
 
-Biểu thức mặc định: `'PM-' || to_char(now() AT TIME ZONE 'Asia/Ho_Chi_Minh', 'YYMMDD') || '-' || lpad(nextval('muon_tra.seq_ma_phieu')::text, 6, '0')`.
+Biểu thức mặc định: `'PM-' || to_char(now() AT TIME ZONE 'Asia/Ho_Chi_Minh', 'YYMMDD') || '-' || to_char(nextval('muon_tra.seq_ma_phieu'), 'FM9999999999999000000')`.
 
 ### 7.4 Hàm và trigger
 

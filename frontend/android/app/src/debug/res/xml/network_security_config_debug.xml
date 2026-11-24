@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+    D06-L: chỉ bản debug. Cho phép http không mã hóa tới đúng một địa chỉ: 10.0.2.2, tên mà emulator
+    Android dùng để chỉ máy tính chạy nó (backend dev nghe ở http://localhost:5283). Mọi địa chỉ khác
+    vẫn bị cấm lưu lượng không mã hóa theo mặc định của targetSdk 36.
+-->
+<network-security-config>
+    <domain-config cleartextTrafficPermitted="true">
+        <domain includeSubdomains="false">10.0.2.2</domain>
+    </domain-config>
+</network-security-config>

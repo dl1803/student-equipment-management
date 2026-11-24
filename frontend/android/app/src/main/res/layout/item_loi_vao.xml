@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+    SCR-SV-01: một ô lối vào chức năng (DS CMP-15 biến thể Tương tác): cả thẻ bấm được, tiêu đề type.title-card,
+    không biểu tượng riêng cho từng chức năng, chevron_right ở cuối. Chiều rộng và trọng số do hàng chứa nó chia
+    đều hai ô; lề trái phải do TrangChuFragment đặt. Chiều cao theo ô cao nhất của hàng, chữ dài xuống dòng.
+-->
+<com.google.android.material.card.MaterialCardView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    style="@style/Widget.Ds.Card.Interactive"
+    android:layout_width="0dp"
+    android:layout_height="match_parent"
+    android:layout_marginTop="@dimen/ds_space_list_gap"
+    android:layout_weight="1">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:gravity="center_vertical"
+        android:orientation="horizontal">
+
+        <TextView
+            android:id="@+id/tv_nhan"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:textAppearance="@style/TextAppearance.Ds.TitleCard" />
+
+        <ImageView
+            android:id="@+id/img_chevron"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="@dimen/ds_space_2"
+            android:importantForAccessibility="no"
+            android:src="@drawable/ic_chevron_right"
+            app:tint="@color/ds_icon_tint_secondary" />
+
+    </LinearLayout>
+
+</com.google.android.material.card.MaterialCardView>

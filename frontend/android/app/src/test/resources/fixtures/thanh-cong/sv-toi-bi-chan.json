@@ -1,0 +1,27 @@
+{
+  "maSV": "23520001",
+  "hoTen": "Nguyễn Văn An",
+  "lop": "KTPM2023",
+  "khoa": "Công nghệ phần mềm",
+  "maNhom": "NHOM_DAI_HOC",
+  "tenNhom": "Sinh viên đại học",
+  "hanThe": "2027-09-30",
+  "trangThaiHoc": "DANG_HOC",
+  "trangThaiQuyenMuon": "TAM_KHOA",
+  "soThietBiDangMuon": 1,
+  "soThietBiToiDa": 3,
+  "dsBienBanChuaNop": [
+    {
+      "maBienBan": "BB-2026-0001",
+      "tongTien": 240000,
+      "ngayLap": "2026-11-05T07:30:00Z"
+    }
+  ],
+  "hopLe": false,
+  "dsLyDoKhongHopLe": [
+    {
+      "maLoi": "SV_BI_KHOA_QUYEN_MUON",
+      "thongDiep": "Quyền mượn đang bị khóa do còn biên bản chưa nộp."
+    }
+  ]
+}

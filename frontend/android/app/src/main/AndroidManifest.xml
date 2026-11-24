@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="utf-8"?>
+<manifest xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <!--
+        D01-L: manifest tối thiểu để dự án trống biên dịch được.
+        D02-L: khai báo lớp Application (UngDung) tạo AppContainer.
+        D03-L: tắt sao lưu và khai báo quy tắc loại tệp phiên khỏi sao lưu đám mây và chuyển thiết
+        bị (FA 5.4, FC 6.5, ĐX-FA-14).
+        D04-L: khai báo quyền mạng và cấm lưu lượng không mã hóa (FA 5.5, FC 6.8). D06-L: bản debug
+        gọi được máy chủ dev HTTP thường nhờ src/debug/AndroidManifest.xml; main vẫn cấm lưu lượng
+        không mã hóa.
+        D05-L: áp dụng theme sáng Theme.QuanLyMuonTra cho toàn ứng dụng (FC 6.6, ĐX-DS-01).
+        D06-L: khai báo nhãn ứng dụng và MainActivity, điểm vào duy nhất (FA 5.3).
+    -->
+    <uses-permission android:name="android.permission.INTERNET" />
+
+    <application
+        android:name=".UngDung"
+        android:allowBackup="false"
+        android:dataExtractionRules="@xml/data_extraction_rules"
+        android:fullBackupContent="@xml/backup_rules"
+        android:label="@string/ung_dung_ten"
+        android:theme="@style/Theme.QuanLyMuonTra"
+        android:usesCleartextTraffic="false">
+
+        <activity
+            android:name=".MainActivity"
+            android:exported="true"
+            android:windowSoftInputMode="adjustResize">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+        </activity>
+
+    </application>
+
+</manifest>

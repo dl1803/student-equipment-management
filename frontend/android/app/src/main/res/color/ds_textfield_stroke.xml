@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- CMP-04 ô nhập: màu viền. Lỗi dùng boxStrokeErrorColor của style; tiêu điểm dày hơn nhờ boxStrokeWidthFocused. -->
+<selector xmlns:android="http://schemas.android.com/apk/res/android">
+    <item android:state_enabled="false" android:color="@color/ds_color_action_disabled_border" />
+    <item android:state_focused="true" android:color="@color/ds_color_focus_ring" />
+    <item android:color="@color/ds_color_border_control" />
+</selector>

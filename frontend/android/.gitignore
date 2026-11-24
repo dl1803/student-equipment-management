@@ -1,0 +1,19 @@
+# Gradle
+.gradle/
+build/
+
+# Thư mục nguồn của buildType debug (src/debug) phải được commit. Mẫu [Dd]ebug/ ở .gitignore gốc của
+# repository (mục Backend) bỏ qua mọi thư mục tên debug, kể cả thư mục này, nên phải phủ định lại (D06-L).
+!/app/src/debug/
+
+# Cấu hình cục bộ và bí mật, không commit (FC 10.1)
+local.properties
+*.jks
+*.keystore
+
+# Android Studio
+.idea/
+*.iml
+captures/
+.externalNativeBuild/
+.cxx/

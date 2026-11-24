@@ -1,0 +1,196 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+    D05-L (DS 7, 9.8; FC 3.3, 6.6, 7.3): chữ hiển thị tiếng Việt, UTF-8, dựng sẵn (NFC).
+    Nhãn trạng thái đặt tên nhan_{ho}_{ma}: ho và ma là họ trạng thái và mã API viết thường, gạch dưới
+    (FC 3.5). Nhãn lấy nguyên văn từ DS 7.2 và Phụ lục A của User-Flows.md.
+-->
+<resources>
+
+    <!-- Họ TINH_TRANG_THIET_BI -->
+    <string name="nhan_tinh_trang_thiet_bi_san_sang">Sẵn sàng cho mượn</string>
+    <string name="nhan_tinh_trang_thiet_bi_dang_duoc_muon">Đang được mượn</string>
+    <string name="nhan_tinh_trang_thiet_bi_dang_bao_tri_sua_chua">Đang bảo trì/sửa chữa</string>
+    <string name="nhan_tinh_trang_thiet_bi_da_thanh_ly">Đã thanh lý</string>
+    <string name="nhan_tinh_trang_thiet_bi_da_bao_mat">Đã báo mất</string>
+
+    <!-- Họ PHIEU_YEU_CAU -->
+    <string name="nhan_phieu_yeu_cau_cho_duyet">Chờ duyệt</string>
+    <string name="nhan_phieu_yeu_cau_da_duyet">Đã duyệt</string>
+    <string name="nhan_phieu_yeu_cau_tu_choi">Từ chối</string>
+    <string name="nhan_phieu_yeu_cau_da_huy">Đã hủy</string>
+    <string name="nhan_phieu_yeu_cau_het_han">Hết hạn</string>
+    <string name="nhan_phieu_yeu_cau_da_nhan">Đã nhận</string>
+
+    <!-- Họ PHIEU_MUON -->
+    <string name="nhan_phieu_muon_dang_muon">Đang mượn</string>
+    <string name="nhan_phieu_muon_qua_han">Quá hạn</string>
+    <string name="nhan_phieu_muon_da_tra">Đã trả</string>
+
+    <!-- Họ DANG_KY_CHO -->
+    <string name="nhan_dang_ky_cho_dang_cho">Đang chờ</string>
+    <string name="nhan_dang_ky_cho_da_thong_bao">Đã thông báo</string>
+    <string name="nhan_dang_ky_cho_da_nhan">Đã nhận</string>
+    <string name="nhan_dang_ky_cho_da_huy">Đã hủy</string>
+    <string name="nhan_dang_ky_cho_het_han">Hết hạn</string>
+
+    <!-- Họ KET_QUA_KIEM_TRA -->
+    <string name="nhan_ket_qua_kiem_tra_nguyen_ven">Nguyên vẹn</string>
+    <string name="nhan_ket_qua_kiem_tra_hu_hong">Hư hỏng</string>
+    <string name="nhan_ket_qua_kiem_tra_thieu_phu_kien">Thiếu phụ kiện</string>
+    <string name="nhan_ket_qua_kiem_tra_mat">Mất</string>
+
+    <!-- Họ BIEN_BAN -->
+    <string name="nhan_bien_ban_chua_nop">Chưa nộp</string>
+    <string name="nhan_bien_ban_da_nop">Đã nộp</string>
+    <string name="nhan_bien_ban_da_huy">Đã hủy</string>
+
+    <!-- Họ LOAI_VI_PHAM -->
+    <string name="nhan_loai_vi_pham_tra_tre">Trả trễ</string>
+    <string name="nhan_loai_vi_pham_hu_hong">Hư hỏng</string>
+    <string name="nhan_loai_vi_pham_mat">Mất</string>
+    <string name="nhan_loai_vi_pham_khong_den_nhan">Không đến nhận</string>
+
+    <!-- Họ TRANG_THAI_HOC -->
+    <string name="nhan_trang_thai_hoc_dang_hoc">Đang học</string>
+    <string name="nhan_trang_thai_hoc_tot_nghiep">Tốt nghiệp</string>
+    <string name="nhan_trang_thai_hoc_thoi_hoc">Thôi học</string>
+    <string name="nhan_trang_thai_hoc_dinh_chi">Đình chỉ</string>
+
+    <!-- Họ QUYEN_MUON -->
+    <string name="nhan_quyen_muon_binh_thuong">Bình thường</string>
+    <string name="nhan_quyen_muon_tam_khoa">Tạm khóa</string>
+    <string name="nhan_quyen_muon_cam_muon_dai_han">Cấm mượn dài hạn</string>
+
+    <!-- Họ TAI_KHOAN -->
+    <string name="nhan_tai_khoan_hoat_dong">Hoạt động</string>
+    <string name="nhan_tai_khoan_tam_khoa_dang_nhap">Tạm khóa đăng nhập</string>
+    <string name="nhan_tai_khoan_bi_khoa">Bị khóa</string>
+
+    <!-- Họ LOAI_BAO_TRI -->
+    <string name="nhan_loai_bao_tri_bao_tri_dinh_ky">Bảo trì định kỳ</string>
+    <string name="nhan_loai_bao_tri_sua_chua">Sửa chữa</string>
+
+    <!-- Họ KET_QUA_BAO_TRI -->
+    <string name="nhan_ket_qua_bao_tri_dua_ve_san_sang">Đưa về Sẵn sàng</string>
+    <string name="nhan_ket_qua_bao_tri_de_xuat_thanh_ly">Đề xuất thanh lý</string>
+
+    <!-- Họ NGUON_GIAO -->
+    <string name="nhan_nguon_giao_phieu_yeu_cau">Phiếu yêu cầu</string>
+    <string name="nhan_nguon_giao_dang_ky_cho">Danh sách chờ</string>
+    <string name="nhan_nguon_giao_truc_tiep">Mượn trực tiếp</string>
+
+    <!-- Họ LOAI_THONG_BAO -->
+    <string name="nhan_loai_thong_bao_nhac_han_tra">Nhắc hạn trả</string>
+    <string name="nhan_loai_thong_bao_qua_han">Quá hạn</string>
+    <string name="nhan_loai_thong_bao_thiet_bi_cho_san_sang">Thiết bị chờ sẵn sàng</string>
+    <string name="nhan_loai_thong_bao_duyet_hoac_tu_choi">Duyệt hoặc từ chối</string>
+    <string name="nhan_loai_thong_bao_vi_pham_phi_phat">Vi phạm, phí phạt</string>
+    <string name="nhan_loai_thong_bao_nhac_nho_nv">Nhắc nhở của NV</string>
+    <string name="nhan_loai_thong_bao_nhac_bao_tri">Nhắc bảo trì</string>
+
+    <!-- Nhãn phát sinh từ dữ liệu không phải mã trạng thái (DS 7.3). -->
+    <string name="nhan_phat_sinh_het_hang">Hết hàng</string>
+    <string name="nhan_phat_sinh_khong_du">Không đủ</string>
+    <string name="nhan_phat_sinh_hop_le">Hợp lệ</string>
+    <string name="nhan_phat_sinh_khong_hop_le">Không hợp lệ</string>
+    <string name="nhan_phat_sinh_duoc_duyet">Được duyệt</string>
+    <string name="nhan_phat_sinh_khong_duoc_duyet">Không được duyệt</string>
+    <string name="nhan_phat_sinh_da_ngung_su_dung">Đã ngưng sử dụng</string>
+    <string name="nhan_phat_sinh_dang_su_dung">Đang sử dụng</string>
+    <string name="nhan_phat_sinh_da_tat">Đã tắt</string>
+    <string name="nhan_phat_sinh_chua_tra">Chưa trả</string>
+    <string name="nhan_phat_sinh_bao_tri">Bảo trì</string>
+    <string name="nhan_phat_sinh_thanh_ly">Thanh lý</string>
+    <string name="nhan_phat_sinh_tam_tinh">Tạm tính</string>
+
+    <!-- Chữ dùng chung của thành phần nền (DS 9.8, CMP-25). -->
+    <string name="hanh_dong_thu_lai">Thử lại</string>
+    <string name="loi_mang">Không tải được dữ liệu. Kiểm tra kết nối rồi thử lại.</string>
+    <string name="loi_he_thong">Đã xảy ra lỗi hệ thống.</string>
+    <string name="trang_thai_ma_theo_doi">Mã theo dõi: %1$s</string>
+    <string name="trang_thai_dang_tai">Đang tải</string>
+    <string name="trang_thai_khoi_dong_cham">Hệ thống đang khởi động, vui lòng chờ</string>
+
+    <!-- D06-L (DS 9.8, CMP-01, CMP-26): chữ của nút Hủy và trạng thái đang xử lý của nút; nguyên văn DS 9.8. -->
+    <string name="hanh_dong_huy">Hủy</string>
+    <string name="hanh_dong_dang_xu_ly">Đang xử lý</string>
+
+    <!--
+        D06-L (DS 9.8, 9.4; UI-Screens 4.4; User-Flows 3.1): chữ của màn hình đăng nhập và tiêu đề các tab gốc.
+        Nguyên văn từ tài liệu: "* Bắt buộc" (DS 9.8); "Phiên đăng nhập đã hết hạn, vui lòng đăng nhập lại" (DS 9.4,
+        UI-Screens 4.4); "Thông tin đăng nhập không đúng" (UI-Screens 4.4). Hai câu do Architect viết vì tài liệu chỉ nêu ý
+        và chờ nhóm xác nhận: qua_nhieu_yeu_cau ("chờ rồi thử lại", DS 9.4, UI-Screens 4.4) và loi_ket_noi_may_chu (lỗi
+        mạng khi thao tác, DS 9.4).
+    -->
+    <string name="ung_dung_ten">Hệ thống mượn trả thiết bị</string>
+    <string name="bieu_mau_bat_buoc">* Bắt buộc</string>
+    <string name="dang_nhap_mssv_nhan">Mã số sinh viên *</string>
+    <string name="dang_nhap_mat_khau_nhan">Mật khẩu *</string>
+    <string name="dang_nhap_hanh_dong">Đăng nhập</string>
+    <string name="dang_nhap_sai">Thông tin đăng nhập không đúng</string>
+    <string name="phien_het_han">Phiên đăng nhập đã hết hạn, vui lòng đăng nhập lại</string>
+    <string name="qua_nhieu_yeu_cau">Bạn thao tác quá nhiều lần, vui lòng chờ một lúc rồi thử lại</string>
+    <string name="loi_ket_noi_may_chu">Không kết nối được máy chủ. Kiểm tra kết nối rồi thử lại.</string>
+    <string name="trang_chu_tieu_de">Trang chủ</string>
+    <string name="tra_cuu_thiet_bi_tieu_de">Tra cứu thiết bị</string>
+    <string name="thong_bao_tieu_de">Thông báo</string>
+    <string name="ho_so_muon_tieu_de">Hồ sơ mượn</string>
+
+    <!-- D06-L (UI-Screens 4.1, DS 9.8): nút Quay lại của thanh tiêu đề và tên bốn mục của thanh điều hướng dưới. -->
+    <string name="hanh_dong_quay_lai">Quay lại</string>
+    <string name="dieu_huong_trang_chu">Trang chủ</string>
+    <string name="dieu_huong_tra_cuu">Tra cứu</string>
+    <string name="dieu_huong_thong_bao">Thông báo</string>
+    <string name="dieu_huong_ho_so">Hồ sơ</string>
+
+    <!--
+        D07-L, SCR-SV-01 (UI-Screens 5.1, Wireframes SCR-SV-01). Nguyên văn tài liệu: tên tám lối vào, "Bạn chưa thể
+        đặt trước hoặc đăng ký chờ", "Xem lý do", "Xin chào, <họ tên>". Do Architect viết, chờ nhóm xác nhận:
+        trang_chu_quyen_muon_nhan và trang_chu_dang_muon (Wireframes ghi "Quyền mượn: ..." và "Đang mượn: 1 / 3
+        thiết bị"; DS 9.7 quy định dạng n/m nên dùng "1/3").
+    -->
+    <string name="trang_chu_loi_chao">Xin chào, %1$s</string>
+    <string name="trang_chu_quyen_muon_nhan">Quyền mượn:</string>
+    <string name="trang_chu_dang_muon">Đang mượn: %1$s thiết bị</string>
+    <string name="trang_chu_khong_the_dat_truoc">Bạn chưa thể đặt trước hoặc đăng ký chờ</string>
+    <string name="trang_chu_xem_ly_do">Xem lý do</string>
+    <string name="trang_chu_loi_vao_tra_cuu">Tra cứu thiết bị</string>
+    <string name="trang_chu_loi_vao_dat_truoc">Đặt trước thiết bị</string>
+    <string name="trang_chu_loi_vao_phieu_yeu_cau">Phiếu yêu cầu của tôi</string>
+    <string name="trang_chu_loi_vao_dang_ky_cho">Đăng ký chờ của tôi</string>
+    <string name="trang_chu_loi_vao_lich_su">Lịch sử mượn/trả</string>
+    <string name="trang_chu_loi_vao_bien_ban">Biên bản và phí phạt</string>
+    <string name="trang_chu_loi_vao_vi_pham">Vi phạm</string>
+    <string name="trang_chu_loi_vao_ho_so">Hồ sơ mượn</string>
+
+    <!--
+        D07-L, SCR-SV-14 (UI-Screens 5.14, User-Flows UF-SV-08, Wireframes SCR-SV-14). Nguyên văn tài liệu: "Đặt trước
+        không thực hiện được" (Wireframes), tên các khối, "Không có hạn chế do quyền mượn", nội dung hướng dẫn Tạm
+        khóa (UI-Screens 5.14, viết đủ chữ thay cho NV và QT). Do Architect viết, chờ nhóm xác nhận:
+        ho_so_bi_chan_dang_ky_cho, ho_so_bi_chan_chung, ho_so_huong_dan_cam_muon_dai_han, các nhãn dòng thông tin.
+    -->
+    <string name="ho_so_bi_chan_dat_truoc">Đặt trước không thực hiện được</string>
+    <string name="ho_so_bi_chan_dang_ky_cho">Đăng ký chờ không thực hiện được</string>
+    <string name="ho_so_bi_chan_chung">Thao tác không thực hiện được</string>
+    <string name="ho_so_the_thong_tin">Thông tin sinh viên</string>
+    <string name="ho_so_ma_sv">Mã sinh viên</string>
+    <string name="ho_so_ho_ten">Họ tên</string>
+    <string name="ho_so_lop">Lớp</string>
+    <string name="ho_so_khoa">Khoa</string>
+    <string name="ho_so_nhom">Nhóm sinh viên</string>
+    <string name="ho_so_han_the">Hạn thẻ</string>
+    <string name="ho_so_trang_thai_hoc">Trạng thái học</string>
+    <string name="ho_so_the_quyen_muon">Quyền mượn</string>
+    <string name="ho_so_quyen_muon_trang_thai">Trạng thái quyền mượn</string>
+    <string name="ho_so_so_thiet_bi">Số thiết bị đang mượn</string>
+    <string name="ho_so_the_bien_ban">Biên bản chưa nộp</string>
+    <string name="ho_so_bien_ban_chi_tiet">%1$s · %2$s</string>
+    <string name="ho_so_the_ly_do">Lý do không được mượn</string>
+    <string name="ho_so_ly_do_dong">• %1$s</string>
+    <string name="ho_so_the_huong_dan">Hướng dẫn mở lại</string>
+    <string name="ho_so_huong_dan_binh_thuong">Không có hạn chế do quyền mượn</string>
+    <string name="ho_so_huong_dan_tam_khoa">Trả đủ thiết bị của các phiếu quá hạn và nộp đủ tiền phạt tại quầy. Hệ thống xét mở khóa sau khi nhân viên ghi nhận Đã nộp hoặc chọn Xác nhận đã nhận đủ thiết bị. Chỉ mở khi không còn biên bản Chưa nộp và không còn thiết bị chưa trả của phiếu quá hạn. Phiếu chưa đến hạn không giữ khóa, không cần quản trị viên</string>
+    <string name="ho_so_huong_dan_cam_muon_dai_han">Chỉ quản trị viên gỡ cấm mượn dài hạn</string>
+    <string name="ho_so_dang_xuat">Đăng xuất</string>
+
+</resources>

@@ -1,0 +1,115 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+    SCR-SV-01 Trang chủ sinh viên (UI-Screens 5.1, Wireframes SCR-SV-01, DS CMP-15, CMP-25). Từ trên xuống: lời chào,
+    vùng thẻ quyền mượn (đang tải, lỗi hoặc thẻ; mỗi trạng thái chỉ ảnh hưởng vùng này, ĐX-UI-04), tám lối vào xếp
+    hai cột do TrangChuFragment dựng. Kéo xuống để làm mới (ĐX-UF-04). Thanh tiêu đề và thanh điều hướng dưới do
+    MainActivity đặt.
+-->
+<androidx.swiperefreshlayout.widget.SwipeRefreshLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/srl_lam_moi"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:padding="@dimen/ds_space_gutter">
+
+            <TextView
+                android:id="@+id/tv_loi_chao"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:textAppearance="@style/TextAppearance.Ds.TitleSection"
+                android:visibility="gone" />
+
+            <com.nhom13.quanlymuontra.common.widget.LoadingView
+                android:id="@+id/lv_the_quyen_muon"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content" />
+
+            <com.nhom13.quanlymuontra.common.widget.ErrorView
+                android:id="@+id/ev_the_quyen_muon"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:visibility="gone" />
+
+            <com.google.android.material.card.MaterialCardView
+                android:id="@+id/card_quyen_muon"
+                style="@style/Widget.Ds.Card"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/ds_space_4"
+                android:visibility="gone">
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical">
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:gravity="center_vertical"
+                        android:orientation="horizontal">
+
+                        <TextView
+                            android:id="@+id/tv_quyen_muon_nhan"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginEnd="@dimen/ds_space_2"
+                            android:text="@string/trang_chu_quyen_muon_nhan"
+                            android:textAppearance="@style/TextAppearance.Ds.Body" />
+
+                        <com.nhom13.quanlymuontra.common.widget.StatusBadgeView
+                            android:id="@+id/sb_quyen_muon"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content" />
+
+                    </LinearLayout>
+
+                    <TextView
+                        android:id="@+id/tv_dang_muon"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="@dimen/ds_space_2"
+                        android:textAppearance="@style/TextAppearance.Ds.Body" />
+
+                    <TextView
+                        android:id="@+id/tv_khong_the_dat_truoc"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="@dimen/ds_space_2"
+                        android:text="@string/trang_chu_khong_the_dat_truoc"
+                        android:textAppearance="@style/TextAppearance.Ds.Body"
+                        android:visibility="gone" />
+
+                    <com.google.android.material.button.MaterialButton
+                        android:id="@+id/btn_xem_ly_do"
+                        style="@style/Widget.Ds.Button.Secondary"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="@dimen/ds_space_3"
+                        android:text="@string/trang_chu_xem_ly_do"
+                        android:visibility="gone" />
+
+                </LinearLayout>
+
+            </com.google.android.material.card.MaterialCardView>
+
+            <LinearLayout
+                android:id="@+id/ll_loi_vao"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/ds_space_section"
+                android:orientation="vertical" />
+
+        </LinearLayout>
+
+    </ScrollView>
+
+</androidx.swiperefreshlayout.widget.SwipeRefreshLayout>

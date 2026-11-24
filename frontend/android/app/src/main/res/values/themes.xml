@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+    D05-L (DS 3, 5.1; FC 6.6): theme sáng duy nhất của app, kế thừa biến thể sáng của Material
+    Components (dòng Theme.MaterialComponents), không dùng DayNight (ĐX-DS-01). Mọi màu lấy từ token
+    ngữ nghĩa ds_color_*; không khai báo màu thô ở đây. Không đặt kiểu mặc định cho nút, ô nhập, thẻ:
+    mỗi nơi dùng chỉ định rõ style Widget.Ds.* để thấy được trong layout.
+-->
+<resources xmlns:tools="http://schemas.android.com/tools">
+
+    <style name="Theme.QuanLyMuonTra" parent="Theme.MaterialComponents.Light.NoActionBar">
+        <item name="colorPrimary">@color/ds_color_action_primary_bg</item>
+        <item name="colorPrimaryVariant">@color/ds_color_action_primary_bg</item>
+        <item name="colorOnPrimary">@color/ds_color_action_primary_text</item>
+        <item name="colorSecondary">@color/ds_color_action_primary_bg</item>
+        <item name="colorSecondaryVariant">@color/ds_color_action_primary_bg</item>
+        <item name="colorOnSecondary">@color/ds_color_action_primary_text</item>
+        <item name="colorError">@color/ds_color_tone_danger_solid</item>
+        <item name="colorOnError">@color/ds_color_tone_danger_on_solid</item>
+        <item name="colorSurface">@color/ds_color_surface_default</item>
+        <item name="colorOnSurface">@color/ds_color_text_primary</item>
+        <item name="android:colorBackground">@color/ds_color_surface_subtle</item>
+        <item name="colorOnBackground">@color/ds_color_text_primary</item>
+        <item name="android:textColorPrimary">@color/ds_color_text_primary</item>
+        <item name="android:textColorSecondary">@color/ds_color_text_secondary</item>
+        <item name="android:textColorHint">@color/ds_color_text_placeholder</item>
+        <item name="android:statusBarColor">@color/ds_color_surface_default</item>
+        <item name="android:windowLightStatusBar">true</item>
+        <!-- Không để hệ thống tự đảo màu khi bật chế độ tối (FC 6.6). -->
+        <item name="android:forceDarkAllowed" tools:targetApi="29">false</item>
+    </style>
+
+</resources>

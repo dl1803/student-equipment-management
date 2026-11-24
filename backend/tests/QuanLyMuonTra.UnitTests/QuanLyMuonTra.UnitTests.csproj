@@ -1,0 +1,36 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>net9.0</TargetFramework>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <Nullable>enable</Nullable>
+    <IsPackable>false</IsPackable>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="coverlet.collector" Version="6.0.2" />
+    <PackageReference Include="Microsoft.NET.Test.Sdk" Version="17.12.0" />
+    <PackageReference Include="Npgsql.EntityFrameworkCore.PostgreSQL" Version="9.0.4" />
+    <PackageReference Include="xunit" Version="2.9.2" />
+    <PackageReference Include="xunit.runner.visualstudio" Version="2.8.2" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Using Include="Xunit" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\..\src\QuanLyMuonTra.SharedKernel\QuanLyMuonTra.SharedKernel.csproj" />
+    <ProjectReference Include="..\..\src\Modules\MuonTra\QuanLyMuonTra.Modules.MuonTra\QuanLyMuonTra.Modules.MuonTra.csproj" />
+    <ProjectReference Include="..\..\src\Modules\DanhMuc\QuanLyMuonTra.Modules.DanhMuc\QuanLyMuonTra.Modules.DanhMuc.csproj" />
+    <ProjectReference Include="..\..\src\Modules\QuyDinh\QuanLyMuonTra.Modules.QuyDinh\QuanLyMuonTra.Modules.QuyDinh.csproj" />
+    <ProjectReference Include="..\..\src\Modules\BaoTri\QuanLyMuonTra.Modules.BaoTri\QuanLyMuonTra.Modules.BaoTri.csproj" />
+    <ProjectReference Include="..\..\src\Modules\TaiKhoan\QuanLyMuonTra.Modules.TaiKhoan\QuanLyMuonTra.Modules.TaiKhoan.csproj" />
+    <ProjectReference Include="..\..\src\Modules\ViPham\QuanLyMuonTra.Modules.ViPham\QuanLyMuonTra.Modules.ViPham.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Include="..\..\docs\04-api\openapi.yaml" Link="openapi.yaml" CopyToOutputDirectory="PreserveNewest" />
+  </ItemGroup>
+
+</Project>

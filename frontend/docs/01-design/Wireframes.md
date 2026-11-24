@@ -81,7 +81,7 @@ Những điểm nguồn không nêu mà bố cục cần quyết định. Các q
 |---|---|---|
 | ĐX-WF-01 | Tài liệu dùng sơ đồ khối bằng văn bản, không quy định kích thước điểm ảnh, màu, kiểu chữ hay điểm ngắt màn hình. | `UI-Screens.md` 1.2 và 3.9: kích thước và kiểu do Design-System quyết định |
 | ĐX-WF-02 | Ứng dụng Android: thanh ứng dụng ở đầu màn hình; thanh điều hướng bốn mục ở **cuối** màn hình, chỉ hiện ở màn hình gốc (Trang chủ, Tra cứu, Thông báo, Hồ sơ). Màn hình chi tiết và biểu mẫu mở chồng lên, có nút Quay lại ở thanh ứng dụng và không có thanh điều hướng (ngoại lệ: SCR-SV-14, xem ĐX-WF-14). | ĐX-UI-02, `UI-Screens.md` 4.1 |
-| ĐX-WF-03 | Web NV và QT: thanh đầu trang ở trên; menu bên ở **bên trái**; vùng nội dung ở bên phải. Họ tên, vai trò và nút Đăng xuất ở góc phải thanh đầu trang. | ĐX-UI-03, `UI-Screens.md` 4.2, 4.3 |
+| ĐX-WF-03 | Web NV và QT: menu bên ở **bên trái**, cao hết cửa sổ, tên hệ thống ở đầu menu; cột nội dung ở bên phải gồm thanh đầu trang ở trên và vùng nội dung bên dưới. Họ tên, vai trò và nút Đăng xuất ở góc phải thanh đầu trang (`Design-System.md` ĐX-DS-17, CMP-29, CMP-30). | ĐX-UI-03, `UI-Screens.md` 4.2, 4.3 |
 | ĐX-WF-04 | Hộp xác nhận và hộp thoại kết quả hiển thị ở giữa màn hình, che nội dung phía sau (hộp thoại chặn). Nút **Hủy** ở bên trái, nút xác nhận mang tên hành động ở bên phải. | `UI-Screens.md` 3.5, ĐX-UF-05 |
 | ĐX-WF-05 | Biểu mẫu thêm hoặc sửa ở web quản trị: ít trường dùng hộp thoại biểu mẫu ở giữa màn hình; riêng biểu mẫu thiết bị (nhiều trường, có ảnh) dùng ngăn trượt từ bên phải, giữ danh sách phía sau. | `UI-Screens.md` 7.2 đến 7.9 (số trường từng biểu mẫu) |
 | ĐX-WF-06 | Thông báo lỗi nghiệp vụ toàn màn hình (banner) đặt ở **đầu vùng nội dung**, ngay dưới thanh ứng dụng hoặc thanh đầu trang; lỗi theo trường đặt ngay dưới ô nhập tương ứng. | `UI-Screens.md` 3.2 |
@@ -98,6 +98,7 @@ Những điểm nguồn không nêu mà bố cục cần quyết định. Các q
 | ĐX-WF-17 | Bảng web có nhiều cột (SCR-QT-12) cuộn ngang trong khung bảng; trang không cuộn ngang. | `UI-Screens.md` 7.12 (số cột của báo cáo) |
 | ĐX-WF-18 | Ở SCR-NV-05, nguồn Mượn trực tiếp dùng chính bộ lọc Phòng chung ở đầu màn hình để chọn phòng; không vẽ ô chọn phòng thứ hai. | `UI-Screens.md` 6.5 (bộ lọc Phòng áp dụng cho cả ba nguồn) |
 | ĐX-WF-19 | Hộp thoại mà nguồn không quy định tên nút (bảng chọn thiết bị và hộp quyết định vừa lập ở SCR-QT-11) có nút điều khiển chuẩn **Đóng**, và bảng chọn có thêm nút xác nhận lựa chọn **Thêm vào danh sách**; đây là điều khiển của hộp thoại, không phải chức năng nghiệp vụ mới. | `UI-Screens.md` 3.8 (hộp thoại đóng được bằng phím Esc); 7.11 (bảng chọn, danh sách đã chọn) |
+| ĐX-WF-21 | Đăng nhập web (SCR-CM-02) chia hai cột: trái là tên hệ thống và biểu mẫu; phải là khối chứa ảnh minh họa trang trí. Trang chủ NV (SCR-NV-01) trình bày phòng được cấp quyền thành hàng thẻ; lối vào chức năng ở cả hai trang chủ là lưới thẻ ba cột. Không thêm nội dung hay chức năng mới. | `Design-System.md` ĐX-DS-17; `UI-Screens.md` 4.5, 6.1, 7.1 |
 | ĐX-WF-20 | Nút **Làm mới** nằm ở hàng tiêu đề, bên phải tên màn hình, của mọi màn hình web có danh sách hoặc bảng làm nội dung chính (SCR-NV-02, 11, 12, 13, 14; SCR-QT-02 đến 07, 09, 10, 11). Màn hình quét, biểu mẫu nhập, kết quả thao tác, trang chủ và báo cáo không có nút này. | `UI-Screens.md` 3.1 (nút Làm mới trên web), ĐX-UF-04 |
 
 ---
@@ -139,9 +140,9 @@ Nút Đăng xuất không nằm ở khung mà ở SCR-SV-14 (`UI-Screens.md` 4.1
 
 
 ```text
-┌──────────────────────────────────────────────────────────────────────────────────────────────────────────┐
-│  Quản lý mượn trả thiết bị                              Họ tên · Nhân viên quản lý thiết bị  [Đăng xuất] │
-├──────────────────────────────┬───────────────────────────────────────────────────────────────────────────┤
+┌──────────────────────────────┬───────────────────────────────────────────────────────────────────────────┐
+│  Quản lý mượn trả thiết bị   │                      ( Họ tên · Nhân viên quản lý thiết bị )  [Đăng xuất] │
+│                              │                                                                           │
 │▶ Trang chủ                   │ (vùng nội dung)                                                           │
 │  Phiếu yêu cầu chờ duyệt     │                                                                           │
 │  Giao thiết bị               │ …                                                                         │
@@ -156,8 +157,8 @@ Nút Đăng xuất không nằm ở khung mà ở SCR-SV-14 (`UI-Screens.md` 4.1
 
 | Vùng | Vị trí | Ghi chú |
 |---|---|---|
-| Thanh đầu trang | Trên cùng (ghim) | Tên hệ thống; họ tên và vai trò (Nhân viên quản lý thiết bị); nút **Đăng xuất** |
-| Menu bên | Trái (ghim) | Tám mục theo thứ tự ở hình; mục của màn hình đang mở được đánh dấu `▶`; màn hình không có mục riêng đánh dấu mục gốc của luồng (ĐX-WF-12) |
+| Menu bên | Trái, cao hết cửa sổ (ghim) | Tên hệ thống ở đầu menu (về trang chủ khi chọn); tám mục theo thứ tự ở hình, mỗi mục có biểu tượng trước tên (`Design-System.md` Phụ lục A); mục của màn hình đang mở được đánh dấu `▶`; màn hình không có mục riêng đánh dấu mục gốc của luồng (ĐX-WF-12) |
+| Thanh đầu trang | Trên cùng của cột nội dung (ghim) | Họ tên và vai trò (Nhân viên quản lý thiết bị) trong một khối; nút **Đăng xuất**; cả hai ở góc phải |
 | Vùng nội dung | Phải, cuộn dọc | Tiêu đề màn hình ở đầu vùng, kèm nút **Làm mới** ở màn hình danh sách (ĐX-WF-20); banner lỗi (ĐX-WF-06) ngay dưới tiêu đề |
 | Hộp thoại | Giữa màn hình, chồng lên | Mẫu P-03 |
 
@@ -169,9 +170,9 @@ Menu bên không có mục ngoài vai trò NV.
 
 
 ```text
-┌──────────────────────────────────────────────────────────────────────────────────────────────────────────┐
-│  Quản lý mượn trả thiết bị                                           Họ tên · Quản trị viên  [Đăng xuất] │
-├──────────────────────────────┬───────────────────────────────────────────────────────────────────────────┤
+┌──────────────────────────────┬───────────────────────────────────────────────────────────────────────────┐
+│  Quản lý mượn trả thiết bị   │                                   ( Họ tên · Quản trị viên )  [Đăng xuất] │
+│                              │                                                                           │
 │▶ Trang chủ                   │ (vùng nội dung)                                                           │
 │  Danh mục                    │                                                                           │
 │    Phòng thiết bị            │ …                                                                         │
@@ -192,8 +193,8 @@ Menu bên không có mục ngoài vai trò NV.
 
 | Vùng | Vị trí | Ghi chú |
 |---|---|---|
-| Thanh đầu trang | Trên cùng (ghim) | Họ tên và vai trò (Quản trị viên); nút **Đăng xuất** |
-| Menu bên | Trái (ghim) | Hai nhóm có tiêu đề **Danh mục** và **Cấu hình** (tiêu đề nhóm không chọn được) và các mục đơn lẻ, theo thứ tự ở hình |
+| Menu bên | Trái, cao hết cửa sổ (ghim) | Tên hệ thống ở đầu menu; mỗi mục có biểu tượng trước tên (`Design-System.md` Phụ lục A); hai nhóm có tiêu đề **Danh mục** và **Cấu hình** (tiêu đề nhóm không chọn được) và các mục đơn lẻ, theo thứ tự ở hình |
+| Thanh đầu trang | Trên cùng của cột nội dung (ghim) | Họ tên và vai trò (Quản trị viên) trong một khối; nút **Đăng xuất** |
 | Vùng nội dung | Phải, cuộn dọc | Như khung NV (tiêu đề, nút **Làm mới** ở màn hình danh sách, banner lỗi) |
 
 Menu bên không có mục duyệt, giao, nhận, lập biên bản, bảo trì và không có mục xem nhật ký.
@@ -257,20 +258,19 @@ Dùng cho mọi danh sách dạng bảng của NV và QT; màn hình dùng mẫu
 
 
 ```text
-┌────────────────────────────────────────────────────────────────────────────────────────────┐
-│  Quản lý mượn trả thiết bị                             Họ tên · Quản trị viên  [Đăng xuất] │
-├──────────────────────────────┬─────────────────────────────────────────────────────────────┤
-│  Trang chủ                   │ Tiêu đề màn hình   [ Làm mới ]                              │
+┌──────────────────────────────┬─────────────────────────────────────────────────────────────┐
+│  Quản lý mượn trả thiết bị   │                     ( Họ tên · Quản trị viên )  [Đăng xuất] │
+│  Trang chủ                   │ Tiêu đề màn hình                  [ Làm mới ] [ + Thêm ]    │
 │  Danh mục                    │ ⚠ (banner lỗi, khi có)                                      │
-│▶   Phòng thiết bị            │ Bộ lọc: [ Lọc 1 ▾ ] [ Lọc 2 ▾ ] [ Xóa bộ lọc ]   [ + Thêm ] │
-│    Loại thiết bị             │ ┌───────┬───────┬───┬───────────┐                           │
-│    Thiết bị                  │ │ Cột 1 │ Cột 2 │ … │ Hành động │                           │
-│  Cấu hình                    │ ├───────┼───────┼───┼───────────┤                           │
-│    Quy định mượn             │ │ …     │ …     │ … │ [ Sửa ]   │                           │
-│    Phí trả trễ               │ │ …     │ …     │ … │ [ Sửa ]   │                           │
-│    Khung phạt                │ └───────┴───────┴───┴───────────┘                           │
-│    Tham số hệ thống          │ Tổng số: …        ‹ 1 2 3 ›                                 │
-│  Tài khoản nhân viên         │                                                             │
+│▶   Phòng thiết bị            │ Bộ lọc: [ Lọc 1 ▾ ] [ Lọc 2 ▾ ] [ Xóa bộ lọc ]              │
+│    Loại thiết bị             │                                                             │
+│    Thiết bị                  │  Cột 1     Cột 2     …         Hành động                    │
+│  Cấu hình                    │ ───────────────────────────────────────────                 │
+│    Quy định mượn             │  …         …         …         [ Sửa ]                      │
+│    Phí trả trễ               │ ───────────────────────────────────────────                 │
+│    Khung phạt                │  …         …         …         [ Sửa ]                      │
+│    Tham số hệ thống          │ ───────────────────────────────────────────                 │
+│  Tài khoản nhân viên         │ Tổng số: …        ‹ 1 2 3 ›                                 │
 │  Biên bản vi phạm            │                                                             │
 │  Thanh lý                    │                                                             │
 │  Báo cáo                     │                                                             │
@@ -282,7 +282,7 @@ Dùng cho mọi danh sách dạng bảng của NV và QT; màn hình dùng mẫu
 |---|---|
 | Hàng tiêu đề | Tên màn hình và nút **Làm mới** (web, ĐX-UF-04) |
 | Hàng bộ lọc | Bộ lọc đang áp dụng luôn nhìn thấy và có cách xóa (nút **Xóa bộ lọc**); nút tạo mới ở phía phải (ĐX-WF-08) |
-| Bảng | Cột cuối là hành động theo dòng; dòng chọn được khi màn hình ghi |
+| Bảng | Không khung bao, chỉ có đường kẻ ngang giữa các dòng (`Design-System.md` CMP-18); cột cuối là hành động theo dòng; dòng chọn được khi màn hình ghi |
 | Chân bảng | Tổng số (`tongSo`) và phân trang (ĐX-UI-13); đổi bộ lọc thì về trang 1 |
 | Rỗng | Bảng được thay bằng thông điệp rỗng của màn hình, bộ lọc vẫn hiện |
 | Lỗi | Banner ở đầu vùng nội dung kèm **Thử lại**; bộ lọc đã chọn giữ nguyên |
@@ -310,7 +310,7 @@ Phím Esc (web) đóng hộp khi chưa gửi yêu cầu. Khi đang chờ phản 
 
 ### 3.4 P-04 Hộp thoại biểu mẫu và ngăn biểu mẫu (web)
 
-ĐX-WF-05. Hộp thoại biểu mẫu: tiêu đề, các trường theo thứ tự `UI-Screens.md`, lỗi dưới từng trường, nút **Hủy** và nút **Lưu** ở chân. Ngăn biểu mẫu (chỉ thiết bị): cùng cấu trúc, cuộn dọc ở giữa, chân cố định.
+ĐX-WF-05. Hộp thoại biểu mẫu: tiêu đề, các trường theo thứ tự `UI-Screens.md`, lỗi dưới từng trường, nút **Hủy** và nút **Lưu** ở chân. Ngăn biểu mẫu (chỉ thiết bị): cùng cấu trúc, áp sát mép phải và cao hết cửa sổ; đầu ngăn có tiêu đề và nút **Đóng** `[✕]`, thân cuộn dọc, chân cố định. Trường ngắn liên quan (Loại và Phòng, hai ô ngày, Kệ và Tủ) đặt hai cột cạnh nhau.
 
 
 ```text
@@ -428,26 +428,27 @@ Nội dung: `UI-Screens.md` 4.4. Khung: riêng, không có thanh điều hướn
 Nội dung: `UI-Screens.md` 4.5. Khung: riêng, không có thanh điều hướng.
 
 ```text
-┌──────────────────────────────────────────────────────────────────────┐
-│                                                                      │
-│                 HỆ THỐNG MƯỢN TRẢ THIẾT BỊ                           │
-│                                                                      │
-│   ┌────────────────────────────────────────────────────────────┐     │
-│   │ ⚠ Phiên đăng nhập đã hết hạn, vui lòng đăng nhập lại       │     │
-│   │    (chỉ khi phiên hết hạn; lỗi đăng nhập hiện cùng vị trí) │     │
-│   │                                                            │     │
-│   │ Tên đăng nhập *                                            │     │
-│   │ [ ____________________________________ ]                   │     │
-│   │ Mật khẩu *                                                 │     │
-│   │ [ ●●●●●●●● ___________________________ ]                   │     │
-│   │                                                            │     │
-│   │ [ Đăng nhập ]                                              │     │
-│   └────────────────────────────────────────────────────────────┘     │
-│                                                                      │
-└──────────────────────────────────────────────────────────────────────┘
+┌───────────────────────────────────┬──────────────────────────────────┐
+│ Quản lý mượn trả thiết bị         │ ┌──────────────────────────────┐ │
+│                                   │ │                              │ │
+│                                   │ │                              │ │
+│   Đăng nhập                       │ │                              │ │
+│   ⚠ Phiên đăng nhập đã hết hạn,   │ │                              │ │
+│     vui lòng đăng nhập lại        │ │     (ảnh minh họa, trang     │ │
+│     (chỉ khi phiên hết hạn; lỗi   │ │      trí, canh giữa khối)    │ │
+│     đăng nhập hiện cùng vị trí)   │ │                              │ │
+│   * Bắt buộc                      │ │                              │ │
+│   Tên đăng nhập *                 │ │                              │ │
+│   [ ___________________________ ] │ │                              │ │
+│   Mật khẩu *                      │ │                              │ │
+│   [ ●●●●●●●● __________________ ] │ │                              │ │
+│   [         Đăng nhập          ]  │ │                              │ │
+│                                   │ │                              │ │
+│                                   │ └──────────────────────────────┘ │
+└───────────────────────────────────┴──────────────────────────────────┘
 ```
 
-Thẻ đăng nhập đặt giữa màn hình, không có khung điều hướng. Một biểu mẫu chung cho NV và QT; không có liên kết đăng ký, quên hoặc đổi mật khẩu. Lỗi `TAI_KHOAN_BI_KHOA` hiển thị thông báo dùng chung ở cùng vị trí banner.
+Hai cột (ĐX-WF-21), không có khung điều hướng. Cột trái: tên hệ thống ở góc trên, biểu mẫu canh giữa. Biểu mẫu nằm chính giữa cột trái. Cột phải: khối chứa một ảnh minh họa trang trí, không logo, không thông tin nào khác. Một biểu mẫu chung cho NV và QT; không có liên kết đăng ký, quên hoặc đổi mật khẩu. Lỗi `TAI_KHOAN_BI_KHOA` hiển thị thông báo dùng chung ở cùng vị trí banner.
 
 
 ### SCR-CM-03 Khởi động và khôi phục phiên
@@ -952,35 +953,35 @@ Mọi màn hình trong mục này theo khung 2.2; hình vẽ có đủ thanh đ�
 Nội dung: `UI-Screens.md` 6.1. Khung: mục 2.2.
 
 ```text
-┌──────────────────────────────────────────────────────────────────────────────────────────────────────────┐
-│  Quản lý mượn trả thiết bị                              Họ tên · Nhân viên quản lý thiết bị  [Đăng xuất] │
-├──────────────────────────────┬───────────────────────────────────────────────────────────────────────────┤
+┌──────────────────────────────┬───────────────────────────────────────────────────────────────────────────┐
+│  Quản lý mượn trả thiết bị   │                      ( Họ tên · Nhân viên quản lý thiết bị )  [Đăng xuất] │
 │▶ Trang chủ                   │ Trang chủ                                                                 │
-│  Phiếu yêu cầu chờ duyệt     │ Xin chào, Họ tên                                                          │
-│  Giao thiết bị               │ ┌────────────────────────────────────────────────────────────────────┐    │
-│  Nhận trả thiết bị           │ │ Phòng được cấp quyền: A1 · Cơ sở 1;  B2 · Cơ sở 2                  │    │
-│  Biên bản và thu phạt        │ └────────────────────────────────────────────────────────────────────┘    │
-│  Phiếu chưa trả quá 30 ngày  │                                                                           │
-│  Danh sách chờ               │ ┌────────────────────┐ ┌────────────────────┐ ┌────────────────────┐      │
-│  Bảo trì và sửa chữa         │ │ Phiếu yêu cầu      │ │ Giao thiết bị      │ │ Nhận trả           │      │
+│  Phiếu yêu cầu chờ duyệt     │ Họ tên                                                                    │
+│  Giao thiết bị               │ Phòng được cấp quyền                                                      │
+│  Nhận trả thiết bị           │ ┌────────────────────┐ ┌────────────────────┐                             │
+│  Biên bản và thu phạt        │ │ Phòng A1           │ │ Phòng B2           │                             │
+│  Phiếu chưa trả quá 30 ngày  │ │ Cơ sở 1            │ │ Cơ sở 2            │                             │
+│  Danh sách chờ               │ └────────────────────┘ └────────────────────┘                             │
+│  Bảo trì và sửa chữa         │ Chức năng                                                                 │
+│                              │ ┌────────────────────┐ ┌────────────────────┐ ┌────────────────────┐      │
+│                              │ │ Phiếu yêu cầu    › │ │ Giao thiết bị    › │ │ Nhận trả         › │      │
 │                              │ │ chờ duyệt          │ │                    │ │ thiết bị           │      │
 │                              │ └────────────────────┘ └────────────────────┘ └────────────────────┘      │
 │                              │ ┌────────────────────┐ ┌────────────────────┐ ┌────────────────────┐      │
-│                              │ │ Biên bản và        │ │ Phiếu chưa trả     │ │ Danh sách chờ      │      │
+│                              │ │ Biên bản và      › │ │ Phiếu chưa trả   › │ │ Danh sách chờ    › │      │
 │                              │ │ thu phạt           │ │ quá 30 ngày        │ │                    │      │
 │                              │ └────────────────────┘ └────────────────────┘ └────────────────────┘      │
 │                              │ ┌────────────────────┐                                                    │
-│                              │ │ Bảo trì và         │                                                    │
+│                              │ │ Bảo trì và       › │                                                    │
 │                              │ │ sửa chữa           │                                                    │
 │                              │ └────────────────────┘                                                    │
 │                              │                                                                           │
-│                              │ ⚠ (khi dsPhong rỗng) Bạn chưa được cấp quyền phòng thiết bị nào;          │
-│                              │   liên hệ quản trị viên. Các lối vào vẫn hiển thị, mọi danh sách rỗng.    │
-│                              │                                                                           │
+│                              │ ⚠ (khi dsPhong rỗng, thay hàng thẻ phòng) Bạn chưa được cấp quyền         │
+│                              │   phòng thiết bị nào; liên hệ quản trị viên. Các lối vào vẫn hiển thị.    │
 └──────────────────────────────┴───────────────────────────────────────────────────────────────────────────┘
 ```
 
-Bảy lối vào xếp lưới ba cột theo thứ tự ở hình, tương ứng bảy mục chức năng của menu bên. Khối phòng được cấp quyền ở đầu vùng nội dung; cảnh báo chỉ hiện khi `dsPhong` rỗng.
+Phòng được cấp quyền là hàng thẻ tĩnh (tên phòng, cơ sở), xếp lưới ba cột (ĐX-WF-21); cảnh báo thay hàng thẻ khi `dsPhong` rỗng. Bảy lối vào xếp lưới ba cột theo thứ tự ở hình, tương ứng bảy mục chức năng của menu bên. Không có thẻ số liệu vì API không trả số tổng.
 
 
 ### SCR-NV-02 Danh sách phiếu yêu cầu chờ duyệt
@@ -988,9 +989,8 @@ Bảy lối vào xếp lưới ba cột theo thứ tự ở hình, tương ứng
 Nội dung: `UI-Screens.md` 6.2. Khung: mục 2.2. Mẫu bố cục: P-02.
 
 ```text
-┌───────────────────────────────────────────────────────────────────────────────────────────────────────────────┐
-│  Quản lý mượn trả thiết bị                                   Họ tên · Nhân viên quản lý thiết bị  [Đăng xuất] │
-├──────────────────────────────┬────────────────────────────────────────────────────────────────────────────────┤
+┌──────────────────────────────┬────────────────────────────────────────────────────────────────────────────────┐
+│  Quản lý mượn trả thiết bị   │                           ( Họ tên · Nhân viên quản lý thiết bị )  [Đăng xuất] │
 │  Trang chủ                   │ Phiếu yêu cầu chờ duyệt                         [ Làm mới ]                    │
 │▶ Phiếu yêu cầu chờ duyệt     │ Phòng: [ Tất cả phòng được cấp quyền ▾ ]                                       │
 │  Giao thiết bị               │                                                                                │
@@ -1015,9 +1015,8 @@ Mẫu P-02. Phiếu gửi trước hiển thị trước. Cả dòng chọn đư
 Nội dung: `UI-Screens.md` 6.3. Khung: mục 2.2. Mẫu bố cục: P-03.
 
 ```text
-┌──────────────────────────────────────────────────────────────────────────────────────────────────────────┐
-│  Quản lý mượn trả thiết bị                              Họ tên · Nhân viên quản lý thiết bị  [Đăng xuất] │
-├──────────────────────────────┬───────────────────────────────────────────────────────────────────────────┤
+┌──────────────────────────────┬───────────────────────────────────────────────────────────────────────────┐
+│  Quản lý mượn trả thiết bị   │                      ( Họ tên · Nhân viên quản lý thiết bị )  [Đăng xuất] │
 │  Trang chủ                   │ Duyệt hoặc từ chối phiếu yêu cầu                                          │
 │▶ Phiếu yêu cầu chờ duyệt     │ ┌─ Thông tin phiếu ──────────────────────────────────────────────────┐    │
 │  Giao thiết bị               │ │ Phiếu YC-123 · SV 21520001 · Nguyễn A · L1                         │    │
@@ -1067,9 +1066,8 @@ Nội dung: `UI-Screens.md` 6.3. Khung: mục 2.2. Mẫu bố cục: P-03.
 Nội dung: `UI-Screens.md` 6.4. Khung: mục 2.2. Mẫu bố cục: P-06, P-07, P-08.
 
 ```text
-┌──────────────────────────────────────────────────────────────────────────────────────────────────────────┐
-│  Quản lý mượn trả thiết bị                              Họ tên · Nhân viên quản lý thiết bị  [Đăng xuất] │
-├──────────────────────────────┬───────────────────────────────────────────────────────────────────────────┤
+┌──────────────────────────────┬───────────────────────────────────────────────────────────────────────────┐
+│  Quản lý mượn trả thiết bị   │                      ( Họ tên · Nhân viên quản lý thiết bị )  [Đăng xuất] │
 │  Trang chủ                   │ Giao thiết bị                                                             │
 │  Phiếu yêu cầu chờ duyệt     │ ▶① Thẻ SV ───  ② Nguồn giao ───  ③ Thiết bị ───  ④ Phiếu mượn             │
 │▶ Giao thiết bị               │                                                                           │
@@ -1107,9 +1105,8 @@ Mẫu P-06 (ô nhập mã), P-07 (hồ sơ SV) và P-08 (thanh tiến trình). T
 Nội dung: `UI-Screens.md` 6.5. Khung: mục 2.2. Mẫu bố cục: P-02, P-08.
 
 ```text
-┌──────────────────────────────────────────────────────────────────────────────────────────────────────────────┐
-│  Quản lý mượn trả thiết bị                                  Họ tên · Nhân viên quản lý thiết bị  [Đăng xuất] │
-├──────────────────────────────┬───────────────────────────────────────────────────────────────────────────────┤
+┌──────────────────────────────┬───────────────────────────────────────────────────────────────────────────────┐
+│  Quản lý mượn trả thiết bị   │                          ( Họ tên · Nhân viên quản lý thiết bị )  [Đăng xuất] │
 │  Trang chủ                   │ Giao thiết bị                                                                 │
 │  Phiếu yêu cầu chờ duyệt     │  ① Thẻ SV ─── ▶② Nguồn giao ───  ③ Thiết bị ───  ④ Phiếu mượn                 │
 │▶ Giao thiết bị               │ SV: 21520001 · Nguyễn A     Phòng: [ A1 ▾ ]                                   │
@@ -1164,9 +1161,8 @@ Nội dung: `UI-Screens.md` 6.5. Khung: mục 2.2. Mẫu bố cục: P-02, P-08.
 Nội dung: `UI-Screens.md` 6.6. Khung: mục 2.2. Mẫu bố cục: P-03, P-05, P-06, P-08.
 
 ```text
-┌──────────────────────────────────────────────────────────────────────────────────────────────────────────────┐
-│  Quản lý mượn trả thiết bị                                  Họ tên · Nhân viên quản lý thiết bị  [Đăng xuất] │
-├──────────────────────────────┬───────────────────────────────────────────────────────────────────────────────┤
+┌──────────────────────────────┬───────────────────────────────────────────────────────────────────────────────┐
+│  Quản lý mượn trả thiết bị   │                          ( Họ tên · Nhân viên quản lý thiết bị )  [Đăng xuất] │
 │  Trang chủ                   │ Giao thiết bị                                                                 │
 │  Phiếu yêu cầu chờ duyệt     │  ① Thẻ SV ───  ② Nguồn giao ─── ▶③ Thiết bị ───  ④ Phiếu mượn                 │
 │▶ Giao thiết bị               │                                                                               │
@@ -1210,9 +1206,8 @@ Nội dung: `UI-Screens.md` 6.6. Khung: mục 2.2. Mẫu bố cục: P-03, P-05,
 Nội dung: `UI-Screens.md` 6.7. Khung: mục 2.2. Mẫu bố cục: P-08.
 
 ```text
-┌──────────────────────────────────────────────────────────────────────────────────────────────────────────┐
-│  Quản lý mượn trả thiết bị                              Họ tên · Nhân viên quản lý thiết bị  [Đăng xuất] │
-├──────────────────────────────┬───────────────────────────────────────────────────────────────────────────┤
+┌──────────────────────────────┬───────────────────────────────────────────────────────────────────────────┐
+│  Quản lý mượn trả thiết bị   │                      ( Họ tên · Nhân viên quản lý thiết bị )  [Đăng xuất] │
 │  Trang chủ                   │ Giao thiết bị                                                             │
 │  Phiếu yêu cầu chờ duyệt     │  ① Thẻ SV ───  ② Nguồn giao ───  ③ Thiết bị ─── ▶④ Phiếu mượn             │
 │▶ Giao thiết bị               │                                                                           │
@@ -1242,9 +1237,8 @@ Màn hình chỉ xem: không có hành động sửa phiếu. Hai nút ở cuố
 Nội dung: `UI-Screens.md` 6.8. Khung: mục 2.2. Mẫu bố cục: P-02, P-06.
 
 ```text
-┌──────────────────────────────────────────────────────────────────────────────────────────────────────────┐
-│  Quản lý mượn trả thiết bị                              Họ tên · Nhân viên quản lý thiết bị  [Đăng xuất] │
-├──────────────────────────────┬───────────────────────────────────────────────────────────────────────────┤
+┌──────────────────────────────┬───────────────────────────────────────────────────────────────────────────┐
+│  Quản lý mượn trả thiết bị   │                      ( Họ tên · Nhân viên quản lý thiết bị )  [Đăng xuất] │
 │  Trang chủ                   │ Nhận trả thiết bị                                                         │
 │  Phiếu yêu cầu chờ duyệt     │ Mã thiết bị:  [ ▌quét hoặc nhập tay ______ ]                              │
 │  Giao thiết bị               │ ┌─ Thông tin bàn giao ───────────────────────────────────────────────┐    │
@@ -1283,9 +1277,8 @@ Nội dung: `UI-Screens.md` 6.8. Khung: mục 2.2. Mẫu bố cục: P-02, P-06.
 Nội dung: `UI-Screens.md` 6.9. Khung: mục 2.2. Mẫu bố cục: P-03, P-05, P-06.
 
 ```text
-┌──────────────────────────────────────────────────────────────────────────────────────────────────────────┐
-│  Quản lý mượn trả thiết bị                              Họ tên · Nhân viên quản lý thiết bị  [Đăng xuất] │
-├──────────────────────────────┬───────────────────────────────────────────────────────────────────────────┤
+┌──────────────────────────────┬───────────────────────────────────────────────────────────────────────────┐
+│  Quản lý mượn trả thiết bị   │                      ( Họ tên · Nhân viên quản lý thiết bị )  [Đăng xuất] │
 │  Trang chủ                   │ Kiểm tra và ghi kết quả                                                   │
 │  Phiếu yêu cầu chờ duyệt     │ PM-045 · SV 21520001 · Nguyễn A · Hẹn trả … ‹Quá hạn›                     │
 │  Giao thiết bị               │ Thiết bị của phiếu                                                        │
@@ -1334,9 +1327,8 @@ Nội dung: `UI-Screens.md` 6.9. Khung: mục 2.2. Mẫu bố cục: P-03, P-05,
 Nội dung: `UI-Screens.md` 6.10. Khung: mục 2.2. Mẫu bố cục: P-03.
 
 ```text
-┌────────────────────────────────────────────────────────────────────────────────────────────────────────────┐
-│  Quản lý mượn trả thiết bị                                Họ tên · Nhân viên quản lý thiết bị  [Đăng xuất] │
-├──────────────────────────────┬─────────────────────────────────────────────────────────────────────────────┤
+┌──────────────────────────────┬─────────────────────────────────────────────────────────────────────────────┐
+│  Quản lý mượn trả thiết bị   │                        ( Họ tên · Nhân viên quản lý thiết bị )  [Đăng xuất] │
 │  Trang chủ                   │ Lập biên bản vi phạm                                                        │
 │  Phiếu yêu cầu chờ duyệt     │ Phiếu PM-045                                                                │
 │  Giao thiết bị               │ ┌───────────────┬──────────────┬──────────┬───────────────┬───────────────┐ │
@@ -1370,9 +1362,8 @@ Bảng khoản đề xuất ở giữa; cột Số tiền chỉ đọc (không c
 Nội dung: `UI-Screens.md` 6.11. Khung: mục 2.2. Mẫu bố cục: P-02, P-03, P-06, P-07.
 
 ```text
-┌──────────────────────────────────────────────────────────────────────────────────────────────────────────────────────┐
-│  Quản lý mượn trả thiết bị                                          Họ tên · Nhân viên quản lý thiết bị  [Đăng xuất] │
-├──────────────────────────────┬───────────────────────────────────────────────────────────────────────────────────────┤
+┌──────────────────────────────┬───────────────────────────────────────────────────────────────────────────────────────┐
+│  Quản lý mượn trả thiết bị   │                                  ( Họ tên · Nhân viên quản lý thiết bị )  [Đăng xuất] │
 │  Trang chủ                   │ Biên bản và thu phạt            [ Làm mới ]                                           │
 │  Phiếu yêu cầu chờ duyệt     │ Mã SV: [ ▌quét/nhập ____ ]  Trạng thái: [ Chưa nộp ▾ ]  Phòng: [ Tất cả ▾ ]           │
 │  Giao thiết bị               │ <Tìm phiếu của SV>                                                                    │
@@ -1406,9 +1397,8 @@ Nội dung: `UI-Screens.md` 6.11. Khung: mục 2.2. Mẫu bố cục: P-02, P-03
 Nội dung: `UI-Screens.md` 6.12. Khung: mục 2.2. Mẫu bố cục: P-03. Chân phân trang theo `Design-System.md` CMP-19.
 
 ```text
-┌──────────────────────────────────────────────────────────────────────────────────────────────────────────┐
-│  Quản lý mượn trả thiết bị                              Họ tên · Nhân viên quản lý thiết bị  [Đăng xuất] │
-├──────────────────────────────┬───────────────────────────────────────────────────────────────────────────┤
+┌──────────────────────────────┬───────────────────────────────────────────────────────────────────────────┐
+│  Quản lý mượn trả thiết bị   │                      ( Họ tên · Nhân viên quản lý thiết bị )  [Đăng xuất] │
 │  Trang chủ                   │ Phiếu chưa trả quá 30 ngày         [ Làm mới ]                            │
 │  Phiếu yêu cầu chờ duyệt     │ Phòng: [ Tất cả phòng được cấp quyền ▾ ]                                  │
 │  Giao thiết bị               │ ┌────────────────────────────────────────────────────────────────────┐    │
@@ -1434,9 +1424,8 @@ Mỗi phiếu là một thẻ, trong thẻ có danh sách thiết bị chưa tr�
 Nội dung: `UI-Screens.md` 6.13. Khung: mục 2.2. Mẫu bố cục: P-02, P-03.
 
 ```text
-┌──────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────┐
-│  Quản lý mượn trả thiết bị                                                  Họ tên · Nhân viên quản lý thiết bị  [Đăng xuất] │
-├──────────────────────────────┬───────────────────────────────────────────────────────────────────────────────────────────────┤
+┌──────────────────────────────┬───────────────────────────────────────────────────────────────────────────────────────────────┐
+│  Quản lý mượn trả thiết bị   │                                          ( Họ tên · Nhân viên quản lý thiết bị )  [Đăng xuất] │
 │  Trang chủ                   │ Danh sách chờ                         [ Làm mới ]                                             │
 │  Phiếu yêu cầu chờ duyệt     │ Phòng: [ A1 ▾ ]   Loại: [ Tất cả ▾ ]                                                          │
 │  Giao thiết bị               │                                                                                               │
@@ -1460,9 +1449,8 @@ Mẫu P-02. Sắp theo thời điểm đăng ký. Nút **Chuyển lượt** ch�
 Nội dung: `UI-Screens.md` 6.14. Khung: mục 2.2. Mẫu bố cục: P-02, P-03, P-04.
 
 ```text
-┌─────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────┐
-│  Quản lý mượn trả thiết bị                                                     Họ tên · Nhân viên quản lý thiết bị  [Đăng xuất] │
-├──────────────────────────────┬──────────────────────────────────────────────────────────────────────────────────────────────────┤
+┌──────────────────────────────┬──────────────────────────────────────────────────────────────────────────────────────────────────┐
+│  Quản lý mượn trả thiết bị   │                                             ( Họ tên · Nhân viên quản lý thiết bị )  [Đăng xuất] │
 │  Trang chủ                   │ Bảo trì và sửa chữa                 [ Làm mới ]                                                  │
 │  Phiếu yêu cầu chờ duyệt     │ Phòng: [ Tất cả phòng được cấp quyền ▾ ]                                                         │
 │  Giao thiết bị               │ ┌────────────────────┐ ┌────────────────────────────┐                                            │
@@ -1517,33 +1505,27 @@ Mọi màn hình trong mục này theo khung 2.3. Quản trị viên không bị
 Nội dung: `UI-Screens.md` 7.1. Khung: mục 2.3.
 
 ```text
-┌──────────────────────────────────────────────────────────────────────────────────────────────────────────┐
-│  Quản lý mượn trả thiết bị                                           Họ tên · Quản trị viên  [Đăng xuất] │
-├──────────────────────────────┬───────────────────────────────────────────────────────────────────────────┤
+┌──────────────────────────────┬───────────────────────────────────────────────────────────────────────────┐
+│  Quản lý mượn trả thiết bị   │                                   ( Họ tên · Quản trị viên )  [Đăng xuất] │
 │▶ Trang chủ                   │ Trang chủ                                                                 │
-│  Danh mục                    │ Xin chào, Họ tên                                                          │
-│    Phòng thiết bị            │                                                                           │
-│    Loại thiết bị             │ Danh mục                                                                  │
-│    Thiết bị                  │ ┌────────────────────┐ ┌────────────────────┐ ┌────────────────────┐      │
-│  Cấu hình                    │ │ Phòng thiết bị     │ │ Loại thiết bị      │ │ Thiết bị           │      │
-│    Quy định mượn             │ │                    │ │                    │ │                    │      │
-│    Phí trả trễ               │ └────────────────────┘ └────────────────────┘ └────────────────────┘      │
-│    Khung phạt                │ Cấu hình                                                                  │
-│    Tham số hệ thống          │ ┌────────────────────┐ ┌────────────────────┐ ┌────────────────────┐      │
-│  Tài khoản nhân viên         │ │ Quy định mượn      │ │ Phí trả trễ        │ │ Khung phạt         │      │
-│  Biên bản vi phạm            │ │                    │ │                    │ │                    │      │
-│  Thanh lý                    │ └────────────────────┘ └────────────────────┘ └────────────────────┘      │
-│  Báo cáo                     │ ┌────────────────────┐                                                    │
-│                              │ │ Tham số hệ thống   │                                                    │
-│                              │ │                    │                                                    │
-│                              │ └────────────────────┘                                                    │
-│                              │ ┌────────────────────┐ ┌────────────────────┐ ┌────────────────────┐      │
-│                              │ │ Tài khoản          │ │ Biên bản           │ │ Thanh lý           │      │
+│  Danh mục                    │ Họ tên                                                                    │
+│    Phòng thiết bị            │ Danh mục                                                                  │
+│    Loại thiết bị             │ ┌────────────────────┐ ┌────────────────────┐ ┌────────────────────┐      │
+│    Thiết bị                  │ │ Phòng thiết bị   › │ │ Loại thiết bị    › │ │ Thiết bị         › │      │
+│  Cấu hình                    │ └────────────────────┘ └────────────────────┘ └────────────────────┘      │
+│    Quy định mượn             │ Cấu hình                                                                  │
+│    Phí trả trễ               │ ┌────────────────────┐ ┌────────────────────┐ ┌────────────────────┐      │
+│    Khung phạt                │ │ Quy định mượn    › │ │ Phí trả trễ      › │ │ Khung phạt       › │      │
+│    Tham số hệ thống          │ └────────────────────┘ └────────────────────┘ └────────────────────┘      │
+│  Tài khoản nhân viên         │ ┌────────────────────┐                                                    │
+│  Biên bản vi phạm            │ │ Tham số hệ thống › │                                                    │
+│  Thanh lý                    │ └────────────────────┘                                                    │
+│  Báo cáo                     │ ┌────────────────────┐ ┌────────────────────┐ ┌────────────────────┐      │
+│                              │ │ Tài khoản        › │ │ Biên bản         › │ │ Thanh lý         › │      │
 │                              │ │ nhân viên          │ │ vi phạm            │ │                    │      │
 │                              │ └────────────────────┘ └────────────────────┘ └────────────────────┘      │
 │                              │ ┌────────────────────┐                                                    │
-│                              │ │ Báo cáo            │                                                    │
-│                              │ │                    │                                                    │
+│                              │ │ Báo cáo          › │                                                    │
 │                              │ └────────────────────┘                                                    │
 │                              │                                                                           │
 └──────────────────────────────┴───────────────────────────────────────────────────────────────────────────┘
@@ -1557,9 +1539,8 @@ Lối vào xếp lưới ba cột, chia theo menu bên: nhóm **Danh mục** (3 
 Nội dung: `UI-Screens.md` 7.2. Khung: mục 2.3. Mẫu bố cục: P-02, P-04.
 
 ```text
-┌──────────────────────────────────────────────────────────────────────────────────────────────────────────┐
-│  Quản lý mượn trả thiết bị                                           Họ tên · Quản trị viên  [Đăng xuất] │
-├──────────────────────────────┬───────────────────────────────────────────────────────────────────────────┤
+┌──────────────────────────────┬───────────────────────────────────────────────────────────────────────────┐
+│  Quản lý mượn trả thiết bị   │                                   ( Họ tên · Quản trị viên )  [Đăng xuất] │
 │  Trang chủ                   │ Phòng thiết bị             [ Làm mới ]            [ + Thêm phòng ]        │
 │  Danh mục                    │                                                                           │
 │▶   Phòng thiết bị            │ ┌───────────┬─────────┬───────────┐                                       │
@@ -1595,9 +1576,8 @@ Mẫu P-02 và hộp thoại biểu mẫu P-04 (hình dưới). Mỗi dòng ch�
 Nội dung: `UI-Screens.md` 7.3. Khung: mục 2.3. Mẫu bố cục: P-02, P-03, P-04.
 
 ```text
-┌────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────┐
-│  Quản lý mượn trả thiết bị                                                             Họ tên · Quản trị viên  [Đăng xuất] │
-├──────────────────────────────┬─────────────────────────────────────────────────────────────────────────────────────────────┤
+┌──────────────────────────────┬─────────────────────────────────────────────────────────────────────────────────────────────┐
+│  Quản lý mượn trả thiết bị   │                                                     ( Họ tên · Quản trị viên )  [Đăng xuất] │
 │  Trang chủ                   │ Loại thiết bị         [ Làm mới ]                                                           │
 │  Danh mục                    │ Ngưng sử dụng: [ Tất cả ▾ ]                              [ + Thêm loại ]                    │
 │    Phòng thiết bị            │ ┌───────────┬───────┬───────┬───────────────┬───────────────────────────┬─────────────────┐ │
@@ -1638,9 +1618,8 @@ Mẫu P-02; bộ lọc Ngưng sử dụng (Tất cả, Đang sử dụng, Đã n
 Nội dung: `UI-Screens.md` 7.4. Khung: mục 2.3. Mẫu bố cục: P-02, P-03, P-04, P-05.
 
 ```text
-┌─────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────┐
-│  Quản lý mượn trả thiết bị                                                                                                      Họ tên · Quản trị viên  [Đăng xuất] │
-├──────────────────────────────┬──────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────┤
+┌──────────────────────────────┬──────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────┐
+│  Quản lý mượn trả thiết bị   │                                                                                              ( Họ tên · Quản trị viên )  [Đăng xuất] │
 │  Trang chủ                   │ Thiết bị           [ Làm mới ]                                                                                                       │
 │  Danh mục                    │ Tên: [ ____ ] Loại: [ ▾ ] Phòng: [ ▾ ] Tình trạng: [ Tất cả ▾ ]   [ + Nhập kho thiết bị ]                                            │
 │    Phòng thiết bị            │ ┌────────┬─────────────┬────────┬───────┬───────┬───────────────────────────────┬────────────┬────────────────────────────────────┐  │
@@ -1688,9 +1667,8 @@ Mẫu P-02 với bộ lọc tên, loại, phòng, tình trạng. Biểu mẫu th
 Nội dung: `UI-Screens.md` 7.5. Khung: mục 2.3. Mẫu bố cục: P-03, P-04.
 
 ```text
-┌──────────────────────────────────────────────────────────────────────────────────────────────────────────┐
-│  Quản lý mượn trả thiết bị                                           Họ tên · Quản trị viên  [Đăng xuất] │
-├──────────────────────────────┬───────────────────────────────────────────────────────────────────────────┤
+┌──────────────────────────────┬───────────────────────────────────────────────────────────────────────────┐
+│  Quản lý mượn trả thiết bị   │                                   ( Họ tên · Quản trị viên )  [Đăng xuất] │
 │  Trang chủ                   │ Quy định mượn theo nhóm sinh viên      [ Làm mới ]                        │
 │  Danh mục                    │ (không có nút thêm hoặc xóa nhóm)                                         │
 │    Phòng thiết bị            │ ┌────────────────────────────────────────────────────────────────────┐    │
@@ -1729,9 +1707,8 @@ Mỗi nhóm một thẻ xếp dọc, nút **Sửa** ở góc dưới phải. Bi�
 Nội dung: `UI-Screens.md` 7.6. Khung: mục 2.3. Mẫu bố cục: P-02, P-03, P-04.
 
 ```text
-┌──────────────────────────────────────────────────────────────────────────────────────────────────────────┐
-│  Quản lý mượn trả thiết bị                                           Họ tên · Quản trị viên  [Đăng xuất] │
-├──────────────────────────────┬───────────────────────────────────────────────────────────────────────────┤
+┌──────────────────────────────┬───────────────────────────────────────────────────────────────────────────┐
+│  Quản lý mượn trả thiết bị   │                                   ( Họ tên · Quản trị viên )  [Đăng xuất] │
 │  Trang chủ                   │ Phí trả trễ theo loại thiết bị      [ Làm mới ]                           │
 │  Danh mục                    │                                                                           │
 │    Phòng thiết bị            │ ┌───────────┬────────────────────────┬─────────────┐                      │
@@ -1767,9 +1744,8 @@ Bảng đơn giản không phân trang trong hình; nếu danh sách loại nhi�
 Nội dung: `UI-Screens.md` 7.7. Khung: mục 2.3. Mẫu bố cục: P-02, P-03, P-04.
 
 ```text
-┌──────────────────────────────────────────────────────────────────────────────────────────────────────────┐
-│  Quản lý mượn trả thiết bị                                           Họ tên · Quản trị viên  [Đăng xuất] │
-├──────────────────────────────┬───────────────────────────────────────────────────────────────────────────┤
+┌──────────────────────────────┬───────────────────────────────────────────────────────────────────────────┐
+│  Quản lý mượn trả thiết bị   │                                   ( Họ tên · Quản trị viên )  [Đăng xuất] │
 │  Trang chủ                   │ Khung phạt hư hỏng   [ Làm mới ]             [ + Thêm khung phạt ]        │
 │  Danh mục                    │                                                                           │
 │    Phòng thiết bị            │ ┌───────────┬───────────┬──────────────┬───────────────────────┐          │
@@ -1805,9 +1781,8 @@ Khung đang sử dụng có menu **Thao tác** gồm **Sửa**, **Tắt**, **Xó
 Nội dung: `UI-Screens.md` 7.8. Khung: mục 2.3. Mẫu bố cục: P-03.
 
 ```text
-┌──────────────────────────────────────────────────────────────────────────────────────────────────────────┐
-│  Quản lý mượn trả thiết bị                                           Họ tên · Quản trị viên  [Đăng xuất] │
-├──────────────────────────────┬───────────────────────────────────────────────────────────────────────────┤
+┌──────────────────────────────┬───────────────────────────────────────────────────────────────────────────┐
+│  Quản lý mượn trả thiết bị   │                                   ( Họ tên · Quản trị viên )  [Đăng xuất] │
 │  Trang chủ                   │ Tham số hệ thống                                                          │
 │  Danh mục                    │ ⚠ Chưa thiết lập giờ quầy: NV chưa lập được phiếu mượn                    │
 │    Phòng thiết bị            │   (chỉ khi giờ mở và giờ đóng đều trống; hiển thị "Chưa thiết lập")       │
@@ -1837,9 +1812,8 @@ Một biểu mẫu duy nhất, tám trường xếp dọc theo thứ tự ở `U
 Nội dung: `UI-Screens.md` 7.9. Khung: mục 2.3. Mẫu bố cục: P-02, P-03, P-04.
 
 ```text
-┌─────────────────────────────────────────────────────────────────────────────────────────────────────────────────────┐
-│  Quản lý mượn trả thiết bị                                                 Họ tên · Quản trị viên  [Đăng xuất]      │
-├──────────────────────────────┬──────────────────────────────────────────────────────────────────────────────────────┤
+┌──────────────────────────────┬──────────────────────────────────────────────────────────────────────────────────────┐
+│  Quản lý mượn trả thiết bị   │                                              ( Họ tên · Quản trị viên )  [Đăng xuất] │
 │  Trang chủ                   │ Tài khoản nhân viên     [ Làm mới ]          [ + Tạo tài khoản ]                     │
 │  Danh mục                    │                                                                                      │
 │    Phòng thiết bị            │ ┌───────┬───────────────┬────────┬───────┬─────────────┬────────┬────────────────┐   │
@@ -1878,9 +1852,8 @@ Mẫu P-02. Cột Hành động là menu có nút `[ Thao tác ▾ ]` mở danh 
 Nội dung: `UI-Screens.md` 7.10. Khung: mục 2.3. Mẫu bố cục: P-02, P-03.
 
 ```text
-┌──────────────────────────────────────────────────────────────────────────────────────────────────────────┐
-│  Quản lý mượn trả thiết bị                                           Họ tên · Quản trị viên  [Đăng xuất] │
-├──────────────────────────────┬───────────────────────────────────────────────────────────────────────────┤
+┌──────────────────────────────┬───────────────────────────────────────────────────────────────────────────┐
+│  Quản lý mượn trả thiết bị   │                                   ( Họ tên · Quản trị viên )  [Đăng xuất] │
 │  Trang chủ                   │ Biên bản vi phạm       [ Làm mới ]                                        │
 │  Danh mục                    │ Mã SV: [ ____ ]   Trạng thái: [ Tất cả ▾ ]                                │
 │    Phòng thiết bị            │ ┌────────┬────────┬───────┬──────────┬───────────┬────────────┐           │
@@ -1908,9 +1881,8 @@ Mẫu P-02; chọn một dòng mở **chi tiết biên bản** ngay dưới bả
 Nội dung: `UI-Screens.md` 7.11. Khung: mục 2.3. Mẫu bố cục: P-02, P-03.
 
 ```text
-┌───────────────────────────────────────────────────────────────────────────────────────────────────────────────────┐
-│  Quản lý mượn trả thiết bị                                                    Họ tên · Quản trị viên  [Đăng xuất] │
-├──────────────────────────────┬────────────────────────────────────────────────────────────────────────────────────┤
+┌──────────────────────────────┬────────────────────────────────────────────────────────────────────────────────────┐
+│  Quản lý mượn trả thiết bị   │                                            ( Họ tên · Quản trị viên )  [Đăng xuất] │
 │  Trang chủ                   │ Thanh lý thiết bị      [ Làm mới ]                                                 │
 │  Danh mục                    │ Danh sách chờ quyết định thanh lý           [ Chọn thêm từ danh mục ]              │
 │    Phòng thiết bị            │ ┌─────┬────────────────────┬────────┬───────┬──────────┬────────────┬────────────┐ │
@@ -1956,9 +1928,8 @@ Nội dung: `UI-Screens.md` 7.11. Khung: mục 2.3. Mẫu bố cục: P-02, P-03
 Nội dung: `UI-Screens.md` 7.12. Khung: mục 2.3.
 
 ```text
-┌──────────────────────────────────────────────────────────────────────────────────────────────────────────────┐
-│  Quản lý mượn trả thiết bị                                               Họ tên · Quản trị viên  [Đăng xuất] │
-├──────────────────────────────┬───────────────────────────────────────────────────────────────────────────────┤
+┌──────────────────────────────┬───────────────────────────────────────────────────────────────────────────────┐
+│  Quản lý mượn trả thiết bị   │                                       ( Họ tên · Quản trị viên )  [Đăng xuất] │
 │  Trang chủ                   │ Báo cáo                                                                       │
 │  Danh mục                    │ Báo cáo: [ Sinh viên mượn quá hạn ▾ ]    (6 báo cáo)                          │
 │    Phòng thiết bị            │ Từ ngày: [ dd/MM/yyyy ]  Đến ngày: [ dd/MM/yyyy ]                             │

@@ -1,0 +1,17 @@
+using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Diagnostics.HealthChecks;
+using QuanLyMuonTra.Infrastructure.Persistence;
+
+namespace QuanLyMuonTra.Api.Health;
+
+public sealed class CsdlHealthCheck(AppDbContext db) : IHealthCheck
+{
+    public async Task<HealthCheckResult> CheckHealthAsync(
+        HealthCheckContext context,
+        CancellationToken cancellationToken = default)
+    {
+        await db.Database.ExecuteSqlRawAsync("SELECT 1", cancellationToken);
+        return HealthCheckResult.Healthy();
+    }
+}
+

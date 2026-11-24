@@ -1,0 +1,55 @@
+<!doctype html>
+<html lang="vi">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Demo UI Android sinh viên</title>
+  <link rel="stylesheet" href="giao-dien.css">
+  <style>
+    .trang { max-width: 1600px; margin: 0 auto; padding: 32px 24px 64px; }
+    .dau { display: flex; flex-direction: column; gap: 8px; margin-bottom: 24px; }
+    .dau h1 { font-size: 28px; line-height: 36px; margin: 0; }
+    .dau p { margin: 0; color: var(--text-secondary); max-width: 880px; line-height: 22px; }
+    .dau a { color: var(--text-link); font-weight: 500; }
+    .nhom { margin-top: 40px; }
+    .nhom > h2 { font-size: 20px; margin: 0 0 16px; padding-bottom: 8px; border-bottom: 1px solid var(--border-subtle); }
+    .luoi { display: flex; flex-wrap: wrap; gap: 32px 28px; }
+    figure { margin: 0; display: flex; flex-direction: column; gap: 10px; }
+    figcaption { width: 376px; display: flex; flex-direction: column; gap: 2px; }
+    figcaption .ma { font-family: var(--mono); font-size: 13px; color: var(--ds_color_emerald_700); font-weight: 500; }
+    figcaption .ten { font-weight: 500; }
+    figcaption .tt { font-size: 13px; color: var(--text-secondary); }
+    .phone .content [data-di], .phone [data-di] { cursor: default; }
+  </style>
+</head>
+<body>
+  <div class="trang">
+    <div class="dau">
+      <h1>Demo UI ứng dụng Android sinh viên</h1>
+      <p>Bản xem tĩnh mọi màn hình <b>SCR-CM-01, SCR-SV-01..14, DLG-SV-01</b> và các trạng thái chính, dựng theo
+        <code>UI-Screens.md</code> mục 5, <code>Wireframes.md</code> mục 2.1 và 5, và token Android hiện hành
+        (<code>ds_colors.xml</code>, <code>ds_dimens.xml</code>, <code>ds_type.xml</code> theo ĐX-DS-17). Khung 360 × 760 dp.
+        Dữ liệu chỉ là ví dụ; app lấy mọi giá trị nghiệp vụ (hạn, phí, giới hạn, trạng thái) từ máy chủ.</p>
+      <p>Muốn bấm thử chuyển màn như app thật: mở <a href="app.html">app.html</a>.</p>
+    </div>
+    <div id="noi-dung"></div>
+  </div>
+  <script src="man-hinh.js"></script>
+  <script>
+    const NHOM = [
+      ["Đăng nhập", ["SCR-CM-01"]],
+      ["Trang chủ, tra cứu và đặt trước", ["SCR-SV-01", "SCR-SV-02", "SCR-SV-03", "DLG-SV-01", "SCR-SV-04", "SCR-SV-05"]],
+      ["Phiếu yêu cầu và đăng ký chờ", ["SCR-SV-06", "SCR-SV-07", "SCR-SV-08"]],
+      ["Lịch sử, biên bản và vi phạm", ["SCR-SV-09", "SCR-SV-10", "SCR-SV-11", "SCR-SV-12"]],
+      ["Thông báo và hồ sơ", ["SCR-SV-13", "SCR-SV-14"]],
+    ];
+    document.getElementById("noi-dung").innerHTML = NHOM.map(([ten, dsMa]) => `
+      <section class="nhom"><h2>${ten}</h2><div class="luoi">
+        ${MAN_HINH.filter((m) => dsMa.includes(m.ma)).map((m) => `
+          <figure>${dungManHinh(m)}
+            <figcaption><span class="ma">${m.ma}</span><span class="ten">${m.ten}</span><span class="tt">${m.trangThai}</span></figcaption>
+          </figure>`).join("")}
+      </div></section>`).join("");
+  </script>
+</body>
+</html>

@@ -1,0 +1,29 @@
+{
+  "tongSo": 2,
+  "trang": 1,
+  "kichThuoc": 20,
+  "danhSach": [
+    {
+      "maPhieu": "PM-2026-0002",
+      "maSV": "23520001",
+      "maYeuCau": "YC-2026-0002",
+      "maDangKy": null,
+      "ngayGioMuon": "2026-11-10T02:00:00Z",
+      "ngayGioHenTra": "2026-11-10T09:00:00Z",
+      "soLanGiaHan": 0,
+      "trangThai": "DANG_MUON",
+      "soThietBi": 2
+    },
+    {
+      "maPhieu": "PM-2026-0001",
+      "maSV": "23520001",
+      "maYeuCau": null,
+      "maDangKy": "DK-2026-0001",
+      "ngayGioMuon": "2026-11-05T02:00:00Z",
+      "ngayGioHenTra": "2026-11-05T09:00:00Z",
+      "soLanGiaHan": 1,
+      "trangThai": "DA_TRA",
+      "soThietBi": 1
+    }
+  ]
+}
