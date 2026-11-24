@@ -1,0 +1,42 @@
+name: backend-migrate
+
+on:
+  workflow_dispatch:
+    inputs:
+      muc_tieu:
+        description: Môi trường CSDL cần khởi tạo
+        type: choice
+        required: true
+        options:
+          - test
+          - prod
+
+jobs:
+  migrate:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Cài psql nếu thiếu
+        run: |
+          if ! command -v psql > /dev/null; then
+            sudo apt-get update
+            sudo apt-get install -y postgresql-client
+          fi
+
+      - name: Khởi tạo CSDL nền bằng schema.sql
+        env:
+          DB_URL: ${{ inputs.muc_tieu == 'prod' && secrets.DB_ADMIN_PROD || secrets.DB_ADMIN_TEST }}
+        run: |
+          set -euo pipefail
+          if [ -z "$DB_URL" ]; then
+            echo "Thiếu secret DB_ADMIN_PROD hoặc DB_ADMIN_TEST."
+            exit 1
+          fi
+          so_schema=$(psql "$DB_URL" -tAc "SELECT count(*) FROM pg_namespace WHERE nspname = 'tai_khoan'")
+          if [ "$so_schema" != "0" ]; then
+            echo "CSDL đã có schema ứng dụng: bỏ qua schema.sql (chỉ dùng cho CSDL mới)."
+            exit 0
+          fi
+          psql "$DB_URL" -v ON_ERROR_STOP=1 -f backend/docs/03-database/schema.sql
+
