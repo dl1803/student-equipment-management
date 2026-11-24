@@ -31,6 +31,7 @@
     <None Include="..\..\db\seed-required\quy-dinh-bat-buoc.sql" Link="quy-dinh-bat-buoc.sql" CopyToOutputDirectory="PreserveNewest" />
     <None Include="..\..\db\seed-demo\C3-du-lieu-thu.sql" Link="C3-du-lieu-thu.sql" CopyToOutputDirectory="PreserveNewest" />
     <None Include="..\..\db\seed-demo\C3-du-lieu-thu-ncc.sql" Link="C3-du-lieu-thu-ncc.sql" CopyToOutputDirectory="PreserveNewest" />
+    <None Update="BaoTri\*.sql;BaoTri\*.csv" CopyToOutputDirectory="PreserveNewest" />
     <None Update="MuonTra\D02-V-du-lieu-thu.sql">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
