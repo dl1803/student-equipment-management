@@ -148,6 +148,57 @@ public class TraCuuThietBiViewModelTest {
     }
 
     @Test
+    public void FA51_KeoLamMoiLoi_GiuNguyenDongCuVaHienLoiRoiThuLaiThanhCong() {
+        HoTroTraCuuApi api = apiThanhCong(1);
+        TraCuuThietBiViewModel vm = tao(api);
+
+        vm.load();
+        assertEquals(UiState.TrangThai.THANH_CONG, vm.getDanhSach().getValue().getTrangThai());
+        assertEquals(2, dong(vm).size());
+
+        // Kéo làm mới nhưng API tra cứu bị lỗi mạng
+        api.chuanBi(LOAI, FakeCall.traVe(HoTroTraCuuApi.trangLoai(2, 1, 2)));
+        api.chuanBi(PHONG, FakeCall.traVe(HoTroTraCuuApi.trangPhong(1, 1, 1)));
+        api.chuanBi(TRA_CUU, FakeCall.nem(new IOException("mat mang")));
+
+        vm.refresh();
+
+        UiState<List<TraCuuThietBiItem>> ttLoi = vm.getDanhSach().getValue();
+        assertEquals(UiState.TrangThai.LOI, ttLoi.getTrangThai());
+        assertEquals(ApiError.Loai.MANG, ttLoi.getLoi().getLoai());
+        // FA 5.1: Bộ lọc không đổi nên vẫn giữ lại 2 dòng kết quả cũ
+        assertNotNull(ttLoi.getDuLieu());
+        assertEquals(2, ttLoi.getDuLieu().size());
+
+        // Thử lại tải danh sách
+        api.chuanBi(TRA_CUU, FakeCall.traVe(HoTroTraCuuApi.trangTraCuu(2, 1, 2)));
+        vm.thuLaiDanhSach();
+
+        UiState<List<TraCuuThietBiItem>> ttThanhCong = vm.getDanhSach().getValue();
+        assertEquals(UiState.TrangThai.THANH_CONG, ttThanhCong.getTrangThai());
+        assertNull(ttThanhCong.getLoi());
+        assertEquals(2, ttThanhCong.getDuLieu().size());
+    }
+
+    @Test
+    public void FA51_DoiBoLocLoi_KhongGiuDongCuViKhongConKhop() {
+        HoTroTraCuuApi api = apiThanhCong(1);
+        TraCuuThietBiViewModel vm = tao(api);
+
+        vm.load();
+        assertEquals(2, dong(vm).size());
+
+        // Thay đổi bộ lọc nhưng API tra cứu bị lỗi mạng: không giữ dòng cũ vì không khớp bộ lọc mới
+        api.chuanBi(TRA_CUU, FakeCall.nem(new IOException("mat mang")));
+        vm.datTuKhoa("Laptop", true);
+
+        UiState<List<TraCuuThietBiItem>> tt = vm.getDanhSach().getValue();
+        assertEquals(UiState.TrangThai.LOI, tt.getTrangThai());
+        assertNull(tt.getDuLieu());
+        assertEquals(ApiError.Loai.MANG, tt.getLoi().getLoai());
+    }
+
+    @Test
     public void UISV02_LoiNguonLoai_KhongAnhHuongPhongVaDanhSachRoiThuLaiRieng() {
         HoTroTraCuuApi api =
                 new HoTroTraCuuApi()

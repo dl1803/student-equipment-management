@@ -112,7 +112,6 @@ public class TraCuuThietBiFragment extends Fragment {
 
     private void caiDanhSach() {
         adapter = new TraCuuThietBiAdapter(dau.getRoot(), viewModel::thuLaiTaiThem);
-        binding().rvKetQua.setLayoutManager(new LinearLayoutManager(requireContext()));
         binding().rvKetQua.setAdapter(adapter);
         // Cuộn tới cuối thì tải trang kế cho đến khi đủ tongSo (ĐX-UI-13, FA 5.6).
         binding().rvKetQua.addOnScrollListener(

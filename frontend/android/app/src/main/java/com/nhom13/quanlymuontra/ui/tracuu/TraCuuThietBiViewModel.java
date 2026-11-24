@@ -142,7 +142,7 @@ public final class TraCuuThietBiViewModel extends ViewModel {
 
     /** Thử lại riêng danh sách kết quả (giữ nguyên bộ lọc), sau lỗi tải trang đầu. */
     public void thuLaiDanhSach() {
-        taiTrangDau(false);
+        taiTrangDau(!daTai.isEmpty());
     }
 
     /** Thử lại riêng nguồn bộ lọc Loại. */
@@ -297,12 +297,18 @@ public final class TraCuuThietBiViewModel extends ViewModel {
                                 if (lan != lanTai || loi.getLoai() == ApiError.Loai.HUY) {
                                     return;
                                 }
-                                // Dòng cũ không còn khớp bộ lọc nên không giữ lại khi lỗi trang đầu.
-                                daTai.clear();
-                                trangDaTai = 0;
-                                tongSo = 0;
-                                hetTrang = false;
-                                danhSach.setValue(UiState.<List<TraCuuThietBiItem>>loi(loi, null));
+                                if (giuDongCu && !daTai.isEmpty()) {
+                                    // Kéo làm mới thất bại nhưng bộ lọc không đổi: giữ dòng cũ và báo lỗi (FA 5.1).
+                                    danhSach.setValue(
+                                            UiState.<List<TraCuuThietBiItem>>loi(loi, saoChepDong()));
+                                } else {
+                                    // Đổi bộ lọc hoặc tải lần đầu bị lỗi: không còn dòng khớp bộ lọc mới.
+                                    daTai.clear();
+                                    trangDaTai = 0;
+                                    tongSo = 0;
+                                    hetTrang = false;
+                                    danhSach.setValue(UiState.<List<TraCuuThietBiItem>>loi(loi, null));
+                                }
                             }
                         });
     }

@@ -85,7 +85,7 @@ public final class TraCuuThietBiAdapter
                                 && Objects.equals(x.getSoLuongKhaDung(), y.getSoLuongKhaDung());
                     }
                     if (a.loai == LOAI_CHAN) {
-                        return a.chan == b.chan;
+                        return Objects.equals(a.chan, b.chan);
                     }
                     return true;
                 }
