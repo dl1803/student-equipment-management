@@ -43,7 +43,7 @@ public sealed class BaoTriUngDungTests
     public async Task UC11_LapBaoTri_DauVaoSai_Nem400TruocKhiTruyCapCsdl(string maThietBi, string loai, string? maPhieu)
     {
         using var db = TaoDbContext();
-        var handler = new LapBaoTriHandler(db, null!, null!, null!, null!, null!, null!);
+        var handler = new LapBaoTriHandler(db, null!, null!, null!, null!, null!, null!, null!);
 
         var loi = await Assert.ThrowsAsync<LoiNghiepVuException>(
             () => handler.XuLyAsync(MaNv, new LapBaoTriRequest(maThietBi, loai, maPhieu), CancellationToken.None));

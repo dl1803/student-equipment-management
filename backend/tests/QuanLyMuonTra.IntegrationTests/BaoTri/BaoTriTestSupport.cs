@@ -6,6 +6,8 @@ using QuanLyMuonTra.Infrastructure.Persistence;
 using QuanLyMuonTra.IntegrationTests.DanhMuc;
 using QuanLyMuonTra.Modules.BaoTri;
 using QuanLyMuonTra.Modules.BaoTri.Domain;
+using QuanLyMuonTra.Modules.MuonTra.Contracts;
+using QuanLyMuonTra.Modules.MuonTra.Infrastructure;
 using QuanLyMuonTra.Modules.TaiKhoan.Contracts;
 using QuanLyMuonTra.Modules.TaiKhoan.Infrastructure;
 using QuanLyMuonTra.SharedKernel;
@@ -27,6 +29,7 @@ internal static class BaoTriTestSupport
             .AddEfConfigurationsFromAssembly(typeof(BaoTriSuaChua).Assembly)
             .AddMemoryCache()
             .AddScoped<IQuyenPhongService, QuyenPhongService>()
+            .AddScoped<IPhieuMuonReader, PhieuMuonReader>()
             .AddSingleton<IClock>(new DongHoCoDinh(BayGio)));
 
     private sealed class DongHoCoDinh(DateTimeOffset thoiDiem) : IClock
