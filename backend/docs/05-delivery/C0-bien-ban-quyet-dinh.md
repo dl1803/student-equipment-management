@@ -16,6 +16,7 @@ Ngày họp: ____ · Người ghi: Đinh Nhật Khôi · Người tham dự: ___
 | Dữ liệu thử và kết quả mong đợi | (điền sau họp) |
 | Công việc bị ảnh hưởng | Kiểm nguồn/lập phiếu giao thật và UAT tương ứng (D08-V, D09-V, D14-T, D16-T). Không chặn danh mục hoặc phần đọc Android |
 | Kiểm thử | (điền sau họp) |
+| Ghi chú rà soát (D13-K) | ĐỀ XUẤT phương án A trong D08-V mục 8 — CHỜ NHÓM XÁC NHẬN (K-58); giữ nguyên trạng thái OPEN |
 
 ## G2 — Lượng giao và giữ chỗ
 
@@ -28,6 +29,7 @@ Ngày họp: ____ · Người ghi: Đinh Nhật Khôi · Người tham dự: ___
 | Ngày/trạng thái | OPEN |
 | Quyết định / Thay đổi / Dữ liệu thử / Kiểm thử | (điền sau họp) |
 | Công việc bị ảnh hưởng | Giao dịch giao thật (D09-V, D15-T). Vẫn làm nhập mã, ảnh và nhánh độc lập |
+| Ghi chú rà soát (D13-K) | ĐỀ XUẤT phương án A (exact-match) trong D09-V mục 3 — CHỜ NHÓM XÁC NHẬN (K-58); giữ nguyên trạng thái OPEN |
 
 ## G3 — Tìm lại hồ sơ bảo trì mở sau khi tải lại
 
