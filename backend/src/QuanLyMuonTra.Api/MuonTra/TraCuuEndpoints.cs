@@ -88,6 +88,36 @@ public static class TraCuuEndpoints
                 Results.Ok(await boXuLy.XuLyAsync(LayMaSv(nguoiDung), ma, ct)))
             .RequireAuthorization(ChinhSach.SinhVien);
 
+        nhomSv.MapPost("/dang-ky-cho", async (
+                DangKyChoRequest yeuCau,
+                [FromServices] ICurrentUser nguoiDung,
+                [FromServices] DangKyChoHandler boXuLy,
+                CancellationToken ct) =>
+            {
+                var dangKy = await boXuLy.XuLyAsync(LayMaSv(nguoiDung), yeuCau.MaPhong, yeuCau.MaLoai, ct);
+
+                return Results.Created("/api/v1/sv/dang-ky-cho", dangKy);
+            })
+            .AddEndpointFilter<KiemTraDuLieuFilter<DangKyChoRequest>>()
+            .RequireAuthorization(ChinhSach.SinhVien);
+
+        nhomSv.MapGet("/dang-ky-cho", async (
+                [FromServices] ICurrentUser nguoiDung,
+                [FromServices] DsDangKyChoSvHandler boXuLy,
+                CancellationToken ct,
+                [FromQuery] int trang = 1,
+                [FromQuery] int kichThuoc = 20) =>
+                Results.Ok(await boXuLy.XuLyAsync(LayMaSv(nguoiDung), trang, kichThuoc, ct)))
+            .RequireAuthorization(ChinhSach.SinhVien);
+
+        nhomSv.MapPost("/dang-ky-cho/{ma}/roi", async (
+                string ma,
+                [FromServices] ICurrentUser nguoiDung,
+                [FromServices] RoiDangKyChoHandler boXuLy,
+                CancellationToken ct) =>
+                Results.Ok(await boXuLy.XuLyAsync(LayMaSv(nguoiDung), ma, ct)))
+            .RequireAuthorization(ChinhSach.SinhVien);
+
         nhomSv.MapGet("/phieu-muon", async (
                 [FromServices] ICurrentUser nguoiDung,
                 [FromServices] DsPhieuMuonSvHandler boXuLy,

@@ -1,0 +1,50 @@
+INSERT INTO sinh_vien.nhom_sinh_vien (ma_nhom, ten_nhom)
+VALUES ('D12-NHOM', 'Nhóm D12');
+
+INSERT INTO sinh_vien.sinh_vien (ma_sv, ho_ten, lop, khoa, email, ma_nhom, han_the, trang_thai_hoc, trang_thai_quyen_muon, hoc_ky)
+VALUES
+    ('D12-SV-A', 'Sinh viên D12 A', 'L1', 'K1', 'd12-a@example.test', 'D12-NHOM', DATE '2030-12-31', 'DANG_HOC', 'BINH_THUONG', '2026-1'),
+    ('D12-SV-B', 'Sinh viên D12 B', 'L1', 'K1', 'd12-b@example.test', 'D12-NHOM', DATE '2030-12-31', 'DANG_HOC', 'BINH_THUONG', '2026-1'),
+    ('D12-SV-C', 'Sinh viên D12 C', 'L1', 'K1', 'd12-c@example.test', 'D12-NHOM', DATE '2030-12-31', 'DANG_HOC', 'BINH_THUONG', '2026-1'),
+    ('D12-SV-D', 'Sinh viên D12 D', 'L1', 'K1', 'd12-d@example.test', 'D12-NHOM', DATE '2030-12-31', 'DANG_HOC', 'BINH_THUONG', '2026-1'),
+    ('D12-SV-E', 'Sinh viên D12 E', 'L1', 'K1', 'd12-e@example.test', 'D12-NHOM', DATE '2030-12-31', 'DANG_HOC', 'BINH_THUONG', '2026-1'),
+    ('D12-SV-F', 'Sinh viên D12 F', 'L1', 'K1', 'd12-f@example.test', 'D12-NHOM', DATE '2030-12-31', 'DANG_HOC', 'BINH_THUONG', '2026-1'),
+    ('D12-SV-G', 'Sinh viên D12 G', 'L1', 'K1', 'd12-g@example.test', 'D12-NHOM', DATE '2030-12-31', 'DANG_HOC', 'BINH_THUONG', '2026-1'),
+    ('D12-SV-TAM-KHOA', 'Sinh viên D12 tạm khóa', 'L1', 'K1', 'd12-tk@example.test', 'D12-NHOM', DATE '2030-12-31', 'DANG_HOC', 'TAM_KHOA', '2026-1'),
+    ('D12-SV-CAM', 'Sinh viên D12 cấm dài hạn', 'L1', 'K1', 'd12-cam@example.test', 'D12-NHOM', DATE '2030-12-31', 'DANG_HOC', 'CAM_MUON_DAI_HAN', '2026-1'),
+    ('D12-SV-HET-HAN', 'Sinh viên D12 hết hạn thẻ', 'L1', 'K1', 'd12-hh@example.test', 'D12-NHOM', DATE '2026-11-01', 'DANG_HOC', 'BINH_THUONG', '2026-1'),
+    ('D12-SV-TOT-NGHIEP', 'Sinh viên D12 tốt nghiệp', 'L1', 'K1', 'd12-tn@example.test', 'D12-NHOM', DATE '2030-12-31', 'TOT_NGHIEP', 'BINH_THUONG', '2026-1');
+
+INSERT INTO danh_muc.phong_thiet_bi (ma_phong, ten_phong, co_so)
+VALUES
+    ('019c0000-0000-7000-8000-0000000d12b1', 'D12 Phong P1', 'D12 Co so'),
+    ('019c0000-0000-7000-8000-0000000d12b2', 'D12 Phong P2', 'D12 Co so');
+
+INSERT INTO danh_muc.loai_thiet_bi (ma_loai, ten_loai, chu_ky_bao_tri, phi_tre_moi_ngay, ngung_su_dung)
+VALUES
+    ('019c0000-0000-7000-8000-0000000d12c1', 'D12 Loai X', 30, 50000, false),
+    ('019c0000-0000-7000-8000-0000000d12c2', 'D12 Loai Y', 30, 30000, false),
+    ('019c0000-0000-7000-8000-0000000d12c3', 'D12 Loai W', 30, 20000, false),
+    ('019c0000-0000-7000-8000-0000000d12c4', 'D12 Loai Z ngung', 30, 10000, true);
+
+INSERT INTO danh_muc.thiet_bi (ma_thiet_bi, ma_loai, ma_phong, ten_thiet_bi, ngay_nhap_kho, tinh_trang, ngung_su_dung)
+VALUES
+    ('D12-TB-01', '019c0000-0000-7000-8000-0000000d12c1', '019c0000-0000-7000-8000-0000000d12b1', 'X 01 dang muon', DATE '2026-01-01', 'DANG_DUOC_MUON', false),
+    ('D12-TB-02', '019c0000-0000-7000-8000-0000000d12c1', '019c0000-0000-7000-8000-0000000d12b1', 'X 02 dang muon', DATE '2026-01-01', 'DANG_DUOC_MUON', false),
+    ('D12-TB-03', '019c0000-0000-7000-8000-0000000d12c2', '019c0000-0000-7000-8000-0000000d12b1', 'Y 03', DATE '2026-01-01', 'SAN_SANG', false),
+    ('D12-TB-04', '019c0000-0000-7000-8000-0000000d12c2', '019c0000-0000-7000-8000-0000000d12b1', 'Y 04', DATE '2026-01-01', 'SAN_SANG', false),
+    ('D12-TB-05', '019c0000-0000-7000-8000-0000000d12c3', '019c0000-0000-7000-8000-0000000d12b1', 'W 05', DATE '2026-01-01', 'SAN_SANG', false),
+    ('D12-TB-06', '019c0000-0000-7000-8000-0000000d12c4', '019c0000-0000-7000-8000-0000000d12b1', 'Z 06', DATE '2026-01-01', 'SAN_SANG', true);
+
+INSERT INTO muon_tra.dang_ky_cho (ma_dang_ky, ma_sv, ma_phong, ma_loai, thoi_diem_dang_ky, so_thu_tu_cho, trang_thai, han_giu_cho)
+VALUES
+    ('DK-261124-912001', 'D12-SV-A', '019c0000-0000-7000-8000-0000000d12b1', '019c0000-0000-7000-8000-0000000d12c1', TIMESTAMPTZ '2026-11-24 01:00:00+00', 1, 'DANG_CHO', NULL),
+    ('DK-261124-912002', 'D12-SV-B', '019c0000-0000-7000-8000-0000000d12b1', '019c0000-0000-7000-8000-0000000d12c1', TIMESTAMPTZ '2026-11-24 01:05:00+00', 2, 'DANG_CHO', NULL),
+    ('DK-261124-912003', 'D12-SV-C', '019c0000-0000-7000-8000-0000000d12b1', '019c0000-0000-7000-8000-0000000d12c1', TIMESTAMPTZ '2026-11-24 01:10:00+00', 3, 'DANG_CHO', NULL),
+    ('DK-261124-912004', 'D12-SV-D', '019c0000-0000-7000-8000-0000000d12b1', '019c0000-0000-7000-8000-0000000d12c1', TIMESTAMPTZ '2026-11-24 00:50:00+00', NULL, 'DA_HUY', NULL),
+    ('DK-261124-912005', 'D12-SV-E', '019c0000-0000-7000-8000-0000000d12b1', '019c0000-0000-7000-8000-0000000d12c3', TIMESTAMPTZ '2026-11-24 00:30:00+00', NULL, 'DA_THONG_BAO', TIMESTAMPTZ '2026-11-24 03:10:00+00'),
+    ('DK-261124-912006', 'D12-SV-F', '019c0000-0000-7000-8000-0000000d12b1', '019c0000-0000-7000-8000-0000000d12c3', TIMESTAMPTZ '2026-11-24 01:00:00+00', 1, 'DANG_CHO', NULL),
+    ('DK-261124-912007', 'D12-SV-G', '019c0000-0000-7000-8000-0000000d12b1', '019c0000-0000-7000-8000-0000000d12c3', TIMESTAMPTZ '2026-11-24 01:05:00+00', 2, 'DANG_CHO', NULL),
+    ('DK-261124-912008', 'D12-SV-E', '019c0000-0000-7000-8000-0000000d12b1', '019c0000-0000-7000-8000-0000000d12c3', TIMESTAMPTZ '2026-11-24 00:10:00+00', NULL, 'HET_HAN', TIMESTAMPTZ '2026-11-24 00:40:00+00'),
+    ('DK-261124-912009', 'D12-SV-TAM-KHOA', '019c0000-0000-7000-8000-0000000d12b2', '019c0000-0000-7000-8000-0000000d12c2', TIMESTAMPTZ '2026-11-24 01:00:00+00', 1, 'DANG_CHO', NULL),
+    ('DK-261124-912010', 'D12-SV-CAM', '019c0000-0000-7000-8000-0000000d12b2', '019c0000-0000-7000-8000-0000000d12c2', TIMESTAMPTZ '2026-11-24 01:05:00+00', 2, 'DANG_CHO', NULL);
