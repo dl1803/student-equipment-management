@@ -142,4 +142,55 @@ public sealed class DangKyChoHttpTests : IAsyncLifetime
             Assert.Equal("DU_LIEU_KHONG_HOP_LE", (await DocJsonAsync(phanHoi)).GetProperty("maLoi").GetString());
         }
     }
+
+    [CanKetNoiTestFact]
+    public async Task UC03_Post_KhongToken401_TokenNhanVien403()
+    {
+        const string body = """{"maPhong":"00000000-0000-0000-0000-000000000001","maLoai":"00000000-0000-0000-0000-000000000002"}""";
+
+        var khongToken = await GoiAsync(HttpMethod.Post, DuongDan, null, body);
+        var nhanVien = await GoiAsync(HttpMethod.Post, DuongDan, TaoToken(Guid.NewGuid().ToString(), "NHAN_VIEN"), body);
+
+        Assert.Equal(HttpStatusCode.Unauthorized, khongToken.StatusCode);
+        Assert.Equal(HttpStatusCode.Forbidden, nhanVien.StatusCode);
+        Assert.Equal("KHONG_DU_QUYEN", (await DocJsonAsync(nhanVien)).GetProperty("maLoi").GetString());
+    }
+
+    [CanKetNoiTestFact]
+    public async Task UC03_PostBodyKhongHopLe_Tra400KemTruongLoi()
+    {
+        var token = TaoToken("D12-SV-HTTP", "SINH_VIEN");
+        const string body = """{"maPhong":"00000000-0000-0000-0000-000000000000"}""";
+
+        var phanHoi = await GoiAsync(HttpMethod.Post, DuongDan, token, body);
+
+        Assert.Equal(HttpStatusCode.BadRequest, phanHoi.StatusCode);
+        var json = await DocJsonAsync(phanHoi);
+        Assert.Equal("DU_LIEU_KHONG_HOP_LE", json.GetProperty("maLoi").GetString());
+        Assert.True(json.GetProperty("errors").TryGetProperty("maPhong", out _));
+        Assert.True(json.GetProperty("errors").TryGetProperty("maLoai", out _));
+    }
+
+    [CanKetNoiTestFact]
+    public async Task UC03_PostJsonHong_Tra400()
+    {
+        var token = TaoToken("D12-SV-HTTP", "SINH_VIEN");
+
+        var phanHoi = await GoiAsync(HttpMethod.Post, DuongDan, token, "{");
+
+        Assert.Equal(HttpStatusCode.BadRequest, phanHoi.StatusCode);
+        Assert.Equal("DU_LIEU_KHONG_HOP_LE", (await DocJsonAsync(phanHoi)).GetProperty("maLoi").GetString());
+    }
+
+    [CanKetNoiTestFact]
+    public async Task UC03_PostPhongKhongTonTai_Tra400VaKhongGhiDuLieu()
+    {
+        var token = TaoToken("D12-SV-HTTP", "SINH_VIEN");
+        var body = $$"""{"maPhong":"{{Guid.NewGuid()}}","maLoai":"{{Guid.NewGuid()}}"}""";
+
+        var phanHoi = await GoiAsync(HttpMethod.Post, DuongDan, token, body);
+
+        Assert.Equal(HttpStatusCode.BadRequest, phanHoi.StatusCode);
+        Assert.Equal("DU_LIEU_KHONG_HOP_LE", (await DocJsonAsync(phanHoi)).GetProperty("maLoi").GetString());
+    }
 }

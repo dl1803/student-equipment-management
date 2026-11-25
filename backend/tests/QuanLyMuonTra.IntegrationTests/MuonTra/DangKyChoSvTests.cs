@@ -10,6 +10,12 @@ namespace QuanLyMuonTra.IntegrationTests.MuonTra;
 public class DangKyChoSvTests
 {
     private const string FileDuLieu = "D12-V-du-lieu-thu.sql";
+    private static readonly Guid P1 = Guid.Parse("019c0000-0000-7000-8000-0000000d12b1");
+    private static readonly Guid P2 = Guid.Parse("019c0000-0000-7000-8000-0000000d12b2");
+    private static readonly Guid X = Guid.Parse("019c0000-0000-7000-8000-0000000d12c1");
+    private static readonly Guid Y = Guid.Parse("019c0000-0000-7000-8000-0000000d12c2");
+    private static readonly Guid W = Guid.Parse("019c0000-0000-7000-8000-0000000d12c3");
+    private static readonly Guid Z = Guid.Parse("019c0000-0000-7000-8000-0000000d12c4");
     private static readonly DateTimeOffset BayGio = new(2026, 11, 24, 3, 0, 0, TimeSpan.Zero);
     private static readonly CancellationToken Ct = CancellationToken.None;
 
@@ -40,6 +46,13 @@ public class DangKyChoSvTests
     private sealed class BoXuLy(DangKyChoTestContext db, DateTimeOffset bayGio)
     {
         private DongHoCoDinh DongHo => new(bayGio);
+
+        public DangKyChoHandler DangKy => new(
+            db,
+            DongHo,
+            new DanhMucReader(db),
+            new AvailabilityService(db, DongHo),
+            new AdvisoryLockService(db));
 
         public DsDangKyChoSvHandler Ds => new(db, new DanhMucReader(db));
     }
@@ -135,5 +148,119 @@ public class DangKyChoSvTests
 
         Assert.Equal("DU_LIEU_KHONG_HOP_LE", loi.MaLoi);
         Assert.Equal(400, loi.MaHttp);
+    }
+
+    [CanKetNoiTestFact]
+    public async Task UC03_DangKyKhiHetHang_ThemVaoCuoiHangChoVaGhiSoThuTu()
+    {
+        await using var gd = await GiaoDichTestRollback.BatDauAsync();
+        await using var db = await TaoContextAsync(gd);
+        var bo = new BoXuLy(db, BayGio);
+
+        var dangKy = await bo.DangKy.XuLyAsync("D12-SV-D", P1, X, Ct);
+
+        Assert.Matches(@"^DK-[0-9]{6}-[0-9]{6,}$", dangKy.MaDangKy);
+        Assert.Equal("DANG_CHO", dangKy.TrangThai);
+        Assert.Equal(4, dangKy.SoThuTuCho);
+        Assert.Equal(BayGio, dangKy.ThoiDiemDangKy);
+        Assert.Null(dangKy.HanGiuCho);
+        Assert.Equal("D12 Phong P1", dangKy.TenPhong);
+        Assert.Equal("D12 Loai X", dangKy.TenLoai);
+        var dong = await DocAsync(db, dangKy.MaDangKy);
+        Assert.Equal("DANG_CHO", dong.TrangThai);
+        Assert.Equal(4, dong.SoThuTuCho);
+    }
+
+    [CanKetNoiTestFact]
+    public async Task UC03_HangChoTheoTungPhongVaLoai_DocLapNhau()
+    {
+        await using var gd = await GiaoDichTestRollback.BatDauAsync();
+        await using var db = await TaoContextAsync(gd);
+        var bo = new BoXuLy(db, BayGio);
+
+        var tuongTranh = await bo.DangKy.XuLyAsync("D12-SV-D", P2, X, Ct);
+        var tiepTheo = await bo.DangKy.XuLyAsync("D12-SV-F", P2, X, Ct);
+
+        Assert.Equal(1, tuongTranh.SoThuTuCho);
+        Assert.Equal(2, tiepTheo.SoThuTuCho);
+    }
+
+    [CanKetNoiTestFact]
+    public async Task UC03E1_ConHang_Tra422VaKhongGhiDangKy()
+    {
+        await using var gd = await GiaoDichTestRollback.BatDauAsync();
+        await using var db = await TaoContextAsync(gd);
+        var bo = new BoXuLy(db, BayGio);
+        var truoc = await DemDangKyAsync(db, "D12-SV-D");
+
+        var loi = await Assert.ThrowsAsync<LoiNghiepVuException>(() => bo.DangKy.XuLyAsync("D12-SV-D", P1, Y, Ct));
+
+        Assert.Equal("CON_HANG_KHONG_DANG_KY_CHO", loi.MaLoi);
+        Assert.Equal(422, loi.MaHttp);
+        Assert.Equal(truoc, await DemDangKyAsync(db, "D12-SV-D"));
+    }
+
+    [CanKetNoiTestFact]
+    public async Task UC03_GiuChoDaThongBaoConHan_ChanKhaDungVaHetHanThiTraVeConHang()
+    {
+        await using var gd = await GiaoDichTestRollback.BatDauAsync();
+        await using var db = await TaoContextAsync(gd);
+
+        var trongHan = await new BoXuLy(db, BayGio).DangKy.XuLyAsync("D12-SV-D", P1, W, Ct);
+        var loi = await Assert.ThrowsAsync<LoiNghiepVuException>(
+            () => new BoXuLy(db, BayGio.AddMinutes(20)).DangKy.XuLyAsync("D12-SV-A", P1, W, Ct));
+
+        Assert.Equal(3, trongHan.SoThuTuCho);
+        Assert.Equal("CON_HANG_KHONG_DANG_KY_CHO", loi.MaLoi);
+    }
+
+    [CanKetNoiTestFact]
+    public async Task UC03_TamKhoaHoacCamDaiHan_Tra422VaKhongGhiDangKy()
+    {
+        await using var gd = await GiaoDichTestRollback.BatDauAsync();
+        await using var db = await TaoContextAsync(gd);
+        var bo = new BoXuLy(db, BayGio);
+
+        foreach (var maSv in new[] { "D12-SV-TAM-KHOA", "D12-SV-CAM" })
+        {
+            var loi = await Assert.ThrowsAsync<LoiNghiepVuException>(() => bo.DangKy.XuLyAsync(maSv, P2, X, Ct));
+
+            Assert.Equal("SV_BI_KHOA_QUYEN_MUON", loi.MaLoi);
+            Assert.Equal(422, loi.MaHttp);
+            Assert.Equal(1, await DemDangKyAsync(db, maSv));
+        }
+    }
+
+    [CanKetNoiTestFact]
+    public async Task UC03_TheHetHanHoacKhongTheoHoc_KhongBiChanBoiDangKyCho()
+    {
+        await using var gd = await GiaoDichTestRollback.BatDauAsync();
+        await using var db = await TaoContextAsync(gd);
+        var bo = new BoXuLy(db, BayGio);
+
+        var theHetHan = await bo.DangKy.XuLyAsync("D12-SV-HET-HAN", P2, X, Ct);
+        var totNghiep = await bo.DangKy.XuLyAsync("D12-SV-TOT-NGHIEP", P2, X, Ct);
+
+        Assert.Equal("DANG_CHO", theHetHan.TrangThai);
+        Assert.Equal("DANG_CHO", totNghiep.TrangThai);
+    }
+
+    [CanKetNoiTestFact]
+    public async Task UC03_PhongHoacLoaiKhongHopLe_Tra400VaKhongGhiDangKy()
+    {
+        await using var gd = await GiaoDichTestRollback.BatDauAsync();
+        await using var db = await TaoContextAsync(gd);
+        var bo = new BoXuLy(db, BayGio);
+        var cacCap = new (Guid MaPhong, Guid MaLoai)[] { (Guid.NewGuid(), X), (P1, Guid.NewGuid()), (P1, Z) };
+
+        foreach (var (maPhong, maLoai) in cacCap)
+        {
+            var loi = await Assert.ThrowsAsync<LoiNghiepVuException>(() => bo.DangKy.XuLyAsync("D12-SV-D", maPhong, maLoai, Ct));
+
+            Assert.Equal("DU_LIEU_KHONG_HOP_LE", loi.MaLoi);
+            Assert.Equal(400, loi.MaHttp);
+        }
+
+        Assert.Equal(1, await DemDangKyAsync(db, "D12-SV-D"));
     }
 }

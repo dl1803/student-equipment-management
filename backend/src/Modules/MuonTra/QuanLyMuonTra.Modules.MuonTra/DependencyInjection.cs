@@ -39,7 +39,7 @@ public static class DependencyInjection
         services.AddScoped<GiaoThietBiHandler>();
         services.AddScoped<DsPhieuMuonSvHandler>();
         services.AddScoped<DsDangKyChoSvHandler>();
-        services.AddScoped<DsDangKyChoSvHandler>();
+        services.AddScoped<DangKyChoHandler>();
         services.AddScoped<ChiTietPhieuMuonSvHandler>();
         services.AddScoped<DsPhieuMuonQuayHandler>();
         services.AddScoped<ChiTietPhieuMuonQuayHandler>();
