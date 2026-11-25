@@ -1,6 +1,7 @@
 using Microsoft.EntityFrameworkCore;
 using QuanLyMuonTra.Modules.DanhMuc.Infrastructure;
 using QuanLyMuonTra.Modules.MuonTra.Application;
+using QuanLyMuonTra.Modules.MuonTra.Contracts;
 using QuanLyMuonTra.Modules.MuonTra.Infrastructure;
 using QuanLyMuonTra.Modules.QuyDinh.Infrastructure;
 using QuanLyMuonTra.SharedKernel;
@@ -43,7 +44,18 @@ public class DangKyChoSvTests
         public DateTimeOffset UtcNow => thoiDiem;
     }
 
-    private sealed class BoXuLy(DangKyChoTestContext db, DateTimeOffset bayGio)
+    private sealed class CapLuotGia : IFifoService
+    {
+        public List<(Guid MaPhong, Guid MaLoai)> DaGoi { get; } = [];
+
+        public Task<DangKyChoDto?> CapLuotChoAsync(Guid maPhong, Guid maLoai, CancellationToken ct)
+        {
+            DaGoi.Add((maPhong, maLoai));
+            return Task.FromResult<DangKyChoDto?>(null);
+        }
+    }
+
+    private sealed class BoXuLy(DangKyChoTestContext db, DateTimeOffset bayGio, IFifoService? capLuot = null)
     {
         private DongHoCoDinh DongHo => new(bayGio);
 
@@ -55,6 +67,8 @@ public class DangKyChoSvTests
             new AdvisoryLockService(db));
 
         public DsDangKyChoSvHandler Ds => new(db, new DanhMucReader(db));
+
+        public RoiDangKyChoHandler Roi => new(db, new DanhMucReader(db), new AdvisoryLockService(db), capLuot);
     }
 
     private static async Task<DangKyChoTestContext> TaoContextAsync(GiaoDichTestRollback gd)
@@ -262,5 +276,130 @@ public class DangKyChoSvTests
         }
 
         Assert.Equal(1, await DemDangKyAsync(db, "D12-SV-D"));
+    }
+
+    [CanKetNoiTestFact]
+    public async Task UC03A2_RoiKhiDangCho_DaHuyDanSoThuTuPhiaSauKhongGoiCapLuotVaKhongViPham()
+    {
+        await using var gd = await GiaoDichTestRollback.BatDauAsync();
+        await using var db = await TaoContextAsync(gd);
+        var capLuot = new CapLuotGia();
+        var bo = new BoXuLy(db, BayGio, capLuot);
+
+        var ketQua = await bo.Roi.XuLyAsync("D12-SV-B", "DK-261124-912002", Ct);
+
+        Assert.Equal("DA_HUY", ketQua.TrangThai);
+        Assert.Null(ketQua.SoThuTuCho);
+        Assert.Equal(1, (await DocAsync(db, "DK-261124-912001")).SoThuTuCho);
+        Assert.Equal(2, (await DocAsync(db, "DK-261124-912003")).SoThuTuCho);
+        Assert.Equal(1, (await DocAsync(db, "DK-261124-912009")).SoThuTuCho);
+        Assert.Equal(2, (await DocAsync(db, "DK-261124-912010")).SoThuTuCho);
+        Assert.Empty(capLuot.DaGoi);
+        var soViPham = await db.Database.SqlQuery<int>($"""
+            SELECT count(*)::integer AS "Value" FROM vi_pham.vi_pham WHERE ma_sv = 'D12-SV-B'
+            """).SingleAsync(Ct);
+        Assert.Equal(0, soViPham);
+    }
+
+    [CanKetNoiTestFact]
+    public async Task UC03A2_RoiNguoiDungDau_NhungNguoiSauDonLen()
+    {
+        await using var gd = await GiaoDichTestRollback.BatDauAsync();
+        await using var db = await TaoContextAsync(gd);
+        var bo = new BoXuLy(db, BayGio, new CapLuotGia());
+
+        await bo.Roi.XuLyAsync("D12-SV-A", "DK-261124-912001", Ct);
+
+        Assert.Equal(1, (await DocAsync(db, "DK-261124-912002")).SoThuTuCho);
+        Assert.Equal(2, (await DocAsync(db, "DK-261124-912003")).SoThuTuCho);
+    }
+
+    [CanKetNoiTestFact]
+    public async Task GC08_RoiKhiDaThongBao_DaHuyVaGoiCapLuotDungCapPhongLoai()
+    {
+        await using var gd = await GiaoDichTestRollback.BatDauAsync();
+        await using var db = await TaoContextAsync(gd);
+        var capLuot = new CapLuotGia();
+        var bo = new BoXuLy(db, BayGio, capLuot);
+
+        var ketQua = await bo.Roi.XuLyAsync("D12-SV-E", "DK-261124-912005", Ct);
+
+        Assert.Equal("DA_HUY", ketQua.TrangThai);
+        var lanGoi = Assert.Single(capLuot.DaGoi);
+        Assert.Equal((P1, W), lanGoi);
+        Assert.Equal(1, (await DocAsync(db, "DK-261124-912006")).SoThuTuCho);
+        Assert.Equal(2, (await DocAsync(db, "DK-261124-912007")).SoThuTuCho);
+    }
+
+    [CanKetNoiTestFact]
+    public async Task UC03A2_RoiKhiDaThongBaoMaChuaCoBoCapLuot_ChanAnToanVaKhongDoiDuLieu()
+    {
+        await using var gd = await GiaoDichTestRollback.BatDauAsync();
+        await using var db = await TaoContextAsync(gd);
+        var bo = new BoXuLy(db, BayGio);
+
+        await Assert.ThrowsAsync<InvalidOperationException>(() => bo.Roi.XuLyAsync("D12-SV-E", "DK-261124-912005", Ct));
+
+        var dong = await DocAsync(db, "DK-261124-912005");
+        Assert.Equal("DA_THONG_BAO", dong.TrangThai);
+        Assert.Equal(new DateTimeOffset(2026, 11, 24, 3, 10, 0, TimeSpan.Zero), dong.HanGiuCho);
+    }
+
+    [CanKetNoiTestFact]
+    public async Task UC03A2_SvBiKhoaQuyenMuon_VanRoiDuocVaHangChoDonLen()
+    {
+        await using var gd = await GiaoDichTestRollback.BatDauAsync();
+        await using var db = await TaoContextAsync(gd);
+        var bo = new BoXuLy(db, BayGio, new CapLuotGia());
+
+        var tamKhoa = await bo.Roi.XuLyAsync("D12-SV-TAM-KHOA", "DK-261124-912009", Ct);
+        var cam = await bo.Roi.XuLyAsync("D12-SV-CAM", "DK-261124-912010", Ct);
+
+        Assert.Equal("DA_HUY", tamKhoa.TrangThai);
+        Assert.Equal("DA_HUY", cam.TrangThai);
+    }
+
+    [CanKetNoiTestFact]
+    public async Task UC03A2_RoiDuLieuNguoiKhac_Tra403VaKhongDoiDuLieu()
+    {
+        await using var gd = await GiaoDichTestRollback.BatDauAsync();
+        await using var db = await TaoContextAsync(gd);
+        var bo = new BoXuLy(db, BayGio, new CapLuotGia());
+
+        var loi = await Assert.ThrowsAsync<LoiNghiepVuException>(() => bo.Roi.XuLyAsync("D12-SV-A", "DK-261124-912002", Ct));
+
+        Assert.Equal("KHONG_DU_QUYEN", loi.MaLoi);
+        Assert.Equal(403, loi.MaHttp);
+        Assert.Equal("DANG_CHO", (await DocAsync(db, "DK-261124-912002")).TrangThai);
+    }
+
+    [CanKetNoiTestFact]
+    public async Task UC03A2_MaSaiDinhDangTra400MaKhongTonTaiTra404()
+    {
+        await using var gd = await GiaoDichTestRollback.BatDauAsync();
+        await using var db = await TaoContextAsync(gd);
+        var bo = new BoXuLy(db, BayGio, new CapLuotGia());
+
+        var saiDinhDang = await Assert.ThrowsAsync<LoiNghiepVuException>(() => bo.Roi.XuLyAsync("D12-SV-A", "khong-phai-ma", Ct));
+        var khongTonTai = await Assert.ThrowsAsync<LoiNghiepVuException>(() => bo.Roi.XuLyAsync("D12-SV-A", "DK-000101-999999", Ct));
+
+        Assert.Equal("DU_LIEU_KHONG_HOP_LE", saiDinhDang.MaLoi);
+        Assert.Equal("KHONG_TIM_THAY", khongTonTai.MaLoi);
+        Assert.Equal(404, khongTonTai.MaHttp);
+    }
+
+    [CanKetNoiTestFact]
+    public async Task UC03A2_RoiLanHaiHoacTrangThaiKetThuc_Tra409TrangThaiKhongHopLe()
+    {
+        await using var gd = await GiaoDichTestRollback.BatDauAsync();
+        await using var db = await TaoContextAsync(gd);
+        var bo = new BoXuLy(db, BayGio, new CapLuotGia());
+
+        var daHuy = await Assert.ThrowsAsync<LoiNghiepVuException>(() => bo.Roi.XuLyAsync("D12-SV-D", "DK-261124-912004", Ct));
+        var hetHan = await Assert.ThrowsAsync<LoiNghiepVuException>(() => bo.Roi.XuLyAsync("D12-SV-E", "DK-261124-912008", Ct));
+
+        Assert.Equal("TRANG_THAI_KHONG_HOP_LE", daHuy.MaLoi);
+        Assert.Equal(409, daHuy.MaHttp);
+        Assert.Equal("TRANG_THAI_KHONG_HOP_LE", hetHan.MaLoi);
     }
 }

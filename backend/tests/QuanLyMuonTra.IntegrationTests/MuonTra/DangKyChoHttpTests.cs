@@ -193,4 +193,30 @@ public sealed class DangKyChoHttpTests : IAsyncLifetime
         Assert.Equal(HttpStatusCode.BadRequest, phanHoi.StatusCode);
         Assert.Equal("DU_LIEU_KHONG_HOP_LE", (await DocJsonAsync(phanHoi)).GetProperty("maLoi").GetString());
     }
+
+    [CanKetNoiTestFact]
+    public async Task UC03A2_Roi_KhongToken401TokenNhanVien403()
+    {
+        const string duongDanRoi = "/api/v1/sv/dang-ky-cho/DK-261124-912001/roi";
+
+        var khongToken = await GoiAsync(HttpMethod.Post, duongDanRoi, null);
+        var nhanVien = await GoiAsync(HttpMethod.Post, duongDanRoi, TaoToken(Guid.NewGuid().ToString(), "NHAN_VIEN"));
+
+        Assert.Equal(HttpStatusCode.Unauthorized, khongToken.StatusCode);
+        Assert.Equal(HttpStatusCode.Forbidden, nhanVien.StatusCode);
+    }
+
+    [CanKetNoiTestFact]
+    public async Task UC03A2_RoiMaSaiDinhDangTra400MaKhongTonTaiTra404()
+    {
+        var token = TaoToken("D12-SV-HTTP", "SINH_VIEN");
+
+        var saiDinhDang = await GoiAsync(HttpMethod.Post, $"{DuongDan}/khong-phai-ma/roi", token);
+        var khongTonTai = await GoiAsync(HttpMethod.Post, $"{DuongDan}/DK-000101-999999/roi", token);
+
+        Assert.Equal(HttpStatusCode.BadRequest, saiDinhDang.StatusCode);
+        Assert.Equal("DU_LIEU_KHONG_HOP_LE", (await DocJsonAsync(saiDinhDang)).GetProperty("maLoi").GetString());
+        Assert.Equal(HttpStatusCode.NotFound, khongTonTai.StatusCode);
+        Assert.Equal("KHONG_TIM_THAY", (await DocJsonAsync(khongTonTai)).GetProperty("maLoi").GetString());
+    }
 }

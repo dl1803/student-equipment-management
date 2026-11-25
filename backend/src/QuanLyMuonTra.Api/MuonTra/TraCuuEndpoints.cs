@@ -110,6 +110,14 @@ public static class TraCuuEndpoints
                 Results.Ok(await boXuLy.XuLyAsync(LayMaSv(nguoiDung), trang, kichThuoc, ct)))
             .RequireAuthorization(ChinhSach.SinhVien);
 
+        nhomSv.MapPost("/dang-ky-cho/{ma}/roi", async (
+                string ma,
+                [FromServices] ICurrentUser nguoiDung,
+                [FromServices] RoiDangKyChoHandler boXuLy,
+                CancellationToken ct) =>
+                Results.Ok(await boXuLy.XuLyAsync(LayMaSv(nguoiDung), ma, ct)))
+            .RequireAuthorization(ChinhSach.SinhVien);
+
         nhomSv.MapGet("/phieu-muon", async (
                 [FromServices] ICurrentUser nguoiDung,
                 [FromServices] DsPhieuMuonSvHandler boXuLy,

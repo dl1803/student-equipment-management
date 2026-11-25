@@ -38,4 +38,27 @@ public class KiemTraDieuKienDangKyChoTests
         Assert.Equal("CON_HANG_KHONG_DANG_KY_CHO", loi.MaLoi);
         Assert.Equal(422, loi.MaHttp);
     }
+
+    [Theory]
+    [InlineData("DK-261124-000001")]
+    [InlineData("DK-261124-1000000")]
+    public void UC03A2_MaDungDinhDang_KhongNemLoi(string ma)
+    {
+        KiemTraDieuKienDangKyCho.KiemTraMaDangKy(ma);
+    }
+
+    [Theory]
+    [InlineData("")]
+    [InlineData("YC-261124-000001")]
+    [InlineData("DK-26112-000001")]
+    [InlineData("DK-261124-00001")]
+    [InlineData("dk-261124-000001")]
+    [InlineData("DK-261124-000001\n")]
+    public void UC03A2_MaSaiDinhDang_Tra400(string ma)
+    {
+        var loi = Assert.Throws<LoiNghiepVuException>(() => KiemTraDieuKienDangKyCho.KiemTraMaDangKy(ma));
+
+        Assert.Equal("DU_LIEU_KHONG_HOP_LE", loi.MaLoi);
+        Assert.Equal(400, loi.MaHttp);
+    }
 }
