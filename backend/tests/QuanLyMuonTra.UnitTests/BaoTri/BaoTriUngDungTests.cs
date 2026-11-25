@@ -52,6 +52,19 @@ public sealed class BaoTriUngDungTests
         Assert.Equal(400, loi.MaHttp);
     }
 
+    [Theory]
+    [InlineData(typeof(BaoTriSuaChuaDto))]
+    [InlineData(typeof(ThietBiChoTiepNhanSuaChuaDto))]
+    [InlineData(typeof(ThietBiDenHanBaoTriDto))]
+    public void UC11_DtoQuayBaoTri_KhongTraThongTinBaoHanhHoacNhaCungCap(Type kieuDto)
+    {
+        var dsTen = kieuDto.GetProperties().Select(p => p.Name).ToList();
+
+        Assert.DoesNotContain(dsTen, t => t.Contains("BaoHanh", StringComparison.Ordinal));
+        Assert.DoesNotContain(dsTen, t => t.Contains("NhaCungCap", StringComparison.Ordinal));
+        Assert.DoesNotContain(dsTen, t => t.Contains("Ncc", StringComparison.OrdinalIgnoreCase));
+    }
+
     private static KhongKetNoiDbContext TaoDbContext() =>
         new(new DbContextOptionsBuilder<KhongKetNoiDbContext>()
             .UseNpgsql("Host=khong-ket-noi;Database=khong-ket-noi")

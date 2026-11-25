@@ -58,7 +58,7 @@ internal sealed class BaoTriMoiTruong : IAsyncDisposable
 
     public AppDbContext Db { get; }
 
-    public static async Task<BaoTriMoiTruong> TaoAsync()
+    public static async Task<BaoTriMoiTruong> TaoAsync(params string[] tepBoSung)
     {
         var dichVu = BaoTriTestSupport.TaoDichVu();
         var phamVi = dichVu.CreateAsyncScope();
@@ -66,6 +66,11 @@ internal sealed class BaoTriMoiTruong : IAsyncDisposable
         var giaoDich = await db.Database.BeginTransactionAsync();
         await NapTepAsync(db, "D12-N-du-lieu-thu-bao-tri.sql");
         await NapTepAsync(db, "D13-N-quyen-phong.sql");
+        foreach (var tep in tepBoSung)
+        {
+            await NapTepAsync(db, tep);
+        }
+
         return new BaoTriMoiTruong(dichVu, phamVi, db, giaoDich);
     }
 
