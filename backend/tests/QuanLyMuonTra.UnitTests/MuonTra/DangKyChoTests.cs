@@ -70,6 +70,7 @@ public class DangKyChoTests
         dangKy.Roi();
 
         Assert.Equal(TrangThaiDangKyCho.DaHuy, dangKy.TrangThai);
+        Assert.Null(dangKy.SoThuTuCho);
     }
 
     [Fact]
@@ -80,6 +81,7 @@ public class DangKyChoTests
         dangKy.Roi();
 
         Assert.Equal(TrangThaiDangKyCho.DaHuy, dangKy.TrangThai);
+        Assert.Null(dangKy.SoThuTuCho);
     }
 
     [Fact]

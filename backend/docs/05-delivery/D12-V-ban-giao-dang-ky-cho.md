@@ -11,7 +11,8 @@ Người lập: Nguyễn Đại Vương · Ngày: 25/11/2026 · Giờ thực t�
   1. `adff081` — `feat(backend): bổ sung xem danh sách đăng ký chờ của sinh viên`
   2. `432f377` — `feat(backend): bổ sung đăng ký chờ khi loại thiết bị hết khả dụng`
   3. `892a5e7` — `feat(backend): bổ sung rời danh sách chờ và chặn an toàn nhánh giữ chỗ`
-  4. Commit bàn giao này — `docs(backend): bàn giao D12-V đăng ký chờ`
+  4. `e80f013` — `docs(backend): bàn giao D12-V đăng ký chờ`
+  5. Commit sau review PR #64 — `fix(backend): xóa số thứ tự chờ về null trong db khi hủy đăng ký`
 
 ## 2. Thứ tự kiểm tra
 
@@ -47,6 +48,12 @@ Môi trường: Windows, PowerShell, .NET SDK `9.0.321`, PostgreSQL test (`Conne
    - `dotnet build -c Release`: Succeeded (0 Warning, 0 Error).
    - `dotnet test tests\QuanLyMuonTra.UnitTests -c Release --no-build`: Passed 529 / Failed 0 / Skipped 0 / Total 529 (gồm 14 ca unit mới trong `KiemTraDieuKienDangKyChoTests` và 11 ca sẵn có trong `DangKyChoTests`).
    - `dotnet test tests\QuanLyMuonTra.IntegrationTests -c Release --no-build`: Passed 607 / Failed 0 / Skipped 5 / Total 612 (5 ca bỏ qua đều thuộc phần ngoài D12-V đã có từ baseline: 2 ca `SupabaseAnhStorageThatTests`, 2 ca `MigrationBundleTests`, 1 ca `DonAnhMoCoJobTests.UC12_J9_XoaObjectThatTrenSupabaseStorage`; toàn bộ test của D12-V gồm `DangKyChoSvTests` 19 ca, `DangKyChoHttpTests` 10 ca, `DiRuntimeDangKyChoTests` 1 ca, `ManifestOperationTests` và `DiRuntimeKhongBanGiaTests` đều Passed).
+
+3. **Sau sửa theo review PR #64 (`DangKyCho.Roi()` đặt `SoThuTuCho = null`):**
+   - `dotnet format --verify-no-changes`: Passed (exit code 0).
+   - `dotnet build -c Release`: Succeeded (0 Warning, 0 Error).
+   - `dotnet test tests\QuanLyMuonTra.UnitTests -c Release --no-build`: Passed 529 / Failed 0 / Skipped 0 / Total 529.
+   - `dotnet test tests\QuanLyMuonTra.IntegrationTests -c Release --no-build --filter "FullyQualifiedName~DangKyChoSvTests|FullyQualifiedName~DangKyChoHttpTests|FullyQualifiedName~DiRuntimeDangKyChoTests|FullyQualifiedName~ManifestOperationTests|FullyQualifiedName~DiRuntimeKhongBanGiaTests"`: Passed 33 / Failed 0 / Skipped 0 / Total 33.
 
 ## 5. Nội dung chưa kiểm chứng hoặc bị chặn
 

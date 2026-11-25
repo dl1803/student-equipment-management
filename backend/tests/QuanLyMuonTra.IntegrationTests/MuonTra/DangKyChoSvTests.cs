@@ -290,6 +290,9 @@ public class DangKyChoSvTests
 
         Assert.Equal("DA_HUY", ketQua.TrangThai);
         Assert.Null(ketQua.SoThuTuCho);
+        var dongDaRoi = await DocAsync(db, "DK-261124-912002");
+        Assert.Equal("DA_HUY", dongDaRoi.TrangThai);
+        Assert.Null(dongDaRoi.SoThuTuCho);
         Assert.Equal(1, (await DocAsync(db, "DK-261124-912001")).SoThuTuCho);
         Assert.Equal(2, (await DocAsync(db, "DK-261124-912003")).SoThuTuCho);
         Assert.Equal(1, (await DocAsync(db, "DK-261124-912009")).SoThuTuCho);
