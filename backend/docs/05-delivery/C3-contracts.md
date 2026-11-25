@@ -289,5 +289,15 @@ Lưu ý: tình trạng `DANG_DUOC_MUON` trong dữ liệu thử đặt trực ti
 | `SupabaseAnhStorageThatTests` | 2 ca Skipped (môi trường dev cục bộ chưa cấu hình khóa dịch vụ trong user-secrets) |
 | Quyền thật qua HTTP | Chưa kiểm chứng — BLOCKED (chờ endpoint từ Khôi) |
 
+## 19. Bàn giao D13-N cho Khôi, Vương và tích hợp
+
+| Mục | Nội dung |
+|---|---|
+| Đã bàn giao | Xem `D13-N-ban-giao-bao-tri.md` |
+| Việc cho Host (Khôi) | Thêm `typeof(BaoTriModelBuilderExtensions).Assembly` vào `assemblyCauHinhEf`; bọc `quayDsThietBiDenHanBaoTri`, `quayDsChoTiepNhanSuaChua`, `quayLapBaoTri` (policy `NhanVien`, `maNv` từ `ICurrentUser`); cập nhật `C0-manifest-operation.csv`; bổ sung `SO_LUONG_KHA_DUNG_THAY_DOI` vào 409 của `quayLapBaoTri` |
+| Chưa làm / BLOCKED | G3; quyền qua HTTP; reader phiếu D11-V |
+| Migration / snapshot | Không thay đổi |
+
+
 
 
