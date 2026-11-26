@@ -24,7 +24,8 @@
 | Phiên bản thư viện (D06-L) | `androidx.navigation:navigation-fragment` 2.9.8 và plugin Safe Args `androidx.navigation.safeargs` 2.9.8 (khóa `navigation`); `com.squareup.retrofit2:converter-gson` 3.0.0 (dùng chung khóa `retrofit`) | Đề xuất của Architect, chờ nhóm xác nhận | FC 1.4, FC 10.2; xem mục 11 |
 | Phiên bản thư viện (D07-L) | `androidx.swiperefreshlayout:swiperefreshlayout` 1.1.0 (khóa `swiperefreshlayout`) | Đề xuất của Architect, chờ nhóm xác nhận | FC 1.4, FC 6.6 (kéo để làm mới); xem mục 12 |
 | Phiên bản thư viện (D08-L) | `androidx.recyclerview:recyclerview` `1.2.1` (khóa `recyclerview`), đúng bản `material` 1.14.0 đang kéo vào, đo bằng `:app:dependencies` | Đề xuất của Architect, chờ nhóm xác nhận | FC 1.4, FC 6.6 (`ListAdapter`, `DiffUtil`); xem mục 13 |
-| Phiên bản thư viện khác | Chưa khóa (Glide...); MockWebServer đã khóa ở D04-L, Navigation ở D06-L, RecyclerView ở D08-L | OPEN | FC 1.4: khóa khi task đầu tiên dùng và phải được nhóm duyệt |
+| Phiên bản thư viện (D09-L) | `com.github.bumptech.glide:glide` `5.0.7` (khóa `glide`), dòng ổn định 5.0.x hiện hành; phương án lùi 4.16.0 nếu kiểm metadata AAR không qua | Đề xuất của Architect, chờ nhóm xác nhận | FC 1.4, FC 10.2, ĐX-FA-15; xem mục 14 |
+| Phiên bản thư viện khác | Chưa có thư viện nào khác chưa khóa; MockWebServer đã khóa ở D04-L, Navigation ở D06-L, RecyclerView ở D08-L, Glide ở D09-L | OPEN | FC 1.4: thư viện mới khóa khi task đầu tiên dùng và phải được nhóm duyệt |
 
 Lý do chọn AGP 8.13.2 thay vì dòng 9.x: AGP 9 đổi mô hình DSL và bỏ API cũ mà một số plugin còn dùng. Plugin sinh client (D02-L) và Safe Args (D06-L) chưa được kiểm chứng với AGP 9 trong tài liệu này. Chuyển lên AGP 9 là một quyết định riêng của nhóm.
 
@@ -334,4 +335,31 @@ Nguồn: UI-Screens 5.2, 3.7, 3.9; User-Flows UF-SV-01; Wireframes SCR-SV-02, Đ
 Phạm vi kiểm chứng của D08-L: test trong `src/test` chạy trên JVM (293 test): `TraCuuRepository` bằng MockWebServer (đường dẫn và tên tham số), logic `TraCuuThietBiViewModel` (debounce 400 ms, hủy yêu cầu cũ và bỏ phản hồi muộn, tải thêm theo `tongSo`, lỗi tải thêm giữ dòng cũ, lỗi nguồn bộ lọc độc lập, xóa một/tất cả bộ lọc, kết quả rỗng, nguồn nhiều trang), cấu trúc layout, style và quy tắc mã. **Không** chứng minh hình thức thật, bố cục ở 320/360/412 dp, cỡ chữ 1,3 lần, vùng chạm 48 dp, TalkBack, cuộn cùng đầu danh sách, tiêu điểm ô tìm, hiển thị phân đoạn/chip/hộp chọn: cần thiết bị hoặc emulator (FC 9.4, TC-05, TC-06): **chưa chạy**. Kiểm với backend thật (`/sv/tra-cuu/thiet-bi`, `/sv/loai-thiet-bi`, `/sv/phong-thiet-bi`) thuộc gate tích hợp D05-V, D07-K: **OPEN**.
 
 Chưa có trong D08-L (thuộc ngày sau): mở SCR-SV-03 khi chọn dòng (D09-L), Glide và ảnh (D09-L), Đặt trước (D10-L), tích hợp thật (D17-L), lint và spotless (D19-L).
+
+## 14. Quyết định D09-L
+
+Nguồn: UI-Screens 5.3, 3.2; User-Flows UF-SV-01, UF-SV-03; Wireframes SCR-SV-03, ĐX-WF-14; FA 5.3, 5.6, 5.7; FC 1.4, 6.2, 6.3; ĐX-FA-12; DS CMP-23, CMP-24, ĐX-DS-16, 9.8; demo-ui-android (SCR-SV-03); `BANG_THEO_DOI_40_NGAY.md` D09-L, D10-L, D13-L. Mọi quyết định dưới đây là đề xuất của Architect, chờ nhóm xác nhận.
+
+| # | Quyết định | Lý do và căn cứ |
+|---|---|---|
+| 1 | Khóa Glide `5.0.7`, thêm `implementation(libs.glide)`; không thêm bộ xử lý chú thích | FC 1.4: khóa khi task đầu tiên dùng; ĐX-FA-15. Chưa kiểm chứng yêu cầu compileSdk của phụ thuộc đi kèm (kiểm bằng `:app:assembleDebug`); phương án lùi 4.16.0 |
+| 2 | **Phạm vi:** D09-L chỉ làm cổng kiểm tra quyền mượn. Khi cổng cho phép chỉ phát sự kiện, chưa điều hướng SCR-SV-04 (D10-L), chưa gọi `POST /sv/dang-ky-cho`, chưa có DLG-SV-01 và SCR-SV-08 (D13-L). Hai nút chưa dẫn đi đâu với quyền Bình thường | Kế hoạch tách D10-L, D13-L; tiền lệ D07-L. **Cần nhóm xác nhận** vì UI-Screens 5.3 mô tả cả phần gửi đăng ký chờ |
+| 3 | "Nhánh hàng vừa có lại" của D09-L được hiểu là tải lại chi tiết thấy `soLuongKhaDung` > 0 thì nút đổi sang Đặt trước theo giá trị máy chủ | Lỗi `CON_HANG_KHONG_DANG_KY_CHO` thuộc D13-L (kiểm thử "còn hàng không cho đăng ký") |
+| 4 | Cổng chỉ dựa vào `trangThaiQuyenMuon`; mã khác `BINH_THUONG` (kể cả mã chưa biết) là bị chặn; mỗi lần bấm gọi `svToi` mới | ĐX-UF-03; UI-Screens 5.3 ghi chú; UF-SV-01 |
+| 5 | Lỗi `svToi` hiển thị bằng khối thông báo DANGER ở đầu màn hình (kèm mã theo dõi khi có), không điều hướng, không tự thử lại | UI-Screens 3.2, ĐX-DS-16 (lỗi hệ thống dùng `danger`, không toast); tài liệu chưa nêu chữ: `chi_tiet_loi_quyen_muon_tieu_de` do Architect viết |
+| 6 | 404 `KHONG_TIM_THAY` khi tải chi tiết: khối thông báo "Không tìm thấy" kèm nút "Quay lại danh sách"; SCR-SV-02 tự tải lại khi mở lại | UI-Screens 3.2 ("quay về danh sách và tải lại") không nêu thông báo đặt ở đâu khi màn hình đã đóng. Tông `warning` theo ĐX-DS-16 (dữ liệu đã đổi), UI-Screens 3.2 không nêu tông. **Cần nhóm xác nhận** |
+| 7 | `AnhGalleryView` và `ImageViewerDialogFragment` đặt ở `common/widget`; màn hình, ViewModel, `ChiTietLoaiTrinhBay` đặt ở `ui/tracuu` | FC Phụ lục tên CMP-23; cùng thư mục với màn hình gọi tới |
+| 8 | Có ảnh không tải được thì thay **cả dải** bằng một khối lỗi (biểu tượng `broken_image`, "Không tải được ảnh", "Tải lại"); "Tải lại" gọi `refresh()` của chi tiết; không tự thử lại | DS CMP-23; URL ảnh danh mục là công khai nên không hết hạn |
+| 9 | Ảnh danh mục dùng bộ nhớ đệm mặc định của Glide (không `DiskCacheStrategy.NONE`) | FC 6.x (bảng Ảnh); ĐX-FA-15 chỉ áp dụng cho ảnh tình trạng |
+| 10 | Ô ảnh và ô thay thế cỡ `ds_size_photo_thumb`; demo dùng ô thay thế rộng hơn nhưng Design-System không có token cho cỡ đó | DS CMP-23 ("Android: size.photo.thumb"). **Cần nhóm xác nhận** |
+| 11 | Dòng phụ "hãng · phòng · cơ sở" theo demo (một dòng); Wireframes vẽ hai dòng | Demo là nguồn hình thức; **cần nhóm xác nhận** |
+| 12 | `ChiTietLoaiThietBiViewModel.khoiTao(maLoai, maPhong)` nhận đối tượng xem; chỉ lần đầu có tác dụng | `AppViewModelFactory` tạo ViewModel không tham số; không đổi `AppContainer` |
+| 13 | Biểu tượng `ic_image` chép từ demo; `ic_broken_image` là Material Icons (Apache License 2.0), **chưa so bằng mắt**; nền `ds_anh_o_nen` (surface.muted, radius.md) | Demo; tiền lệ mục 13 dòng 14 |
+| 14 | Sửa có chủ đích `NavGraphD06Test` (7 điểm đến, bỏ qua hành động mở chồng của tra cứu và chi tiết, nhãn của chi tiết) và `NavGraphD07Test` (7 điểm đến, đổi tên test) | D06-L đã ghi "màn hình mở chồng thêm ở các ngày sau" |
+| 15 | Kiểm tra "đang đứng đúng điểm đến" trước `navigate` ở hai nơi mới | Tránh văng khi bấm hai lần liên tiếp |
+| 16 | Chữ do Architect viết, tài liệu chưa nêu: `chi_tiet_ghep_ba`, `chi_tiet_ve_danh_sach`, `chi_tiet_loi_quyen_muon_tieu_de`, `anh_thay_the_mo_ta` | DS 9.8 không nêu |
+
+Phạm vi kiểm chứng của D09-L: test trong `src/test` chạy trên JVM: `TraCuuRepository.svTraCuuThietBiChiTiet` bằng MockWebServer (đường dẫn, tên tham số, giải mã còn hàng và hết hàng, lỗi 404), logic `ChiTietLoaiThietBiViewModel` (tải, tải lại, nhánh hàng vừa có lại, 404, phản hồi muộn bị bỏ, cổng kiểm tra quyền mượn với quyền Bình thường, tạm khóa, cấm mượn dài hạn, mã chưa biết, lỗi mạng và 500, chống bấm trùng, mỗi lần chọn gọi `svToi` mới, không bao giờ gọi `svDangKyCho`, hủy khi bị hủy), `ChiTietLoaiTrinhBay`, cấu trúc layout, nav graph và quy tắc mã. **Không** chứng minh hình thức thật, bố cục ở 320/360/412 dp và cỡ chữ 1,3 lần, ảnh thật tải bằng Glide, cuộn ngang của dải ảnh, khối lỗi ảnh, nút Back và chạm ngoài đóng ảnh lớn, tên truy cập (TalkBack), vùng chạm 48 dp, nút Quay lại ở SCR-SV-14 bị chặn, điều hướng thật: cần thiết bị hoặc emulator (FC 9.4).
+
+Chưa có trong D09-L (thuộc ngày sau): SCR-SV-04 và Đặt trước (D10-L), gọi `POST /sv/dang-ky-cho`, DLG-SV-01, SCR-SV-08, lỗi `CON_HANG_KHONG_DANG_KY_CHO` (D13-L), ảnh tình trạng (ngày có SCR-SV-10), tích hợp thật (D17-L), lint và spotless (D19-L).
 

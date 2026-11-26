@@ -13,6 +13,11 @@
 # D07-L: khóa SwipeRefreshLayout (kéo để làm mới, FC 6.6). Đề xuất của Architect, chờ nhóm xác nhận.
 # D08-L: khóa RecyclerView (danh sách SCR-SV-02, FA 2.4). Phiên bản đúng bằng bản Material 1.14.0 đang kéo vào
 # (đo bằng :app:dependencies); không nâng. Đề xuất của Architect, chờ nhóm xác nhận.
+# D09-L: khóa Glide 5.0.7 (task đầu tiên dùng, FC 1.4, ĐX-FA-15). Dòng 5.0.x là dòng ổn định hiện hành của Glide; theo ghi
+# chú phát hành, 5.0 không có thay đổi lớn so với 4.16 ngoài việc biên dịch bằng Java 8 và Kotlin 1.8. 5.0.7 phát hành
+# tháng 04/2026. Chưa kiểm chứng yêu cầu compileSdk của các thư viện AndroidX đi kèm: kiểm bằng :app:assembleDebug (bước
+# kiểm metadata AAR). Nếu vượt compileSdk 36 thì lùi về 4.16.0 (bản cuối của dòng 4.x). Đề xuất của Architect, chờ nhóm
+# xác nhận.
 [versions]
 # AGP 8.13.2 đi cùng Gradle 8.13, JDK 17 trở lên, hỗ trợ compileSdk 36.
 agp = "8.13.2"
@@ -36,6 +41,7 @@ navigation = "2.9.8"
 # SwipeRefreshLayout 1.1.0 (bản ổn định): FC 6.6 bắt buộc kéo để làm mới ở màn hình có dữ liệu máy chủ.
 swiperefreshlayout = "1.1.0"
 recyclerview = "1.2.1"
+glide = "5.0.7"
 
 [libraries]
 retrofit = { module = "com.squareup.retrofit2:retrofit", version.ref = "retrofit" }
@@ -54,6 +60,7 @@ material = { module = "com.google.android.material:material", version.ref = "mat
 androidx-navigation-fragment = { module = "androidx.navigation:navigation-fragment", version.ref = "navigation" }
 androidx-swiperefreshlayout = { module = "androidx.swiperefreshlayout:swiperefreshlayout", version.ref = "swiperefreshlayout" }
 androidx-recyclerview = { module = "androidx.recyclerview:recyclerview", version.ref = "recyclerview" }
+glide = { module = "com.github.bumptech.glide:glide", version.ref = "glide" }
 
 [plugins]
 android-application = { id = "com.android.application", version.ref = "agp" }

@@ -45,7 +45,8 @@ public class NavGraphD06Test {
     public void FC33_NavGraph_MaDiemDenTrungTenLopVaLopTonTai() {
         List<Element> diemDen = cacPhanTu(navGraph(), "fragment");
 
-        assertEquals(6, diemDen.size());
+        // D09-L: thêm chiTietLoaiThietBiFragment (SCR-SV-03).
+        assertEquals(7, diemDen.size());
         for (Element e : diemDen) {
             String ten = e.getAttribute("android:name");
             String tenLop = ten.substring(ten.lastIndexOf('.') + 1);
@@ -84,6 +85,11 @@ public class NavGraphD06Test {
             if (ma.startsWith("action_trangChuFragment_to_")) {
                 continue;
             }
+            // D09-L: hành động mở chồng của tra cứu và của chi tiết không xóa ngăn xếp; cấu trúc do NavGraphD09Test kiểm.
+            if (ma.startsWith("action_traCuuThietBiFragment_to_")
+                    || ma.startsWith("action_chiTietLoaiThietBiFragment_to_")) {
+                continue;
+            }
             if (ma.equals("action_global_to_dangNhapSinhVienFragment")) {
                 // Quy tắc 5: phiên kết thúc xóa toàn bộ ngăn xếp (kể cả graph gốc).
                 assertEquals("@id/nav_graph", hanhDong.getAttribute("app:popUpTo"));
@@ -102,7 +108,8 @@ public class NavGraphD06Test {
     public void FA53_NavGraph_BonTabGocCoNhanLamTieuDeThanhTieuDe() {
         for (Element e : cacPhanTu(navGraph(), "fragment")) {
             String ma = maId(e.getAttribute("android:id"));
-            if (TAB_GOC.contains(ma)) {
+            // D09-L: màn hình mở chồng chiTietLoaiThietBiFragment có nhãn vì MainActivity lấy tiêu đề từ nhãn.
+            if (TAB_GOC.contains(ma) || ma.equals("chiTietLoaiThietBiFragment")) {
                 assertTrue(ma, e.getAttribute("android:label").startsWith("@string/"));
             } else {
                 assertEquals("Màn hình chung không có tiêu đề: " + ma, "", e.getAttribute("android:label"));

@@ -74,7 +74,7 @@ public class NavGraphD07Test {
     }
 
     @Test
-    public void FA53_TabGoc_VanLaSauDiemDenVaKhongThemDiemDenMoi() {
+    public void FA53_TabGoc_VanLaSauDiemDenVaChiThemMotDiemDenChiTiet() {
         Document doc = navGraph();
         Set<String> ma = new HashSet<>();
         for (Element e : cacPhanTu(doc, "fragment")) {
@@ -82,6 +82,7 @@ public class NavGraphD07Test {
             ma.add(maId(e.getAttribute("android:id")));
         }
 
-        assertEquals(6, ma.size());
+        // D09-L: sáu điểm đến cũ cộng chiTietLoaiThietBiFragment (SCR-SV-03).
+        assertEquals(7, ma.size());
     }
 }

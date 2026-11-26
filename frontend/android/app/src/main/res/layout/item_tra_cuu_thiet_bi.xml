@@ -2,12 +2,14 @@
 <!--
     SCR-SV-02 một dòng kết quả (CMP-16 ListRow, theo demo-ui-android). Dòng 1: tên loại · hãng (type.card) và chevron_right.
     Dòng 2: "Phòng · Cơ sở" (type.caption, chữ phụ) và bên phải "Còn: n" (type.label) hoặc nhãn Hết hàng khi số lượng 0.
-    Chữ dài xuống dòng, không cắt (UI-Screens 3.9). D08-L: chevron chỉ là hình thức; dòng chưa bấm được vì SCR-SV-03 thuộc
-    D09-L, ngày đó thêm điều hướng.
+    Chữ dài xuống dòng, không cắt (UI-Screens 3.9). D09-L: dòng bấm được, mở SCR-SV-03 (chevron là dấu hiệu bấm được).
 -->
 <com.google.android.material.card.MaterialCardView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     style="@style/Widget.Ds.ListRow"
+    android:clickable="true"
+    android:focusable="true"
+    app:rippleColor="@color/ds_color_overlay_pressed"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:layout_marginTop="@dimen/ds_space_list_gap">

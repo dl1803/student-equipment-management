@@ -220,4 +220,28 @@
     <string name="tra_cuu_ghep_hai">%1$s · %2$s</string>
     <string name="tra_cuu_kha_dung">Còn: %1$s</string>
 
+    <!--
+        D09-L: SCR-SV-03 Chi tiết loại thiết bị tại phòng (UI-Screens 5.3, Wireframes SCR-SV-03, demo-ui-android) và CMP-23 (DS 9.8).
+        Nguyên văn tài liệu: chi_tiet_thiet_bi_tieu_de, chi_tiet_mo_ta, chi_tiet_thong_so, chi_tiet_so_luong_kha_dung,
+        chi_tiet_ngay_du_kien, chi_tiet_chua_co_ngay, hai nhãn nút, chi_tiet_khong_tim_thay_tieu_de, anh_khong_tai_duoc,
+        anh_tai_lai, anh_mo_ta_o_anh. Chữ do Architect viết vì tài liệu chưa nêu, chờ nhóm xác nhận: chi_tiet_ghep_ba,
+        chi_tiet_ve_danh_sach, chi_tiet_loi_quyen_muon_tieu_de, anh_thay_the_mo_ta.
+    -->
+    <string name="chi_tiet_thiet_bi_tieu_de">Chi tiết thiết bị</string>
+    <string name="chi_tiet_mo_ta">Mô tả</string>
+    <string name="chi_tiet_thong_so">Thông số kỹ thuật</string>
+    <string name="chi_tiet_so_luong_kha_dung">Số lượng khả dụng</string>
+    <string name="chi_tiet_ngay_du_kien">Ngày dự kiến có sẵn</string>
+    <string name="chi_tiet_chua_co_ngay">Chưa có ngày dự kiến</string>
+    <string name="chi_tiet_hanh_dong_dat_truoc">Đặt trước</string>
+    <string name="chi_tiet_hanh_dong_dang_ky_cho">Đăng ký chờ</string>
+    <string name="chi_tiet_ghep_ba">%1$s · %2$s · %3$s</string>
+    <string name="chi_tiet_khong_tim_thay_tieu_de">Không tìm thấy</string>
+    <string name="chi_tiet_ve_danh_sach">Quay lại danh sách</string>
+    <string name="chi_tiet_loi_quyen_muon_tieu_de">Chưa kiểm tra được quyền mượn</string>
+    <string name="anh_khong_tai_duoc">Không tải được ảnh</string>
+    <string name="anh_tai_lai">Tải lại</string>
+    <string name="anh_mo_ta_o_anh">Ảnh %1$d của %2$s</string>
+    <string name="anh_thay_the_mo_ta">Chưa có ảnh</string>
+
 </resources>

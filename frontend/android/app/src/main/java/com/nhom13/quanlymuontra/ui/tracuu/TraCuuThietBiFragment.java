@@ -17,6 +17,9 @@ import androidx.core.view.WindowInsetsCompat;
 import androidx.core.view.WindowInsetsControllerCompat;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProvider;
+import androidx.navigation.NavController;
+import androidx.navigation.NavDestination;
+import androidx.navigation.fragment.NavHostFragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import com.google.android.material.button.MaterialButton;
@@ -41,8 +44,7 @@ import java.util.Objects;
  * tải thêm nằm ở {@link TraCuuThietBiViewModel}; lớp này chỉ hiển thị và chuyển sự kiện (FC 6.2). Lỗi tải nguồn
  * bộ lọc chỉ làm ô chọn tương ứng lỗi kèm Thử lại, danh sách kết quả vẫn dùng được.
  *
- * <p>D08-L: dòng kết quả chưa bấm được vì SCR-SV-03 (chi tiết loại tại phòng) thuộc D09-L; ngày đó nối điều
- * hướng với {@code maLoai}, {@code maPhong} của dòng.
+ * <p>D09-L: chạm một dòng mở SCR-SV-03 (chi tiết loại tại phòng) với {@code maLoai}, {@code maPhong} của dòng.
  */
 public class TraCuuThietBiFragment extends Fragment {
 
@@ -111,7 +113,7 @@ public class TraCuuThietBiFragment extends Fragment {
     // ---------------------------------------------------------------- dựng điều khiển
 
     private void caiDanhSach() {
-        adapter = new TraCuuThietBiAdapter(dau.getRoot(), viewModel::thuLaiTaiThem);
+        adapter = new TraCuuThietBiAdapter(dau.getRoot(), viewModel::thuLaiTaiThem, this::moChiTiet);
         binding().rvKetQua.setAdapter(adapter);
         // Cuộn tới cuối thì tải trang kế cho đến khi đủ tongSo (ĐX-UI-13, FA 5.6).
         binding().rvKetQua.addOnScrollListener(
@@ -123,6 +125,21 @@ public class TraCuuThietBiFragment extends Fragment {
                         }
                     }
                 });
+    }
+
+    /** Mở SCR-SV-03 cho dòng được chạm. Bỏ qua khi không còn đứng ở tra cứu (bấm hai lần liên tiếp). */
+    private void moChiTiet(@NonNull TraCuuThietBiItem dong) {
+        if (dong.getMaLoai() == null || dong.getMaPhong() == null) {
+            return;
+        }
+        NavController dieuHuong = NavHostFragment.findNavController(this);
+        NavDestination diemDen = dieuHuong.getCurrentDestination();
+        if (diemDen == null || diemDen.getId() != R.id.traCuuThietBiFragment) {
+            return;
+        }
+        dieuHuong.navigate(
+                TraCuuThietBiFragmentDirections.actionTraCuuThietBiFragmentToChiTietLoaiThietBiFragment(
+                        dong.getMaLoai().toString(), dong.getMaPhong().toString()));
     }
 
     private void caiLamMoi() {
