@@ -27,6 +27,17 @@ public class XuLyLoiToanCucTests
     }
 
     [Fact]
+    public async Task KT14_NghiepVuException_MaLoiCoTrongBang_TraDungMaHttpVaMaLoi()
+    {
+        var (maHttp, kieu, noiDung) = await XuLyAsync(new NghiepVuException("TRANG_THAI_KHONG_HOP_LE", "Phiếu không ở trạng thái cho phép."));
+
+        Assert.Equal(409, maHttp);
+        Assert.Equal("application/problem+json", kieu);
+        Assert.Equal("TRANG_THAI_KHONG_HOP_LE", noiDung.GetProperty("maLoi").GetString());
+        Assert.Equal("Phiếu không ở trạng thái cho phép.", noiDung.GetProperty("detail").GetString());
+    }
+
+    [Fact]
     public async Task KT14_ValidationException_Tra400VoiErrorsTheoCamelCase()
     {
         var loi = new ValidationException(

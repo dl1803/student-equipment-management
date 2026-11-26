@@ -7,6 +7,7 @@ using QuanLyMuonTra.Api.Health;
 using QuanLyMuonTra.Api.Loi;
 using QuanLyMuonTra.Api.MuonTra;
 using QuanLyMuonTra.Api.SinhVien;
+using QuanLyMuonTra.Api.ViPham;
 using QuanLyMuonTra.Infrastructure;
 using QuanLyMuonTra.Infrastructure.Email;
 using QuanLyMuonTra.Infrastructure.LuuTru;
@@ -24,6 +25,7 @@ using QuanLyMuonTra.Modules.TaiKhoan.Domain;
 using QuanLyMuonTra.Modules.TaiKhoan.Infrastructure;
 using QuanLyMuonTra.Modules.ThongBao;
 using QuanLyMuonTra.Modules.ViPham;
+using QuanLyMuonTra.Modules.ViPham.Infrastructure;
 using QuanLyMuonTra.SharedKernel;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -57,7 +59,8 @@ IReadOnlyCollection<Assembly> assemblyCauHinhEf = [
     typeof(NguoiDungHeThong).Assembly,
     typeof(DanhMucModelBuilderExtensions).Assembly,
     typeof(QuyDinhModelBuilderExtensions).Assembly,
-    typeof(MuonTraModelBuilderExtensions).Assembly
+    typeof(MuonTraModelBuilderExtensions).Assembly,
+    typeof(ViPhamModelBuilderExtensions).Assembly
 ];
 
 builder.Services.AddHttpContextAccessor();
@@ -151,6 +154,7 @@ app.MapHealthChecks("/health/ready", new HealthCheckOptions { Predicate = check 
 app.MapTaiKhoanEndpoints();
 app.MapMuonTraEndpoints();
 app.MapSinhVienEndpoints();
+app.MapViPhamEndpoints();
 app.MapAnhEndpoints();
 
 app.Run();
