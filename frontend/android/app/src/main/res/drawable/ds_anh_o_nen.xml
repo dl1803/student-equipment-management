@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- D09-L: nền ô ảnh của CMP-23: surface.muted và radius.md. Dùng cả cho ô ảnh, ô thay thế, khối lỗi và ảnh xem lớn. -->
+<shape xmlns:android="http://schemas.android.com/apk/res/android"
+    android:shape="rectangle">
+    <solid android:color="@color/ds_color_surface_muted" />
+    <corners android:radius="@dimen/ds_radius_md" />
+</shape>

@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+    CMP-23 lớp xem ảnh lớn (DS CMP-23): lớp nền phủ bằng color.overlay.scrim, ảnh vừa khung nhìn (chiều cao tối đa do
+    ImageViewerDialogFragment đặt), nút Đóng ở góc trên phải. Chạm vào lớp nền ngoài ảnh thì đóng; chạm vào ảnh không đóng.
+-->
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/fl_nen"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/ds_color_overlay_scrim"
+    android:padding="@dimen/ds_space_6">
+
+    <ImageView
+        android:id="@+id/img_anh_lon"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:adjustViewBounds="true"
+        android:background="@drawable/ds_anh_o_nen"
+        android:clickable="true"
+        android:clipToOutline="true"
+        android:elevation="@dimen/ds_shadow_dialog"
+        android:scaleType="fitCenter" />
+
+    <com.google.android.material.card.MaterialCardView
+        style="@style/Widget.Ds.Card"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="top|end"
+        app:cardCornerRadius="@dimen/ds_radius_full">
+
+        <ImageButton
+            android:id="@+id/btn_dong"
+            style="@style/Widget.Ds.IconButton"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:contentDescription="@string/hanh_dong_dong"
+            android:src="@drawable/ic_close" />
+
+    </com.google.android.material.card.MaterialCardView>
+
+</FrameLayout>

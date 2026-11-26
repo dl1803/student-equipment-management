@@ -1,0 +1,66 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+    CMP-23 dải ảnh (DS CMP-23, demo-ui-android: dải ảnh cuộn ngang). Nội dung của AnhGalleryView (LinearLayout dọc): dải ảnh
+    cuộn ngang, và khối lỗi thay cho cả dải khi có ảnh không tải được. Các ô ảnh do AnhGalleryView dựng bằng mã.
+-->
+<merge xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    tools:parentTag="android.widget.LinearLayout">
+
+    <HorizontalScrollView
+        android:id="@+id/hsv_dai_anh"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:overScrollMode="never"
+        android:scrollbars="none">
+
+        <LinearLayout
+            android:id="@+id/ll_dai_anh"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal" />
+
+    </HorizontalScrollView>
+
+    <LinearLayout
+        android:id="@+id/ll_loi_anh"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@drawable/ds_anh_o_nen"
+        android:gravity="center_vertical"
+        android:minHeight="@dimen/ds_size_photo_thumb"
+        android:orientation="horizontal"
+        android:padding="@dimen/ds_space_3"
+        android:visibility="gone">
+
+        <ImageView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:importantForAccessibility="no"
+            android:src="@drawable/ic_broken_image" />
+
+        <LinearLayout
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="@dimen/ds_space_3"
+            android:layout_weight="1"
+            android:orientation="vertical">
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="@string/anh_khong_tai_duoc"
+                android:textAppearance="@style/TextAppearance.Ds.Body" />
+
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/btn_tai_lai_anh"
+                style="@style/Widget.Ds.Button.Tertiary"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/anh_tai_lai" />
+
+        </LinearLayout>
+
+    </LinearLayout>
+
+</merge>
