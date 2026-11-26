@@ -50,7 +50,7 @@ public class ManHinhChiTietLoaiD09Test {
                 "@+id/ll_ngay_du_kien",
                 "@+id/tv_ngay_du_kien",
                 "@+id/ll_ghim",
-                "@+id/btn_hanh_dong",
+                "@+id/btn_ghim",
                 "@style/Widget.Ds.Button.Primary",
                 "@style/TextAppearance.Ds.NumericLg");
     }

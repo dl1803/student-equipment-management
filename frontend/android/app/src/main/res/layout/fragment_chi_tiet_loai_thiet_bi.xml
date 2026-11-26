@@ -217,7 +217,7 @@
             android:background="@color/ds_color_border_subtle" />
 
         <com.google.android.material.button.MaterialButton
-            android:id="@+id/btn_hanh_dong"
+            android:id="@+id/btn_ghim"
             style="@style/Widget.Ds.Button.Primary"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"

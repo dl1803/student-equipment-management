@@ -89,7 +89,7 @@ public class ChiTietLoaiThietBiFragment extends Fragment {
         caiLamMoi();
         caiAnh();
         // Chống bấm trùng: ViewModel bật cờ đồng bộ rồi trạng thái "đang xử lý" của nút do dangKiemTraQuyen quan sát.
-        binding().btnHanhDong.setOnClickListener(nut -> khiBamNutGhim());
+        binding().btnGhim.setOnClickListener(nut -> khiBamNutGhim());
 
         viewModel.getChiTiet().observe(getViewLifecycleOwner(), this::hienThi);
         viewModel.getDangKiemTraQuyen().observe(getViewLifecycleOwner(), this::hienDangKiemTra);
@@ -243,10 +243,10 @@ public class ChiTietLoaiThietBiFragment extends Fragment {
         }
         b.llGhim.setVisibility(View.VISIBLE);
         if (dangKiemTra) {
-            NutDangXuLy.batDau(b.btnHanhDong);
+            NutDangXuLy.batDau(b.btnGhim);
         } else {
-            NutDangXuLy.ketThuc(b.btnHanhDong, ChiTietLoaiTrinhBay.nhanNut(hanhDongHienTai));
-            b.btnHanhDong.setEnabled(true);
+            NutDangXuLy.ketThuc(b.btnGhim, ChiTietLoaiTrinhBay.nhanNut(hanhDongHienTai));
+            b.btnGhim.setEnabled(true);
         }
     }
 
