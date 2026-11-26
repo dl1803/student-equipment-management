@@ -21,6 +21,7 @@ public static class DependencyInjection
         services.AddScoped<IAdvisoryLockService, AdvisoryLockService>();
         services.AddScoped<IAvailabilityService, AvailabilityService>();
         services.AddScoped<IBoTinhHanTra, BoTinhHanTra>();
+        services.AddScoped<IFifoService, FifoService>();
         services.AddScoped<TraCuuThietBiHandler>();
         services.AddScoped<TraCuuThietBiChiTietHandler>();
         services.AddScoped<DsPhongThietBiSvHandler>();
@@ -41,6 +42,8 @@ public static class DependencyInjection
         services.AddScoped<DsDangKyChoSvHandler>();
         services.AddScoped<DangKyChoHandler>();
         services.AddScoped<RoiDangKyChoHandler>();
+        services.AddScoped<DsDanhSachChoQuayHandler>();
+        services.AddScoped<ChuyenLuotDanhSachChoHandler>();
         services.AddScoped<ChiTietPhieuMuonSvHandler>();
         services.AddScoped<DsPhieuMuonQuayHandler>();
         services.AddScoped<ChiTietPhieuMuonQuayHandler>();

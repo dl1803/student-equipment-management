@@ -219,4 +219,29 @@ public sealed class DangKyChoHttpTests : IAsyncLifetime
         Assert.Equal(HttpStatusCode.NotFound, khongTonTai.StatusCode);
         Assert.Equal("KHONG_TIM_THAY", (await DocJsonAsync(khongTonTai)).GetProperty("maLoi").GetString());
     }
+
+    [CanKetNoiTestFact]
+    public async Task UC10_DsQuay_KhongToken401TokenSinhVien403()
+    {
+        const string duongDanQuay = "/api/v1/quay/danh-sach-cho";
+
+        var khongToken = await GoiAsync(HttpMethod.Get, duongDanQuay, null);
+        var sinhVien = await GoiAsync(HttpMethod.Get, duongDanQuay, TaoToken("D13-SV-HTTP", "SINH_VIEN"));
+
+        Assert.Equal(HttpStatusCode.Unauthorized, khongToken.StatusCode);
+        Assert.Equal(HttpStatusCode.Forbidden, sinhVien.StatusCode);
+        Assert.Equal("KHONG_DU_QUYEN", (await DocJsonAsync(sinhVien)).GetProperty("maLoi").GetString());
+    }
+
+    [CanKetNoiTestFact]
+    public async Task UC10A2_ChuyenLuot_KhongToken401TokenSinhVien403()
+    {
+        const string duongDanChuyen = "/api/v1/quay/danh-sach-cho/DK-261125-913006/chuyen-luot";
+
+        var khongToken = await GoiAsync(HttpMethod.Post, duongDanChuyen, null);
+        var sinhVien = await GoiAsync(HttpMethod.Post, duongDanChuyen, TaoToken("D13-SV-HTTP", "SINH_VIEN"));
+
+        Assert.Equal(HttpStatusCode.Unauthorized, khongToken.StatusCode);
+        Assert.Equal(HttpStatusCode.Forbidden, sinhVien.StatusCode);
+    }
 }

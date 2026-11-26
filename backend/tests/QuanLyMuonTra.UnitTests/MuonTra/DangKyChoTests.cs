@@ -135,4 +135,47 @@ public class DangKyChoTests
 
         Assert.Equal("TRANG_THAI_KHONG_HOP_LE", loi.MaLoi);
     }
+
+    [Fact]
+    public void TT05_ThongBaoDenLuot_XoaSoThuTuCho()
+    {
+        var dangKy = TaoDangCho();
+
+        dangKy.ThongBaoDenLuot(HanGiuCho);
+
+        Assert.Null(dangKy.SoThuTuCho);
+    }
+
+    [Fact]
+    public void TT06_ChuyenLuot_TuDaThongBao_SangDaHuyVaXoaSoThuTu()
+    {
+        var dangKy = TaoDaThongBao();
+
+        dangKy.ChuyenLuot();
+
+        Assert.Equal(TrangThaiDangKyCho.DaHuy, dangKy.TrangThai);
+        Assert.Null(dangKy.SoThuTuCho);
+    }
+
+    [Fact]
+    public void TT06_ChuyenLuot_TuDangCho_NemTrangThaiKhongHopLe()
+    {
+        var dangKy = TaoDangCho();
+
+        var loi = Assert.Throws<NghiepVuException>(() => dangKy.ChuyenLuot());
+
+        Assert.Equal("TRANG_THAI_KHONG_HOP_LE", loi.MaLoi);
+        Assert.Equal(TrangThaiDangKyCho.DangCho, dangKy.TrangThai);
+    }
+
+    [Fact]
+    public void TT06_ChuyenLuot_TuDaHuy_NemTrangThaiKhongHopLe()
+    {
+        var dangKy = TaoDaThongBao();
+        dangKy.ChuyenLuot();
+
+        var loi = Assert.Throws<NghiepVuException>(() => dangKy.ChuyenLuot());
+
+        Assert.Equal("TRANG_THAI_KHONG_HOP_LE", loi.MaLoi);
+    }
 }

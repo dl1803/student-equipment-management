@@ -3,13 +3,14 @@ using Microsoft.AspNetCore.Mvc.Testing;
 using Microsoft.Extensions.DependencyInjection;
 using QuanLyMuonTra.Modules.MuonTra.Application;
 using QuanLyMuonTra.Modules.MuonTra.Contracts;
+using QuanLyMuonTra.Modules.MuonTra.Infrastructure;
 
 namespace QuanLyMuonTra.IntegrationTests.MuonTra;
 
 public class DiRuntimeDangKyChoTests
 {
     [Fact]
-    public void UC03_RuntimeResolveDuBaHandlerVaChuaCoBoCapLuotThat()
+    public void UC03_UC10_RuntimeResolveHandlerVaBoCapLuotThat()
     {
         using var factory = new WebApplicationFactory<Program>()
             .WithWebHostBuilder(builder =>
@@ -26,6 +27,8 @@ public class DiRuntimeDangKyChoTests
         Assert.NotNull(dichVu.GetRequiredService<DangKyChoHandler>());
         Assert.NotNull(dichVu.GetRequiredService<DsDangKyChoSvHandler>());
         Assert.NotNull(dichVu.GetRequiredService<RoiDangKyChoHandler>());
-        Assert.Null(dichVu.GetService<IFifoService>());
+        Assert.NotNull(dichVu.GetRequiredService<DsDanhSachChoQuayHandler>());
+        Assert.NotNull(dichVu.GetRequiredService<ChuyenLuotDanhSachChoHandler>());
+        Assert.IsType<FifoService>(dichVu.GetRequiredService<IFifoService>());
     }
 }

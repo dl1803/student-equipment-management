@@ -31,7 +31,7 @@ public record ChiTietPhieuMuonDto(
 /// Thông tin đăng ký chờ nhận thiết bị.
 /// </summary>
 public record DangKyChoDto(
-    Guid MaDangKy,
+    string MaDangKy,
     string MaSv,
     Guid MaPhong,
     Guid MaLoai,

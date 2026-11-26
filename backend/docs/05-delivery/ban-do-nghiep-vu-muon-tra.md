@@ -153,7 +153,7 @@ Bản giả trong `tests/` chỉ là công cụ: kết quả mong đợi do từ
 | O3 | Tránh cạnh SinhVien → MuonTra khi hồ sơ SV cần số đang cầm | Khôi, Vương | Trước D02 |
 | O4 | Hành vi tại `han_giu_cho = now` (`> now` so với `< now` của J4) | Vương | D03, D18 |
 | O5 | Giới hạn tổng có tính số đã giữ chỗ chưa giao | Nhóm | Trước D06 |
-| O6 | FIFO: cùng thời điểm, nhiều lượt cùng lúc, `so_thu_tu_cho` | Vương | D13 |
+| O6 | FIFO: cùng thời điểm, nhiều lượt cùng lúc, `so_thu_tu_cho` | Vương | D13 — Đề xuất áp dụng ở D13-V (chờ nhóm xác nhận): tie-break `(thoi_diem_dang_ky, ma_dang_ky)`; nhiều lượt đồng thời tuần tự hóa bằng khóa tư vấn (phòng, loại); `so_thu_tu_cho` đánh lại liên tục cho `DANG_CHO` — xem D13-V mục 3 |
 | O7 | Port MAT: ai đổi tình trạng thiết bị | Vương, Lợi, Khôi | D15 |
 | O8 | G1 và G2 | Nhóm | D02 |
 | O9 | Chú thích XML trên Contracts (CV 19.2) với quy tắc không comment | Nhóm | Trước D02 |

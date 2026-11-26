@@ -1,6 +1,6 @@
 # Gói hợp đồng C2, C5, C9
 
-Cập nhật lần đầu: 13/11/2026 · Chủ sở hữu: Nguyễn Đại Vương · Trạng thái: **hợp đồng đã khai báo trong `*.Contracts` và `SharedKernel`; C2 đã có bản hiện thực (D03-V); IBoTinhHanTra và bộ tính phí đã có bản hiện thực (D04-V); các cổng còn lại của C5 và C9 chưa có bản hiện thực**
+Cập nhật lần đầu: 13/11/2026 · Chủ sở hữu: Nguyễn Đại Vương · Trạng thái: **hợp đồng đã khai báo trong `*.Contracts` và `SharedKernel`; C2 đã có bản hiện thực (D03-V); IBoTinhHanTra và bộ tính phí đã có bản hiện thực (D04-V); C5 đã có `IMuonTraReader`, `IThamChieuMuonTraProvider`, `IPhieuMuonReader` (chưa có `IPortGhiNhanMat`); C9 `IFifoService` đã có bản hiện thực `FifoService` (D13-V)**
 
 Quy ước: "Đã có trong nguồn" là điều tài liệu dự án nêu. Mọi bản giả chỉ dùng trong `tests/`, không đăng ký trên runtime. Mã C2, C5, C9 là mã artifact của kế hoạch. Mọi phương thức bất đồng bộ có hậu tố `Async` và tham số cuối `CancellationToken ct` (CV 19.1). Toàn bộ port chạy trong giao dịch và `AppDbContext` của bên gọi.
 
@@ -54,6 +54,8 @@ Thao tác bắt buộc đi qua C2 (danh sách của ĐX-KT-13, KT 8.2):
 | `IFifoService.CapLuotChoAsync` | `MuonTra.Contracts` | `(Guid maPhong, Guid maLoai)` → `Task<DangKyChoDto?>`: Khi thiết bị về `SAN_SANG`, cấp giữ chỗ 30 phút cho SV đứng đầu hàng chờ `DANG_CHO`, chuyển sang `DA_THONG_BAO` | Cùng giao dịch của thao tác kích hoạt, sau khóa tư vấn C2 | Lỗi làm hoàn tác toàn bộ giao dịch kích hoạt | MuonTra, BaoTri |
 | Ranh giới J4 | `MuonTra` | Job J4 quét định kỳ các đăng ký `DA_THONG_BAO` có `han_giu_cho < now`, chuyển `HET_HAN`, phát sự kiện `GiuChoHetHanEvent` và gọi `IFifoService` chuyển lượt | Giao dịch riêng của job | Không ném | Job nền J4 |
 | `GiuChoHetHanEvent` | `MuonTra.Contracts` | Record: `(Guid MaDangKy, string MaSv, Guid MaPhong, Guid MaLoai, DateTimeOffset ThoiDiemHetHan)`. Phát trước khi commit cùng giao dịch để `ViPham` ghi vi phạm `KHONG_DEN_NHAN` | Cùng giao dịch | Không ném | ViPham (gói C10) |
+
+**Bản hiện thực C9 (D13-V, 26/11/2026):** `FifoService` nằm ở `QuanLyMuonTra.Modules.MuonTra.Infrastructure`, đăng ký Scoped trong `AddMuonTraModule`. `DangKyChoDto.MaDangKy` là `string`. Bên gọi phải gọi `IFifoService.CapLuotChoAsync(maPhong, maLoai, ct)` trong giao dịch của thao tác kích hoạt, sau khi thiết bị đã `SAN_SANG` (hoặc giữ chỗ cũ đã nhả) và đã `SaveChanges`; trước đó đã khóa dòng SV (nếu có) rồi khóa cặp `(maPhong, maLoai)`. Mỗi lần gọi cấp tối đa một giữ chỗ; trả `null` khi không có khả dụng hoặc không có người chờ; không có giao dịch thì ném `InvalidOperationException`.
 
 ## Ngoài phạm vi D01-V
 

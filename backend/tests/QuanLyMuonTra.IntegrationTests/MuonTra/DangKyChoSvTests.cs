@@ -68,7 +68,7 @@ public class DangKyChoSvTests
 
         public DsDangKyChoSvHandler Ds => new(db, new DanhMucReader(db));
 
-        public RoiDangKyChoHandler Roi => new(db, new DanhMucReader(db), new AdvisoryLockService(db), capLuot);
+        public RoiDangKyChoHandler Roi => new(db, new DanhMucReader(db), new AdvisoryLockService(db), capLuot ?? new CapLuotGia());
     }
 
     private static async Task<DangKyChoTestContext> TaoContextAsync(GiaoDichTestRollback gd)
@@ -332,20 +332,6 @@ public class DangKyChoSvTests
         Assert.Equal((P1, W), lanGoi);
         Assert.Equal(1, (await DocAsync(db, "DK-261124-912006")).SoThuTuCho);
         Assert.Equal(2, (await DocAsync(db, "DK-261124-912007")).SoThuTuCho);
-    }
-
-    [CanKetNoiTestFact]
-    public async Task UC03A2_RoiKhiDaThongBaoMaChuaCoBoCapLuot_ChanAnToanVaKhongDoiDuLieu()
-    {
-        await using var gd = await GiaoDichTestRollback.BatDauAsync();
-        await using var db = await TaoContextAsync(gd);
-        var bo = new BoXuLy(db, BayGio);
-
-        await Assert.ThrowsAsync<InvalidOperationException>(() => bo.Roi.XuLyAsync("D12-SV-E", "DK-261124-912005", Ct));
-
-        var dong = await DocAsync(db, "DK-261124-912005");
-        Assert.Equal("DA_THONG_BAO", dong.TrangThai);
-        Assert.Equal(new DateTimeOffset(2026, 11, 24, 3, 10, 0, TimeSpan.Zero), dong.HanGiuCho);
     }
 
     [CanKetNoiTestFact]
