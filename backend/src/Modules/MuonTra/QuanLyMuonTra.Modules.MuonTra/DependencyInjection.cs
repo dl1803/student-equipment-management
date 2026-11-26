@@ -21,6 +21,7 @@ public static class DependencyInjection
         services.AddScoped<IAdvisoryLockService, AdvisoryLockService>();
         services.AddScoped<IAvailabilityService, AvailabilityService>();
         services.AddScoped<IBoTinhHanTra, BoTinhHanTra>();
+        services.AddScoped<IFifoService, FifoService>();
         services.AddScoped<TraCuuThietBiHandler>();
         services.AddScoped<TraCuuThietBiChiTietHandler>();
         services.AddScoped<DsPhongThietBiSvHandler>();

@@ -54,6 +54,20 @@ internal static class DangKyChoTruyVan
         return DongDangKy(db).Where(d => d.MaDangKy == maDangKy).SingleOrDefaultAsync(ct);
     }
 
+    public static Task<int> DanhSoLaiHangChoAsync(DbContext db, Guid maPhong, Guid maLoai, CancellationToken ct)
+    {
+        return db.Database.ExecuteSqlInterpolatedAsync($"""
+            UPDATE muon_tra.dang_ky_cho AS d
+            SET so_thu_tu_cho = x.so_thu_tu
+            FROM (
+                SELECT ma_dang_ky, (row_number() OVER (ORDER BY thoi_diem_dang_ky, ma_dang_ky))::integer AS so_thu_tu
+                FROM muon_tra.dang_ky_cho
+                WHERE ma_phong = {maPhong} AND ma_loai = {maLoai} AND trang_thai = 'DANG_CHO'
+            ) AS x
+            WHERE d.ma_dang_ky = x.ma_dang_ky AND d.so_thu_tu_cho IS DISTINCT FROM x.so_thu_tu
+            """, ct);
+    }
+
     private static IQueryable<DongDangKyCho> DongDangKy(DbContext db)
     {
         return db.Database.SqlQuery<DongDangKyCho>($"""

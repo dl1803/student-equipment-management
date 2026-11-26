@@ -47,6 +47,7 @@ public class DangKyCho
         YeuCauTrangThai(TrangThaiDangKyCho.DangCho);
         TrangThai = TrangThaiDangKyCho.DaThongBao;
         HanGiuCho = hanGiuCho;
+        SoThuTuCho = null;
     }
 
     public void DanhDauDaNhan()

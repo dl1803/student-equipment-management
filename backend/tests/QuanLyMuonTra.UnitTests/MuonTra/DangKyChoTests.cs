@@ -135,4 +135,14 @@ public class DangKyChoTests
 
         Assert.Equal("TRANG_THAI_KHONG_HOP_LE", loi.MaLoi);
     }
+
+    [Fact]
+    public void TT05_ThongBaoDenLuot_XoaSoThuTuCho()
+    {
+        var dangKy = TaoDangCho();
+
+        dangKy.ThongBaoDenLuot(HanGiuCho);
+
+        Assert.Null(dangKy.SoThuTuCho);
+    }
 }
