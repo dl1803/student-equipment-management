@@ -11,7 +11,7 @@ public sealed class RoiDangKyChoHandler(
     DbContext db,
     IDanhMucReader danhMuc,
     IAdvisoryLockService khoa,
-    IFifoService? capLuot = null)
+    IFifoService capLuot)
 {
     public async Task<DangKyChoSvDto> XuLyAsync(string maSv, string maDangKy, CancellationToken ct)
     {
@@ -34,10 +34,7 @@ public sealed class RoiDangKyChoHandler(
 
             var dangKy = await db.Set<DangKyCho>().SingleAsync(d => d.MaDangKy == maDangKy, ct);
 
-            var boCapLuot = dangKy.TrangThai == TrangThaiDangKyCho.DaThongBao
-                ? (capLuot ?? throw new InvalidOperationException(
-                    "Chưa có bộ cấp lượt (C9, V13): không thể rời đăng ký đang giữ chỗ vì không thể cấp lượt cho người kế tiếp."))
-                : null;
+            var dangGiuCho = dangKy.TrangThai == TrangThaiDangKyCho.DaThongBao;
 
             try
             {
@@ -50,11 +47,11 @@ public sealed class RoiDangKyChoHandler(
 
             await db.SaveChangesAsync(ct);
 
-            await DanhSoLaiHangChoAsync(dongTruoc.MaPhong, dongTruoc.MaLoai, ct);
+            await DangKyChoTruyVan.DanhSoLaiHangChoAsync(db, dongTruoc.MaPhong, dongTruoc.MaLoai, ct);
 
-            if (boCapLuot is not null)
+            if (dangGiuCho)
             {
-                await boCapLuot.CapLuotChoAsync(dongTruoc.MaPhong, dongTruoc.MaLoai, ct);
+                await capLuot.CapLuotChoAsync(dongTruoc.MaPhong, dongTruoc.MaLoai, ct);
             }
 
             if (giaoDich is not null)
@@ -72,19 +69,5 @@ public sealed class RoiDangKyChoHandler(
 
         return await DangKyChoTruyVan.LayTheoMaAsync(db, danhMuc, maDangKy, ct)
             ?? throw new InvalidOperationException($"Không đọc lại được đăng ký chờ {maDangKy} vừa rời.");
-    }
-
-    private Task<int> DanhSoLaiHangChoAsync(Guid maPhong, Guid maLoai, CancellationToken ct)
-    {
-        return db.Database.ExecuteSqlInterpolatedAsync($"""
-            UPDATE muon_tra.dang_ky_cho AS d
-            SET so_thu_tu_cho = x.so_thu_tu
-            FROM (
-                SELECT ma_dang_ky, (row_number() OVER (ORDER BY thoi_diem_dang_ky, ma_dang_ky))::integer AS so_thu_tu
-                FROM muon_tra.dang_ky_cho
-                WHERE ma_phong = {maPhong} AND ma_loai = {maLoai} AND trang_thai = 'DANG_CHO'
-            ) AS x
-            WHERE d.ma_dang_ky = x.ma_dang_ky AND d.so_thu_tu_cho IS DISTINCT FROM x.so_thu_tu
-            """, ct);
     }
 }
