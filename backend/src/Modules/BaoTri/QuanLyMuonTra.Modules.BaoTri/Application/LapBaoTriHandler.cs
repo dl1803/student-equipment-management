@@ -1,6 +1,7 @@
 using Microsoft.EntityFrameworkCore;
 using QuanLyMuonTra.Modules.BaoTri.Domain;
 using QuanLyMuonTra.Modules.DanhMuc.Contracts;
+using QuanLyMuonTra.Modules.MuonTra.Contracts;
 using QuanLyMuonTra.Modules.TaiKhoan.Contracts;
 using QuanLyMuonTra.SharedKernel;
 using QuanLyMuonTra.SharedKernel.Contracts;
@@ -14,7 +15,8 @@ public sealed class LapBaoTriHandler(
     IThietBiService thietBiService,
     IAdvisoryLockService khoa,
     IAvailabilityService khaDung,
-    IQuyenPhongService quyenPhong)
+    IQuyenPhongService quyenPhong,
+    IPhieuMuonReader phieuMuon)
 {
     public async Task<BaoTriSuaChuaDto> XuLyAsync(Guid maNv, LapBaoTriRequest yeuCau, CancellationToken ct)
     {
@@ -116,16 +118,10 @@ public sealed class LapBaoTriHandler(
             return;
         }
 
-        var phieuDung = await db.Database
-            .SqlQuery<bool>($"""
-                SELECT EXISTS (
-                    SELECT 1
-                    FROM muon_tra.chi_tiet_phieu_muon
-                    WHERE ma_phieu = {maPhieu}
-                      AND ma_thiet_bi = {thietBi.MaThietBi}
-                      AND ket_qua_kiem_tra IN ('HU_HONG', 'THIEU_PHU_KIEN')) AS "Value"
-                """)
-            .SingleAsync(ct);
+        var dsChiTiet = await phieuMuon.LayChiTietTheoPhieuAsync(maPhieu, ct);
+        var phieuDung = dsChiTiet.Any(c =>
+            c.MaThietBi == thietBi.MaThietBi
+            && c.KetQuaKiemTra is "HU_HONG" or "THIEU_PHU_KIEN");
         if (!phieuDung)
         {
             throw new LoiNghiepVuException(

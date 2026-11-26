@@ -43,13 +43,26 @@ public sealed class BaoTriUngDungTests
     public async Task UC11_LapBaoTri_DauVaoSai_Nem400TruocKhiTruyCapCsdl(string maThietBi, string loai, string? maPhieu)
     {
         using var db = TaoDbContext();
-        var handler = new LapBaoTriHandler(db, null!, null!, null!, null!, null!, null!);
+        var handler = new LapBaoTriHandler(db, null!, null!, null!, null!, null!, null!, null!);
 
         var loi = await Assert.ThrowsAsync<LoiNghiepVuException>(
             () => handler.XuLyAsync(MaNv, new LapBaoTriRequest(maThietBi, loai, maPhieu), CancellationToken.None));
 
         Assert.Equal("DU_LIEU_KHONG_HOP_LE", loi.MaLoi);
         Assert.Equal(400, loi.MaHttp);
+    }
+
+    [Theory]
+    [InlineData(typeof(BaoTriSuaChuaDto))]
+    [InlineData(typeof(ThietBiChoTiepNhanSuaChuaDto))]
+    [InlineData(typeof(ThietBiDenHanBaoTriDto))]
+    public void UC11_DtoQuayBaoTri_KhongTraThongTinBaoHanhHoacNhaCungCap(Type kieuDto)
+    {
+        var dsTen = kieuDto.GetProperties().Select(p => p.Name).ToList();
+
+        Assert.DoesNotContain(dsTen, t => t.Contains("BaoHanh", StringComparison.Ordinal));
+        Assert.DoesNotContain(dsTen, t => t.Contains("NhaCungCap", StringComparison.Ordinal));
+        Assert.DoesNotContain(dsTen, t => t.Contains("Ncc", StringComparison.OrdinalIgnoreCase));
     }
 
     private static KhongKetNoiDbContext TaoDbContext() =>

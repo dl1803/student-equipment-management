@@ -6,6 +6,8 @@ using QuanLyMuonTra.Infrastructure.Persistence;
 using QuanLyMuonTra.IntegrationTests.DanhMuc;
 using QuanLyMuonTra.Modules.BaoTri;
 using QuanLyMuonTra.Modules.BaoTri.Domain;
+using QuanLyMuonTra.Modules.MuonTra.Contracts;
+using QuanLyMuonTra.Modules.MuonTra.Infrastructure;
 using QuanLyMuonTra.Modules.TaiKhoan.Contracts;
 using QuanLyMuonTra.Modules.TaiKhoan.Infrastructure;
 using QuanLyMuonTra.SharedKernel;
@@ -27,6 +29,7 @@ internal static class BaoTriTestSupport
             .AddEfConfigurationsFromAssembly(typeof(BaoTriSuaChua).Assembly)
             .AddMemoryCache()
             .AddScoped<IQuyenPhongService, QuyenPhongService>()
+            .AddScoped<IPhieuMuonReader, PhieuMuonReader>()
             .AddSingleton<IClock>(new DongHoCoDinh(BayGio)));
 
     private sealed class DongHoCoDinh(DateTimeOffset thoiDiem) : IClock
@@ -55,7 +58,7 @@ internal sealed class BaoTriMoiTruong : IAsyncDisposable
 
     public AppDbContext Db { get; }
 
-    public static async Task<BaoTriMoiTruong> TaoAsync()
+    public static async Task<BaoTriMoiTruong> TaoAsync(params string[] tepBoSung)
     {
         var dichVu = BaoTriTestSupport.TaoDichVu();
         var phamVi = dichVu.CreateAsyncScope();
@@ -63,6 +66,11 @@ internal sealed class BaoTriMoiTruong : IAsyncDisposable
         var giaoDich = await db.Database.BeginTransactionAsync();
         await NapTepAsync(db, "D12-N-du-lieu-thu-bao-tri.sql");
         await NapTepAsync(db, "D13-N-quyen-phong.sql");
+        foreach (var tep in tepBoSung)
+        {
+            await NapTepAsync(db, tep);
+        }
+
         return new BaoTriMoiTruong(dichVu, phamVi, db, giaoDich);
     }
 
