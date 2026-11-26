@@ -27,6 +27,8 @@ public class DiRuntimeDangKyChoTests
         Assert.NotNull(dichVu.GetRequiredService<DangKyChoHandler>());
         Assert.NotNull(dichVu.GetRequiredService<DsDangKyChoSvHandler>());
         Assert.NotNull(dichVu.GetRequiredService<RoiDangKyChoHandler>());
+        Assert.NotNull(dichVu.GetRequiredService<DsDanhSachChoQuayHandler>());
+        Assert.NotNull(dichVu.GetRequiredService<ChuyenLuotDanhSachChoHandler>());
         Assert.IsType<FifoService>(dichVu.GetRequiredService<IFifoService>());
     }
 }

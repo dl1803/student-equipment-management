@@ -63,6 +63,13 @@ public class DangKyCho
         SoThuTuCho = null;
     }
 
+    public void ChuyenLuot()
+    {
+        YeuCauTrangThai(TrangThaiDangKyCho.DaThongBao);
+        TrangThai = TrangThaiDangKyCho.DaHuy;
+        SoThuTuCho = null;
+    }
+
     public void HetHan()
     {
         YeuCauTrangThai(TrangThaiDangKyCho.DaThongBao);

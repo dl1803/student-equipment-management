@@ -252,6 +252,25 @@ public static class TraCuuEndpoints
                 Results.Ok(await boXuLy.XuLyAsync(LayMaNv(nguoiDung), ma, ct)))
             .RequireAuthorization(ChinhSach.NhanVien);
 
+        nhomQuay.MapGet("/danh-sach-cho", async (
+                [FromQuery] Guid? maPhong,
+                [FromQuery] Guid? maLoai,
+                [FromServices] ICurrentUser nguoiDung,
+                [FromServices] DsDanhSachChoQuayHandler boXuLy,
+                CancellationToken ct,
+                [FromQuery] int trang = 1,
+                [FromQuery] int kichThuoc = 20) =>
+                Results.Ok(await boXuLy.XuLyAsync(LayMaNv(nguoiDung), maPhong, maLoai, trang, kichThuoc, ct)))
+            .RequireAuthorization(ChinhSach.NhanVien);
+
+        nhomQuay.MapPost("/danh-sach-cho/{ma}/chuyen-luot", async (
+                string ma,
+                [FromServices] ICurrentUser nguoiDung,
+                [FromServices] ChuyenLuotDanhSachChoHandler boXuLy,
+                CancellationToken ct) =>
+                Results.Ok(await boXuLy.XuLyAsync(LayMaNv(nguoiDung), ma, ct)))
+            .RequireAuthorization(ChinhSach.NhanVien);
+
         return duongDan;
     }
 
