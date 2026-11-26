@@ -19,6 +19,7 @@ import com.nhom13.quanlymuontra.ui.tracuu.TraCuuThietBiViewModel.TrangThaiTaiThe
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
+import java.util.function.Consumer;
 
 /**
  * Danh sách của SCR-SV-02 (FC 6.6: {@code ListAdapter} và {@code DiffUtil}): một mục đầu (view bộ lọc dựng sẵn
@@ -93,15 +94,21 @@ public final class TraCuuThietBiAdapter
 
     private final View dau;
     private final Runnable thuLaiTaiThem;
+    private final Consumer<TraCuuThietBiItem> khiChonDong;
 
     /**
      * @param dau view đầu danh sách (bộ lọc), dựng sẵn bởi Fragment
      * @param thuLaiTaiThem xử lý nút Thử lại ở dòng cuối khi lỗi tải thêm
+     * @param khiChonDong xử lý khi chạm một dòng kết quả: mở SCR-SV-03 với mã loại và mã phòng của dòng (D09-L)
      */
-    public TraCuuThietBiAdapter(@NonNull View dau, @NonNull Runnable thuLaiTaiThem) {
+    public TraCuuThietBiAdapter(
+            @NonNull View dau,
+            @NonNull Runnable thuLaiTaiThem,
+            @NonNull Consumer<TraCuuThietBiItem> khiChonDong) {
         super(KHAC_BIET);
         this.dau = dau;
         this.thuLaiTaiThem = thuLaiTaiThem;
+        this.khiChonDong = khiChonDong;
     }
 
     /**
@@ -140,7 +147,8 @@ public final class TraCuuThietBiAdapter
             return new RecyclerView.ViewHolder(dau) {};
         }
         if (loai == LOAI_DONG) {
-            return new DongViewHolder(ItemTraCuuThietBiBinding.inflate(inflater, cha, false));
+            return new DongViewHolder(
+                    ItemTraCuuThietBiBinding.inflate(inflater, cha, false), khiChonDong);
         }
         return new ChanViewHolder(ItemTaiThemBinding.inflate(inflater, cha, false), thuLaiTaiThem);
     }
@@ -158,13 +166,18 @@ public final class TraCuuThietBiAdapter
     /** Dòng kết quả (CMP-16). */
     static final class DongViewHolder extends RecyclerView.ViewHolder {
         private final ItemTraCuuThietBiBinding binding;
+        private final Consumer<TraCuuThietBiItem> khiChon;
 
-        DongViewHolder(@NonNull ItemTraCuuThietBiBinding binding) {
+        DongViewHolder(
+                @NonNull ItemTraCuuThietBiBinding binding,
+                @NonNull Consumer<TraCuuThietBiItem> khiChon) {
             super(binding.getRoot());
             this.binding = binding;
+            this.khiChon = khiChon;
         }
 
         void gan(@NonNull TraCuuThietBiItem dong) {
+            binding.getRoot().setOnClickListener(nut -> khiChon.accept(dong));
             Context ctx = binding.getRoot().getContext();
             String hang = dong.getHangSanXuat();
             binding.tvTenLoai.setText(

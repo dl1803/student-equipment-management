@@ -1,0 +1,231 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+    SCR-SV-03 Chi tiết loại thiết bị tại phòng (UI-Screens 5.3, Wireframes SCR-SV-03, demo-ui-android, DS CMP-23, CMP-24,
+    CMP-25). Từ trên xuống trong vùng cuộn: khối thông báo lỗi kiểm tra quyền mượn, khối Không tìm thấy, trạng thái tải
+    hoặc lỗi, rồi nội dung: dải ảnh, tên loại và dòng phụ, Mô tả (ẩn khi không có), Thông số kỹ thuật (ẩn khi rỗng), thẻ
+    số lượng khả dụng kèm ngày dự kiến khi hết hàng. Nút ghim nằm ngoài vùng cuộn, chỉ một trong hai nút Đặt trước hoặc
+    Đăng ký chờ hiện tại một thời điểm (Wireframes ĐX-WF-07). Kéo xuống để làm mới (ĐX-UF-04).
+-->
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical">
+
+    <androidx.swiperefreshlayout.widget.SwipeRefreshLayout
+        android:id="@+id/srl_lam_moi"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1">
+
+        <ScrollView
+            android:id="@+id/sv_noi_dung"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:padding="@dimen/ds_space_gutter">
+
+                <com.nhom13.quanlymuontra.common.widget.BannerView
+                    android:id="@+id/banner_loi_quyen"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginBottom="@dimen/ds_space_section"
+                    android:visibility="gone" />
+
+                <com.nhom13.quanlymuontra.common.widget.BannerView
+                    android:id="@+id/banner_khong_tim_thay"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginBottom="@dimen/ds_space_section"
+                    android:visibility="gone" />
+
+                <com.nhom13.quanlymuontra.common.widget.LoadingView
+                    android:id="@+id/lv_tai"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content" />
+
+                <com.nhom13.quanlymuontra.common.widget.ErrorView
+                    android:id="@+id/ev_loi"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:visibility="gone" />
+
+                <LinearLayout
+                    android:id="@+id/ll_noi_dung"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical"
+                    android:visibility="gone">
+
+                    <com.nhom13.quanlymuontra.common.widget.AnhGalleryView
+                        android:id="@+id/agv_anh"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content" />
+
+                    <TextView
+                        android:id="@+id/tv_ten_loai"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="@dimen/ds_space_section"
+                        android:textAppearance="@style/TextAppearance.Ds.TitleSection" />
+
+                    <TextView
+                        android:id="@+id/tv_hang_phong_co_so"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="@dimen/ds_space_1"
+                        android:textAppearance="@style/TextAppearance.Ds.Body"
+                        android:textColor="@color/ds_color_text_secondary" />
+
+                    <LinearLayout
+                        android:id="@+id/ll_mo_ta"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="@dimen/ds_space_section"
+                        android:orientation="vertical">
+
+                        <TextView
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:text="@string/chi_tiet_mo_ta"
+                            android:textAppearance="@style/TextAppearance.Ds.Label" />
+
+                        <TextView
+                            android:id="@+id/tv_mo_ta"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_marginTop="@dimen/ds_space_1"
+                            android:textAppearance="@style/TextAppearance.Ds.Body" />
+
+                    </LinearLayout>
+
+                    <LinearLayout
+                        android:id="@+id/ll_thong_so"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="@dimen/ds_space_section"
+                        android:orientation="vertical">
+
+                        <TextView
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:text="@string/chi_tiet_thong_so"
+                            android:textAppearance="@style/TextAppearance.Ds.Label" />
+
+                        <LinearLayout
+                            android:id="@+id/ll_ds_thong_so"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_marginTop="@dimen/ds_space_1"
+                            android:orientation="vertical" />
+
+                    </LinearLayout>
+
+                    <com.google.android.material.card.MaterialCardView
+                        style="@style/Widget.Ds.Card"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="@dimen/ds_space_section">
+
+                        <LinearLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:orientation="vertical">
+
+                            <LinearLayout
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:gravity="center_vertical"
+                                android:orientation="horizontal">
+
+                                <TextView
+                                    android:layout_width="0dp"
+                                    android:layout_height="wrap_content"
+                                    android:layout_weight="1"
+                                    android:text="@string/chi_tiet_so_luong_kha_dung"
+                                    android:textAppearance="@style/TextAppearance.Ds.Label"
+                                    android:textColor="@color/ds_color_text_secondary" />
+
+                                <TextView
+                                    android:id="@+id/tv_so_luong"
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:layout_marginStart="@dimen/ds_space_2"
+                                    android:textAppearance="@style/TextAppearance.Ds.NumericLg" />
+
+                                <com.nhom13.quanlymuontra.common.widget.StatusBadgeView
+                                    android:id="@+id/sb_het_hang"
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:layout_marginStart="@dimen/ds_space_2"
+                                    android:visibility="gone" />
+
+                            </LinearLayout>
+
+                            <LinearLayout
+                                android:id="@+id/ll_ngay_du_kien"
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:layout_marginTop="@dimen/ds_space_2"
+                                android:orientation="horizontal"
+                                android:visibility="gone">
+
+                                <TextView
+                                    android:layout_width="0dp"
+                                    android:layout_height="wrap_content"
+                                    android:layout_weight="1"
+                                    android:text="@string/chi_tiet_ngay_du_kien"
+                                    android:textAppearance="@style/TextAppearance.Ds.Label"
+                                    android:textColor="@color/ds_color_text_secondary" />
+
+                                <TextView
+                                    android:id="@+id/tv_ngay_du_kien"
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:layout_marginStart="@dimen/ds_space_2"
+                                    android:gravity="end"
+                                    android:textAppearance="@style/TextAppearance.Ds.Label" />
+
+                            </LinearLayout>
+
+                        </LinearLayout>
+
+                    </com.google.android.material.card.MaterialCardView>
+
+                </LinearLayout>
+
+            </LinearLayout>
+
+        </ScrollView>
+
+    </androidx.swiperefreshlayout.widget.SwipeRefreshLayout>
+
+    <LinearLayout
+        android:id="@+id/ll_ghim"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@color/ds_color_surface_default"
+        android:orientation="vertical"
+        android:visibility="gone">
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/ds_border_width_default"
+            android:background="@color/ds_color_border_subtle" />
+
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/btn_hanh_dong"
+            style="@style/Widget.Ds.Button.Primary"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="@dimen/ds_space_4"
+            android:layout_marginTop="@dimen/ds_space_3"
+            android:layout_marginEnd="@dimen/ds_space_4"
+            android:layout_marginBottom="@dimen/ds_space_3" />
+
+    </LinearLayout>
+
+</LinearLayout>
