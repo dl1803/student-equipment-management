@@ -83,6 +83,9 @@ public sealed class XuLyLoiToanCuc(ILogger<XuLyLoiToanCuc> nhatKy) : IExceptionH
             case LoiNghiepVuException nghiepVu:
                 return DungProblem(httpContext, nghiepVu.MaHttp, nghiepVu.MaLoi, nghiepVu.Message);
 
+            case NghiepVuException quyTac when MaLoiNghiepVu.TatCa.TryGetValue(quyTac.MaLoi, out var maHttpQuyTac):
+                return DungProblem(httpContext, maHttpQuyTac, quyTac.MaLoi, quyTac.Message);
+
             case ValidationException duLieu:
                 var truongLoi = duLieu.Errors
                     .GroupBy(l => ChuyenCamelCase(l.PropertyName))
