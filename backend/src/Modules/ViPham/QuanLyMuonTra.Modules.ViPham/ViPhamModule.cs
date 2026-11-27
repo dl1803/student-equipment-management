@@ -19,6 +19,7 @@ public static class ViPhamModule
         services.AddScoped<DsBienBanViPhamQuanTriHandler>();
         services.AddScoped<DsViPhamSvHandler>();
         services.AddScoped<DeXuatBienBanHandler>();
+        services.AddScoped<LapBienBanHandler>();
 
         return services;
     }
