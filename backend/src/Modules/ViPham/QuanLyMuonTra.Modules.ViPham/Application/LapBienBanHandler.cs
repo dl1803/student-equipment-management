@@ -54,11 +54,32 @@ public sealed class LapBienBanHandler(
         var phieu = await phieuMuon.LayPhieuMuonAsync(lenh.MaPhieuMuon, ct)
             ?? throw new LoiNghiepVuException(MaLoi.KhongTimThay, "Không tìm thấy phiếu mượn.");
 
+        var dsChiTietBanDau = await phieuMuon.LayChiTietTheoPhieuAsync(phieu.MaPhieu, ct);
+        var dsMaPhongBanDau = await quyenPhong.LayDsMaPhongAsync(maNv, ct);
+        var coQuyenPhieu = false;
+        foreach (var chiTietBanDau in dsChiTietBanDau)
+        {
+            var tb = await danhMuc.LayThietBiAsync(chiTietBanDau.MaThietBi, ct)
+                ?? throw new InvalidOperationException($"Thiếu thiết bị {chiTietBanDau.MaThietBi} của phiếu {phieu.MaPhieu}.");
+            if (dsMaPhongBanDau.Contains(tb.MaPhong))
+            {
+                coQuyenPhieu = true;
+                break;
+            }
+        }
+
+        if (!coQuyenPhieu)
+        {
+            throw new LoiNghiepVuException(
+                MaLoi.PhongChuaCapQuyen,
+                "Nhân viên chưa được cấp quyền phòng của phiếu mượn này.");
+        }
+
         var moGiaoDich = db.Database.CurrentTransaction is null;
         var giaoDich = moGiaoDich ? await db.Database.BeginTransactionAsync(ct) : null;
         try
         {
-            var ketQua = await GhiAsync(maNv, phieu, lenh, ct);
+            var ketQua = await GhiAsync(maNv, phieu.MaSv, lenh, ct);
 
             if (giaoDich is not null)
             {
@@ -66,6 +87,10 @@ public sealed class LapBienBanHandler(
             }
 
             return ketQua;
+        }
+        catch (Exception loi) when (LaLoiTrungKhoa(loi))
+        {
+            throw TrangThaiKhongHopLe("Khoản vi phạm đã tồn tại trong biên bản chưa hủy.");
         }
         finally
         {
@@ -94,12 +119,10 @@ public sealed class LapBienBanHandler(
 
     private async Task<BienBanViPhamDto> GhiAsync(
         Guid maNv,
-        PhieuMuonDto phieu,
+        string maSv,
         LapBienBanLenh lenh,
         CancellationToken ct)
     {
-        var maSv = phieu.MaSv;
-
         await db.Database.ExecuteSqlInterpolatedAsync($"""
             SELECT ma_sv FROM sinh_vien.sinh_vien WHERE ma_sv = {maSv} FOR UPDATE
             """, ct);
@@ -109,6 +132,8 @@ public sealed class LapBienBanHandler(
             .SingleOrDefaultAsync(ct)
             ?? throw new LoiNghiepVuException(MaLoi.KhongTimThay, "Không tìm thấy sinh viên.");
 
+        var phieu = await phieuMuon.LayPhieuMuonAsync(lenh.MaPhieuMuon, ct)
+            ?? throw new LoiNghiepVuException(MaLoi.KhongTimThay, "Không tìm thấy phiếu mượn.");
         var dsChiTiet = await phieuMuon.LayChiTietTheoPhieuAsync(phieu.MaPhieu, ct);
         var dsMaPhong = await quyenPhong.LayDsMaPhongAsync(maNv, ct);
         var thamSo = await quyDinh.LayThamSoAsync(ct);
@@ -365,6 +390,12 @@ public sealed class LapBienBanHandler(
     private static string DinhDangTien(long soTien)
     {
         return soTien.ToString("N0", CultureInfo.InvariantCulture).Replace(',', '.') + " đồng";
+    }
+
+    private static bool LaLoiTrungKhoa(Exception loi)
+    {
+        return loi is DbException { SqlState: "23505" }
+            || loi.InnerException is DbException { SqlState: "23505" };
     }
 
     private static LoiNghiepVuException TrangThaiKhongHopLe(string thongDiep)

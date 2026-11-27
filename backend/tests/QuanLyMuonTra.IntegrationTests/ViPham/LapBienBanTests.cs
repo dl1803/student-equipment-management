@@ -272,6 +272,24 @@ public class LapBienBanTests
     }
 
     [Fact]
+    public async Task UC09_LapBienBan_NhanVienPhongKhacGuiThietBiNgoaiPhieu_Tra403()
+    {
+        await using var mt = await MoiTruong.TaoAsync();
+        var db = mt.Db;
+        var kb = await TaoKichBanAsync(db, HanTraCoDinh);
+        var boXuLy = TaoHandler(db, BayGio, null, Guid.CreateVersion7());
+
+        var loi = await Assert.ThrowsAsync<LoiNghiepVuException>(() => boXuLy.XuLyAsync(
+            kb.MaNv,
+            TaoLenh(kb.MaPhieu, new KhoanLapBienBanYeuCau("KHONG-CO-TRONG-PHIEU", "MAT", null)),
+            CancellationToken.None));
+
+        Assert.Equal("PHONG_CHUA_CAP_QUYEN", loi.MaLoi);
+        Assert.Equal(403, loi.MaHttp);
+        Assert.Equal(0L, await DemBienBanAsync(db, kb.MaPhieu));
+    }
+
+    [Fact]
     public async Task UC09_LapBienBan_TraTreChoThietBiKhongTre_Tra409()
     {
         await using var mt = await MoiTruong.TaoAsync();
