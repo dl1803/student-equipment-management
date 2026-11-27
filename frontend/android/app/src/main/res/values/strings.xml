@@ -244,4 +244,8 @@
     <string name="anh_mo_ta_o_anh">Ảnh %1$d của %2$s</string>
     <string name="anh_thay_the_mo_ta">Chưa có ảnh</string>
 
+    <!-- D10-L CMP-10: tên truy cập hai nút của bộ chọn số lượng. Chữ do Architect viết, chờ nhóm xác nhận. -->
+    <string name="so_luong_giam">Giảm số lượng</string>
+    <string name="so_luong_tang">Tăng số lượng</string>
+
 </resources>
