@@ -67,4 +67,37 @@ public sealed class BaoTriSuaChua : IAuditable
             NgayLap = ngayLap.ToUniversalTime(),
         };
     }
+
+    internal static void KiemTraKetQua(string? noiDungThucHien, string? ketQua)
+    {
+        if (string.IsNullOrWhiteSpace(noiDungThucHien))
+        {
+            throw new LoiNghiepVuException("DU_LIEU_KHONG_HOP_LE", "Nội dung thực hiện không được để trống.");
+        }
+
+        if (!KetQuaBaoTriMa.HopLe(ketQua))
+        {
+            throw new LoiNghiepVuException("DU_LIEU_KHONG_HOP_LE", "Kết quả bảo trì/sửa chữa không hợp lệ.");
+        }
+    }
+
+    internal void HoanThanh(string? noiDungThucHien, string? ketQua, DateTimeOffset ngayHoanThanh)
+    {
+        if (KetQua is not null)
+        {
+            throw new LoiNghiepVuException("TRANG_THAI_KHONG_HOP_LE", "Hồ sơ bảo trì/sửa chữa đã hoàn thành.");
+        }
+
+        KiemTraKetQua(noiDungThucHien, ketQua);
+
+        var ngayHoanThanhUtc = ngayHoanThanh.ToUniversalTime();
+        if (ngayHoanThanhUtc < NgayLap)
+        {
+            throw new LoiNghiepVuException("DU_LIEU_KHONG_HOP_LE", "Ngày hoàn thành không được sớm hơn ngày lập.");
+        }
+
+        NoiDungThucHien = noiDungThucHien!.Trim();
+        KetQua = ketQua;
+        NgayHoanThanh = ngayHoanThanhUtc;
+    }
 }
