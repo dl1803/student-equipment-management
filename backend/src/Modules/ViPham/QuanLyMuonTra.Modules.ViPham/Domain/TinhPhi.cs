@@ -55,4 +55,12 @@ public static class TinhPhi
     {
         return Math.Max(0m, giaTriHienHanh);
     }
+
+    public const int MocBaoMatSoNgay = 30;
+
+    public static bool QuaMocBaoMat(DateTimeOffset hanTra, DateTimeOffset thoiDiem)
+    {
+        var soNgayLich = VnTime.NgayLich(thoiDiem).DayNumber - VnTime.NgayLich(hanTra).DayNumber;
+        return soNgayLich > MocBaoMatSoNgay;
+    }
 }
