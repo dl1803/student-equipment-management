@@ -1,5 +1,6 @@
 using Microsoft.AspNetCore.Mvc;
 using QuanLyMuonTra.Api.Auth;
+using QuanLyMuonTra.Api.Loi;
 using QuanLyMuonTra.Modules.ViPham.Application;
 using QuanLyMuonTra.Modules.ViPham.Domain;
 using QuanLyMuonTra.SharedKernel;
@@ -46,6 +47,24 @@ public static class ViPhamEndpoints
                 [FromServices] DeXuatBienBanHandler boXuLy,
                 CancellationToken ct) =>
                 Results.Ok(await boXuLy.XuLyAsync(LayMaNv(nguoiDung), ma, ct)))
+            .RequireAuthorization(ChinhSach.NhanVien);
+
+        duongDan.MapPost("/api/v1/quay/bien-ban-vi-pham", async (
+                LapBienBanRequest yeuCau,
+                [FromServices] ICurrentUser nguoiDung,
+                [FromServices] LapBienBanHandler boXuLy,
+                CancellationToken ct) =>
+            {
+                var lenh = new LapBienBanLenh(
+                    yeuCau.MaPhieuMuon.Trim(),
+                    yeuCau.DsKhoan
+                        .Select(k => new KhoanLapBienBanYeuCau(k.MaThietBi.Trim(), k.LoaiViPham, k.MaKhungPhat))
+                        .ToList());
+                var bienBan = await boXuLy.XuLyAsync(LayMaNv(nguoiDung), lenh, ct);
+
+                return Results.Created($"/api/v1/quay/bien-ban-vi-pham?maSV={bienBan.MaSV}", bienBan);
+            })
+            .AddEndpointFilter<KiemTraDuLieuFilter<LapBienBanRequest>>()
             .RequireAuthorization(ChinhSach.NhanVien);
 
         duongDan.MapGet("/api/v1/quan-tri/bien-ban-vi-pham", async (
