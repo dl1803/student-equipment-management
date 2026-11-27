@@ -6,10 +6,13 @@ using QuanLyMuonTra.Infrastructure.Persistence;
 using QuanLyMuonTra.IntegrationTests.DanhMuc;
 using QuanLyMuonTra.Modules.BaoTri;
 using QuanLyMuonTra.Modules.BaoTri.Domain;
+using QuanLyMuonTra.Modules.MuonTra;
 using QuanLyMuonTra.Modules.MuonTra.Contracts;
 using QuanLyMuonTra.Modules.MuonTra.Infrastructure;
+using QuanLyMuonTra.Modules.QuyDinh;
 using QuanLyMuonTra.Modules.TaiKhoan.Contracts;
 using QuanLyMuonTra.Modules.TaiKhoan.Infrastructure;
+using QuanLyMuonTra.Modules.ThongBao;
 using QuanLyMuonTra.SharedKernel;
 
 namespace QuanLyMuonTra.IntegrationTests.BaoTri;
@@ -23,14 +26,22 @@ internal static class BaoTriTestSupport
 
     internal static readonly DateTimeOffset BayGio = new(2026, 11, 23, 5, 0, 0, TimeSpan.Zero);
 
-    internal static ServiceProvider TaoDichVu() =>
-        XoaNgungTestSupport.TaoDichVu(s => s
-            .AddBaoTriModule()
-            .AddEfConfigurationsFromAssembly(typeof(BaoTriSuaChua).Assembly)
-            .AddMemoryCache()
-            .AddScoped<IQuyenPhongService, QuyenPhongService>()
-            .AddScoped<IPhieuMuonReader, PhieuMuonReader>()
-            .AddSingleton<IClock>(new DongHoCoDinh(BayGio)));
+    internal static ServiceProvider TaoDichVu(Action<IServiceCollection>? tuyChinh = null) =>
+        XoaNgungTestSupport.TaoDichVu(s =>
+        {
+            s.AddBaoTriModule()
+                .AddEfConfigurationsFromAssembly(typeof(BaoTriSuaChua).Assembly)
+                .AddMemoryCache()
+                .AddQuyDinhModule()
+                .AddMuonTraModule()
+                .AddThongBaoModule()
+                .AddScoped<INhanVienEmailReader, NhanVienEmailReader>()
+                .AddScoped<IQuyenPhongService, QuyenPhongService>()
+                .AddScoped<IPhieuMuonReader, PhieuMuonReader>()
+                .AddSingleton<IClock>(new DongHoCoDinh(BayGio));
+            tuyChinh?.Invoke(s);
+            return s;
+        });
 
     private sealed class DongHoCoDinh(DateTimeOffset thoiDiem) : IClock
     {

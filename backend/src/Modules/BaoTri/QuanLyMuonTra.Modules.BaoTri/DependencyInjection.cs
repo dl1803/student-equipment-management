@@ -13,6 +13,7 @@ public static class DependencyInjection
         services.AddScoped<DsThietBiDenHanBaoTriHandler>();
         services.AddScoped<DsChoTiepNhanSuaChuaHandler>();
         services.AddScoped<LapBaoTriHandler>();
+        services.AddScoped<HoanThanhBaoTriHandler>();
         return services;
     }
 }
