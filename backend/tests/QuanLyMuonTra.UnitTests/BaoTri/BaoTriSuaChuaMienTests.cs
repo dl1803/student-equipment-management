@@ -74,4 +74,90 @@ public sealed class BaoTriSuaChuaMienTests
     {
         Assert.Equal(hopLe, LoaiThucHienBaoTriMa.TryParse(ma, out _));
     }
+
+    [Fact]
+    public void UC11_HoanThanh_HopLe_GhiNoiDungKetQuaVaNgayHoanThanhUtc()
+    {
+        var banGhi = BaoTriSuaChua.Lap("TB-01", MaNv, LoaiThucHienBaoTri.BaoTriDinhKy, null, Luc);
+        var ngayHoanThanh = Luc.AddDays(2);
+
+        banGhi.HoanThanh("  Vệ sinh và kiểm tra tổng thể  ", "DUA_VE_SAN_SANG", ngayHoanThanh);
+
+        Assert.Equal("Vệ sinh và kiểm tra tổng thể", banGhi.NoiDungThucHien);
+        Assert.Equal("DUA_VE_SAN_SANG", banGhi.KetQua);
+        Assert.Equal(ngayHoanThanh.ToUniversalTime(), banGhi.NgayHoanThanh);
+        Assert.Equal(TimeSpan.Zero, banGhi.NgayHoanThanh?.Offset);
+    }
+
+    [Fact]
+    public void UC11_HoanThanh_DeXuatThanhLy_ChapNhanChoSuaChua()
+    {
+        var banGhi = BaoTriSuaChua.Lap("TB-01", MaNv, LoaiThucHienBaoTri.SuaChua, null, Luc);
+
+        banGhi.HoanThanh("Hư hỏng nặng, không sửa được", "DE_XUAT_THANH_LY", Luc.AddHours(5));
+
+        Assert.Equal("DE_XUAT_THANH_LY", banGhi.KetQua);
+        Assert.NotNull(banGhi.NgayHoanThanh);
+    }
+
+    [Fact]
+    public void UC11_HoanThanh_NgayBangNgayLap_HopLe()
+    {
+        var banGhi = BaoTriSuaChua.Lap("TB-01", MaNv, LoaiThucHienBaoTri.BaoTriDinhKy, null, Luc);
+
+        banGhi.HoanThanh("Kiểm tra nhanh", "DUA_VE_SAN_SANG", Luc);
+
+        Assert.Equal(Luc.ToUniversalTime(), banGhi.NgayHoanThanh);
+    }
+
+    [Theory]
+    [InlineData(null, "DUA_VE_SAN_SANG")]
+    [InlineData("", "DUA_VE_SAN_SANG")]
+    [InlineData("   ", "DE_XUAT_THANH_LY")]
+    [InlineData("Đã kiểm tra", null)]
+    [InlineData("Đã kiểm tra", "")]
+    [InlineData("Đã kiểm tra", "dua_ve_san_sang")]
+    [InlineData("Đã kiểm tra", "KHAC")]
+    public void UC11_HoanThanh_NoiDungHoacKetQuaSai_Nem400VaGiuHoSoMo(string? noiDung, string? ketQua)
+    {
+        var banGhi = BaoTriSuaChua.Lap("TB-01", MaNv, LoaiThucHienBaoTri.BaoTriDinhKy, null, Luc);
+
+        var loi = Assert.Throws<LoiNghiepVuException>(() => banGhi.HoanThanh(noiDung, ketQua, Luc.AddDays(1)));
+
+        Assert.Equal("DU_LIEU_KHONG_HOP_LE", loi.MaLoi);
+        Assert.Equal(400, loi.MaHttp);
+        Assert.Null(banGhi.NoiDungThucHien);
+        Assert.Null(banGhi.KetQua);
+        Assert.Null(banGhi.NgayHoanThanh);
+    }
+
+    [Fact]
+    public void UC11_HoanThanh_NgaySomHonNgayLap_Nem400VaGiuHoSoMo()
+    {
+        var banGhi = BaoTriSuaChua.Lap("TB-01", MaNv, LoaiThucHienBaoTri.SuaChua, null, Luc);
+
+        var loi = Assert.Throws<LoiNghiepVuException>(
+            () => banGhi.HoanThanh("Đã sửa", "DUA_VE_SAN_SANG", Luc.AddSeconds(-1)));
+
+        Assert.Equal("DU_LIEU_KHONG_HOP_LE", loi.MaLoi);
+        Assert.Equal(400, loi.MaHttp);
+        Assert.Null(banGhi.KetQua);
+        Assert.Null(banGhi.NgayHoanThanh);
+    }
+
+    [Fact]
+    public void UC11_HoanThanh_LanHai_Nem409VaKhongGhiDe()
+    {
+        var banGhi = BaoTriSuaChua.Lap("TB-01", MaNv, LoaiThucHienBaoTri.BaoTriDinhKy, null, Luc);
+        banGhi.HoanThanh("Lần một", "DUA_VE_SAN_SANG", Luc.AddDays(1));
+
+        var loi = Assert.Throws<LoiNghiepVuException>(
+            () => banGhi.HoanThanh("Lần hai", "DE_XUAT_THANH_LY", Luc.AddDays(2)));
+
+        Assert.Equal("TRANG_THAI_KHONG_HOP_LE", loi.MaLoi);
+        Assert.Equal(409, loi.MaHttp);
+        Assert.Equal("Lần một", banGhi.NoiDungThucHien);
+        Assert.Equal("DUA_VE_SAN_SANG", banGhi.KetQua);
+        Assert.Equal(Luc.AddDays(1).ToUniversalTime(), banGhi.NgayHoanThanh);
+    }
 }
