@@ -22,4 +22,6 @@ public static class MaLoi
     public const string ThietBiSaiPhong = "THIET_BI_SAI_PHONG";
     public const string ThietBiSaiLoai = "THIET_BI_SAI_LOAI";
     public const string ConHangKhongDangKyCho = "CON_HANG_KHONG_DANG_KY_CHO";
+    public const string ThietBiKhongThuocPhieu = "THIET_BI_KHONG_THUOC_PHIEU";
+    public const string ThieuMoTaHoacKhungPhat = "THIEU_MO_TA_HOAC_KHUNG_PHAT";
 }

@@ -70,6 +70,9 @@
     <None Update="MuonTra\D13-V-du-lieu-thu.sql">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
+    <None Update="MuonTra\D14-V-du-lieu-thu.sql">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
   </ItemGroup>
 
 </Project>

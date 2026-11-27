@@ -37,7 +37,7 @@
 "GET","/api/v1/quay/sinh-vien/the/{maThe}","DA_CAI"
 "POST","/api/v1/quay/phieu-muon/kiem-tra-nguon","DA_CAI"
 "POST","/api/v1/quay/phieu-muon/kiem-tra-thiet-bi","DA_CAI"
-"GET","/api/v1/quay/thiet-bi/{maThietBi}/ban-giao","CHUA_CAI"
+"GET","/api/v1/quay/thiet-bi/{maThietBi}/ban-giao","DA_CAI"
 "POST","/api/v1/quay/phieu-muon/{ma}/ket-qua-kiem-tra","CHUA_CAI"
 "GET","/api/v1/quay/phieu-muon/{ma}/de-xuat-bien-ban","DA_CAI"
 "POST","/api/v1/quay/bien-ban-vi-pham/{ma}/da-nop","CHUA_CAI"
