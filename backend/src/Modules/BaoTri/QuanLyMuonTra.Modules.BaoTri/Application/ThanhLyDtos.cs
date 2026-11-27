@@ -10,3 +10,11 @@ public sealed record ThietBiChoQuyetDinhThanhLyDto(
     string? NoiDungThucHien,
     DateTimeOffset NgayHoanThanh,
     long GiaTriHienHanh);
+
+public sealed record ThietBiThanhLyDto(string MaThietBi, string TenThietBi);
+
+public sealed record QuyetDinhThanhLyDto(
+    string MaQuyetDinh,
+    Guid MaQTLap,
+    DateOnly NgayThanhLy,
+    IReadOnlyList<ThietBiThanhLyDto> DsThietBi);
