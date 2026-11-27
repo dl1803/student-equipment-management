@@ -48,9 +48,12 @@ public class ManHinhSoanPhieuD10Test {
         Document doc = navGraph();
         Element graph = phanTuCoId(doc, "navigation", "soanPhieuGraph");
         Element diemDen = phanTuCoId(doc, "fragment", "soanPhieuYeuCauFragment");
+        Map<String, Element> thamSoGraph = new HashMap<>();
         Map<String, Element> thamSo = new HashMap<>();
         for (Element e : cacPhanTu(doc, "argument")) {
-            if (e.getParentNode() == diemDen) {
+            if (e.getParentNode() == graph) {
+                thamSoGraph.put(e.getAttribute("android:name"), e);
+            } else if (e.getParentNode() == diemDen) {
                 thamSo.put(e.getAttribute("android:name"), e);
             }
         }
@@ -61,7 +64,14 @@ public class ManHinhSoanPhieuD10Test {
                 "com.nhom13.quanlymuontra.ui.phieuyeucau.SoanPhieuYeuCauFragment",
                 diemDen.getAttribute("android:name"));
         assertEquals("@string/soan_phieu_tieu_de", diemDen.getAttribute("android:label"));
+        assertEquals(
+                new HashSet<>(java.util.Arrays.asList("maPhong", "maLoai")), thamSoGraph.keySet());
         assertEquals(new HashSet<>(java.util.Arrays.asList("maPhong", "maLoai")), thamSo.keySet());
+        for (Element e : thamSoGraph.values()) {
+            assertEquals("string", e.getAttribute("app:argType"));
+            assertEquals("true", e.getAttribute("app:nullable"));
+            assertEquals("@null", e.getAttribute("android:defaultValue"));
+        }
         for (Element e : thamSo.values()) {
             assertEquals("string", e.getAttribute("app:argType"));
             assertEquals("true", e.getAttribute("app:nullable"));

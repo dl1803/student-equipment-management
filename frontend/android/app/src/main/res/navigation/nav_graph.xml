@@ -10,9 +10,11 @@
     D09-L: chiTietLoaiThietBiFragment (SCR-SV-03) mở chồng lên tra cứu, nhận maLoai và maPhong (chuỗi UUID). Hai hành động mới
     (từ tra cứu sang chi tiết; từ chi tiết sang hồ sơ ở chế độ bị chặn) không xóa ngăn xếp. Điểm đến có nhãn vì
     MainActivity lấy tiêu đề thanh ứng dụng từ nhãn; nút Quay lại tự có vì đây không phải tab gốc.
-    D10-L: nav graph con soanPhieuGraph (FA 5.3 quy tắc 2) chứa soanPhieuYeuCauFragment (SCR-SV-04) nhận maPhong và maLoai tùy chọn.
-    soanPhieuGraph là phạm vi của SoanPhieuViewModel; SCR-SV-05 (D11-L) sẽ thêm vào cùng graph con. Từ SCR-SV-04 chỉ có hành
-    động sang hồ sơ ở chế độ bị chặn (cổng quyền mượn của liên kết Đăng ký chờ).
+    D10-L: nav graph con soanPhieuGraph (FA 5.3 quy tắc 2) chứa soanPhieuYeuCauFragment (SCR-SV-04). Cả soanPhieuGraph và
+    soanPhieuYeuCauFragment khai báo maPhong và maLoai tùy chọn để Safe Args sinh tham số cho action từ ngoài vào graph con
+    và truyền xuống startDestination. soanPhieuGraph là phạm vi của SoanPhieuViewModel; SCR-SV-05 (D11-L) sẽ thêm vào cùng
+    graph con. Từ SCR-SV-04 chỉ có hành động sang hồ sơ ở chế độ bị chặn (cổng quyền mượn của liên kết Đăng ký chờ).
+    D10-L: hai hành động mở soanPhieuGraph (từ Trang chủ và từ chi tiết loại) không xóa ngăn xếp; SCR-SV-06/07 nối ở D12-L.
 -->
 <navigation xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
@@ -65,6 +67,9 @@
         <action
             android:id="@+id/action_trangChuFragment_to_hoSoMuonFragment"
             app:destination="@id/hoSoMuonFragment" />
+        <action
+            android:id="@+id/action_trangChuFragment_to_soanPhieuGraph"
+            app:destination="@id/soanPhieuGraph" />
     </fragment>
 
     <fragment
@@ -91,6 +96,9 @@
         <action
             android:id="@+id/action_chiTietLoaiThietBiFragment_to_hoSoMuonFragment"
             app:destination="@id/hoSoMuonFragment" />
+        <action
+            android:id="@+id/action_chiTietLoaiThietBiFragment_to_soanPhieuGraph"
+            app:destination="@id/soanPhieuGraph" />
     </fragment>
 
     <fragment
@@ -122,6 +130,17 @@
     <navigation
         android:id="@+id/soanPhieuGraph"
         app:startDestination="@id/soanPhieuYeuCauFragment">
+
+        <argument
+            android:name="maPhong"
+            android:defaultValue="@null"
+            app:argType="string"
+            app:nullable="true" />
+        <argument
+            android:name="maLoai"
+            android:defaultValue="@null"
+            app:argType="string"
+            app:nullable="true" />
 
         <fragment
             android:id="@+id/soanPhieuYeuCauFragment"

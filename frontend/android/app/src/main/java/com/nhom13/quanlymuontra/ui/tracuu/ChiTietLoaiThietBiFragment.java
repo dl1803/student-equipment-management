@@ -44,8 +44,7 @@ import java.util.UUID;
  * 0, là Đăng ký chờ khi bằng 0. Chọn nút gọi cổng kiểm tra quyền mượn; quyền khác Bình thường thì mở SCR-SV-14 ở chế
  * độ bị chặn nêu hành động vừa chọn (FA 5.3 quy tắc 3).
  *
- * <p>D09-L chỉ làm cổng: khi cổng cho phép, lớp này chưa điều hướng và chưa gửi gì. SCR-SV-04 (Đặt trước) nối ở
- * D10-L; Đăng ký chờ cùng hộp kết quả nối ở D13-L.
+ * <p>D10-L nối Đặt trước tới SCR-SV-04 khi cổng cho phép; Đăng ký chờ cùng hộp kết quả vẫn chưa gửi gì và nối ở D13-L.
  */
 public class ChiTietLoaiThietBiFragment extends Fragment {
 
@@ -281,16 +280,26 @@ public class ChiTietLoaiThietBiFragment extends Fragment {
         if (ketQua == null) {
             return;
         }
-        if (ketQua.isDuocPhep()) {
-            // Quyền Bình thường: D09-L dừng ở cổng. SCR-SV-04 (D10-L) và đăng ký chờ (D13-L) nối vào đây.
-            return;
-        }
-        // FA 5.3 quy tắc 3: không gửi; mở SCR-SV-14 ở chế độ bị chặn nêu hành động vừa chọn.
         NavController dieuHuong = NavHostFragment.findNavController(this);
         NavDestination diemDen = dieuHuong.getCurrentDestination();
         if (diemDen == null || diemDen.getId() != R.id.chiTietLoaiThietBiFragment) {
             return;
         }
+        if (ketQua.isDuocPhep()) {
+            if (ketQua.getHanhDong() == HanhDong.DAT_TRUOC) {
+                // D10-L: Đặt trước, quyền Bình thường: mở SCR-SV-04 với phòng và loại đang xem (số lượng ban đầu 1).
+                ChiTietLoaiThietBiFragmentArgs thamSo =
+                        ChiTietLoaiThietBiFragmentArgs.fromBundle(requireArguments());
+                dieuHuong.navigate(
+                        ChiTietLoaiThietBiFragmentDirections
+                                .actionChiTietLoaiThietBiFragmentToSoanPhieuGraph()
+                                .setMaPhong(thamSo.getMaPhong())
+                                .setMaLoai(thamSo.getMaLoai()));
+            }
+            // Đăng ký chờ: gửi và hộp kết quả nối ở D13-L.
+            return;
+        }
+        // FA 5.3 quy tắc 3: không gửi; mở SCR-SV-14 ở chế độ bị chặn nêu hành động vừa chọn.
         dieuHuong.navigate(
                 ChiTietLoaiThietBiFragmentDirections.actionChiTietLoaiThietBiFragmentToHoSoMuonFragment()
                         .setCheDoBiChan(true)
