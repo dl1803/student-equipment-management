@@ -71,19 +71,27 @@ function ManHinhPhieu({ phieu }: { phieu: PhieuYeuCauMuonQuay }) {
   const [ketQuaXuLy, setKetQuaXuLy] = useState<KetQuaXuLy | null>(null);
   const [thongBao, setThongBao] = useState<ThongBao | null>(null);
   const [chuaBietKetQua, setChuaBietKetQua] = useState<HanhDong | null>(null);
-  // Phiếu đã xử lý xong thì không kiểm tra nữa (máy chủ sẽ trả 404 vì phiếu không còn Chờ duyệt).
+  // Phiếu đã xử lý xong thì không kiểm tra nữa: phiếu không còn Chờ duyệt nên kết quả kiểm tra lại sẽ
+  // đẩy NV rời màn hình trước khi kịp thấy kết quả vừa xử lý.
   const kiemTra = useKiemTraPhieuQuery(
     ketQuaXuLy === null ? phieu.maYeuCau : null,
   );
 
   // E1, E2 khi kiểm tra: phiếu không còn chờ duyệt hoặc phòng chưa được cấp quyền → báo và quay về.
+  // D12-T (tích hợp thật): với phiếu đã được xử lý hoặc đã hết hạn, máy chủ KHÔNG trả 404 mà trả 200 với
+  // duocDuyet = false và lý do TRANG_THAI_KHONG_HOP_LE; 404 chỉ khi mã phiếu không tồn tại. Cả hai
+  // trường hợp đều là "phiếu không còn chờ duyệt" (UF-NV-01 E1).
   const loi = kiemTra.error;
+  const khongConChoDuyet =
+    kiemTra.data?.dsLyDo.some(
+      (lyDo) => lyDo.maLoi === "TRANG_THAI_KHONG_HOP_LE",
+    ) === true;
   useEffect(() => {
-    if (!laApiError(loi)) return;
     const noiDung =
-      loi.maLoi === "PHONG_CHUA_CAP_QUYEN"
+      laApiError(loi) && loi.maLoi === "PHONG_CHUA_CAP_QUYEN"
         ? THONG_DIEP_LOI_CHUNG.PHONG_CHUA_CAP_QUYEN
-        : loi.maLoi === "KHONG_TIM_THAY"
+        : (laApiError(loi) && loi.maLoi === "KHONG_TIM_THAY") ||
+            khongConChoDuyet
           ? THONG_DIEP_PHIEU_YEU_CAU.KHONG_CON_CHO_DUYET
           : null;
     if (noiDung === null) return;
@@ -92,7 +100,7 @@ function ManHinhPhieu({ phieu }: { phieu: PhieuYeuCauMuonQuay }) {
     });
     boChon({ tong: "warning", noiDung });
     router.replace(TUYEN_DANH_SACH);
-  }, [loi, boChon, queryClient, router]);
+  }, [loi, khongConChoDuyet, boChon, queryClient, router]);
 
   const veDanhSach = () => router.push(TUYEN_DANH_SACH);
 
