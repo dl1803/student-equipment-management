@@ -115,6 +115,7 @@ builder.Services.AddScoped<FluentValidation.IValidator<KiemTraThietBiRequest>, K
 builder.Services.AddScoped<FluentValidation.IValidator<KiemTraNguonRequest>, KiemTraNguonValidator>();
 builder.Services.AddScoped<FluentValidation.IValidator<LapPhieuMuonRequest>, LapPhieuMuonValidator>();
 builder.Services.AddScoped<FluentValidation.IValidator<DangKyChoRequest>, DangKyChoValidator>();
+builder.Services.AddScoped<FluentValidation.IValidator<LapBienBanRequest>, LapBienBanValidator>();
 
 var app = builder.Build();
 
