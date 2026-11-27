@@ -70,6 +70,8 @@ public class NavGraphD07Test {
         Map<String, String> kyVong = new HashMap<>();
         kyVong.put("action_trangChuFragment_to_traCuuThietBiFragment", "traCuuThietBiFragment");
         kyVong.put("action_trangChuFragment_to_hoSoMuonFragment", "hoSoMuonFragment");
+        // D10-L: lối vào Đặt trước thiết bị mở nav graph con soanPhieuGraph (màn đầu SCR-SV-04).
+        kyVong.put("action_trangChuFragment_to_soanPhieuGraph", "soanPhieuGraph");
         assertEquals(kyVong, hanhDong);
     }
 
@@ -83,6 +85,7 @@ public class NavGraphD07Test {
         }
 
         // D09-L: sáu điểm đến cũ cộng chiTietLoaiThietBiFragment (SCR-SV-03).
-        assertEquals(7, ma.size());
+        // D10-L: thêm soanPhieuYeuCauFragment (SCR-SV-04).
+        assertEquals(8, ma.size());
     }
 }

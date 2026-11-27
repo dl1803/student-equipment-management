@@ -70,6 +70,10 @@ public class NavGraphD09Test {
                 "action_traCuuThietBiFragment_to_chiTietLoaiThietBiFragment",
                 "chiTietLoaiThietBiFragment");
         kyVong.put("action_chiTietLoaiThietBiFragment_to_hoSoMuonFragment", "hoSoMuonFragment");
+        // D10-L: Đặt trước ở chi tiết loại mở nav graph con soanPhieuGraph (màn đầu SCR-SV-04).
+        kyVong.put(
+                "action_chiTietLoaiThietBiFragment_to_soanPhieuGraph",
+                "soanPhieuGraph");
         assertEquals(kyVong, hanhDong);
     }
 }

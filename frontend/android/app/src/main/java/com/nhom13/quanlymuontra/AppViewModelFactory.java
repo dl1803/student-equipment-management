@@ -6,6 +6,7 @@ import androidx.lifecycle.ViewModelProvider;
 import com.nhom13.quanlymuontra.ui.dangnhap.DangNhapSinhVienViewModel;
 import com.nhom13.quanlymuontra.ui.hoso.HoSoMuonViewModel;
 import com.nhom13.quanlymuontra.ui.khoidong.KhoiDongViewModel;
+import com.nhom13.quanlymuontra.ui.phieuyeucau.SoanPhieuViewModel;
 import com.nhom13.quanlymuontra.ui.tracuu.BoHenGio;
 import com.nhom13.quanlymuontra.ui.tracuu.ChiTietLoaiThietBiViewModel;
 import com.nhom13.quanlymuontra.ui.tracuu.TraCuuThietBiViewModel;
@@ -57,6 +58,11 @@ public final class AppViewModelFactory implements ViewModelProvider.Factory {
         if (ChiTietLoaiThietBiViewModel.class.equals(modelClass)) {
             return modelClass.cast(
                     new ChiTietLoaiThietBiViewModel(
+                            appContainer.getTraCuuRepository(), appContainer.getHoSoMuonRepository()));
+        }
+        if (SoanPhieuViewModel.class.equals(modelClass)) {
+            return modelClass.cast(
+                    new SoanPhieuViewModel(
                             appContainer.getTraCuuRepository(), appContainer.getHoSoMuonRepository()));
         }
         // Lớp chưa đăng ký: tạo nhầm lớp lạ phải lộ ngay thay vì trả về null.

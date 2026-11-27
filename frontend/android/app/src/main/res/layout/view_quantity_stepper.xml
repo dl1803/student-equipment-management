@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+    CMP-10 Bộ chọn số lượng (Android): nút giảm, giá trị (chữ), nút tăng. Nội dung bên trong QuantityStepperView
+    (LinearLayout ngang). Mỗi nút vùng chạm 48 dp (Widget.Ds.IconButton). Giá trị type.body-strong, chữ số cùng độ rộng.
+-->
+<merge xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    tools:parentTag="android.widget.LinearLayout">
+
+    <ImageButton
+        android:id="@+id/btn_giam"
+        style="@style/Widget.Ds.IconButton"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:contentDescription="@string/so_luong_giam"
+        android:src="@drawable/ic_remove" />
+
+    <TextView
+        android:id="@+id/tv_gia_tri"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:accessibilityLiveRegion="polite"
+        android:fontFeatureSettings="tnum"
+        android:gravity="center"
+        android:minWidth="@dimen/ds_size_touch_min"
+        android:textAppearance="@style/TextAppearance.Ds.BodyStrong" />
+
+    <ImageButton
+        android:id="@+id/btn_tang"
+        style="@style/Widget.Ds.IconButton"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:contentDescription="@string/so_luong_tang"
+        android:src="@drawable/ic_add" />
+
+</merge>

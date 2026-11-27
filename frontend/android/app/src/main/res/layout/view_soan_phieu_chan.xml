@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+    Cuối danh sách của SCR-SV-04: ô Thời gian mượn dự kiến (CMP-04), số nguyên đơn vị giờ, từ 1 (UI-Screens 5.4).
+    Nhãn là TextView riêng phía trên ô (labelFor), lỗi hiển thị bằng TextInputLayout.setError (FC 6.6).
+-->
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical"
+    android:paddingTop="@dimen/ds_space_section">
+
+    <TextView
+        android:id="@+id/tv_thoi_gian_nhan"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="@dimen/ds_space_field_label"
+        android:labelFor="@+id/et_thoi_gian"
+        android:text="@string/soan_phieu_thoi_gian_nhan"
+        android:textAppearance="@style/TextAppearance.Ds.Label" />
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:gravity="top"
+        android:orientation="horizontal">
+
+        <com.google.android.material.textfield.TextInputLayout
+            android:id="@+id/til_thoi_gian"
+            style="@style/Widget.Ds.TextField"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1">
+
+            <com.google.android.material.textfield.TextInputEditText
+                android:id="@+id/et_thoi_gian"
+                style="@style/Widget.Ds.TextField.Input"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:imeOptions="actionDone"
+                android:inputType="number"
+                android:maxLength="9"
+                android:maxLines="1" />
+
+        </com.google.android.material.textfield.TextInputLayout>
+
+        <TextView
+            android:id="@+id/tv_don_vi_gio"
+            android:layout_width="wrap_content"
+            android:layout_height="@dimen/ds_size_input_height"
+            android:layout_marginStart="@dimen/ds_space_2"
+            android:gravity="center_vertical"
+            android:text="@string/soan_phieu_don_vi_gio"
+            android:textAppearance="@style/TextAppearance.Ds.Body" />
+
+    </LinearLayout>
+
+</LinearLayout>

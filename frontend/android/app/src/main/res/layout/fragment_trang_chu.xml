@@ -4,6 +4,7 @@
     vùng thẻ quyền mượn (đang tải, lỗi hoặc thẻ; mỗi trạng thái chỉ ảnh hưởng vùng này, ĐX-UI-04), tám lối vào xếp
     hai cột do TrangChuFragment dựng. Kéo xuống để làm mới (ĐX-UF-04). Thanh tiêu đề và thanh điều hướng dưới do
     MainActivity đặt.
+    D10-L: khối thông báo lỗi kiểm tra quyền mượn khi chọn Đặt trước thiết bị (banner_loi_quyen).
 -->
 <androidx.swiperefreshlayout.widget.SwipeRefreshLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:id="@+id/srl_lam_moi"
@@ -25,6 +26,13 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:textAppearance="@style/TextAppearance.Ds.TitleSection"
+                android:visibility="gone" />
+
+            <com.nhom13.quanlymuontra.common.widget.BannerView
+                android:id="@+id/banner_loi_quyen"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/ds_space_4"
                 android:visibility="gone" />
 
             <com.nhom13.quanlymuontra.common.widget.LoadingView

@@ -11,6 +11,7 @@ import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.navigation.NavController;
+import androidx.navigation.NavDestination;
 import androidx.navigation.fragment.NavHostFragment;
 import com.nhom13.quanlymuontra.AppViewModelFactory;
 import com.nhom13.quanlymuontra.R;
@@ -19,12 +20,16 @@ import com.nhom13.quanlymuontra.common.format.FormatSoLuong;
 import com.nhom13.quanlymuontra.common.nhan.HoTrangThai;
 import com.nhom13.quanlymuontra.common.nhan.NhanTrangThai;
 import com.nhom13.quanlymuontra.common.nhan.QuyenMuon;
+import com.nhom13.quanlymuontra.common.nhan.Tong;
 import com.nhom13.quanlymuontra.common.widget.TheTong;
 import com.nhom13.quanlymuontra.data.model.ApiError;
+import com.nhom13.quanlymuontra.data.model.Event;
 import com.nhom13.quanlymuontra.data.model.UiState;
 import com.nhom13.quanlymuontra.databinding.FragmentTrangChuBinding;
 import com.nhom13.quanlymuontra.databinding.ItemLoiVaoBinding;
 import com.nhom13.quanlymuontra.generated.model.SinhVienTheInfo;
+import com.nhom13.quanlymuontra.ui.phieuyeucau.CongQuyenMuon;
+import com.nhom13.quanlymuontra.ui.tracuu.ChiTietLoaiTrinhBay;
 import java.util.Objects;
 
 /**
@@ -34,7 +39,7 @@ import java.util.Objects;
  * (ĐX-UI-04). Quyền mượn lấy nguyên từ máy chủ qua {@code svToi}, không suy ra ở client. Mọi quyết định tải
  * nằm ở {@link TrangChuViewModel}; lớp này chỉ hiển thị và chuyển sự kiện (FC 6.2).
  *
- * <p>Chỉ hai lối vào có đích trong nav graph hiện tại (Tra cứu thiết bị, Hồ sơ mượn). Các lối vào còn lại hiển
+ * <p>Ba lối vào có đích trong nav graph hiện tại (Tra cứu thiết bị, Đặt trước thiết bị kèm cổng quyền mượn, Hồ sơ mượn). Các lối vào còn lại hiển
  * thị đủ nhưng chưa nối; mỗi ô được nối ở ngày của màn hình đích (CHECKLIST mục 12).
  */
 public class TrangChuFragment extends Fragment {
@@ -76,6 +81,8 @@ public class TrangChuFragment extends Fragment {
                                                 .setCoNutQuayLai(true)));
 
         viewModel.getUiState().observe(getViewLifecycleOwner(), this::hienThi);
+        viewModel.getLoiKiemTraQuyen().observe(getViewLifecycleOwner(), this::hienLoiKiemTraQuyen);
+        viewModel.getKetQuaCong().observe(getViewLifecycleOwner(), this::xuLyKetQuaCong);
         viewModel.load();
     }
 
@@ -115,7 +122,10 @@ public class TrangChuFragment extends Fragment {
                 LoiVaoTrangChu loiVao = dsLoiVao[i];
                 ItemLoiVaoBinding o = ItemLoiVaoBinding.inflate(inflater, hang, false);
                 o.tvNhan.setText(loiVao.getNhanResId());
-                boolean coDich = loiVao == LoiVaoTrangChu.TRA_CUU || loiVao == LoiVaoTrangChu.HO_SO;
+                boolean coDich =
+                        loiVao == LoiVaoTrangChu.TRA_CUU
+                                || loiVao == LoiVaoTrangChu.DAT_TRUOC
+                                || loiVao == LoiVaoTrangChu.HO_SO;
                 o.getRoot().setEnabled(coDich);
                 o.getRoot().setClickable(coDich);
                 o.getRoot().setFocusable(coDich);
@@ -146,9 +156,13 @@ public class TrangChuFragment extends Fragment {
                                 .actionTrangChuFragmentToHoSoMuonFragment()
                                 .setCoNutQuayLai(true));
                 break;
+            case DAT_TRUOC:
+                // FA 5.3 quy tắc 3: kiểm tra quyền mượn bằng svToi mới; kết quả xử lý ở xuLyKetQuaCong.
+                viewModel.chonDatTruoc();
+                break;
             default:
                 // Đích của các lối vào còn lại chưa có trong nav graph; nối ở ngày của màn hình đích
-                // (Đặt trước: D10-L kèm kiểm quyền mượn, FA 5.3 quy tắc 3). Chưa làm gì.
+                // (Phiếu yêu cầu D12-L, Đăng ký chờ D13-L, Lịch sử D14-L, Biên bản và Vi phạm D15-L). Chưa làm gì.
                 break;
         }
     }
@@ -204,5 +218,42 @@ public class TrangChuFragment extends Fragment {
         b.tvKhongTheDatTruoc.setVisibility(binhThuong ? View.GONE : View.VISIBLE);
         b.btnXemLyDo.setVisibility(binhThuong ? View.GONE : View.VISIBLE);
         b.cardQuyenMuon.setVisibility(View.VISIBLE);
+    }
+
+    /** Lỗi kiểm tra quyền mượn khi chọn Đặt trước: khối thông báo ở đầu màn hình, không điều hướng. */
+    private void hienLoiKiemTraQuyen(@Nullable ApiError loi) {
+        if (loi == null) {
+            binding().bannerLoiQuyen.an();
+            return;
+        }
+        String noiDung = getString(ChiTietLoaiTrinhBay.thongDiepLoiQuyenMuon(loi));
+        String maTheoDoi = ChiTietLoaiTrinhBay.maTheoDoi(loi);
+        if (maTheoDoi != null) {
+            noiDung = noiDung + "\n" + getString(R.string.trang_thai_ma_theo_doi, maTheoDoi);
+        }
+        binding().bannerLoiQuyen.hienThi(
+                Tong.DANGER, getString(R.string.chi_tiet_loi_quyen_muon_tieu_de), noiDung, null);
+    }
+
+    /** Bình thường thì mở SCR-SV-04; khác Bình thường thì mở SCR-SV-14 ở chế độ bị chặn (FA 5.3 quy tắc 3). */
+    private void xuLyKetQuaCong(@NonNull Event<CongQuyenMuon.KetQua> suKien) {
+        CongQuyenMuon.KetQua ketQua = suKien.getContentIfNotHandled();
+        if (ketQua == null) {
+            return;
+        }
+        NavController dieuHuong = NavHostFragment.findNavController(this);
+        NavDestination diemDen = dieuHuong.getCurrentDestination();
+        if (diemDen == null || diemDen.getId() != R.id.trangChuFragment) {
+            return;
+        }
+        if (ketQua.isDuocPhep()) {
+            dieuHuong.navigate(
+                    TrangChuFragmentDirections.actionTrangChuFragmentToSoanPhieuGraph());
+            return;
+        }
+        dieuHuong.navigate(
+                TrangChuFragmentDirections.actionTrangChuFragmentToHoSoMuonFragment()
+                        .setCheDoBiChan(true)
+                        .setHanhDongDaChon(ketQua.getHanhDong().getMaThamSo()));
     }
 }

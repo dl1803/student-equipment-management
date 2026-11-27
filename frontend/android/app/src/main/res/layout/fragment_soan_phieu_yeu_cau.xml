@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+    SCR-SV-04 Soạn phiếu yêu cầu mượn (UI-Screens 5.4, Wireframes SCR-SV-04, DS CMP-04, CMP-06, CMP-10, CMP-16). Vùng cuộn
+    là một RecyclerView: đầu (khối lỗi quyền, chọn phòng, trạng thái), các dòng loại, dòng tải thêm, cuối (thời gian mượn).
+    Nút Xem lại ghim ở cuối màn hình, ngoài vùng cuộn; chỉ bật khi phòng, ít nhất một loại và thời gian đã hợp lệ.
+    Kéo xuống để làm mới (ĐX-UF-04).
+-->
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical">
+
+    <androidx.swiperefreshlayout.widget.SwipeRefreshLayout
+        android:id="@+id/srl_lam_moi"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1">
+
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/rv_loai"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:clipToPadding="false"
+            android:padding="@dimen/ds_space_gutter" />
+
+    </androidx.swiperefreshlayout.widget.SwipeRefreshLayout>
+
+    <LinearLayout
+        android:id="@+id/ll_ghim"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@color/ds_color_surface_default"
+        android:orientation="vertical">
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/ds_border_width_default"
+            android:background="@color/ds_color_border_subtle" />
+
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/btn_xem_lai"
+            style="@style/Widget.Ds.Button.Primary"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="@dimen/ds_space_4"
+            android:layout_marginTop="@dimen/ds_space_3"
+            android:layout_marginEnd="@dimen/ds_space_4"
+            android:layout_marginBottom="@dimen/ds_space_3"
+            android:enabled="false"
+            android:text="@string/soan_phieu_nut_xem_lai" />
+
+    </LinearLayout>
+
+</LinearLayout>
