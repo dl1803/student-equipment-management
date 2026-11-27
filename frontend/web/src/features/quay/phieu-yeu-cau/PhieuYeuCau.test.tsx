@@ -471,6 +471,31 @@ describe("SCR-NV-03 Xem phiếu và kết quả kiểm tra điều kiện (UI-Sc
     expect(onBoChon.mock.calls[0]?.[0]?.noiDung).toMatch(/không còn chờ duyệt/);
   });
 
+  it("D12-T: kiem-tra phiếu đã xử lý trả 200 duocDuyet=false + TRANG_THAI_KHONG_HOP_LE (đúng như máy chủ thật) → báo không còn chờ duyệt và quay về", async () => {
+    mayChu((cfg) =>
+      cfg.url?.endsWith("/kiem-tra")
+        ? traVe(cfg, 200, {
+            duocDuyet: false,
+            dsLyDo: [
+              {
+                maLoi: "TRANG_THAI_KHONG_HOP_LE",
+                thongDiep: "Phiếu không còn ở trạng thái chờ duyệt",
+              },
+            ],
+            dsKhaDung: [],
+          })
+        : undefined,
+    );
+    const { onBoChon } = hienThiDuyet();
+    await waitFor(() =>
+      expect(dieuHuong.replace).toHaveBeenCalledWith("/nv/phieu-yeu-cau"),
+    );
+    expect(onBoChon.mock.calls[0]?.[0]).toEqual({
+      tong: "warning",
+      noiDung: expect.stringMatching(/không còn chờ duyệt/),
+    });
+  });
+
   it("lỗi hệ thống khi kiểm tra → ở lại màn hình, khối lỗi có Thử lại", async () => {
     const goi = mayChu((cfg) =>
       cfg.url?.endsWith("/kiem-tra")
