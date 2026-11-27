@@ -10,6 +10,9 @@
     D09-L: chiTietLoaiThietBiFragment (SCR-SV-03) mở chồng lên tra cứu, nhận maLoai và maPhong (chuỗi UUID). Hai hành động mới
     (từ tra cứu sang chi tiết; từ chi tiết sang hồ sơ ở chế độ bị chặn) không xóa ngăn xếp. Điểm đến có nhãn vì
     MainActivity lấy tiêu đề thanh ứng dụng từ nhãn; nút Quay lại tự có vì đây không phải tab gốc.
+    D10-L: nav graph con soanPhieuGraph (FA 5.3 quy tắc 2) chứa soanPhieuYeuCauFragment (SCR-SV-04) nhận maPhong và maLoai tùy chọn.
+    soanPhieuGraph là phạm vi của SoanPhieuViewModel; SCR-SV-05 (D11-L) sẽ thêm vào cùng graph con. Từ SCR-SV-04 chỉ có hành
+    động sang hồ sơ ở chế độ bị chặn (cổng quyền mượn của liên kết Đăng ký chờ).
 -->
 <navigation xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
@@ -115,5 +118,31 @@
             android:defaultValue="false"
             app:argType="boolean" />
     </fragment>
+
+    <navigation
+        android:id="@+id/soanPhieuGraph"
+        app:startDestination="@id/soanPhieuYeuCauFragment">
+
+        <fragment
+            android:id="@+id/soanPhieuYeuCauFragment"
+            android:name="com.nhom13.quanlymuontra.ui.phieuyeucau.SoanPhieuYeuCauFragment"
+            android:label="@string/soan_phieu_tieu_de"
+            tools:layout="@layout/fragment_soan_phieu_yeu_cau">
+            <argument
+                android:name="maPhong"
+                android:defaultValue="@null"
+                app:argType="string"
+                app:nullable="true" />
+            <argument
+                android:name="maLoai"
+                android:defaultValue="@null"
+                app:argType="string"
+                app:nullable="true" />
+            <action
+                android:id="@+id/action_soanPhieuYeuCauFragment_to_hoSoMuonFragment"
+                app:destination="@id/hoSoMuonFragment" />
+        </fragment>
+
+    </navigation>
 
 </navigation>

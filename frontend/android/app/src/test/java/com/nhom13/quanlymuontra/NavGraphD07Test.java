@@ -83,6 +83,7 @@ public class NavGraphD07Test {
         }
 
         // D09-L: sáu điểm đến cũ cộng chiTietLoaiThietBiFragment (SCR-SV-03).
-        assertEquals(7, ma.size());
+        // D10-L: thêm soanPhieuYeuCauFragment (SCR-SV-04).
+        assertEquals(8, ma.size());
     }
 }

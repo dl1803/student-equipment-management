@@ -1,0 +1,79 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+    SCR-SV-04 một dòng loại thiết bị (CMP-16 ListRow biến thể Có điều khiển, DS CMP-16): dòng 1 tên loại · hãng; dòng 2
+    "Còn: n" hoặc nhãn Hết hàng; còn hàng thì dòng 3 có "Số lượng:" và bộ chọn số lượng (CMP-10); hết hàng thì bộ chọn
+    được thay bằng nút Đăng ký chờ (không có chevron_right, thẻ không bấm được). Chữ dài xuống dòng, không cắt.
+-->
+<com.google.android.material.card.MaterialCardView xmlns:android="http://schemas.android.com/apk/res/android"
+    style="@style/Widget.Ds.ListRow"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_marginTop="@dimen/ds_space_list_gap">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical">
+
+        <TextView
+            android:id="@+id/tv_ten_loai"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:textAppearance="@style/TextAppearance.Ds.TitleCard" />
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/ds_space_2"
+            android:gravity="center_vertical"
+            android:orientation="horizontal">
+
+            <TextView
+                android:id="@+id/tv_kha_dung"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textAppearance="@style/TextAppearance.Ds.Label" />
+
+            <com.nhom13.quanlymuontra.common.widget.StatusBadgeView
+                android:id="@+id/sb_het_hang"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:visibility="gone" />
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:id="@+id/ll_chon_so_luong"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/ds_space_2"
+            android:gravity="center_vertical"
+            android:orientation="horizontal">
+
+            <TextView
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:text="@string/soan_phieu_so_luong_nhan"
+                android:textAppearance="@style/TextAppearance.Ds.Label"
+                android:textColor="@color/ds_color_text_secondary" />
+
+            <com.nhom13.quanlymuontra.common.widget.QuantityStepperView
+                android:id="@+id/qs_so_luong"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content" />
+
+        </LinearLayout>
+
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/btn_dang_ky_cho"
+            style="@style/Widget.Ds.Button.Tertiary"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/ds_space_2"
+            android:text="@string/chi_tiet_hanh_dong_dang_ky_cho"
+            android:visibility="gone" />
+
+    </LinearLayout>
+
+</com.google.android.material.card.MaterialCardView>

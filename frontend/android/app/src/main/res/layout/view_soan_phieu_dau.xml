@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+    Đầu danh sách của SCR-SV-04 (Wireframes SCR-SV-04): khối thông báo lỗi kiểm tra quyền mượn, ô chọn phòng (CMP-06) kèm
+    ghi chú một phiếu thuộc một phòng, rồi trạng thái đang tải / lỗi / rỗng của danh sách loại (CMP-25). View này dựng
+    một lần và bọc làm ViewHolder đầu của RecyclerView (cùng cách SCR-SV-02).
+-->
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical"
+    android:paddingBottom="@dimen/ds_space_2">
+
+    <com.nhom13.quanlymuontra.common.widget.BannerView
+        android:id="@+id/banner_loi_quyen"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="@dimen/ds_space_section"
+        android:visibility="gone" />
+
+    <com.nhom13.quanlymuontra.common.widget.SelectView
+        android:id="@+id/sel_phong"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content" />
+
+    <TextView
+        android:id="@+id/tv_ghi_chu_phong"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/ds_space_1"
+        android:text="@string/soan_phieu_ghi_chu_phong"
+        android:textAppearance="@style/TextAppearance.Ds.Caption"
+        android:textColor="@color/ds_color_text_secondary" />
+
+    <com.nhom13.quanlymuontra.common.widget.LoadingView
+        android:id="@+id/lv_loai"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:visibility="gone" />
+
+    <com.nhom13.quanlymuontra.common.widget.ErrorView
+        android:id="@+id/ev_loai"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:visibility="gone" />
+
+    <com.nhom13.quanlymuontra.common.widget.EmptyView
+        android:id="@+id/ev_rong"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:visibility="gone" />
+
+</LinearLayout>

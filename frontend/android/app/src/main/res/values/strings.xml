@@ -248,4 +248,27 @@
     <string name="so_luong_giam">Giảm số lượng</string>
     <string name="so_luong_tang">Tăng số lượng</string>
 
+    <!--
+        D10-L SCR-SV-04 Soạn phiếu yêu cầu mượn (UI-Screens 5.4, Wireframes SCR-SV-04). Nguyên văn tài liệu:
+        soan_phieu_tieu_de (tiêu đề Wireframes), soan_phieu_nhan_phong, soan_phieu_so_luong_nhan,
+        soan_phieu_thoi_gian_nhan, soan_phieu_nut_xem_lai. Chữ do Architect viết vì tài liệu chỉ nêu ý, chờ nhóm xác
+        nhận: soan_phieu_ghi_chu_phong, soan_phieu_chua_chon_phong, soan_phieu_chon_phong_tieu_de, soan_phieu_don_vi_gio,
+        soan_phieu_thoi_gian_loi, soan_phieu_phong_rong, soan_phieu_doi_phong_*.
+    -->
+    <string name="soan_phieu_tieu_de">Đặt trước thiết bị</string>
+    <string name="soan_phieu_nhan_phong">Phòng thiết bị *</string>
+    <string name="soan_phieu_chon_phong_tieu_de">Phòng thiết bị</string>
+    <string name="soan_phieu_chua_chon_phong">Chọn phòng</string>
+    <string name="soan_phieu_ghi_chu_phong">Muốn mượn ở phòng khác thì gửi phiếu khác.</string>
+    <string name="soan_phieu_so_luong_nhan">Số lượng:</string>
+    <string name="soan_phieu_thoi_gian_nhan">Thời gian mượn dự kiến (giờ) *</string>
+    <string name="soan_phieu_don_vi_gio">giờ</string>
+    <string name="soan_phieu_thoi_gian_loi">Nhập số giờ là số nguyên từ 1</string>
+    <string name="soan_phieu_phong_rong">Phòng này chưa có thiết bị để đặt. Hãy chọn phòng khác.</string>
+    <string name="soan_phieu_nut_xem_lai">Xem lại</string>
+    <string name="soan_phieu_doi_phong_tieu_de">Đổi phòng</string>
+    <string name="soan_phieu_doi_phong_tom_tat">Chuyển sang phòng %1$s</string>
+    <string name="soan_phieu_doi_phong_he_qua">Các loại thiết bị đã chọn sẽ bị xóa khỏi phiếu.</string>
+    <string name="soan_phieu_doi_phong_nhan">Đổi phòng</string>
+
 </resources>
