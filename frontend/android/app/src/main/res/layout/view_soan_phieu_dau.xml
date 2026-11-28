@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!--
-    Đầu danh sách của SCR-SV-04 (Wireframes SCR-SV-04): khối thông báo lỗi kiểm tra quyền mượn, ô chọn phòng (CMP-06) kèm
+    Đầu danh sách của SCR-SV-04 (Wireframes SCR-SV-04): khối thông báo lỗi kiểm tra quyền mượn, khối lỗi gửi phiếu (D11-L), ô chọn phòng (CMP-06) kèm
     ghi chú một phiếu thuộc một phòng, rồi trạng thái đang tải / lỗi / rỗng của danh sách loại (CMP-25). View này dựng
     một lần và bọc làm ViewHolder đầu của RecyclerView (cùng cách SCR-SV-02).
 -->
@@ -12,6 +12,13 @@
 
     <com.nhom13.quanlymuontra.common.widget.BannerView
         android:id="@+id/banner_loi_quyen"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="@dimen/ds_space_section"
+        android:visibility="gone" />
+
+    <com.nhom13.quanlymuontra.common.widget.BannerView
+        android:id="@+id/banner_loi_gui"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginBottom="@dimen/ds_space_section"

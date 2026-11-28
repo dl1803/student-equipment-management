@@ -93,6 +93,8 @@ public class ManHinhSoanPhieuD10Test {
 
         Map<String, String> kyVong = new HashMap<>();
         kyVong.put("action_soanPhieuYeuCauFragment_to_hoSoMuonFragment", "hoSoMuonFragment");
+        // D11-L: nút Xem lại mở SCR-SV-05 (không xóa ngăn xếp).
+        kyVong.put("action_soanPhieuYeuCauFragment_to_xemLaiPhieuYeuCauFragment", "xemLaiPhieuYeuCauFragment");
         assertEquals(kyVong, hanhDong);
     }
 

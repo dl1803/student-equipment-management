@@ -43,32 +43,35 @@ public final class SoanPhieuYeuCauAdapter
         @Nullable final TraCuuThietBiItem dong;
         final int soLuongDaChon;
         @Nullable final TrangThaiTaiThem taiThem;
+        @Nullable final String loi;
 
         private Muc(
                 int loai,
                 @Nullable TraCuuThietBiItem dong,
                 int soLuongDaChon,
-                @Nullable TrangThaiTaiThem taiThem) {
+                @Nullable TrangThaiTaiThem taiThem,
+                @Nullable String loi) {
             this.loai = loai;
             this.dong = dong;
             this.soLuongDaChon = soLuongDaChon;
             this.taiThem = taiThem;
+            this.loi = loi;
         }
 
         static Muc dau() {
-            return new Muc(LOAI_DAU, null, 0, null);
+            return new Muc(LOAI_DAU, null, 0, null, null);
         }
 
-        static Muc dong(@NonNull TraCuuThietBiItem dong, int soLuongDaChon) {
-            return new Muc(LOAI_DONG, dong, soLuongDaChon, null);
+        static Muc dong(@NonNull TraCuuThietBiItem dong, int soLuongDaChon, @Nullable String loi) {
+            return new Muc(LOAI_DONG, dong, soLuongDaChon, null, loi);
         }
 
         static Muc taiThem(@NonNull TrangThaiTaiThem trangThai) {
-            return new Muc(LOAI_TAI_THEM, null, 0, trangThai);
+            return new Muc(LOAI_TAI_THEM, null, 0, trangThai, null);
         }
 
         static Muc cuoi() {
-            return new Muc(LOAI_CUOI, null, 0, null);
+            return new Muc(LOAI_CUOI, null, 0, null, null);
         }
     }
 
@@ -93,6 +96,7 @@ public final class SoanPhieuYeuCauAdapter
                         TraCuuThietBiItem x = Objects.requireNonNull(a.dong);
                         TraCuuThietBiItem y = Objects.requireNonNull(b.dong);
                         return a.soLuongDaChon == b.soLuongDaChon
+                                && Objects.equals(a.loi, b.loi)
                                 && Objects.equals(x.getTenLoai(), y.getTenLoai())
                                 && Objects.equals(x.getHangSanXuat(), y.getHangSanXuat())
                                 && Objects.equals(x.getSoLuongKhaDung(), y.getSoLuongKhaDung());
@@ -131,17 +135,22 @@ public final class SoanPhieuYeuCauAdapter
         this.khiChonDangKyCho = khiChonDangKyCho;
     }
 
-    /** Đặt dữ liệu: đầu, các dòng loại, dòng tải thêm nếu cần, cuối. Luôn tạo danh sách mới để so sánh. */
+    /**
+     * Đặt dữ liệu: đầu, các dòng loại, dòng tải thêm nếu cần, cuối. Luôn tạo danh sách mới để so sánh.
+     * {@code loiSoLuong} là lỗi gửi phiếu theo mã loại, hiển thị cạnh bộ chọn số lượng.
+     */
     public void capNhat(
             @Nullable List<TraCuuThietBiItem> dong,
             @NonNull TrangThaiTaiThem taiThem,
-            @NonNull Map<UUID, Integer> soLuongDaChon) {
+            @NonNull Map<UUID, Integer> soLuongDaChon,
+            @NonNull Map<UUID, String> loiSoLuong) {
         List<Muc> cacMuc = new ArrayList<>();
         cacMuc.add(Muc.dau());
         if (dong != null) {
             for (TraCuuThietBiItem d : dong) {
                 Integer chon = d.getMaLoai() == null ? null : soLuongDaChon.get(d.getMaLoai());
-                cacMuc.add(Muc.dong(d, chon == null ? 0 : chon));
+                String loi = d.getMaLoai() == null ? null : loiSoLuong.get(d.getMaLoai());
+                cacMuc.add(Muc.dong(d, chon == null ? 0 : chon, loi));
             }
         }
         if (taiThem != TrangThaiTaiThem.KHONG) {
@@ -189,7 +198,7 @@ public final class SoanPhieuYeuCauAdapter
     public void onBindViewHolder(@NonNull RecyclerView.ViewHolder vh, int viTri) {
         Muc muc = getItem(viTri);
         if (vh instanceof DongViewHolder) {
-            ((DongViewHolder) vh).gan(Objects.requireNonNull(muc.dong), muc.soLuongDaChon);
+            ((DongViewHolder) vh).gan(Objects.requireNonNull(muc.dong), muc.soLuongDaChon, muc.loi);
         } else if (vh instanceof TaiThemViewHolder) {
             ((TaiThemViewHolder) vh).gan(Objects.requireNonNull(muc.taiThem));
         }
@@ -211,7 +220,7 @@ public final class SoanPhieuYeuCauAdapter
             this.khiChonDangKyCho = khiChonDangKyCho;
         }
 
-        void gan(@NonNull TraCuuThietBiItem dong, int soLuongDaChon) {
+        void gan(@NonNull TraCuuThietBiItem dong, int soLuongDaChon, @Nullable String loi) {
             Context ctx = binding.getRoot().getContext();
             final UUID maLoai = dong.getMaLoai();
             String hang = dong.getHangSanXuat();
@@ -257,6 +266,10 @@ public final class SoanPhieuYeuCauAdapter
                             }
                         });
             }
+
+            boolean coLoi = !hetHang && loi != null && !loi.isEmpty();
+            binding.tvLoiSoLuong.setText(coLoi ? loi : null);
+            binding.tvLoiSoLuong.setVisibility(coLoi ? View.VISIBLE : View.GONE);
         }
     }
 

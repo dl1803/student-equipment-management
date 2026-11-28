@@ -2,6 +2,7 @@ package com.nhom13.quanlymuontra.ui.phieuyeucau;
 
 import android.os.Bundle;
 import android.text.Editable;
+import android.text.TextUtils;
 import android.text.TextWatcher;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -34,6 +35,8 @@ import com.nhom13.quanlymuontra.generated.model.TraCuuThietBiItem;
 import com.nhom13.quanlymuontra.ui.tracuu.ChiTietLoaiTrinhBay;
 import com.nhom13.quanlymuontra.ui.tracuu.LuaChonBoLoc;
 import com.nhom13.quanlymuontra.ui.tracuu.TraCuuThietBiViewModel.TrangThaiTaiThem;
+import java.util.Collections;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
@@ -44,9 +47,10 @@ import java.util.UUID;
  * Nhận {@code maPhong} và {@code maLoai} (tùy chọn) qua Safe Args. {@link SoanPhieuViewModel} lấy theo phạm vi nav
  * graph con {@code soanPhieuGraph} (FA 5.3 quy tắc 2, FC 6.3).
  *
- * <p>Chỉ hiển thị và chuyển sự kiện (FC 6.2). Nút Xem lại bật đúng điều kiện nhưng D10-L chưa có đích: SCR-SV-05 nối ở
- * D11-L. Liên kết Đăng ký chờ chỉ chạy cổng quyền mượn; quyền khác Bình thường thì mở SCR-SV-14 ở chế độ bị chặn, các
- * lựa chọn của phiếu vẫn nằm trong {@code ViewModel}. Gửi đăng ký chờ và DLG-SV-01 nối ở D13-L.
+ * <p>Chỉ hiển thị và chuyển sự kiện (FC 6.2). D11-L: nút Xem lại mở SCR-SV-05; lỗi gửi phiếu cần sửa hiển thị ở
+ * đây (ô số lượng, ô thời gian, khối thông báo đầu danh sách). Liên kết Đăng ký chờ chỉ chạy cổng quyền mượn; quyền
+ * khác Bình thường thì mở SCR-SV-14 ở chế độ bị chặn, các lựa chọn của phiếu vẫn nằm trong {@code ViewModel}. Gửi đăng
+ * ký chờ và DLG-SV-01 nối ở D13-L.
  */
 public class SoanPhieuYeuCauFragment extends Fragment {
 
@@ -97,7 +101,7 @@ public class SoanPhieuYeuCauFragment extends Fragment {
         caiLamMoi();
         caiOChonPhong();
         caiThoiGian();
-        // Nút Xem lại: D10-L chỉ bật/tắt theo điều kiện; đích SCR-SV-05 nối ở D11-L.
+        binding().btnXemLai.setOnClickListener(v -> moXemLai());
 
         viewModel.getDsPhong().observe(getViewLifecycleOwner(), tt -> hienOChonPhong());
         viewModel.getPhongDaChon().observe(getViewLifecycleOwner(), phong -> {
@@ -113,6 +117,7 @@ public class SoanPhieuYeuCauFragment extends Fragment {
                 .observe(getViewLifecycleOwner(), this::moXacNhanDoiPhong);
         viewModel.getLoiKiemTraQuyen().observe(getViewLifecycleOwner(), this::hienLoiKiemTraQuyen);
         viewModel.getKetQuaCong().observe(getViewLifecycleOwner(), this::xuLyKetQuaCong);
+        viewModel.getLoiGui().observe(getViewLifecycleOwner(), this::hienLoiGui);
         viewModel.load();
     }
 
@@ -215,10 +220,14 @@ public class SoanPhieuYeuCauFragment extends Fragment {
                 });
     }
 
-    /** Lỗi theo trường ở đúng ô (FC 6.6): chỉ khi đã nhập mà không phải số nguyên từ 1. */
+    /**
+     * Lỗi theo trường ở đúng ô (FC 6.6): lỗi nhập cục bộ (đã nhập mà không phải số nguyên từ 1) ưu tiên; không thì lỗi
+     * do máy chủ trả khi gửi phiếu.
+     */
     private void capNhatLoiThoiGian(@NonNull String nhap) {
         boolean sai = !nhap.trim().isEmpty() && SoanPhieuViewModel.phanTichThoiGian(nhap) == null;
-        chan.tilThoiGian.setError(sai ? getString(R.string.soan_phieu_thoi_gian_loi) : null);
+        chan.tilThoiGian.setError(
+                sai ? getString(R.string.soan_phieu_thoi_gian_loi) : loiThoiGianTuMayChu());
     }
 
     // ---------------------------------------------------------------- chọn phòng, đổi phòng
@@ -347,7 +356,7 @@ public class SoanPhieuYeuCauFragment extends Fragment {
         } else {
             dau.evRong.setVisibility(View.GONE);
         }
-        adapter.capNhat(dong, taiThem, soLuong);
+        adapter.capNhat(dong, taiThem, soLuong, loiSoLuongHienTai());
     }
 
     // ---------------------------------------------------------------- cổng quyền mượn (liên kết Đăng ký chờ)
@@ -387,5 +396,122 @@ public class SoanPhieuYeuCauFragment extends Fragment {
                 SoanPhieuYeuCauFragmentDirections.actionSoanPhieuYeuCauFragmentToHoSoMuonFragment()
                         .setCheDoBiChan(true)
                         .setHanhDongDaChon(ketQua.getHanhDong().getMaThamSo()));
+    }
+
+    // ---------------------------------------------------------------- Xem lại và lỗi gửi phiếu (D11-L)
+
+    private void moXemLai() {
+        NavController dieuHuong = NavHostFragment.findNavController(this);
+        NavDestination diemDen = dieuHuong.getCurrentDestination();
+        if (diemDen == null || diemDen.getId() != R.id.soanPhieuYeuCauFragment) {
+            return;
+        }
+        viewModel.chuanBiXemLai();
+        dieuHuong.navigate(
+                SoanPhieuYeuCauFragmentDirections.actionSoanPhieuYeuCauFragmentToXemLaiPhieuYeuCauFragment());
+    }
+
+    /** Lỗi theo mã loại để đặt cạnh ô số lượng của từng dòng. */
+    @NonNull
+    private Map<UUID, String> loiSoLuongHienTai() {
+        LoiGuiPhieu loi = viewModel.getLoiGui().getValue();
+        if (loi == null) {
+            return Collections.emptyMap();
+        }
+        switch (loi.getPhanLoai()) {
+            case DU_LIEU_KHONG_HOP_LE:
+                return loi.getTruong().getLoiSoLuong();
+            case VUOT_GIOI_HAN_THIET_BI:
+                {
+                    Map<UUID, String> ketQua = new HashMap<>();
+                    Map<UUID, Integer> daChon = viewModel.getSoLuongDaChon().getValue();
+                    if (daChon != null) {
+                        String chu = getString(R.string.gui_vuot_gioi_han);
+                        for (UUID ma : daChon.keySet()) {
+                            ketQua.put(ma, chu);
+                        }
+                    }
+                    return ketQua;
+                }
+            default:
+                return Collections.emptyMap();
+        }
+    }
+
+    /** Lỗi cạnh ô thời gian do máy chủ trả; {@code null} khi không có. */
+    @Nullable
+    private String loiThoiGianTuMayChu() {
+        LoiGuiPhieu loi = viewModel.getLoiGui().getValue();
+        if (loi == null) {
+            return null;
+        }
+        if (loi.getPhanLoai() == TrinhBayLoiGuiPhieu.PhanLoai.DU_LIEU_KHONG_HOP_LE) {
+            return loi.getTruong().getLoiThoiGian();
+        }
+        if (loi.getPhanLoai() == TrinhBayLoiGuiPhieu.PhanLoai.VUOT_THOI_GIAN_MUON_TOI_DA) {
+            String chu = getString(R.string.gui_vuot_thoi_gian);
+            String chiTiet = TrinhBayLoiGuiPhieu.chiTietThoiGian(loi.getLoi());
+            return chiTiet == null ? chu : chu + "\n" + chiTiet;
+        }
+        return null;
+    }
+
+    /** Nội dung khối thông báo đầu danh sách cho nhóm lỗi cần sửa; {@code null} khi lỗi đã hiển thị ở từng ô. */
+    @Nullable
+    private String noiDungKhoiLoiGui(@NonNull LoiGuiPhieu loi) {
+        switch (loi.getPhanLoai()) {
+            case SO_LUONG_THAY_DOI:
+                return getString(R.string.gui_so_luong_thay_doi);
+            case DU_LIEU_KHONG_HOP_LE:
+                {
+                    LoiTruongPhieu truong = loi.getTruong();
+                    if (!truong.getLoiKhac().isEmpty()) {
+                        return TextUtils.join("\n", truong.getLoiKhac());
+                    }
+                    return truong.coLoiTruong() ? null : getString(R.string.gui_du_lieu_khong_hop_le);
+                }
+            default:
+                return null;
+        }
+    }
+
+    private void hienLoiGui(@Nullable LoiGuiPhieu loi) {
+        boolean quayVe = loi != null && TrinhBayLoiGuiPhieu.quayVeSua(loi.getPhanLoai());
+        String noiDung = quayVe ? noiDungKhoiLoiGui(loi) : null;
+        if (noiDung == null) {
+            dau.bannerLoiGui.an();
+        } else {
+            dau.bannerLoiGui.hienThi(
+                    Tong.WARNING, getString(R.string.gui_khong_the_gui_tieu_de), noiDung, null);
+        }
+        capNhatLoiThoiGian(viewModel.getThoiGianNhap());
+        capNhatDanhSach();
+        if (quayVe) {
+            duaTieuDiemToiLoi(noiDung != null);
+        }
+    }
+
+    /** Tiêu điểm tới trường lỗi đầu tiên: khối thông báo, rồi dòng loại đầu tiên có lỗi, rồi ô thời gian. */
+    private void duaTieuDiemToiLoi(boolean coKhoiThongBao) {
+        if (coKhoiThongBao) {
+            binding().rvLoai.scrollToPosition(0);
+            return;
+        }
+        Map<UUID, String> loiDong = loiSoLuongHienTai();
+        UiState<List<TraCuuThietBiItem>> trangThai = viewModel.getDsLoai().getValue();
+        List<TraCuuThietBiItem> dong = trangThai == null ? null : trangThai.getDuLieu();
+        if (dong != null && !loiDong.isEmpty()) {
+            for (int i = 0; i < dong.size(); i++) {
+                UUID ma = dong.get(i).getMaLoai();
+                if (ma != null && loiDong.containsKey(ma)) {
+                    binding().rvLoai.scrollToPosition(i + 1);
+                    return;
+                }
+            }
+        }
+        if (loiThoiGianTuMayChu() != null) {
+            binding().rvLoai.scrollToPosition(Math.max(0, adapter.getItemCount() - 1));
+            chan.etThoiGian.requestFocus();
+        }
     }
 }

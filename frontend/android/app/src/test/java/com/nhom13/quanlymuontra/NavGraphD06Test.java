@@ -45,8 +45,8 @@ public class NavGraphD06Test {
     public void FC33_NavGraph_MaDiemDenTrungTenLopVaLopTonTai() {
         List<Element> diemDen = cacPhanTu(navGraph(), "fragment");
 
-        // D09-L: thêm chiTietLoaiThietBiFragment (SCR-SV-03). D10-L: thêm soanPhieuYeuCauFragment (SCR-SV-04, trong soanPhieuGraph).
-        assertEquals(8, diemDen.size());
+        // D09-L: thêm chiTietLoaiThietBiFragment (SCR-SV-03). D10-L: thêm soanPhieuYeuCauFragment (SCR-SV-04). D11-L: thêm xemLaiPhieuYeuCauFragment (SCR-SV-05).
+        assertEquals(9, diemDen.size());
         for (Element e : diemDen) {
             String ten = e.getAttribute("android:name");
             String tenLop = ten.substring(ten.lastIndexOf('.') + 1);
@@ -87,9 +87,11 @@ public class NavGraphD06Test {
             }
             // D09-L: hành động mở chồng của tra cứu và của chi tiết không xóa ngăn xếp; cấu trúc do NavGraphD09Test kiểm.
             // D10-L: hành động mở hồ sơ bị chặn từ soạn phiếu cũng không xóa ngăn xếp; cấu trúc do ManHinhSoanPhieuD10Test kiểm.
+            // D11-L: hành động từ SCR-SV-05 sang hồ sơ bị chặn không xóa ngăn xếp; cấu trúc do ManHinhXemLaiD11Test kiểm.
             if (ma.startsWith("action_traCuuThietBiFragment_to_")
                     || ma.startsWith("action_chiTietLoaiThietBiFragment_to_")
-                    || ma.startsWith("action_soanPhieuYeuCauFragment_to_")) {
+                    || ma.startsWith("action_soanPhieuYeuCauFragment_to_")
+                    || ma.startsWith("action_xemLaiPhieuYeuCauFragment_to_")) {
                 continue;
             }
             if (ma.equals("action_global_to_dangNhapSinhVienFragment")) {
@@ -110,10 +112,11 @@ public class NavGraphD06Test {
     public void FA53_NavGraph_BonTabGocCoNhanLamTieuDeThanhTieuDe() {
         for (Element e : cacPhanTu(navGraph(), "fragment")) {
             String ma = maId(e.getAttribute("android:id"));
-            // D09-L: màn hình mở chồng chiTietLoaiThietBiFragment có nhãn vì MainActivity lấy tiêu đề từ nhãn. D10-L: soanPhieuYeuCauFragment cũng có nhãn.
+            // D09-L: màn hình mở chồng chiTietLoaiThietBiFragment có nhãn vì MainActivity lấy tiêu đề từ nhãn. D10-L: soanPhieuYeuCauFragment cũng có nhãn. D11-L: xemLaiPhieuYeuCauFragment cũng có nhãn.
             if (TAB_GOC.contains(ma)
                     || ma.equals("chiTietLoaiThietBiFragment")
-                    || ma.equals("soanPhieuYeuCauFragment")) {
+                    || ma.equals("soanPhieuYeuCauFragment")
+                    || ma.equals("xemLaiPhieuYeuCauFragment")) {
                 assertTrue(ma, e.getAttribute("android:label").startsWith("@string/"));
             } else {
                 assertEquals("Màn hình chung không có tiêu đề: " + ma, "", e.getAttribute("android:label"));
