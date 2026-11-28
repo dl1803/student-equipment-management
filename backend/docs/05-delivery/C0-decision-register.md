@@ -164,6 +164,18 @@ Mọi dòng dưới đây đang **OPEN**. Một quyết định OPEN chặn đú
 | K-64 | OPEN, giao D15-K: đề xuất chưa loại khoản đã nằm trong biên bản chưa hủy (OpenAPI không nêu); chặn trùng thực hiện ở `POST` bằng chỉ mục `ux_ctbb_khoan` | OPEN — chờ D15-K | 2026-11-26 |
 | K-65 | Không thay `BienBanPhieuTruyVan.cs` của MuonTra trong D14-K (D13-K mục 8.2 đề nghị nhưng file thuộc Vương, đang chạy đúng, kế hoạch D14-K không yêu cầu) | Khôi đề xuất, chờ nhóm xác nhận | 2026-11-26 |
 
+| K-66 | `dsLyDoConKhoa[].maLoi` của `quayXacNhanNhanDuThietBi` dùng `SV_BI_KHOA_QUYEN_MUON` cho cả ba lý do (cấm dài hạn, còn biên bản chưa nộp, còn thiết bị chưa trả của phiếu quá hạn), phân biệt bằng `thongDiep` (schema `LyDo` bắt buộc `maLoi` thuộc enum, mô tả trường lại ghi "không dùng mã lỗi") | Khôi đề xuất, chờ nhóm xác nhận | 2026-11-28 |
+
+| K-67 | "Thiết bị chưa trả của phiếu quá hạn" (ĐX-KT-14) đếm bằng SQL đọc trong ViPham (`chi_tiet_phieu_muon` JOIN `phieu_muon`, `trang_thai='QUA_HAN'`, `ket_qua_kiem_tra IS NULL`) theo tiền lệ K-62; không sửa `IPhieuMuonReader` (thuộc Vương) | Khôi đề xuất, chờ nhóm xác nhận | 2026-11-28 |
+
+| K-68 | Bốn thao tác D16-K không phát sinh `XUNG_DOT_CAP_NHAT`: khóa dòng SV trước, `UPDATE` có điều kiện; bên thua nhận `TRANG_THAI_KHONG_HOP_LE` (409); không dùng xmin | Khôi đề xuất, chờ nhóm xác nhận | 2026-11-28 |
+
+| K-69 | Điều chỉnh biên bản: khoản không có trong biên bản, khoản trùng, `loaiViPham` lạ, `soTien` < 0 hoặc > 99.999.999.999.999 (`numeric(14,0)`), tổng mới vượt trần → 400 `DU_LIEU_KHONG_HOP_LE` | Khôi đề xuất, chờ nhóm xác nhận | 2026-11-28 |
+
+| K-70 | `da-nop` giới hạn theo phòng (403 `PHONG_CHUA_CAP_QUYEN`); `xac-nhan-nhan-du-thiet-bi` không giới hạn phòng (ĐX-PQ-11) và không ghi nhật ký riêng (chỉ nhật ký `SUA` của `QuyenMuonService` khi mở); trạng thái `BINH_THUONG` trả `daMoKhoa=false`, `dsLyDoConKhoa=[]` | Khôi đề xuất, chờ nhóm xác nhận | 2026-11-28 |
+
+| K-71 | Hủy biên bản không sửa `vi_pham.vi_pham` và không hoàn tác trạng thái thiết bị đã `DA_BAO_MAT` (ĐX-PQ-09 không quy định tác động lên số lần vi phạm) | Khôi đề xuất, chờ nhóm xác nhận | 2026-11-28 |
+
 ## 5. Mâu thuẫn giữa các nguồn đã phát hiện
 
 | # | Nội dung | Nguồn A | Nguồn B | Cách xử lý |
