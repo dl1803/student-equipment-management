@@ -8,6 +8,7 @@
 import Link from "next/link";
 import type { ComponentType } from "react";
 import { classNames } from "./classNames";
+import { LogoUngDung } from "./LogoUngDung";
 import type { IconProps } from "./icons/SvgIcon";
 
 export type MucMenu = {
@@ -63,9 +64,10 @@ export function Sidebar({
     <aside className="flex w-web-sidebar-width shrink-0 flex-col bg-surface-subtle">
       <Link
         href={tuyenTrangChu}
-        className="flex h-web-header-height shrink-0 items-center px-6 type-title-card font-bold text-text-primary"
+        className="flex h-web-header-height shrink-0 items-center gap-3 px-6 type-label font-bold text-text-primary"
       >
-        {tenHeThong}
+        <LogoUngDung className="size-control-sm shrink-0" />
+        <span>{tenHeThong}</span>
       </Link>
       <nav
         aria-label="Menu chính"

@@ -79,6 +79,41 @@ describe("DangNhapScreen", () => {
     expect(oMatKhau().type).toBe("password");
   });
 
+  it("UI-Screens 4.5: nút Hiện/Ẩn mật khẩu đổi kiểu ô, tên truy cập và aria-pressed; không mất giá trị đang nhập", () => {
+    hienThiVoiNguCanh(<DangNhapScreen />, { trangThai: CHUA_DANG_NHAP });
+    fireEvent.change(oMatKhau(), { target: { value: MAT_KHAU } });
+
+    const nut = screen.getByRole("button", { name: "Hiện mật khẩu" });
+    expect(nut.getAttribute("aria-pressed")).toBe("false");
+    expect(oMatKhau().type).toBe("password");
+
+    fireEvent.click(nut);
+    expect(oMatKhau().type).toBe("text");
+    expect(oMatKhau().value).toBe(MAT_KHAU);
+    const nutAn = screen.getByRole("button", { name: "Ẩn mật khẩu" });
+    expect(nutAn.getAttribute("aria-pressed")).toBe("true");
+
+    fireEvent.click(nutAn);
+    expect(oMatKhau().type).toBe("password");
+    // Nút hiện/ẩn không phải nút gửi: bấm không gửi biểu mẫu.
+    expect(nutAn.getAttribute("type")).toBe("button");
+  });
+
+  it("DS 11.2: logo và hình minh họa là trang trí (ẩn với trình đọc màn hình); tên hệ thống luôn có bằng chữ", () => {
+    const { container } = hienThiVoiNguCanh(<DangNhapScreen />, {
+      trangThai: CHUA_DANG_NHAP,
+    });
+    expect(screen.getByText("Quản lý mượn trả thiết bị")).toBeTruthy();
+    const dsSvgTrangTri = [
+      ...container.querySelectorAll("main > div svg:not([class*='size-icon'])"),
+    ];
+    expect(dsSvgTrangTri.length).toBeGreaterThanOrEqual(2);
+    expect(
+      dsSvgTrangTri.every((s) => s.getAttribute("aria-hidden") === "true"),
+    ).toBe(true);
+    expect(container.querySelector("img")).toBeNull();
+  });
+
   it("UF-CM-02: thành công → đăng nhập rồi GET /auth/toi, hoàn tất phiên; mật khẩu bị dọn khỏi ô và mutation", async () => {
     const goi = adapter((config) => traVe(config, 200, TOKEN));
     apiClient.defaults.adapter = goi;
