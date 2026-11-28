@@ -2,6 +2,7 @@ using Microsoft.Extensions.DependencyInjection;
 using QuanLyMuonTra.Modules.BaoTri.Application;
 using QuanLyMuonTra.Modules.BaoTri.Infrastructure;
 using QuanLyMuonTra.Modules.DanhMuc.Contracts;
+using QuanLyMuonTra.SharedKernel;
 
 namespace QuanLyMuonTra.Modules.BaoTri;
 
@@ -14,6 +15,9 @@ public static class DependencyInjection
         services.AddScoped<DsChoTiepNhanSuaChuaHandler>();
         services.AddScoped<LapBaoTriHandler>();
         services.AddScoped<HoanThanhBaoTriHandler>();
+        services.AddScoped<DsChoQuyetDinhThanhLyHandler>();
+        services.AddScoped<LapQuyetDinhThanhLyHandler>();
+        services.AddScoped<IJob, NhacBaoTriJob>();
         return services;
     }
 }
