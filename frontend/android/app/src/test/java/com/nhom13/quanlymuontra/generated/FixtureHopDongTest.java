@@ -11,6 +11,7 @@ import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 import com.nhom13.quanlymuontra.Fixtures;
 import com.nhom13.quanlymuontra.generated.model.PhieuMuonTomTatPage;
+import com.nhom13.quanlymuontra.generated.model.PhieuYeuCauMuon;
 import com.nhom13.quanlymuontra.generated.model.ProblemDetails;
 import com.nhom13.quanlymuontra.generated.model.SinhVienTheInfo;
 import com.nhom13.quanlymuontra.generated.model.TokenResponse;
@@ -33,12 +34,17 @@ public class FixtureHopDongTest {
         {"thanh-cong/sv-toi-binh-thuong.json", SinhVienTheInfo.class},
         {"thanh-cong/sv-ds-phieu-muon.json", PhieuMuonTomTatPage.class},
         {"thanh-cong/auth-lam-moi.json", TokenResponse.class},
+        {"thanh-cong/sv-gui-phieu-yeu-cau.json", PhieuYeuCauMuon.class},
         {"rong/sv-ds-phieu-muon.json", PhieuMuonTomTatPage.class},
         {"loi/400-validation.json", ValidationProblemDetails.class},
         {"loi/401-chua-xac-thuc.json", ProblemDetails.class},
         {"loi/403-khong-du-quyen.json", ProblemDetails.class},
         {"loi/409-so-luong-kha-dung-thay-doi.json", ProblemDetails.class},
         {"loi/422-sv-bi-khoa-quyen-muon.json", ProblemDetails.class},
+        {"loi/422-vuot-gioi-han-thiet-bi.json", ProblemDetails.class},
+        {"loi/422-vuot-thoi-gian-muon-toi-da.json", ProblemDetails.class},
+        {"loi/422-sv-the-het-han.json", ProblemDetails.class},
+        {"loi/422-sv-khong-con-theo-hoc.json", ProblemDetails.class},
         {"loi/429-qua-nhieu-yeu-cau.json", ProblemDetails.class},
         {"loi/500-loi-he-thong.json", ProblemDetails.class},
     };

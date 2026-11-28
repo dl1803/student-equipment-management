@@ -4,6 +4,7 @@ import android.content.Context;
 import androidx.annotation.NonNull;
 import com.nhom13.quanlymuontra.data.api.OkHttpClientFactory;
 import com.nhom13.quanlymuontra.data.repository.HoSoMuonRepository;
+import com.nhom13.quanlymuontra.data.repository.PhieuYeuCauRepository;
 import com.nhom13.quanlymuontra.data.repository.TraCuuRepository;
 import com.nhom13.quanlymuontra.data.repository.XacThucRepository;
 import com.nhom13.quanlymuontra.data.session.SessionManager;
@@ -26,7 +27,7 @@ import retrofit2.converter.gson.GsonConverterFactory;
  *
  * <p>Hàm tạo nhận sẵn các thành phần để kiểm thử dựng bằng bản giả; bản dùng thật do {@link
  * #taoChoUngDung(Context)} lắp ráp. D07-L thêm {@link HoSoMuonRepository}; D08-L thêm {@link
- * TraCuuRepository}.
+ * TraCuuRepository}; D11-L thêm {@link PhieuYeuCauRepository}.
  */
 public final class AppContainer {
 
@@ -34,16 +35,19 @@ public final class AppContainer {
     private final XacThucRepository xacThucRepository;
     private final HoSoMuonRepository hoSoMuonRepository;
     private final TraCuuRepository traCuuRepository;
+    private final PhieuYeuCauRepository phieuYeuCauRepository;
 
     public AppContainer(
             @NonNull SessionManager sessionManager,
             @NonNull XacThucRepository xacThucRepository,
             @NonNull HoSoMuonRepository hoSoMuonRepository,
-            @NonNull TraCuuRepository traCuuRepository) {
+            @NonNull TraCuuRepository traCuuRepository,
+            @NonNull PhieuYeuCauRepository phieuYeuCauRepository) {
         this.sessionManager = sessionManager;
         this.xacThucRepository = xacThucRepository;
         this.hoSoMuonRepository = hoSoMuonRepository;
         this.traCuuRepository = traCuuRepository;
+        this.phieuYeuCauRepository = phieuYeuCauRepository;
     }
 
     /**
@@ -67,8 +71,13 @@ public final class AppContainer {
         SinhVienApi sinhVienApi = retrofit.create(SinhVienApi.class);
         HoSoMuonRepository hoSoMuonRepository = new HoSoMuonRepository(sinhVienApi);
         TraCuuRepository traCuuRepository = new TraCuuRepository(sinhVienApi);
+        PhieuYeuCauRepository phieuYeuCauRepository = new PhieuYeuCauRepository(sinhVienApi);
         return new AppContainer(
-                sessionManager, xacThucRepository, hoSoMuonRepository, traCuuRepository);
+                sessionManager,
+                xacThucRepository,
+                hoSoMuonRepository,
+                traCuuRepository,
+                phieuYeuCauRepository);
     }
 
     @NonNull
@@ -89,5 +98,10 @@ public final class AppContainer {
     @NonNull
     public TraCuuRepository getTraCuuRepository() {
         return traCuuRepository;
+    }
+
+    @NonNull
+    public PhieuYeuCauRepository getPhieuYeuCauRepository() {
+        return phieuYeuCauRepository;
     }
 }

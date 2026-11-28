@@ -1,0 +1,19 @@
+{
+  "maYeuCau": "YC-2026-0003",
+  "maSV": "23520001",
+  "maPhong": "00000000-0000-0000-0000-000000001500",
+  "tenPhong": "Phòng 1000",
+  "thoiGianGui": "2026-11-28T03:00:00Z",
+  "thoiGianMuonDuKienGio": 2,
+  "trangThai": "CHO_DUYET",
+  "lyDoTuChoi": null,
+  "thoiDiemDuyet": null,
+  "hanGiuCho": null,
+  "dsLoaiVaSoLuong": [
+    {
+      "maLoai": "00000000-0000-0000-0000-000000000001",
+      "tenLoai": "Loại 1",
+      "soLuong": 2
+    }
+  ]
+}
