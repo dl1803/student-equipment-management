@@ -15,6 +15,9 @@
     và truyền xuống startDestination. soanPhieuGraph là phạm vi của SoanPhieuViewModel; SCR-SV-05 (D11-L) sẽ thêm vào cùng
     graph con. Từ SCR-SV-04 chỉ có hành động sang hồ sơ ở chế độ bị chặn (cổng quyền mượn của liên kết Đăng ký chờ).
     D10-L: hai hành động mở soanPhieuGraph (từ Trang chủ và từ chi tiết loại) không xóa ngăn xếp; SCR-SV-06/07 nối ở D12-L.
+    D11-L: xemLaiPhieuYeuCauFragment (SCR-SV-05) thêm vào soanPhieuGraph, dùng chung SoanPhieuViewModel với SCR-SV-04. Từ
+    SCR-SV-04 sang SCR-SV-05 và từ SCR-SV-05 sang hồ sơ ở chế độ bị chặn đều không xóa ngăn xếp. Nút Sửa và các lỗi cần sửa
+    dùng popBackStack nên không có hành động riêng.
 -->
 <navigation xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
@@ -159,6 +162,19 @@
                 app:nullable="true" />
             <action
                 android:id="@+id/action_soanPhieuYeuCauFragment_to_hoSoMuonFragment"
+                app:destination="@id/hoSoMuonFragment" />
+            <action
+                android:id="@+id/action_soanPhieuYeuCauFragment_to_xemLaiPhieuYeuCauFragment"
+                app:destination="@id/xemLaiPhieuYeuCauFragment" />
+        </fragment>
+
+        <fragment
+            android:id="@+id/xemLaiPhieuYeuCauFragment"
+            android:name="com.nhom13.quanlymuontra.ui.phieuyeucau.XemLaiPhieuYeuCauFragment"
+            android:label="@string/xem_lai_tieu_de"
+            tools:layout="@layout/fragment_xem_lai_phieu_yeu_cau">
+            <action
+                android:id="@+id/action_xemLaiPhieuYeuCauFragment_to_hoSoMuonFragment"
                 app:destination="@id/hoSoMuonFragment" />
         </fragment>
 

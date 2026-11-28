@@ -65,6 +65,15 @@
 
         </LinearLayout>
 
+        <TextView
+            android:id="@+id/tv_loi_so_luong"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/ds_space_1"
+            android:textAppearance="@style/TextAppearance.Ds.Caption"
+            android:textColor="@color/ds_color_tone_danger_text"
+            android:visibility="gone" />
+
         <com.google.android.material.button.MaterialButton
             android:id="@+id/btn_dang_ky_cho"
             style="@style/Widget.Ds.Button.Tertiary"

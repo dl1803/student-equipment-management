@@ -93,6 +93,8 @@ public class ManHinhSoanPhieuD10Test {
 
         Map<String, String> kyVong = new HashMap<>();
         kyVong.put("action_soanPhieuYeuCauFragment_to_hoSoMuonFragment", "hoSoMuonFragment");
+        // D11-L: nút Xem lại mở SCR-SV-05 (không xóa ngăn xếp).
+        kyVong.put("action_soanPhieuYeuCauFragment_to_xemLaiPhieuYeuCauFragment", "xemLaiPhieuYeuCauFragment");
         assertEquals(kyVong, hanhDong);
     }
 
@@ -193,7 +195,7 @@ public class ManHinhSoanPhieuD10Test {
     }
 
     @Test
-    public void UISV04_D10_KhongGuiDangKyChoKhongGuiPhieuVaKhongTuTinhGioiHan() {
+    public void UISV04_D10_KhongGuiDangKyChoVaKhongTuTinhGioiHan() {
         for (String tep :
                 new String[] {
                     "SoanPhieuViewModel.java",
@@ -203,9 +205,12 @@ public class ManHinhSoanPhieuD10Test {
                 }) {
             String ma = TaiNguyen.docChu(MA + "/" + tep);
             assertFalse(tep, ma.contains("svDangKyCho"));
-            assertFalse(tep, ma.contains("svGuiPhieuYeuCauMuon"));
             assertFalse(tep, ma.contains("getSoThietBiToiDa"));
             assertFalse(tep, ma.contains("getThoiGianMuonToiDa"));
+            // D11-L: chỉ SoanPhieuViewModel gửi phiếu (qua kho); giao diện và cổng quyền không gọi API gửi.
+            if (!tep.equals("SoanPhieuViewModel.java")) {
+                assertFalse(tep, ma.contains("svGuiPhieuYeuCauMuon"));
+            }
         }
     }
 
@@ -217,6 +222,10 @@ public class ManHinhSoanPhieuD10Test {
                     new String[] {
                         "Snackbar", "Toast", "System.out", "Log.", "getDetail(", "Collections.sort", ".sort("
                     }) {
+                // D11-L: chỉ TrinhBayLoiGuiPhieu lấy detail, và chỉ để hiển thị mức tối đa (UI-Screens 5.5).
+                if (cam.equals("getDetail(") && tep.getName().equals("TrinhBayLoiGuiPhieu.java")) {
+                    continue;
+                }
                 assertFalse(tep.getName() + " dùng " + cam, noiDung.contains(cam));
             }
         }

@@ -6,6 +6,7 @@ import static org.junit.Assert.assertTrue;
 
 import androidx.lifecycle.ViewModel;
 import com.nhom13.quanlymuontra.data.repository.HoSoMuonRepository;
+import com.nhom13.quanlymuontra.data.repository.PhieuYeuCauRepository;
 import com.nhom13.quanlymuontra.data.repository.TraCuuRepository;
 import com.nhom13.quanlymuontra.data.repository.XacThucRepository;
 import com.nhom13.quanlymuontra.data.session.SessionManager;
@@ -36,7 +37,8 @@ public class AppViewModelFactoryTest {
                                 phien,
                                 kho,
                                 new HoSoMuonRepository(HoTroSinhVienApi.taoApiSvToi()),
-                                new TraCuuRepository(HoTroSinhVienApi.taoApiSvToi())));
+                                new TraCuuRepository(HoTroSinhVienApi.taoApiSvToi()),
+                                new PhieuYeuCauRepository(HoTroSinhVienApi.taoApiSvToi())));
     }
 
     @After
