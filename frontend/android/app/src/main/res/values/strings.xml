@@ -271,4 +271,23 @@
     <string name="soan_phieu_doi_phong_he_qua">Các loại thiết bị đã chọn sẽ bị xóa khỏi phiếu.</string>
     <string name="soan_phieu_doi_phong_nhan">Đổi phòng</string>
 
+    <!--
+        D11-L (SCR-SV-05, UI-Screens 5.5): chữ do Architect viết vì tài liệu chỉ nêu ý, chờ nhóm xác nhận:
+        gui_khong_the_gui_tieu_de, gui_thanh_cong_*, gui_chua_xac_dinh_*, gui_the_het_han, gui_khong_con_theo_hoc,
+        gui_bi_khoa, gui_vuot_gioi_han, gui_vuot_thoi_gian, gui_so_luong_thay_doi, gui_du_lieu_khong_hop_le.
+        Mã lỗi bị chặn dùng lại loi_he_thong, qua_nhieu_yeu_cau, trang_thai_ma_theo_doi đã có.
+    -->
+    <string name="gui_khong_the_gui_tieu_de">Chưa gửi được phiếu</string>
+    <string name="gui_thanh_cong_tieu_de">Đã gửi phiếu yêu cầu</string>
+    <string name="gui_thanh_cong_noi_dung">Mã phiếu: %1$s. Phiếu đang chờ duyệt.</string>
+    <string name="gui_chua_xac_dinh_tieu_de">Chưa xác định được kết quả</string>
+    <string name="gui_chua_xac_dinh_noi_dung">Chưa biết phiếu đã được tạo hay chưa. Hãy kiểm tra danh sách phiếu yêu cầu trước khi gửi lại.</string>
+    <string name="gui_the_het_han">Thẻ sinh viên của bạn đã hết hạn.</string>
+    <string name="gui_khong_con_theo_hoc">Bạn không còn theo học.</string>
+    <string name="gui_bi_khoa">Quyền mượn của bạn đang bị khóa.</string>
+    <string name="gui_vuot_gioi_han">Số lượng vượt giới hạn số thiết bị của nhóm sinh viên. Hãy giảm số lượng.</string>
+    <string name="gui_vuot_thoi_gian">Thời gian mượn vượt mức tối đa cho phép.</string>
+    <string name="gui_so_luong_thay_doi">Số lượng khả dụng đã thay đổi. Hãy kiểm tra lại số lượng.</string>
+    <string name="gui_du_lieu_khong_hop_le">Dữ liệu phiếu chưa hợp lệ. Hãy kiểm tra lại.</string>
+
 </resources>

@@ -63,7 +63,9 @@ public final class AppViewModelFactory implements ViewModelProvider.Factory {
         if (SoanPhieuViewModel.class.equals(modelClass)) {
             return modelClass.cast(
                     new SoanPhieuViewModel(
-                            appContainer.getTraCuuRepository(), appContainer.getHoSoMuonRepository()));
+                            appContainer.getTraCuuRepository(),
+                            appContainer.getHoSoMuonRepository(),
+                            appContainer.getPhieuYeuCauRepository()));
         }
         // Lớp chưa đăng ký: tạo nhầm lớp lạ phải lộ ngay thay vì trả về null.
         throw new IllegalArgumentException(

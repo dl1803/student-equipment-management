@@ -11,16 +11,24 @@ import com.nhom13.quanlymuontra.Fixtures;
 import com.nhom13.quanlymuontra.HoTroLiveData;
 import com.nhom13.quanlymuontra.HoTroSinhVienApi;
 import com.nhom13.quanlymuontra.HoTroTraCuuApi;
+import com.nhom13.quanlymuontra.HoTroXacThuc;
 import com.nhom13.quanlymuontra.data.model.Event;
 import com.nhom13.quanlymuontra.data.model.UiState;
 import com.nhom13.quanlymuontra.data.repository.HoSoMuonRepository;
+import com.nhom13.quanlymuontra.data.repository.PhieuYeuCauRepository;
 import com.nhom13.quanlymuontra.data.repository.TraCuuRepository;
 import com.nhom13.quanlymuontra.generated.JSON;
 import com.nhom13.quanlymuontra.generated.api.SinhVienApi;
+import com.nhom13.quanlymuontra.generated.model.GuiYeuCauMuonRequest;
+import com.nhom13.quanlymuontra.generated.model.PhieuYeuCauMuon;
 import com.nhom13.quanlymuontra.generated.model.TraCuuThietBiItemPage;
+import com.nhom13.quanlymuontra.ui.phieuyeucau.SoanPhieuViewModel.DieuHuongGui;
+import com.nhom13.quanlymuontra.ui.phieuyeucau.SoanPhieuViewModel.TrangThaiGui;
+import com.nhom13.quanlymuontra.ui.phieuyeucau.TrinhBayLoiGuiPhieu.PhanLoai;
 import com.nhom13.quanlymuontra.ui.tracuu.LuaChonBoLoc;
 import com.nhom13.quanlymuontra.ui.tracuu.TraCuuThietBiViewModel.TrangThaiTaiThem;
 import java.io.IOException;
+import java.net.SocketTimeoutException;
 import java.util.UUID;
 import org.junit.After;
 import org.junit.Before;
@@ -28,8 +36,9 @@ import org.junit.Test;
 import retrofit2.Response;
 
 /**
- * Logic của SCR-SV-04 (UI-Screens 5.4, UF-SV-02 bước 1 đến 3, FA 5.3 quy tắc 2, FA 5.6). {@code svDangKyCho} và {@code
- * svGuiPhieuYeuCauMuon} không được chuẩn bị ở test nào nên mọi nhánh tự chứng minh không gửi đăng ký chờ hay phiếu.
+ * Logic của SCR-SV-04 (UI-Screens 5.4, UF-SV-02 bước 1 đến 3, FA 5.3 quy tắc 2, FA 5.6). {@code svDangKyCho} không
+ * được chuẩn bị ở test nào nên mọi nhánh tự chứng minh không gửi đăng ký chờ. {@code svGuiPhieuYeuCauMuon} chỉ được chuẩn
+ * bị ở các test gửi phiếu (D11-L).
  */
 public class SoanPhieuViewModelTest {
 
@@ -85,7 +94,10 @@ public class SoanPhieuViewModelTest {
 
     private static SoanPhieuViewModel taoVm(HoTroTraCuuApi ho) {
         SinhVienApi api = ho.api();
-        return new SoanPhieuViewModel(new TraCuuRepository(api), new HoSoMuonRepository(api));
+        return new SoanPhieuViewModel(
+                new TraCuuRepository(api),
+                new HoSoMuonRepository(api),
+                new PhieuYeuCauRepository(api));
     }
 
     /** Mở màn hình, chọn phòng duy nhất và nạp trang đầu. */
@@ -487,5 +499,348 @@ public class SoanPhieuViewModelTest {
         onCleared.invoke(vm);
 
         assertTrue(cho.isCanceled());
+    }
+
+    // ---------------------------------------------------------------- gửi phiếu (D11-L)
+
+    private static final String GUI = "svGuiPhieuYeuCauMuon";
+
+    private static PhieuYeuCauMuon phieuMoi() {
+        return new JSON()
+                .getGson()
+                .fromJson(Fixtures.doc("thanh-cong/sv-gui-phieu-yeu-cau.json"), PhieuYeuCauMuon.class);
+    }
+
+    private static FakeCall<PhieuYeuCauMuon> thanhCong() {
+        return FakeCall.traVe(Response.success(phieuMoi()));
+    }
+
+    private static FakeCall<PhieuYeuCauMuon> loiHttp(int status, String fixture) {
+        return FakeCall.traVe(HoTroXacThuc.<PhieuYeuCauMuon>phanHoiLoi(status, fixture));
+    }
+
+    /** Phòng duy nhất, loại 1 (còn 5) chọn 2, thời gian 2 giờ; các lần gửi chuẩn bị theo thứ tự. */
+    private static HoTroTraCuuApi apiGui(FakeCall<?>... cacLanGui) {
+        HoTroTraCuuApi ho = apiMotPhong(trang(1, 1, "1:5"));
+        ho.chuanBi(GUI, cacLanGui);
+        return ho;
+    }
+
+    private static SoanPhieuViewModel sanSangGui(HoTroTraCuuApi ho) {
+        SoanPhieuViewModel vm = moVaChonPhong(ho);
+        vm.datSoLuong(ma(1), 2);
+        vm.datThoiGian("2");
+        return vm;
+    }
+
+    private static DieuHuongGui layDieuHuong(SoanPhieuViewModel vm) {
+        Event<DieuHuongGui> suKien = vm.getDieuHuongGui().getValue();
+        return suKien == null ? null : suKien.getContentIfNotHandled();
+    }
+
+    @Test
+    public void UISV05_GuiThanhCong_MotLanGoiDungNoiDungXoaNhapVaGiuMaPhieu() {
+        HoTroTraCuuApi ho = apiGui(thanhCong());
+        SoanPhieuViewModel vm = sanSangGui(ho);
+
+        assertTrue(vm.gui());
+
+        assertEquals(1, ho.goiTheoTen(GUI).size());
+        GuiYeuCauMuonRequest yeuCau = (GuiYeuCauMuonRequest) ho.goiTheoTen(GUI).get(0).thamSo[0];
+        assertEquals(MA_PHONG, yeuCau.getMaPhong());
+        assertEquals(Integer.valueOf(2), yeuCau.getThoiGianMuonDuKienGio());
+        assertEquals(1, yeuCau.getDsLoaiVaSoLuong().size());
+        assertEquals(ma(1), yeuCau.getDsLoaiVaSoLuong().get(0).getMaLoai());
+        assertEquals(Integer.valueOf(2), yeuCau.getDsLoaiVaSoLuong().get(0).getSoLuong());
+        assertEquals(TrangThaiGui.DA_GUI, vm.getTrangThaiGui().getValue());
+        assertEquals("YC-2026-0003", vm.getMaYeuCauVuaGui().getValue());
+        assertNull(vm.layNoiDungPhieu());
+        assertNull(vm.layTomTat());
+        assertFalse(vm.getXemLaiBat().getValue());
+        assertTrue(vm.getSoLuongDaChon().getValue().isEmpty());
+    }
+
+    @Test
+    public void UISV05_BamDup_ChiPhatMotYeuCauKhiDangCho() {
+        FakeCall<PhieuYeuCauMuon> cho = FakeCall.cho();
+        HoTroTraCuuApi ho = apiGui(cho);
+        SoanPhieuViewModel vm = sanSangGui(ho);
+
+        assertTrue(vm.gui());
+        assertFalse(vm.gui());
+        assertFalse(vm.gui());
+
+        assertEquals(1, cho.soLanEnqueue());
+        assertEquals(1, ho.goiTheoTen(GUI).size());
+        assertEquals(TrangThaiGui.DANG_GUI, vm.getTrangThaiGui().getValue());
+        assertFalse(vm.getXemLaiBat().getValue());
+    }
+
+    @Test
+    public void UISV05_ChuaDuDieuKien_KhongGui() {
+        HoTroTraCuuApi ho = apiGui(thanhCong());
+        SoanPhieuViewModel vm = moVaChonPhong(ho);
+
+        assertFalse(vm.gui());
+
+        assertEquals(0, ho.goiTheoTen(GUI).size());
+        assertEquals(TrangThaiGui.SAN_SANG, vm.getTrangThaiGui().getValue());
+    }
+
+    @Test
+    public void UISV05_Loi400_VeSuaGiuNhapVaGanLoiVaoDongLoai() {
+        HoTroTraCuuApi ho = apiGui(loiHttp(400, "loi/400-validation.json"));
+        SoanPhieuViewModel vm = sanSangGui(ho);
+
+        vm.gui();
+
+        assertEquals(TrangThaiGui.SAN_SANG, vm.getTrangThaiGui().getValue());
+        assertEquals(DieuHuongGui.QUAY_VE_SUA, layDieuHuong(vm));
+        LoiGuiPhieu loi = vm.getLoiGui().getValue();
+        assertEquals(PhanLoai.DU_LIEU_KHONG_HOP_LE, loi.getPhanLoai());
+        assertNotNull(loi.getTruong().getLoiSoLuong().get(ma(1)));
+        assertNotNull(vm.layNoiDungPhieu());
+        assertEquals("2", vm.getThoiGianNhap());
+        assertEquals(Integer.valueOf(2), vm.getSoLuongDaChon().getValue().get(ma(1)));
+        assertTrue(vm.getXemLaiBat().getValue());
+    }
+
+    @Test
+    public void UISV05_Loi409_VeSuaGiuNhapVaBaoSoLuongThayDoi() {
+        HoTroTraCuuApi ho = apiGui(loiHttp(409, "loi/409-so-luong-kha-dung-thay-doi.json"));
+        SoanPhieuViewModel vm = sanSangGui(ho);
+
+        vm.gui();
+
+        assertEquals(PhanLoai.SO_LUONG_THAY_DOI, vm.getLoiGui().getValue().getPhanLoai());
+        assertEquals(DieuHuongGui.QUAY_VE_SUA, layDieuHuong(vm));
+        assertEquals(TrangThaiGui.SAN_SANG, vm.getTrangThaiGui().getValue());
+        assertNotNull(vm.layNoiDungPhieu());
+    }
+
+    @Test
+    public void UISV05_Loi422VuotGioiHanVaThoiGian_VeSuaGiuNhap() {
+        HoTroTraCuuApi ho =
+                apiGui(
+                        loiHttp(422, "loi/422-vuot-gioi-han-thiet-bi.json"),
+                        loiHttp(422, "loi/422-vuot-thoi-gian-muon-toi-da.json"));
+        SoanPhieuViewModel vm = sanSangGui(ho);
+
+        vm.gui();
+        assertEquals(PhanLoai.VUOT_GIOI_HAN_THIET_BI, vm.getLoiGui().getValue().getPhanLoai());
+        assertEquals(DieuHuongGui.QUAY_VE_SUA, layDieuHuong(vm));
+        assertNotNull(vm.layNoiDungPhieu());
+
+        vm.chuanBiXemLai();
+        vm.gui();
+        assertEquals(PhanLoai.VUOT_THOI_GIAN_MUON_TOI_DA, vm.getLoiGui().getValue().getPhanLoai());
+        assertEquals(DieuHuongGui.QUAY_VE_SUA, layDieuHuong(vm));
+        assertEquals("2", vm.getThoiGianNhap());
+        assertEquals(2, ho.goiTheoTen(GUI).size());
+    }
+
+    @Test
+    public void UISV05_TheHetHanVaKhongConTheoHoc_ChanGuiKhongDieuHuong() {
+        HoTroTraCuuApi ho =
+                apiGui(
+                        loiHttp(422, "loi/422-sv-the-het-han.json"),
+                        loiHttp(422, "loi/422-sv-khong-con-theo-hoc.json"));
+        SoanPhieuViewModel vm = sanSangGui(ho);
+
+        vm.gui();
+        assertEquals(PhanLoai.THE_HET_HAN, vm.getLoiGui().getValue().getPhanLoai());
+        assertEquals(TrangThaiGui.CHAN_GUI, vm.getTrangThaiGui().getValue());
+        assertNull(layDieuHuong(vm));
+        assertFalse(vm.gui());
+        assertEquals(1, ho.goiTheoTen(GUI).size());
+        assertNotNull(vm.layNoiDungPhieu());
+    }
+
+    @Test
+    public void UISV05_QuyenBiKhoa_ChanGuiVaMoHoSoBiChan() {
+        HoTroTraCuuApi ho = apiGui(loiHttp(422, "loi/422-sv-bi-khoa-quyen-muon.json"));
+        SoanPhieuViewModel vm = sanSangGui(ho);
+
+        vm.gui();
+
+        assertEquals(PhanLoai.BI_KHOA_QUYEN_MUON, vm.getLoiGui().getValue().getPhanLoai());
+        assertEquals(TrangThaiGui.CHAN_GUI, vm.getTrangThaiGui().getValue());
+        assertEquals(DieuHuongGui.MO_HO_SO_BI_CHAN, layDieuHuong(vm));
+        assertFalse(vm.gui());
+    }
+
+    @Test
+    public void UISV05_MatKetNoi_ChuaXacDinhKhongTuGuiLaiVaKhoaGui() {
+        FakeCall<PhieuYeuCauMuon> mat = FakeCall.nem(new IOException("mat ket noi"));
+        HoTroTraCuuApi ho = apiGui(mat, thanhCong());
+        SoanPhieuViewModel vm = sanSangGui(ho);
+
+        vm.gui();
+
+        assertEquals(TrangThaiGui.CHUA_XAC_DINH, vm.getTrangThaiGui().getValue());
+        assertEquals(PhanLoai.CHUA_XAC_DINH, vm.getLoiGui().getValue().getPhanLoai());
+        assertEquals(Boolean.TRUE, vm.getYeuCauKiemTraDanhSach().getValue().getContentIfNotHandled());
+        assertNull(layDieuHuong(vm));
+        assertFalse(vm.gui());
+        assertEquals(1, mat.soLanEnqueue());
+        assertEquals(1, ho.goiTheoTen(GUI).size());
+        assertNotNull(vm.layNoiDungPhieu());
+    }
+
+    @Test
+    public void UISV05_QuaThoiGian_ChuaXacDinh() {
+        HoTroTraCuuApi ho = apiGui(FakeCall.<PhieuYeuCauMuon>nem(new SocketTimeoutException("het gio")));
+        SoanPhieuViewModel vm = sanSangGui(ho);
+
+        vm.gui();
+
+        assertEquals(TrangThaiGui.CHUA_XAC_DINH, vm.getTrangThaiGui().getValue());
+        assertFalse(vm.gui());
+    }
+
+    @Test
+    public void UISV05_HuySauKhiPhat_ChuaXacDinhKhongBiNuot() {
+        FakeCall<PhieuYeuCauMuon> cho = FakeCall.cho();
+        HoTroTraCuuApi ho = apiGui(cho);
+        SoanPhieuViewModel vm = sanSangGui(ho);
+        vm.gui();
+
+        cho.cancel();
+        cho.that(new IOException("Canceled"));
+
+        assertEquals(TrangThaiGui.CHUA_XAC_DINH, vm.getTrangThaiGui().getValue());
+        assertFalse(vm.gui());
+    }
+
+    @Test
+    public void UISV05_ThanhCongNhungKhongCoThan_ChuaXacDinh() {
+        HoTroTraCuuApi ho = apiGui(FakeCall.traVe(Response.<PhieuYeuCauMuon>success(null)));
+        SoanPhieuViewModel vm = sanSangGui(ho);
+
+        vm.gui();
+
+        assertEquals(TrangThaiGui.CHUA_XAC_DINH, vm.getTrangThaiGui().getValue());
+        assertNull(vm.getMaYeuCauVuaGui().getValue());
+        assertNotNull(vm.layNoiDungPhieu());
+    }
+
+    @Test
+    public void UISV05_Loi429VaLoi500_CoTheGuiLaiVaKhongDieuHuong() {
+        HoTroTraCuuApi ho =
+                apiGui(
+                        loiHttp(429, "loi/429-qua-nhieu-yeu-cau.json"),
+                        loiHttp(500, "loi/500-loi-he-thong.json"),
+                        thanhCong());
+        SoanPhieuViewModel vm = sanSangGui(ho);
+
+        vm.gui();
+        assertEquals(PhanLoai.QUA_NHIEU_YEU_CAU, vm.getLoiGui().getValue().getPhanLoai());
+        assertEquals(TrangThaiGui.SAN_SANG, vm.getTrangThaiGui().getValue());
+        assertNull(layDieuHuong(vm));
+
+        assertTrue(vm.gui());
+        assertEquals(PhanLoai.HE_THONG, vm.getLoiGui().getValue().getPhanLoai());
+        assertEquals(TrangThaiGui.SAN_SANG, vm.getTrangThaiGui().getValue());
+
+        assertTrue(vm.gui());
+        assertEquals(TrangThaiGui.DA_GUI, vm.getTrangThaiGui().getValue());
+        assertEquals(3, ho.goiTheoTen(GUI).size());
+    }
+
+    @Test
+    public void FA311_RoiManHinhTrongLucGui_OnClearedKhongHuyLoiGoiGhi() throws Exception {
+        FakeCall<PhieuYeuCauMuon> cho = FakeCall.cho();
+        HoTroTraCuuApi ho = apiGui(cho);
+        SoanPhieuViewModel vm = sanSangGui(ho);
+        vm.gui();
+
+        java.lang.reflect.Method onCleared = SoanPhieuViewModel.class.getDeclaredMethod("onCleared");
+        onCleared.setAccessible(true);
+        onCleared.invoke(vm);
+
+        assertFalse("Lời gọi ghi đã phát không được hủy im lặng", cho.isCanceled());
+        cho.hoanTat(Response.success(phieuMoi()));
+        assertEquals(TrangThaiGui.DA_GUI, vm.getTrangThaiGui().getValue());
+    }
+
+    @Test
+    public void FA311_ServerDaCommitNhungMatPhanHoi_VaoNhanhChuaXacDinhSauKhiRoiManHinh() throws Exception {
+        FakeCall<PhieuYeuCauMuon> cho = FakeCall.cho();
+        HoTroTraCuuApi ho = apiGui(cho);
+        SoanPhieuViewModel vm = sanSangGui(ho);
+        vm.gui();
+
+        java.lang.reflect.Method onCleared = SoanPhieuViewModel.class.getDeclaredMethod("onCleared");
+        onCleared.setAccessible(true);
+        onCleared.invoke(vm);
+        cho.that(new IOException("mat phan hoi"));
+
+        assertEquals(TrangThaiGui.CHUA_XAC_DINH, vm.getTrangThaiGui().getValue());
+        assertFalse(vm.gui());
+        assertEquals(1, ho.goiTheoTen(GUI).size());
+    }
+
+    @Test
+    public void UISV05_SuaNhapSauLoi_BoLoiCuNhungKhongBoKhiChuaXacDinh() {
+        HoTroTraCuuApi ho =
+                apiGui(
+                        loiHttp(422, "loi/422-vuot-gioi-han-thiet-bi.json"),
+                        FakeCall.<PhieuYeuCauMuon>nem(new IOException("mat ket noi")));
+        SoanPhieuViewModel vm = sanSangGui(ho);
+
+        vm.gui();
+        assertNotNull(vm.getLoiGui().getValue());
+        vm.datSoLuong(ma(1), 1);
+        assertNull(vm.getLoiGui().getValue());
+
+        vm.gui();
+        assertEquals(TrangThaiGui.CHUA_XAC_DINH, vm.getTrangThaiGui().getValue());
+        vm.datThoiGian("3");
+        assertNotNull("Chưa xác định kết quả không bị xóa khi sửa nhập", vm.getLoiGui().getValue());
+    }
+
+    @Test
+    public void UISV05_ChuanBiXemLai_BoLoiCuVaSuKienTonDongNhungGiuChuaXacDinh() {
+        HoTroTraCuuApi ho =
+                apiGui(loiHttp(409, "loi/409-so-luong-kha-dung-thay-doi.json"), FakeCall.<PhieuYeuCauMuon>nem(new IOException("x")));
+        SoanPhieuViewModel vm = sanSangGui(ho);
+
+        vm.gui();
+        vm.chuanBiXemLai();
+        assertNull(vm.getLoiGui().getValue());
+        assertNull("Sự kiện tồn đọng bị nuốt để không bật ngược khi mở lại", layDieuHuong(vm));
+
+        vm.gui();
+        vm.chuanBiXemLai();
+        assertEquals(TrangThaiGui.CHUA_XAC_DINH, vm.getTrangThaiGui().getValue());
+        assertEquals(PhanLoai.CHUA_XAC_DINH, vm.getLoiGui().getValue().getPhanLoai());
+    }
+
+    @Test
+    public void UISV05_ChuanBiXemLaiSauKhiDaGui_VeSanSang() {
+        HoTroTraCuuApi ho = apiGui(thanhCong());
+        SoanPhieuViewModel vm = sanSangGui(ho);
+        vm.gui();
+
+        vm.chuanBiXemLai();
+
+        assertEquals(TrangThaiGui.SAN_SANG, vm.getTrangThaiGui().getValue());
+        assertNull(vm.getMaYeuCauVuaGui().getValue());
+    }
+
+    @Test
+    public void UISV05_TomTat_CoTenPhongCoSoTenLoaiSoLuongVaGio() {
+        HoTroTraCuuApi ho = apiGui();
+        SoanPhieuViewModel vm = sanSangGui(ho);
+
+        TomTatPhieu tt = vm.layTomTat();
+
+        assertNotNull(tt);
+        assertEquals("Phòng 1000", tt.getTenPhong());
+        assertNotNull(tt.getCoSo());
+        assertEquals(2, tt.getThoiGianGio());
+        assertEquals(1, tt.getCacDong().size());
+        assertEquals("Loại 1", tt.getCacDong().get(0).getTenLoai());
+        assertEquals(2, tt.getCacDong().get(0).getSoLuong());
     }
 }

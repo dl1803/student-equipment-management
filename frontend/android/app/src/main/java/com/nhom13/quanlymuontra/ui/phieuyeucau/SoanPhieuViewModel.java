@@ -11,7 +11,9 @@ import com.nhom13.quanlymuontra.data.model.Event;
 import com.nhom13.quanlymuontra.data.model.UiState;
 import com.nhom13.quanlymuontra.data.repository.ApiCallback;
 import com.nhom13.quanlymuontra.data.repository.HoSoMuonRepository;
+import com.nhom13.quanlymuontra.data.repository.PhieuYeuCauRepository;
 import com.nhom13.quanlymuontra.data.repository.TraCuuRepository;
+import com.nhom13.quanlymuontra.generated.model.PhieuYeuCauMuon;
 import com.nhom13.quanlymuontra.generated.model.PhongThietBi;
 import com.nhom13.quanlymuontra.generated.model.PhongThietBiPage;
 import com.nhom13.quanlymuontra.generated.model.TraCuuThietBiItem;
@@ -46,6 +48,9 @@ import retrofit2.Call;
  *   <li>Nút Xem lại chỉ bật khi {@link #layNoiDungPhieu()} khác {@code null}: đã chọn phòng, có ít nhất một loại số
  *       lượng từ 1 và thời gian là số nguyên từ 1.
  *   <li>Liên kết Đăng ký chờ chỉ chạy cổng quyền mượn ({@link CongQuyenMuon}); gửi đăng ký chờ thuộc D13-L.
+ *   <li>D11-L: {@link #gui()} gửi phiếu một lần (khóa đồng bộ, không gửi đôi). {@link #onCleared()} không hủy lời gọi
+ *       gửi (FA 3.11). Mất kết nối, quá thời gian chờ, hủy hoặc phản hồi không đọc được là "chưa xác định kết quả":
+ *       không tự gửi lại và khóa gửi tới hết vòng đời {@code ViewModel}; SCR-SV-06 (D12-L) kiểm tra và mở khóa.
  * </ul>
  */
 public final class SoanPhieuViewModel extends ViewModel {
@@ -53,8 +58,27 @@ public final class SoanPhieuViewModel extends ViewModel {
     /** Số chữ số tối đa của ô thời gian, chỉ để tránh tràn {@code int}; không phải giới hạn nghiệp vụ. */
     private static final int SO_CHU_SO_TOI_DA = 9;
 
+    /** Trạng thái lần gửi phiếu. */
+    public enum TrangThaiGui {
+        SAN_SANG,
+        DANG_GUI,
+        /** Máy chủ đã tạo phiếu; nháp đã xóa. */
+        DA_GUI,
+        /** Không cho gửi (thẻ hết hạn, không còn theo học, quyền mượn bị khóa). */
+        CHAN_GUI,
+        /** Không biết máy chủ đã tạo phiếu hay chưa; không cho gửi lại. */
+        CHUA_XAC_DINH
+    }
+
+    /** Hướng điều hướng sau lỗi gửi, do SCR-SV-05 xử lý. */
+    public enum DieuHuongGui {
+        QUAY_VE_SUA,
+        MO_HO_SO_BI_CHAN
+    }
+
     private final TraCuuRepository traCuuRepository;
     private final CongQuyenMuon cong;
+    private final PhieuYeuCauRepository phieuYeuCauRepository;
 
     private final MutableLiveData<UiState<List<LuaChonBoLoc>>> dsPhong =
             new MutableLiveData<>(UiState.<List<LuaChonBoLoc>>dangTai(null));
@@ -67,10 +91,17 @@ public final class SoanPhieuViewModel extends ViewModel {
             new MutableLiveData<>(Collections.<UUID, Integer>emptyMap());
     private final MutableLiveData<Boolean> xemLaiBat = new MutableLiveData<>(false);
     private final MutableLiveData<Event<LuaChonBoLoc>> yeuCauXacNhanDoiPhong = new MutableLiveData<>();
+    private final MutableLiveData<TrangThaiGui> trangThaiGui =
+            new MutableLiveData<>(TrangThaiGui.SAN_SANG);
+    private final MutableLiveData<LoiGuiPhieu> loiGui = new MutableLiveData<>();
+    private final MutableLiveData<String> maYeuCauVuaGui = new MutableLiveData<>();
+    private final MutableLiveData<Event<DieuHuongGui>> dieuHuongGui = new MutableLiveData<>();
+    private final MutableLiveData<Event<Boolean>> yeuCauKiemTraDanhSach = new MutableLiveData<>();
 
     private final List<TraCuuThietBiItem> daTai = new ArrayList<>();
     private final Map<UUID, Integer> daChon = new LinkedHashMap<>();
     private String thoiGianNhap = "";
+    private List<UUID> thuTuLoaiDaGui = Collections.emptyList();
 
     @Nullable private UUID maPhongKhoiTao;
     @Nullable private UUID maLoaiKhoiTao;
@@ -88,9 +119,11 @@ public final class SoanPhieuViewModel extends ViewModel {
 
     public SoanPhieuViewModel(
             @NonNull TraCuuRepository traCuuRepository,
-            @NonNull HoSoMuonRepository hoSoMuonRepository) {
+            @NonNull HoSoMuonRepository hoSoMuonRepository,
+            @NonNull PhieuYeuCauRepository phieuYeuCauRepository) {
         this.traCuuRepository = traCuuRepository;
         this.cong = new CongQuyenMuon(hoSoMuonRepository);
+        this.phieuYeuCauRepository = phieuYeuCauRepository;
     }
 
     // ---------------------------------------------------------------- trạng thái phơi bày
@@ -152,6 +185,34 @@ public final class SoanPhieuViewModel extends ViewModel {
     @NonNull
     public LiveData<Event<CongQuyenMuon.KetQua>> getKetQuaCong() {
         return cong.getKetQua();
+    }
+
+    @NonNull
+    public LiveData<TrangThaiGui> getTrangThaiGui() {
+        return trangThaiGui;
+    }
+
+    /** Lỗi của lần gửi gần nhất; {@code null} khi không có. SCR-SV-04 hiển thị nhóm "quay về sửa", SCR-SV-05 hiển thị nhóm còn lại. */
+    @NonNull
+    public LiveData<LoiGuiPhieu> getLoiGui() {
+        return loiGui;
+    }
+
+    /** Mã phiếu vừa tạo khi {@link TrangThaiGui#DA_GUI}. */
+    @NonNull
+    public LiveData<String> getMaYeuCauVuaGui() {
+        return maYeuCauVuaGui;
+    }
+
+    @NonNull
+    public LiveData<Event<DieuHuongGui>> getDieuHuongGui() {
+        return dieuHuongGui;
+    }
+
+    /** Yêu cầu kiểm tra danh sách phiếu (SCR-SV-06, D12-L nối đích) khi chưa xác định kết quả. */
+    @NonNull
+    public LiveData<Event<Boolean>> getYeuCauKiemTraDanhSach() {
+        return yeuCauKiemTraDanhSach;
     }
 
     /** Chữ đang nhập ở ô thời gian mượn (để dựng lại ô sau xoay màn hình hoặc khi quay lại từ SCR-SV-05). */
@@ -255,6 +316,7 @@ public final class SoanPhieuViewModel extends ViewModel {
 
     private void apDungPhong(@NonNull LuaChonBoLoc phong) {
         daChon.clear();
+        xoaLoiGuiKhiSuaNhap();
         phongDaChon.setValue(phong);
         capNhatSoLuong();
         capNhatXemLai();
@@ -276,6 +338,7 @@ public final class SoanPhieuViewModel extends ViewModel {
         } else {
             daChon.put(maLoai, moi);
         }
+        xoaLoiGuiKhiSuaNhap();
         capNhatSoLuong();
         capNhatXemLai();
     }
@@ -283,6 +346,7 @@ public final class SoanPhieuViewModel extends ViewModel {
     /** Ghi chữ đang nhập ở ô thời gian mượn. */
     public void datThoiGian(@Nullable String nhap) {
         thoiGianNhap = nhap == null ? "" : nhap;
+        xoaLoiGuiKhiSuaNhap();
         capNhatXemLai();
     }
 
@@ -333,7 +397,153 @@ public final class SoanPhieuViewModel extends ViewModel {
     }
 
     private void capNhatXemLai() {
-        xemLaiBat.setValue(layNoiDungPhieu() != null);
+        xemLaiBat.setValue(
+                layNoiDungPhieu() != null && trangThaiGui.getValue() != TrangThaiGui.DANG_GUI);
+    }
+
+    // ---------------------------------------------------------------- gửi phiếu (D11-L)
+
+    /**
+     * Tóm tắt để SCR-SV-05 hiển thị, hoặc {@code null} khi chưa đủ điều kiện (xem {@link #layNoiDungPhieu()}) hoặc
+     * nháp đã xóa sau khi gửi thành công.
+     */
+    @Nullable
+    public TomTatPhieu layTomTat() {
+        NoiDungPhieu noiDung = layNoiDungPhieu();
+        LuaChonBoLoc phong = phongDaChon.getValue();
+        if (noiDung == null || phong == null) {
+            return null;
+        }
+        List<TomTatPhieu.Dong> cacDong = new ArrayList<>();
+        for (NoiDungPhieu.DongLoai dong : noiDung.getDsLoaiVaSoLuong()) {
+            TraCuuThietBiItem loai = timDong(dong.getMaLoai());
+            String ten =
+                    loai == null || loai.getTenLoai() == null
+                            ? HangSo.GIA_TRI_THIEU
+                            : loai.getTenLoai();
+            cacDong.add(new TomTatPhieu.Dong(ten, dong.getSoLuong()));
+        }
+        return new TomTatPhieu(
+                phong.getTen(), phong.getPhuDe(), noiDung.getThoiGianMuonDuKienGio(), cacDong);
+    }
+
+    /** SCR-SV-04 chuyển sang SCR-SV-05: bỏ lỗi cũ (trừ khi đang chặn gửi hoặc chưa xác định) và sự kiện điều hướng tồn đọng. */
+    public void chuanBiXemLai() {
+        Event<DieuHuongGui> tonDong = dieuHuongGui.getValue();
+        if (tonDong != null) {
+            tonDong.getContentIfNotHandled();
+        }
+        TrangThaiGui hienTai = trangThaiGui.getValue();
+        if (hienTai == TrangThaiGui.SAN_SANG || hienTai == TrangThaiGui.DA_GUI) {
+            loiGui.setValue(null);
+            maYeuCauVuaGui.setValue(null);
+            datTrangThaiGui(TrangThaiGui.SAN_SANG);
+        }
+    }
+
+    /**
+     * Gửi phiếu. Khóa ngay (đồng bộ) trước khi tạo lời gọi nên bấm kép chỉ phát một yêu cầu. Trả {@code true} khi đã
+     * phát yêu cầu, {@code false} khi bị từ chối (đang gửi, đã gửi, bị chặn, chưa xác định kết quả, hoặc phiếu chưa
+     * hợp lệ).
+     */
+    public boolean gui() {
+        if (trangThaiGui.getValue() != TrangThaiGui.SAN_SANG) {
+            return false;
+        }
+        NoiDungPhieu noiDung = layNoiDungPhieu();
+        if (noiDung == null) {
+            return false;
+        }
+        List<UUID> thuTu = new ArrayList<>();
+        for (NoiDungPhieu.DongLoai dong : noiDung.getDsLoaiVaSoLuong()) {
+            thuTu.add(dong.getMaLoai());
+        }
+        thuTuLoaiDaGui = Collections.unmodifiableList(thuTu);
+        loiGui.setValue(null);
+        datTrangThaiGui(TrangThaiGui.DANG_GUI);
+        phieuYeuCauRepository.svGuiPhieuYeuCauMuon(
+                noiDung.taoYeuCau(),
+                new ApiCallback<PhieuYeuCauMuon>() {
+                    @Override
+                    public void onSuccess(@Nullable PhieuYeuCauMuon phieu) {
+                        khiGuiThanhCong(phieu);
+                    }
+
+                    @Override
+                    public void onError(@NonNull ApiError loi) {
+                        khiGuiLoi(loi);
+                    }
+                });
+        return true;
+    }
+
+    private void khiGuiThanhCong(@Nullable PhieuYeuCauMuon phieu) {
+        String ma = phieu == null ? null : phieu.getMaYeuCau();
+        if (ma == null || ma.isEmpty()) {
+            // 2xx nhưng không có mã phiếu: máy chủ đã xử lý nhưng không biết phiếu nào.
+            datChuaXacDinh(null);
+            return;
+        }
+        daChon.clear();
+        thoiGianNhap = "";
+        capNhatSoLuong();
+        maYeuCauVuaGui.setValue(ma);
+        datTrangThaiGui(TrangThaiGui.DA_GUI);
+    }
+
+    private void khiGuiLoi(@NonNull ApiError loi) {
+        TrinhBayLoiGuiPhieu.PhanLoai phanLoai = TrinhBayLoiGuiPhieu.phanLoai(loi);
+        if (phanLoai == TrinhBayLoiGuiPhieu.PhanLoai.CHUA_XAC_DINH) {
+            datChuaXacDinh(loi);
+            return;
+        }
+        LoiTruongPhieu truong =
+                phanLoai == TrinhBayLoiGuiPhieu.PhanLoai.DU_LIEU_KHONG_HOP_LE
+                        ? LoiTruongPhieu.phanTich(loi.getErrors(), thuTuLoaiDaGui)
+                        : LoiTruongPhieu.rong();
+        loiGui.setValue(new LoiGuiPhieu(phanLoai, loi, truong));
+        switch (phanLoai) {
+            case THE_HET_HAN:
+            case KHONG_CON_THEO_HOC:
+                datTrangThaiGui(TrangThaiGui.CHAN_GUI);
+                break;
+            case BI_KHOA_QUYEN_MUON:
+                datTrangThaiGui(TrangThaiGui.CHAN_GUI);
+                dieuHuongGui.setValue(new Event<>(DieuHuongGui.MO_HO_SO_BI_CHAN));
+                break;
+            case DU_LIEU_KHONG_HOP_LE:
+            case VUOT_GIOI_HAN_THIET_BI:
+            case VUOT_THOI_GIAN_MUON_TOI_DA:
+            case SO_LUONG_THAY_DOI:
+                datTrangThaiGui(TrangThaiGui.SAN_SANG);
+                dieuHuongGui.setValue(new Event<>(DieuHuongGui.QUAY_VE_SUA));
+                break;
+            default:
+                datTrangThaiGui(TrangThaiGui.SAN_SANG);
+                break;
+        }
+    }
+
+    private void datChuaXacDinh(@Nullable ApiError loi) {
+        loiGui.setValue(
+                new LoiGuiPhieu(
+                        TrinhBayLoiGuiPhieu.PhanLoai.CHUA_XAC_DINH, loi, LoiTruongPhieu.rong()));
+        datTrangThaiGui(TrangThaiGui.CHUA_XAC_DINH);
+        yeuCauKiemTraDanhSach.setValue(new Event<>(Boolean.TRUE));
+    }
+
+    private void datTrangThaiGui(@NonNull TrangThaiGui moi) {
+        trangThaiGui.setValue(moi);
+        capNhatXemLai();
+    }
+
+    /** Sinh viên sửa nhập thì bỏ lỗi cũ, trừ khi đang gửi, đang chặn hoặc chưa xác định kết quả. */
+    private void xoaLoiGuiKhiSuaNhap() {
+        TrangThaiGui hienTai = trangThaiGui.getValue();
+        boolean choPhep = hienTai == TrangThaiGui.SAN_SANG || hienTai == TrangThaiGui.DA_GUI;
+        if (choPhep && loiGui.getValue() != null) {
+            loiGui.setValue(null);
+        }
     }
 
     // ---------------------------------------------------------------- Đăng ký chờ (chỉ cổng)
@@ -706,6 +916,7 @@ public final class SoanPhieuViewModel extends ViewModel {
         huy(callPhong);
         huy(callLoai);
         cong.huy();
+        // Cố ý không hủy lời gọi gửi phiếu: thao tác ghi đã phát không bị hủy im lặng khi rời màn hình (FA 3.11).
         super.onCleared();
     }
 }
