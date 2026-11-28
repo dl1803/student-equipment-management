@@ -68,6 +68,21 @@ public class PhieuMuon
         }
     }
 
+    public ChiTietPhieuMuon GhiKetQuaKiemTra(
+        string maThietBi,
+        KetQuaKiemTra ketQua,
+        string? moTa,
+        Guid? maKhungPhat,
+        Guid maNvNhanTra,
+        DateTimeOffset bayGio)
+    {
+        var chiTiet = _chiTiet.SingleOrDefault(c => c.MaThietBi == maThietBi && !c.KetQuaKiemTra.HasValue);
+        QuyTacNhanTra.KiemTraThietBiThuocPhieu(chiTiet?.MaPhieu, MaPhieu, maThietBi);
+        chiTiet!.GhiKetQuaKiemTra(ketQua, moTa, maKhungPhat, maNvNhanTra, bayGio);
+
+        return chiTiet;
+    }
+
     private void YeuCauTrangThai(params TrangThaiPhieuMuon[] hopLe)
     {
         if (Array.IndexOf(hopLe, TrangThai) < 0)

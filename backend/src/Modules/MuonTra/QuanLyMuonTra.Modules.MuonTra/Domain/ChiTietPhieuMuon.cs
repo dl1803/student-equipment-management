@@ -38,4 +38,14 @@ public class ChiTietPhieuMuon
     public Guid? MaNvNhanTra { get; private set; }
 
     public Guid? MaKhung { get; private set; }
+
+    internal void GhiKetQuaKiemTra(KetQuaKiemTra ketQua, string? moTa, Guid? maKhungPhat, Guid maNvNhanTra, DateTimeOffset bayGio)
+    {
+        QuyTacNhanTra.KiemTraDauVao(ketQua, moTa, maKhungPhat);
+        MaKhung = QuyTacNhanTra.KhungPhatLuuTru(ketQua, maKhungPhat);
+        KetQuaKiemTra = ketQua;
+        TinhTrangKhiTra = string.IsNullOrWhiteSpace(moTa) ? null : moTa.Trim();
+        NgayGioTraThucTe = QuyTacNhanTra.NgayGioTraThucTe(ketQua, bayGio);
+        MaNvNhanTra = maNvNhanTra;
+    }
 }

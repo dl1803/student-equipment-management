@@ -33,4 +33,33 @@ public static class QuyTacNhanTra
                 $"Thiết bị {maThietBi} không thuộc phiếu mượn {maPhieu} đang hiệu lực.");
         }
     }
+
+    public static Guid? KhungPhatLuuTru(KetQuaKiemTra ketQua, Guid? maKhungPhat)
+    {
+        if (ketQua is KetQuaKiemTra.HuHong or KetQuaKiemTra.ThieuPhuKien)
+        {
+            return maKhungPhat;
+        }
+
+        if (maKhungPhat is not null)
+        {
+            throw new NghiepVuException(
+                MaLoi.DuLieuKhongHopLe,
+                "Khung phạt phải bỏ trống khi kết quả là nguyên vẹn hoặc mất.");
+        }
+
+        return null;
+    }
+
+    public static string MaKetQua(KetQuaKiemTra ketQua)
+    {
+        return ketQua switch
+        {
+            KetQuaKiemTra.NguyenVen => "NGUYEN_VEN",
+            KetQuaKiemTra.HuHong => "HU_HONG",
+            KetQuaKiemTra.ThieuPhuKien => "THIEU_PHU_KIEN",
+            KetQuaKiemTra.Mat => "MAT",
+            _ => throw new ArgumentOutOfRangeException(nameof(ketQua), ketQua, null)
+        };
+    }
 }
