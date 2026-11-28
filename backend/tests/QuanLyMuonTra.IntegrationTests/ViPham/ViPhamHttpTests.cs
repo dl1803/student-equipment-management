@@ -35,6 +35,20 @@ public sealed class ViPhamHttpTests : IAsyncLifetime
 
     private const string DuongDanQuanTri = "/api/v1/quan-tri/bien-ban-vi-pham";
 
+    private const string BodyDieuChinhHopLe = """{"dsKhoan":[{"maThietBi":"KT16-TB","loaiViPham":"HU_HONG","soTien":1000}]}""";
+
+    private static readonly (HttpMethod PhuongThuc, string DuongDan)[] ThaoTacGhiQuay =
+    [
+        (HttpMethod.Post, "/api/v1/quay/bien-ban-vi-pham/BB-999999-000001/da-nop"),
+        (HttpMethod.Post, "/api/v1/quay/sinh-vien/KT16-SV-HTTP/xac-nhan-nhan-du-thiet-bi")
+    ];
+
+    private static readonly (HttpMethod PhuongThuc, string DuongDan)[] ThaoTacGhiQuanTri =
+    [
+        (HttpMethod.Post, "/api/v1/quan-tri/bien-ban-vi-pham/BB-999999-000001/huy"),
+        (HttpMethod.Put, "/api/v1/quan-tri/bien-ban-vi-pham/BB-999999-000001/dieu-chinh")
+    ];
+
     private WebApplicationFactory<Program>? _factory;
     private HttpClient? _client;
 
@@ -97,6 +111,22 @@ public sealed class ViPhamHttpTests : IAsyncLifetime
         if (token is not null)
         {
             yeuCau.Headers.Authorization = new AuthenticationHeaderValue("Bearer", token);
+        }
+
+        return _client!.SendAsync(yeuCau);
+    }
+
+    private Task<HttpResponseMessage> GoiAsync(HttpMethod phuongThuc, string duongDan, string? token, string? json = null)
+    {
+        var yeuCau = new HttpRequestMessage(phuongThuc, duongDan);
+        if (token is not null)
+        {
+            yeuCau.Headers.Authorization = new AuthenticationHeaderValue("Bearer", token);
+        }
+
+        if (json is not null)
+        {
+            yeuCau.Content = new StringContent(json, Encoding.UTF8, "application/json");
         }
 
         return _client!.SendAsync(yeuCau);
@@ -221,6 +251,129 @@ public sealed class ViPhamHttpTests : IAsyncLifetime
     public async Task DeXuat_PhieuKhongTonTai_Tra404()
     {
         var phanHoi = await GoiAsync("/api/v1/quay/phieu-muon/PM-999999-000001/de-xuat-bien-ban", TaoToken(Guid.NewGuid().ToString(), "NHAN_VIEN"));
+
+        Assert.Equal(HttpStatusCode.NotFound, phanHoi.StatusCode);
+        Assert.Equal("KHONG_TIM_THAY", (await DocJsonAsync(phanHoi)).GetProperty("maLoi").GetString());
+    }
+
+    [CanKetNoiTestFact]
+    public async Task KhongCoToken_BonThaoTacGhiTra401()
+    {
+        foreach (var (phuongThuc, duongDan) in ThaoTacGhiQuay.Concat(ThaoTacGhiQuanTri))
+        {
+            var phanHoi = await GoiAsync(phuongThuc, duongDan, null, BodyDieuChinhHopLe);
+
+            Assert.Equal(HttpStatusCode.Unauthorized, phanHoi.StatusCode);
+            Assert.Equal("CHUA_XAC_THUC", (await DocJsonAsync(phanHoi)).GetProperty("maLoi").GetString());
+        }
+    }
+
+    [CanKetNoiTestFact]
+    public async Task TokenSinhVien_GoiBonThaoTacGhi_Tra403()
+    {
+        var token = TaoToken("KT16-SV-HTTP", "SINH_VIEN");
+
+        foreach (var (phuongThuc, duongDan) in ThaoTacGhiQuay.Concat(ThaoTacGhiQuanTri))
+        {
+            var phanHoi = await GoiAsync(phuongThuc, duongDan, token, BodyDieuChinhHopLe);
+
+            Assert.Equal(HttpStatusCode.Forbidden, phanHoi.StatusCode);
+            Assert.Equal("KHONG_DU_QUYEN", (await DocJsonAsync(phanHoi)).GetProperty("maLoi").GetString());
+        }
+    }
+
+    [CanKetNoiTestFact]
+    public async Task TokenNhanVien_GoiHaiThaoTacQuanTri_Tra403()
+    {
+        var token = TaoToken(Guid.NewGuid().ToString(), "NHAN_VIEN");
+
+        foreach (var (phuongThuc, duongDan) in ThaoTacGhiQuanTri)
+        {
+            var phanHoi = await GoiAsync(phuongThuc, duongDan, token, BodyDieuChinhHopLe);
+
+            Assert.Equal(HttpStatusCode.Forbidden, phanHoi.StatusCode);
+            Assert.Equal("KHONG_DU_QUYEN", (await DocJsonAsync(phanHoi)).GetProperty("maLoi").GetString());
+        }
+    }
+
+    [CanKetNoiTestFact]
+    public async Task TokenQuanTri_GoiHaiThaoTacQuay_Tra403()
+    {
+        var token = TaoToken(Guid.NewGuid().ToString(), "QUAN_TRI");
+
+        foreach (var (phuongThuc, duongDan) in ThaoTacGhiQuay)
+        {
+            var phanHoi = await GoiAsync(phuongThuc, duongDan, token);
+
+            Assert.Equal(HttpStatusCode.Forbidden, phanHoi.StatusCode);
+        }
+    }
+
+    [CanKetNoiTestFact]
+    public async Task MaBienBanSaiDinhDang_Tra400()
+    {
+        var nv = TaoToken(Guid.NewGuid().ToString(), "NHAN_VIEN");
+        var qt = TaoToken(Guid.NewGuid().ToString(), "QUAN_TRI");
+
+        var daNop = await GoiAsync(HttpMethod.Post, "/api/v1/quay/bien-ban-vi-pham/ABC/da-nop", nv);
+        var huy = await GoiAsync(HttpMethod.Post, "/api/v1/quan-tri/bien-ban-vi-pham/ABC/huy", qt);
+        var dieuChinh = await GoiAsync(
+            HttpMethod.Put, "/api/v1/quan-tri/bien-ban-vi-pham/ABC/dieu-chinh", qt, BodyDieuChinhHopLe);
+
+        foreach (var phanHoi in new[] { daNop, huy, dieuChinh })
+        {
+            Assert.Equal(HttpStatusCode.BadRequest, phanHoi.StatusCode);
+            Assert.Equal("DU_LIEU_KHONG_HOP_LE", (await DocJsonAsync(phanHoi)).GetProperty("maLoi").GetString());
+        }
+    }
+
+    [CanKetNoiTestFact]
+    public async Task BienBanKhongTonTai_Tra404()
+    {
+        var nv = TaoToken(Guid.NewGuid().ToString(), "NHAN_VIEN");
+        var qt = TaoToken(Guid.NewGuid().ToString(), "QUAN_TRI");
+
+        var daNop = await GoiAsync(HttpMethod.Post, "/api/v1/quay/bien-ban-vi-pham/BB-999999-000001/da-nop", nv);
+        var huy = await GoiAsync(HttpMethod.Post, "/api/v1/quan-tri/bien-ban-vi-pham/BB-999999-000001/huy", qt);
+        var dieuChinh = await GoiAsync(
+            HttpMethod.Put, "/api/v1/quan-tri/bien-ban-vi-pham/BB-999999-000001/dieu-chinh", qt, BodyDieuChinhHopLe);
+
+        foreach (var phanHoi in new[] { daNop, huy, dieuChinh })
+        {
+            Assert.Equal(HttpStatusCode.NotFound, phanHoi.StatusCode);
+            Assert.Equal("KHONG_TIM_THAY", (await DocJsonAsync(phanHoi)).GetProperty("maLoi").GetString());
+        }
+    }
+
+    [CanKetNoiTestFact]
+    public async Task DieuChinh_BodyKhongHopLe_Tra400()
+    {
+        var qt = TaoToken(Guid.NewGuid().ToString(), "QUAN_TRI");
+        var cacBody = new[]
+        {
+            """{"dsKhoan":[]}""",
+            """{"dsKhoan":[{"maThietBi":"TB","loaiViPham":"HU_HONG"}]}""",
+            """{"dsKhoan":[{"maThietBi":"TB","loaiViPham":"HU_HONG","soTien":-1}]}""",
+            """{"dsKhoan":[{"maThietBi":"TB","loaiViPham":"KHONG_DEN_NHAN","soTien":1}]}"""
+        };
+
+        foreach (var body in cacBody)
+        {
+            var phanHoi = await GoiAsync(
+                HttpMethod.Put, "/api/v1/quan-tri/bien-ban-vi-pham/BB-999999-000001/dieu-chinh", qt, body);
+
+            Assert.Equal(HttpStatusCode.BadRequest, phanHoi.StatusCode);
+            Assert.Equal("DU_LIEU_KHONG_HOP_LE", (await DocJsonAsync(phanHoi)).GetProperty("maLoi").GetString());
+        }
+    }
+
+    [CanKetNoiTestFact]
+    public async Task XacNhan_SinhVienKhongTonTai_Tra404()
+    {
+        var phanHoi = await GoiAsync(
+            HttpMethod.Post,
+            "/api/v1/quay/sinh-vien/KT16-KHONG-CO/xac-nhan-nhan-du-thiet-bi",
+            TaoToken(Guid.NewGuid().ToString(), "NHAN_VIEN"));
 
         Assert.Equal(HttpStatusCode.NotFound, phanHoi.StatusCode);
         Assert.Equal("KHONG_TIM_THAY", (await DocJsonAsync(phanHoi)).GetProperty("maLoi").GetString());

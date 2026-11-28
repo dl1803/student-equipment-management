@@ -20,6 +20,11 @@ public static class ViPhamModule
         services.AddScoped<DsViPhamSvHandler>();
         services.AddScoped<DeXuatBienBanHandler>();
         services.AddScoped<LapBienBanHandler>();
+        services.AddScoped<XetMoKhoaQuyenMuon>();
+        services.AddScoped<XacNhanNhanDuThietBiHandler>();
+        services.AddScoped<GhiNhanDaNopHandler>();
+        services.AddScoped<HuyBienBanHandler>();
+        services.AddScoped<DieuChinhBienBanHandler>();
 
         return services;
     }

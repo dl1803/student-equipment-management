@@ -8,6 +8,8 @@ internal static class KiemTraDocViPham
 {
     private static readonly Regex MauMaPhieu = new(@"\APM-[0-9]{6}-[0-9]{6,}\z", RegexOptions.CultureInvariant);
 
+    private static readonly Regex MauMaBienBan = new(@"\ABB-[0-9]{6}-[0-9]{6,}\z", RegexOptions.CultureInvariant);
+
     private static readonly HashSet<string> TrangThaiBienBanHopLe = ["CHUA_NOP", "DA_NOP", "DA_HUY"];
 
     public static void KiemTraMaPhieu(string maPhieu)
@@ -15,6 +17,14 @@ internal static class KiemTraDocViPham
         if (!MauMaPhieu.IsMatch(maPhieu))
         {
             throw new LoiNghiepVuException(MaLoi.DuLieuKhongHopLe, "Mã phiếu mượn không đúng định dạng.");
+        }
+    }
+
+    public static void KiemTraMaBienBan(string maBienBan)
+    {
+        if (!MauMaBienBan.IsMatch(maBienBan))
+        {
+            throw new LoiNghiepVuException(MaLoi.DuLieuKhongHopLe, "Mã biên bản không đúng định dạng.");
         }
     }
 
