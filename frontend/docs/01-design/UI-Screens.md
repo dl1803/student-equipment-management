@@ -403,7 +403,7 @@ Nguồn nghiệp vụ không có yêu cầu riêng về tiếp cận; tài liệ
 | Thành phần | Nội dung | Quy tắc |
 |---|---|---|
 | Tên đăng nhập | Ô nhập | Bắt buộc |
-| Mật khẩu | Ô nhập che ký tự; nút **Hiện mật khẩu** / **Ẩn mật khẩu** ở cuối ô đổi giữa che và hiện ký tự | Bắt buộc. Trạng thái hiện/ẩn chỉ ở màn hình, không lưu |
+| Mật khẩu | Ô nhập che ký tự; nút bật/tắt **Hiện mật khẩu** ở cuối ô đổi giữa che và hiện ký tự (tên cố định, trạng thái bật báo bằng `aria-pressed`) | Bắt buộc. Trạng thái hiện/ẩn chỉ ở màn hình, không lưu |
 | Nút **Đăng nhập** | Gửi đăng nhập | Vô hiệu khi thiếu trường hoặc đang chờ phản hồi |
 | Thông báo phiên hết hạn | Như SCR-CM-01 | – |
 
