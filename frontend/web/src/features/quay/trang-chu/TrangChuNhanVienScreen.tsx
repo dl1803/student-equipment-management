@@ -34,7 +34,8 @@ function useLoiChaoHomNay() {
     const gio = Number(
       new Intl.DateTimeFormat("en-GB", {
         hour: "numeric",
-        hour12: false,
+        // h23 thay vì hour12: false: có engine định dạng nửa đêm thành "24" với hour12: false.
+        hourCycle: "h23",
         timeZone: "Asia/Ho_Chi_Minh",
       }).format(bayGio),
     );

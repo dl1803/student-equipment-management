@@ -69,10 +69,13 @@ describe("TrangChuNhanVienScreen", () => {
 
     await waitFor(() => expect(within(khu).getByText("13")).toBeTruthy());
     const the = within(khu).getAllByRole("link");
-    expect(the.map((a) => [a.getAttribute("href"), a.textContent])).toEqual([
-      ["/nv/phieu-yeu-cau", "Phiếu chờ duyệt5"],
-      ["/nv/qua-han-30-ngay", "Phiếu chưa trả quá 30 ngày2"],
-      ["/nv/danh-sach-cho", "Đăng ký trong danh sách chờ13"],
+    // Tên truy cập tách nhãn và số bằng dấu hai chấm (aria-label).
+    expect(
+      the.map((a) => [a.getAttribute("href"), a.getAttribute("aria-label")]),
+    ).toEqual([
+      ["/nv/phieu-yeu-cau", "Phiếu chờ duyệt: 5"],
+      ["/nv/qua-han-30-ngay", "Phiếu chưa trả quá 30 ngày: 2"],
+      ["/nv/danh-sach-cho", "Đăng ký trong danh sách chờ: 13"],
     ]);
     const cauHinh = goi.mock.calls.map((c) => c[0]);
     expect(
@@ -89,6 +92,9 @@ describe("TrangChuNhanVienScreen", () => {
     await waitFor(() => expect(within(khu).getByText("4")).toBeTruthy());
     const [choDuyet] = within(khu).getAllByRole("link");
     expect(choDuyet?.textContent).toBe("Phiếu chờ duyệt—");
+    expect(choDuyet?.getAttribute("aria-label")).toBe(
+      "Phiếu chờ duyệt: chưa có số liệu",
+    );
   });
 
   it("UI-Screens 6.1: dsPhong rỗng → thông báo liên hệ quản trị viên, lối vào và số liệu vẫn hiện", () => {

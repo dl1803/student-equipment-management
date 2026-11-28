@@ -10,7 +10,7 @@
 // - Bố cục (Wireframes SCR-CM-02, DS 11.2, ĐX-DS-17, ĐX-DS-18): hai cột bằng nhau. Trái: logo và tên
 //   hệ thống ở trên, biểu mẫu rộng layout.web.login-width giữa cột, chân trang ở dưới. Ô nhập có biểu
 //   tượng person/lock ở đầu (trang trí, ẩn với trình đọc màn hình); ô mật khẩu có nút Hiện/Ẩn mật khẩu
-//   (aria-pressed). Trạng thái hiện/ẩn là state của màn hình, không lưu và không chứa mật khẩu. Phải:
+//   (nút bật/tắt WAI-ARIA: tên cố định "Hiện mật khẩu", aria-pressed theo trạng thái). Trạng thái hiện/ẩn là state của màn hình, không lưu và không chứa mật khẩu. Phải:
 //   khối nền color.text.link, chữ color.text.inverse, ba dòng giới thiệu và hình minh họa SVG.
 import { useRef, useState, type FormEvent } from "react";
 import { useForm, useWatch } from "react-hook-form";
@@ -165,7 +165,8 @@ export function DangNhapScreen() {
                       {...register("tenDangNhap", { required: true })}
                       autoComplete="username"
                       placeholder="Ví dụ: nv.huong"
-                      className="h-control-lg pl-12"
+                      kichThuoc="lg"
+                      chuaChoBieuTuong="DAU"
                     />
                   </div>
                 )}
@@ -189,12 +190,11 @@ export function DangNhapScreen() {
                       {...register("matKhau", { required: true })}
                       type={hienMatKhau ? "text" : "password"}
                       autoComplete="current-password"
-                      className="h-control-lg pr-12 pl-12"
+                      kichThuoc="lg"
+                      chuaChoBieuTuong="HAI_DAU"
                     />
                     <IconButton
-                      nhanTruyCap={
-                        hienMatKhau ? "Ẩn mật khẩu" : "Hiện mật khẩu"
-                      }
+                      nhanTruyCap="Hiện mật khẩu"
                       aria-pressed={hienMatKhau}
                       bieuTuong={
                         hienMatKhau ? (

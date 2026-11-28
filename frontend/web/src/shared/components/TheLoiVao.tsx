@@ -53,6 +53,8 @@ export function TheSoLieu({
   return (
     <Link
       href={href}
+      // Tên truy cập có ranh giới giữa nhãn và số; "—" đọc thành "chưa có số liệu" (review PR #79).
+      aria-label={`${nhan}: ${giaTri === null ? "chưa có số liệu" : giaTri.toLocaleString("vi-VN")}`}
       className={
         nhanManh
           ? "flex flex-col gap-4 rounded-lg bg-nav-selected-bg p-6 text-nav-selected-text transition-colors hover:bg-action-primary-bg-hover"

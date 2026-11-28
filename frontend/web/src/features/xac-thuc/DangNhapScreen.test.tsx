@@ -79,7 +79,7 @@ describe("DangNhapScreen", () => {
     expect(oMatKhau().type).toBe("password");
   });
 
-  it("UI-Screens 4.5: nút Hiện/Ẩn mật khẩu đổi kiểu ô, tên truy cập và aria-pressed; không mất giá trị đang nhập", () => {
+  it("UI-Screens 4.5: nút bật/tắt Hiện mật khẩu đổi kiểu ô và aria-pressed, tên cố định; không mất giá trị đang nhập; ô cao size.control.lg", () => {
     hienThiVoiNguCanh(<DangNhapScreen />, { trangThai: CHUA_DANG_NHAP });
     fireEvent.change(oMatKhau(), { target: { value: MAT_KHAU } });
 
@@ -90,13 +90,22 @@ describe("DangNhapScreen", () => {
     fireEvent.click(nut);
     expect(oMatKhau().type).toBe("text");
     expect(oMatKhau().value).toBe(MAT_KHAU);
-    const nutAn = screen.getByRole("button", { name: "Ẩn mật khẩu" });
-    expect(nutAn.getAttribute("aria-pressed")).toBe("true");
+    // Toggle Button (WAI-ARIA): tên không đổi, trạng thái báo bằng aria-pressed.
+    expect(screen.getByRole("button", { name: "Hiện mật khẩu" })).toBe(nut);
+    expect(nut.getAttribute("aria-pressed")).toBe("true");
 
-    fireEvent.click(nutAn);
+    fireEvent.click(nut);
     expect(oMatKhau().type).toBe("password");
+    expect(nut.getAttribute("aria-pressed")).toBe("false");
     // Nút hiện/ẩn không phải nút gửi: bấm không gửi biểu mẫu.
-    expect(nutAn.getAttribute("type")).toBe("button");
+    expect(nut.getAttribute("type")).toBe("button");
+    // Kích thước qua prop, không có class chiều cao trùng thuộc tính (h-control-md lẫn h-control-lg).
+    for (const o of [oMatKhau(), oTenDangNhap()]) {
+      const dsLop = o.className.split(" ");
+      expect(dsLop).toContain("h-control-lg");
+      expect(dsLop).not.toContain("h-control-md");
+      expect(dsLop).not.toContain("pl-3");
+    }
   });
 
   it("DS 11.2: logo và hình minh họa là trang trí (ẩn với trình đọc màn hình); tên hệ thống luôn có bằng chữ", () => {
