@@ -35,6 +35,7 @@ public sealed class NhacBaoTriJob(DbContext db, IClock dongHo, IThongBaoOutbox o
                   AND b.loai_thuc_hien = 'BAO_TRI_DINH_KY'
                   AND b.ngay_hoan_thanh IS NOT NULL) bt ON true
             WHERE t.tinh_trang IN ('SAN_SANG', 'DANG_DUOC_MUON')
+              AND NOT t.ngung_su_dung
               AND {homNay}::date >=
                   (COALESCE((bt.lan_cuoi AT TIME ZONE 'Asia/Ho_Chi_Minh')::date, t.ngay_nhap_kho) + l.chu_ky_bao_tri)
             ORDER BY "NgayDenHan", t.ma_thiet_bi
@@ -49,9 +50,12 @@ public sealed class NhacBaoTriJob(DbContext db, IClock dongHo, IThongBaoOutbox o
             if (!nvTheoPhong.TryGetValue(dong.MaPhong, out var dsNv))
             {
                 dsNv = await db.Database.SqlQuery<Guid>($"""
-                    SELECT ma_nguoi_dung AS "Value" FROM tai_khoan.nhan_vien_phong
-                    WHERE ma_phong = {dong.MaPhong}
-                    ORDER BY ma_nguoi_dung
+                    SELECT nvp.ma_nguoi_dung AS "Value"
+                    FROM tai_khoan.nhan_vien_phong nvp
+                    JOIN tai_khoan.nguoi_dung_he_thong u ON u.ma_nguoi_dung = nvp.ma_nguoi_dung
+                    WHERE nvp.ma_phong = {dong.MaPhong}
+                      AND u.trang_thai_khoa = 'HOAT_DONG'
+                    ORDER BY nvp.ma_nguoi_dung
                     """).ToListAsync(ct);
                 nvTheoPhong[dong.MaPhong] = dsNv;
             }

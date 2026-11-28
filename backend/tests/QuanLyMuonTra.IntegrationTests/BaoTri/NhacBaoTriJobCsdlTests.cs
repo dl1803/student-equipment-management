@@ -124,4 +124,50 @@ public sealed class NhacBaoTriJobCsdlTests
             ["D16-TB-13"],
             cuaNv3.DanhSach.Where(d => d.MaThietBi.StartsWith("D16-TB-", StringComparison.Ordinal)).Select(d => d.MaThietBi).ToArray());
     }
+
+    [CanKetNoiTestFact]
+    public async Task UC17_J6_ThietBiNgungSuDungDenHan_KhongTaoThongBao()
+    {
+        await using var mt = await BaoTriMoiTruong.TaoAsync(ThanhLyDuLieu.TenTep);
+        await mt.ThucThiAsync("""
+            UPDATE danh_muc.thiet_bi
+            SET ngung_su_dung = true
+            WHERE ma_thiet_bi = 'D16-TB-11'
+            """);
+
+        await TaoJob(mt).ChayAsync(Ct);
+
+        Assert.Equal(0, await mt.DemAsync($"""
+            SELECT count(*)::int AS "Value" FROM thong_bao.thong_bao
+            WHERE khoa_trung_lap LIKE 'BAO_TRI:D16-TB-11:%'
+            """));
+        Assert.Equal(2, await DemTongAsync(mt));
+    }
+
+    [CanKetNoiTestFact]
+    public async Task UC17_J6_NhanVienKhongHoatDong_KhongTaoThongBaoVaEmail()
+    {
+        await using var mt = await BaoTriMoiTruong.TaoAsync(ThanhLyDuLieu.TenTep);
+        await mt.ThucThiAsync($"""
+            UPDATE tai_khoan.nguoi_dung_he_thong
+            SET trang_thai_khoa = 'BI_KHOA'
+            WHERE ma_nguoi_dung = '{ThanhLyDuLieu.MaNv1}';
+
+            UPDATE tai_khoan.nguoi_dung_he_thong
+            SET trang_thai_khoa = 'TAM_KHOA_DANG_NHAP'
+            WHERE ma_nguoi_dung = '{ThanhLyDuLieu.MaNv3}';
+            """);
+
+        await TaoJob(mt).ChayAsync(Ct);
+
+        var khoaNv1 = $"BAO_TRI:D16-TB-11:2026-11-23:{ThanhLyDuLieu.MaNv1}";
+        var khoaNv2 = $"BAO_TRI:D16-TB-11:2026-11-23:{ThanhLyDuLieu.MaNv2}";
+        var khoaNv3 = $"BAO_TRI:D16-TB-13:2026-01-31:{ThanhLyDuLieu.MaNv3}";
+        Assert.Equal(0, await DemAsync(mt, khoaNv1, "UNG_DUNG"));
+        Assert.Equal(0, await DemAsync(mt, khoaNv1, "EMAIL"));
+        Assert.Equal(0, await DemAsync(mt, khoaNv3, "UNG_DUNG"));
+        Assert.Equal(0, await DemAsync(mt, khoaNv3, "EMAIL"));
+        Assert.Equal(1, await DemAsync(mt, khoaNv2, "UNG_DUNG"));
+        Assert.Equal(1, await DemTongAsync(mt));
+    }
 }
