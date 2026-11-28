@@ -1,4 +1,6 @@
 using Microsoft.EntityFrameworkCore;
+using QuanLyMuonTra.Modules.ViPham.Domain;
+using QuanLyMuonTra.SharedKernel;
 
 namespace QuanLyMuonTra.Modules.ViPham.Application;
 
@@ -92,6 +94,22 @@ internal static class BienBanTruyVan
             .ToList();
 
         return new KetQuaPhanTrang<BienBanViPhamDto>(tongSo, trang, kichThuoc, danhSach);
+    }
+
+    public static async Task<DongBienBan> LayDongAsync(DbContext db, string maBienBan, CancellationToken ct)
+    {
+        return await TruyVanBienBan(db)
+                .Where(d => d.MaBienBan == maBienBan)
+                .FirstOrDefaultAsync(ct)
+            ?? throw new LoiNghiepVuException(MaLoi.KhongTimThay, "Không tìm thấy biên bản vi phạm.");
+    }
+
+    public static async Task<BienBanViPhamDto> LayMotAsync(DbContext db, string maBienBan, CancellationToken ct)
+    {
+        var trang = await LayTrangAsync(db, TruyVanBienBan(db).Where(d => d.MaBienBan == maBienBan), 1, 1, ct);
+
+        return trang.DanhSach.SingleOrDefault()
+            ?? throw new LoiNghiepVuException(MaLoi.KhongTimThay, "Không tìm thấy biên bản vi phạm.");
     }
 
     public sealed class DongBienBan

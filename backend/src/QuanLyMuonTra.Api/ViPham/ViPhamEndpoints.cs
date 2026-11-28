@@ -77,6 +77,44 @@ public static class ViPhamEndpoints
                 Results.Ok(await boXuLy.XuLyAsync(maSv, trangThai, trang, kichThuoc, ct)))
             .RequireAuthorization(ChinhSach.QuanTri);
 
+        duongDan.MapPost("/api/v1/quay/sinh-vien/{maSV}/xac-nhan-nhan-du-thiet-bi", async (
+                [FromRoute(Name = "maSV")] string maSv,
+                [FromServices] XacNhanNhanDuThietBiHandler boXuLy,
+                CancellationToken ct) =>
+                Results.Ok(await boXuLy.XuLyAsync(maSv, ct)))
+            .RequireAuthorization(ChinhSach.NhanVien);
+
+        duongDan.MapPost("/api/v1/quay/bien-ban-vi-pham/{ma}/da-nop", async (
+                string ma,
+                [FromServices] ICurrentUser nguoiDung,
+                [FromServices] GhiNhanDaNopHandler boXuLy,
+                CancellationToken ct) =>
+                Results.Ok(await boXuLy.XuLyAsync(LayMaNv(nguoiDung), ma, ct)))
+            .RequireAuthorization(ChinhSach.NhanVien);
+
+        duongDan.MapPost("/api/v1/quan-tri/bien-ban-vi-pham/{ma}/huy", async (
+                string ma,
+                [FromServices] HuyBienBanHandler boXuLy,
+                CancellationToken ct) =>
+                Results.Ok(await boXuLy.XuLyAsync(ma, ct)))
+            .RequireAuthorization(ChinhSach.QuanTri);
+
+        duongDan.MapPut("/api/v1/quan-tri/bien-ban-vi-pham/{ma}/dieu-chinh", async (
+                string ma,
+                DieuChinhBienBanRequest yeuCau,
+                [FromServices] DieuChinhBienBanHandler boXuLy,
+                CancellationToken ct) =>
+            {
+                var lenh = new DieuChinhBienBanLenh(
+                    yeuCau.DsKhoan
+                        .Select(k => new KhoanDieuChinhYeuCau(k.MaThietBi.Trim(), k.LoaiViPham, k.SoTien!.Value))
+                        .ToList());
+
+                return Results.Ok(await boXuLy.XuLyAsync(ma, lenh, ct));
+            })
+            .AddEndpointFilter<KiemTraDuLieuFilter<DieuChinhBienBanRequest>>()
+            .RequireAuthorization(ChinhSach.QuanTri);
+
         return duongDan;
     }
 
