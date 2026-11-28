@@ -260,6 +260,16 @@ public static class TraCuuEndpoints
                 Results.Ok(await boXuLy.XuLyAsync(LayMaNv(nguoiDung), maThietBi, ct)))
             .RequireAuthorization(ChinhSach.NhanVien);
 
+        nhomQuay.MapPost("/phieu-muon/{ma}/ket-qua-kiem-tra", async (
+                string ma,
+                GhiKetQuaKiemTraRequest yeuCau,
+                [FromServices] ICurrentUser nguoiDung,
+                [FromServices] GhiKetQuaKiemTraHandler boXuLy,
+                CancellationToken ct) =>
+                Results.Ok(await boXuLy.XuLyAsync(LayMaNv(nguoiDung), ma, ChuyenDsKetQua(yeuCau), ct)))
+            .AddEndpointFilter<KiemTraDuLieuFilter<GhiKetQuaKiemTraRequest>>()
+            .RequireAuthorization(ChinhSach.NhanVien);
+
         nhomQuay.MapGet("/danh-sach-cho", async (
                 [FromQuery] Guid? maPhong,
                 [FromQuery] Guid? maLoai,
@@ -325,6 +335,31 @@ public static class TraCuuEndpoints
                 yeuCau.DsLoaiVaSoLuong.Select(d => new LoaiVaSoLuongYeuCau(d.MaLoai, d.SoLuong)).ToList(),
                 ct),
             _ => throw new InvalidOperationException($"Nguồn giao không hợp lệ: {yeuCau.Nguon}.")
+        };
+    }
+
+    private static List<KetQuaKiemTraYeuCau> ChuyenDsKetQua(GhiKetQuaKiemTraRequest yeuCau)
+    {
+        return yeuCau.DsKetQua
+            .Where(d => d is not null)
+            .Select(d => new KetQuaKiemTraYeuCau(
+                d.MaThietBi!,
+                ChuyenKetQua(d.KetQua!),
+                d.MoTa,
+                d.MaKhungPhat,
+                d.DsMaAnh ?? []))
+            .ToList();
+    }
+
+    private static KetQuaKiemTra ChuyenKetQua(string ketQua)
+    {
+        return ketQua switch
+        {
+            KetQuaKiemTraThietBiRequest.NguyenVen => KetQuaKiemTra.NguyenVen,
+            KetQuaKiemTraThietBiRequest.HuHong => KetQuaKiemTra.HuHong,
+            KetQuaKiemTraThietBiRequest.ThieuPhuKien => KetQuaKiemTra.ThieuPhuKien,
+            KetQuaKiemTraThietBiRequest.Mat => KetQuaKiemTra.Mat,
+            _ => throw new InvalidOperationException($"Kết quả kiểm tra không hợp lệ: {ketQua}.")
         };
     }
 

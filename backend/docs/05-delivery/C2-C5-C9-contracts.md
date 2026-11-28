@@ -1,6 +1,6 @@
 # Gói hợp đồng C2, C5, C9
 
-Cập nhật lần đầu: 13/11/2026 · Chủ sở hữu: Nguyễn Đại Vương · Trạng thái: **hợp đồng đã khai báo trong `*.Contracts` và `SharedKernel`; C2 đã có bản hiện thực (D03-V); IBoTinhHanTra và bộ tính phí đã có bản hiện thực (D04-V); C5 đã có `IMuonTraReader`, `IThamChieuMuonTraProvider`, `IPhieuMuonReader` (chưa có `IPortGhiNhanMat`); C9 `IFifoService` đã có bản hiện thực `FifoService` (D13-V)**
+Cập nhật lần đầu: 13/11/2026 · Chủ sở hữu: Nguyễn Đại Vương · Trạng thái: **hợp đồng đã khai báo trong `*.Contracts` và `SharedKernel`; C2 đã có bản hiện thực (D03-V); IBoTinhHanTra và bộ tính phí đã có bản hiện thực (D04-V); C5 đã có `IMuonTraReader`, `IThamChieuMuonTraProvider`, `IPhieuMuonReader`, `IPortGhiNhanMat` (bản hiện thực `PortGhiNhanMat`, D15-V); C9 `IFifoService` đã có bản hiện thực `FifoService` (D13-V)**
 
 Quy ước: "Đã có trong nguồn" là điều tài liệu dự án nêu. Mọi bản giả chỉ dùng trong `tests/`, không đăng ký trên runtime. Mã C2, C5, C9 là mã artifact của kế hoạch. Mọi phương thức bất đồng bộ có hậu tố `Async` và tham số cuối `CancellationToken ct` (CV 19.1). Toàn bộ port chạy trong giao dịch và `AppDbContext` của bên gọi.
 
@@ -46,6 +46,8 @@ Thao tác bắt buộc đi qua C2 (danh sách của ĐX-KT-13, KT 8.2):
 | `IPhieuMuonReader.LayPhieuMuonAsync`, `LayChiTietAsync`, `LayChiTietTheoPhieuAsync`, `LayDsQuaHan30NgayAsync` | `MuonTra.Contracts` | Đọc phiếu mượn, chi tiết phiếu mượn và danh sách phiếu quá hạn 30 ngày (UC-09 bước 1) | Chỉ đọc | `KHONG_TIM_THAY` (404), `KHONG_DU_QUYEN` (403) | ViPham, MuonTra |
 | `IPortGhiNhanMat.GhiNhanMatAsync` | `MuonTra.Contracts` | `(Guid maChiTietPhieu, Guid maNvNhanTra)` → `Task<bool>`: Đánh dấu `ket_qua_kiem_tra = 'MAT'`, chuyển thiết bị sang `DA_BAO_MAT` | Cùng giao dịch lập biên bản mất | `TRANG_THAI_KHONG_HOP_LE` (409) | ViPham |
 | Bộ tính phí (Fee Engine) | `ViPham/Domain` | `SoNgayTre(hanTra, thoiDiem, anHanPhut)` → `int`; `PhiTre(soNgayTre, phiMoiNgay, giaTriHienHanh)` → `decimal`. `BoiThuongHuHong(giaTriHienHanh, tyLePhanTram)` → `decimal`; `BoiThuongMat(giaTriHienHanh)` → `decimal`. Đã có bản hiện thực `TinhPhi` (D04-V, 15/11/2026) | Hàm thuần | Không ném lỗi | ViPham (Vương bàn giao Khôi D14) |
+
+**Bản hiện thực port MAT (D15-V):** `PortGhiNhanMat` nằm ở `QuanLyMuonTra.Modules.MuonTra.Infrastructure`, đăng ký Scoped trong `AddMuonTraModule`. `GhiNhanMatAsync(maChiTietPhieu, maNvNhanTra)` phải chạy trong giao dịch của bên gọi (không có giao dịch thì ném `InvalidOperationException`); bên gọi tự khóa dòng `sinh_vien` trước. Trả `true` khi đã ghi `MAT` (ngày trả `NULL`, thiết bị `DA_BAO_MAT`, xét đóng phiếu), `false` khi không có chi tiết; ném `409 TRANG_THAI_KHONG_HOP_LE` khi chi tiết đã có kết quả hoặc thiết bị không còn `DANG_DUOC_MUON`.
 
 ## C9 — Cấp lượt FIFO cùng giao dịch
 
