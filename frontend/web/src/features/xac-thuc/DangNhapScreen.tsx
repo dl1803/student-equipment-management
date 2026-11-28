@@ -7,11 +7,11 @@
 // - Không có liên kết đăng ký, quên hoặc đổi mật khẩu (UI-Screens 2.1).
 // - Đăng nhập mất phản hồi được thử lại bằng tay, không tự retry, không đếm số lần còn lại (ĐX-FA-22).
 // - Thành công: AuthProvider vào phiên; AuthGate chuyển tới trang chủ của vai trò.
-// - Bố cục (Wireframes SCR-CM-02, ĐX-DS-17): hai cột bằng nhau. Trái: tên hệ thống ở góc trên, biểu
-//   mẫu rộng layout.web.login-width nằm chính giữa cột. Phải: khối nền color.surface.subtle chứa ảnh
-//   minh họa trang trí (public/anh/dang-nhap.jpg, alt rỗng), không logo (ĐX-DS-01). Ảnh dùng thẻ <img>
-//   thường, không next/image (ĐX-FA-11). mix-blend-darken: nền ảnh (#FCFCFC, sáng hơn nền khối) hòa
-//   đúng vào nền khối nên không lộ viền ảnh; hình vẽ tối hơn nền giữ nguyên màu.
+// - Bố cục (Wireframes SCR-CM-02, DS 11.2, ĐX-DS-17, ĐX-DS-18): hai cột bằng nhau. Trái: logo và tên
+//   hệ thống ở trên, biểu mẫu rộng layout.web.login-width giữa cột, chân trang ở dưới. Ô nhập có biểu
+//   tượng person/lock ở đầu (trang trí, ẩn với trình đọc màn hình); ô mật khẩu có nút Hiện/Ẩn mật khẩu
+//   (nút bật/tắt WAI-ARIA: tên cố định "Hiện mật khẩu", aria-pressed theo trạng thái). Trạng thái hiện/ẩn là state của màn hình, không lưu và không chứa mật khẩu. Phải:
+//   khối nền color.text.link, chữ color.text.inverse, ba dòng giới thiệu và hình minh họa SVG.
 import { useRef, useState, type FormEvent } from "react";
 import { useForm, useWatch } from "react-hook-form";
 import type { ApiError } from "@/shared/api/apiError";
@@ -19,9 +19,17 @@ import type { DangNhapNhanVienRequest } from "@/shared/api/types";
 import { Banner } from "@/shared/components/Banner";
 import { Button } from "@/shared/components/Button";
 import { FormField } from "@/shared/components/FormField";
+import { IconButton } from "@/shared/components/IconButton";
+import { LogoUngDung } from "@/shared/components/LogoUngDung";
+import { IconCheck } from "@/shared/components/icons/IconCheck";
+import { IconLock } from "@/shared/components/icons/IconLock";
+import { IconPerson } from "@/shared/components/icons/IconPerson";
+import { IconVisibility } from "@/shared/components/icons/IconVisibility";
+import { IconVisibilityOff } from "@/shared/components/icons/IconVisibilityOff";
 import { TextField } from "@/shared/components/TextField";
 import { ganLoiMayChu } from "@/shared/hooks/ganLoiMayChu";
 import { useAuth } from "@/shared/hooks/useAuth";
+import { HinhMinhHoaDangNhap } from "./HinhMinhHoaDangNhap";
 import { useDangNhapNhanVienMutation } from "./hooks";
 import {
   thongBaoKetThucPhien,
@@ -32,8 +40,12 @@ import {
 const MAC_DINH: DangNhapNhanVienRequest = { tenDangNhap: "", matKhau: "" };
 
 const TEN_HE_THONG = "Quản lý mượn trả thiết bị";
-/** Ảnh minh họa của màn hình đăng nhập (thư mục public của Next.js). */
-const ANH_DANG_NHAP = "/anh/dang-nhap.jpg";
+
+const DIEM_NOI_BAT = [
+  "Duyệt phiếu yêu cầu và giao, nhận thiết bị tại quầy",
+  "Theo dõi phiếu quá hạn, biên bản và phí phạt",
+  "Quản lý danh mục, cấu hình và báo cáo",
+];
 
 function KhoiThongBao({ thongBao }: { thongBao: ThongBao }) {
   return (
@@ -59,6 +71,7 @@ export function DangNhapScreen() {
   const [daThuDangNhap, setDaThuDangNhap] = useState(false);
   const [loi, setLoi] = useState<ApiError | null>(null);
   const [loiKhongGanTruong, setLoiKhongGanTruong] = useState<string[]>([]);
+  const [hienMatKhau, setHienMatKhau] = useState(false);
 
   const thongBaoPhien =
     !daThuDangNhap && trangThai.loai === "CHUA_DANG_NHAP"
@@ -101,12 +114,23 @@ export function DangNhapScreen() {
       <div className="flex flex-col gap-8 p-12">
         {/* Tên hệ thống nằm trong luồng bố cục (không absolute) để biểu mẫu cao lên — nhiều thông báo,
             phóng to trang — không đè lên chữ. */}
-        <p className="shrink-0 type-title-card font-bold text-text-primary">
-          {TEN_HE_THONG}
-        </p>
+        <div className="flex shrink-0 items-center gap-3">
+          <LogoUngDung className="size-control-md shrink-0" />
+          <p className="type-title-card font-bold text-text-primary">
+            {TEN_HE_THONG}
+          </p>
+        </div>
         <div className="flex flex-1 items-center justify-center">
-          <div className="flex w-full max-w-web-login-width flex-col gap-4">
-            <h1 className="type-title-screen text-text-primary">Đăng nhập</h1>
+          <div className="flex w-full max-w-web-login-width flex-col gap-6">
+            <div className="flex flex-col gap-2">
+              <h1 className="type-title-screen text-text-primary">
+                Chào mừng trở lại
+              </h1>
+              <p className="type-body text-text-secondary">
+                Đăng nhập để tiếp tục. Dành cho nhân viên quản lý thiết bị và
+                quản trị viên.
+              </p>
+            </div>
             {thongBaoPhien !== null ? (
               <KhoiThongBao thongBao={thongBaoPhien} />
             ) : null}
@@ -131,11 +155,20 @@ export function DangNhapScreen() {
                   : {})}
               >
                 {(tt) => (
-                  <TextField
-                    {...tt}
-                    {...register("tenDangNhap", { required: true })}
-                    autoComplete="username"
-                  />
+                  <div className="relative">
+                    <IconPerson
+                      kichThuoc="md"
+                      className="pointer-events-none absolute top-1/2 left-4 -translate-y-1/2 text-text-secondary"
+                    />
+                    <TextField
+                      {...tt}
+                      {...register("tenDangNhap", { required: true })}
+                      autoComplete="username"
+                      placeholder="Ví dụ: nv.huong"
+                      kichThuoc="lg"
+                      chuaChoBieuTuong="DAU"
+                    />
+                  </div>
                 )}
               </FormField>
               <FormField
@@ -147,12 +180,33 @@ export function DangNhapScreen() {
                   : {})}
               >
                 {(tt) => (
-                  <TextField
-                    {...tt}
-                    {...register("matKhau", { required: true })}
-                    type="password"
-                    autoComplete="current-password"
-                  />
+                  <div className="relative">
+                    <IconLock
+                      kichThuoc="md"
+                      className="pointer-events-none absolute top-1/2 left-4 -translate-y-1/2 text-text-secondary"
+                    />
+                    <TextField
+                      {...tt}
+                      {...register("matKhau", { required: true })}
+                      type={hienMatKhau ? "text" : "password"}
+                      autoComplete="current-password"
+                      kichThuoc="lg"
+                      chuaChoBieuTuong="HAI_DAU"
+                    />
+                    <IconButton
+                      nhanTruyCap="Hiện mật khẩu"
+                      aria-pressed={hienMatKhau}
+                      bieuTuong={
+                        hienMatKhau ? (
+                          <IconVisibilityOff kichThuoc="md" />
+                        ) : (
+                          <IconVisibility kichThuoc="md" />
+                        )
+                      }
+                      onClick={() => setHienMatKhau((v) => !v)}
+                      className="absolute top-1/2 right-1 -translate-y-1/2"
+                    />
+                  </div>
                 )}
               </FormField>
               <Button
@@ -160,31 +214,39 @@ export function DangNhapScreen() {
                 bienThe="primary"
                 dangXuLy={dangNhap.isPending}
                 disabled={thieuTruong}
+                className="mt-2 h-control-lg w-full"
               >
                 Đăng nhập
               </Button>
             </form>
           </div>
         </div>
-        {/* Đệm cân đối với dòng tên hệ thống để biểu mẫu nằm chính giữa cột (DS 11.2). */}
-        <p
-          aria-hidden="true"
-          className="invisible shrink-0 type-title-card font-bold"
-        >
-          {TEN_HE_THONG}
+        <p className="shrink-0 type-caption text-text-secondary">
+          © 2026 Nhóm 13 · Hệ thống quản lý mượn trả thiết bị học tập
         </p>
       </div>
-      <div className="m-4 flex items-center justify-center overflow-hidden rounded-lg bg-surface-subtle p-12">
-        {/* eslint-disable-next-line @next/next/no-img-element -- ĐX-FA-11: không dùng next/image. */}
-        <img
-          src={ANH_DANG_NHAP}
-          alt=""
-          // Kích thước gốc của ảnh để trình duyệt giữ chỗ đúng tỉ lệ trước khi ảnh tải xong.
-          width={800}
-          height={624}
-          decoding="async"
-          className="h-auto w-full max-w-dialog-md mix-blend-darken"
-        />
+      <div className="m-4 flex flex-col justify-between gap-8 overflow-hidden rounded-lg bg-text-link p-12">
+        <div className="flex flex-col gap-4">
+          <h2 className="type-title-screen text-text-inverse">
+            Mượn trả thiết bị nhanh, rõ ràng
+          </h2>
+          <ul className="flex flex-col gap-3">
+            {DIEM_NOI_BAT.map((d) => (
+              <li
+                key={d}
+                className="flex items-center gap-3 type-body text-text-inverse"
+              >
+                <span className="grid size-icon-lg shrink-0 place-items-center rounded-full bg-nav-selected-bg text-nav-selected-text">
+                  <IconCheck kichThuoc="sm" />
+                </span>
+                {d}
+              </li>
+            ))}
+          </ul>
+        </div>
+        <div className="flex justify-center">
+          <HinhMinhHoaDangNhap />
+        </div>
       </div>
     </main>
   );

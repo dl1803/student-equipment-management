@@ -2,7 +2,9 @@
 
 // SCR-QT-01 Trang chủ quản trị viên (UI-Screens 7.1). Sở hữu: Thịnh.
 // QT không bị giới hạn theo phòng và không có chức năng quầy (ĐX-PQ-02).
-import { Card } from "@/shared/components/Card";
+// Bố cục (Wireframes SCR-QT-01, ĐX-WF-21): vai trò và lời chào; lối vào chức năng có biểu tượng giống
+// menu bên, chia nhóm như menu bên.
+import { TheLoiVao } from "@/shared/components/TheLoiVao";
 import { useAuth } from "@/shared/hooks/useAuth";
 import { loiVaoCua } from "@/shared/tuyen/menuTheoVaiTro";
 
@@ -11,22 +13,24 @@ export function TrangChuQuanTriScreen() {
   if (trangThai.loai !== "DA_DANG_NHAP") return null;
 
   return (
-    <main className="flex flex-col gap-section">
+    <main className="flex flex-col gap-8">
       <div className="flex flex-col gap-1">
-        <h1 className="type-title-screen text-text-primary">Trang chủ</h1>
-        <p className="type-body-strong text-text-primary">
-          {trangThai.nguoiDung.hoTen}
-        </p>
+        <p className="type-label text-text-secondary">Quản trị viên</p>
+        <h1 className="type-title-screen text-text-primary">
+          Xin chào, {trangThai.nguoiDung.hoTen}
+        </h1>
       </div>
       {loiVaoCua("QUAN_TRI").map((nhom, chiSo) => {
         const luoi = (
-          <div className="grid grid-cols-3 gap-6">
+          <div className="grid grid-cols-3 gap-4">
             {nhom.dsMuc.map((muc) => (
-              <Card
+              <TheLoiVao
                 key={muc.href}
-                bienThe="TUONG_TAC"
-                tieuDe={muc.nhan}
+                nhan={muc.nhan}
                 href={muc.href}
+                {...(muc.bieuTuong !== undefined
+                  ? { bieuTuong: muc.bieuTuong }
+                  : {})}
               />
             ))}
           </div>

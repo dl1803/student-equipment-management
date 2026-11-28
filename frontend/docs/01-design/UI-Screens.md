@@ -403,7 +403,7 @@ Nguồn nghiệp vụ không có yêu cầu riêng về tiếp cận; tài liệ
 | Thành phần | Nội dung | Quy tắc |
 |---|---|---|
 | Tên đăng nhập | Ô nhập | Bắt buộc |
-| Mật khẩu | Ô nhập che ký tự | Bắt buộc |
+| Mật khẩu | Ô nhập che ký tự; nút bật/tắt **Hiện mật khẩu** ở cuối ô đổi giữa che và hiện ký tự (tên cố định, trạng thái bật báo bằng `aria-pressed`) | Bắt buộc. Trạng thái hiện/ẩn chỉ ở màn hình, không lưu |
 | Nút **Đăng nhập** | Gửi đăng nhập | Vô hiệu khi thiếu trường hoặc đang chờ phản hồi |
 | Thông báo phiên hết hạn | Như SCR-CM-01 | – |
 
@@ -894,16 +894,17 @@ Tiền điều kiện chung: NV đã đăng nhập (SCR-CM-02) và chỉ thao t�
 
 | Mục | Nội dung |
 |---|---|
-| Mục đích | Màn hình chính của vai trò NV (ĐX-UF-02): cho biết phạm vi phòng được cấp quyền và dẫn tới các chức năng quầy |
+| Mục đích | Màn hình chính của vai trò NV (ĐX-UF-02): cho biết phạm vi phòng được cấp quyền, số việc đang chờ ở quầy và dẫn tới các chức năng quầy |
 | Luồng | UF-CM-02, UF-CM-03 |
-| API | `GET /auth/toi` (đã gọi khi đăng nhập) |
+| API | `GET /auth/toi` (đã gọi khi đăng nhập); số liệu: `GET /quay/phieu-yeu-cau-muon?trangThai=CHO_DUYET`, `GET /quay/phieu-muon/qua-han-30-ngay`, `GET /quay/danh-sach-cho` (mỗi API chỉ lấy `tongSo`, `trang=1&kichThuoc=1`) |
 | Điều kiện vào | Sau đăng nhập; mở lại ứng dụng khi còn phiên |
 
 **Thành phần**
 
 | Thành phần | Nội dung | Nguồn dữ liệu |
 |---|---|---|
-| Thông tin NV | Họ tên | `hoTen` |
+| Lời chào | Ngày hôm nay và lời chào theo giờ (sáng, trưa, chiều, tối) kèm họ tên NV; giờ và ngày lấy theo đồng hồ máy, múi giờ Việt Nam; chỉ để trình bày | `hoTen` |
+| Số liệu | Ba thẻ số liệu, mỗi thẻ mở màn hình tương ứng: **Phiếu chờ duyệt** (→ SCR-NV-02), **Phiếu chưa trả quá 30 ngày** (→ SCR-NV-12), **Đăng ký trong danh sách chờ** (→ SCR-NV-13). Con số là `tongSo` máy chủ trả, trong phạm vi các phòng được cấp quyền; client không tự đếm hay tính. Đang tải hoặc lỗi thì hiện "—" | `tongSo` của ba API ở trên |
 | Phòng được cấp quyền | Danh sách phòng (tên phòng, cơ sở) | `dsPhong[]` |
 | Lối vào chức năng | Phiếu yêu cầu chờ duyệt (→ SCR-NV-02); Giao thiết bị (→ SCR-NV-04); Nhận trả thiết bị (→ SCR-NV-08); Biên bản và thu phạt (→ SCR-NV-11); Phiếu chưa trả quá 30 ngày (→ SCR-NV-12); Danh sách chờ (→ SCR-NV-13); Bảo trì và sửa chữa (→ SCR-NV-14) | – |
 
@@ -911,7 +912,7 @@ Tiền điều kiện chung: NV đã đăng nhập (SCR-CM-02) và chỉ thao t�
 
 | Trạng thái | Hiển thị |
 |---|---|
-| `dsPhong` rỗng | Thông báo "Bạn chưa được cấp quyền phòng thiết bị nào; liên hệ quản trị viên". Các lối vào vẫn hiển thị nhưng mọi danh sách sẽ rỗng (User-Flows 3.2) |
+| `dsPhong` rỗng | Thông báo "Bạn chưa được cấp quyền phòng thiết bị nào; liên hệ quản trị viên". Các lối vào vẫn hiển thị nhưng mọi danh sách sẽ rỗng (User-Flows 3.2); các thẻ số liệu hiện số máy chủ trả (0) |
 
 ### 6.2 SCR-NV-02 Danh sách phiếu yêu cầu chờ duyệt
 
@@ -1351,7 +1352,7 @@ Tiền điều kiện chung: QT đã đăng nhập (SCR-CM-02). QT không bị g
 
 | Thành phần | Nội dung |
 |---|---|
-| Thông tin QT | Họ tên (`hoTen`) |
+| Lời chào | "Xin chào" kèm họ tên QT (`hoTen`) |
 | Lối vào chức năng | Danh mục (Phòng thiết bị → SCR-QT-02; Loại thiết bị → SCR-QT-03; Thiết bị → SCR-QT-04); Cấu hình (Quy định mượn → SCR-QT-05; Phí trả trễ → SCR-QT-06; Khung phạt → SCR-QT-07; Tham số hệ thống → SCR-QT-08); Tài khoản nhân viên (→ SCR-QT-09); Biên bản vi phạm (→ SCR-QT-10); Thanh lý (→ SCR-QT-11); Báo cáo (→ SCR-QT-12) |
 
 ### 7.2 SCR-QT-02 Phòng thiết bị

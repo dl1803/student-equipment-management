@@ -98,7 +98,7 @@ Những điểm nguồn không nêu mà bố cục cần quyết định. Các q
 | ĐX-WF-17 | Bảng web có nhiều cột (SCR-QT-12) cuộn ngang trong khung bảng; trang không cuộn ngang. | `UI-Screens.md` 7.12 (số cột của báo cáo) |
 | ĐX-WF-18 | Ở SCR-NV-05, nguồn Mượn trực tiếp dùng chính bộ lọc Phòng chung ở đầu màn hình để chọn phòng; không vẽ ô chọn phòng thứ hai. | `UI-Screens.md` 6.5 (bộ lọc Phòng áp dụng cho cả ba nguồn) |
 | ĐX-WF-19 | Hộp thoại mà nguồn không quy định tên nút (bảng chọn thiết bị và hộp quyết định vừa lập ở SCR-QT-11) có nút điều khiển chuẩn **Đóng**, và bảng chọn có thêm nút xác nhận lựa chọn **Thêm vào danh sách**; đây là điều khiển của hộp thoại, không phải chức năng nghiệp vụ mới. | `UI-Screens.md` 3.8 (hộp thoại đóng được bằng phím Esc); 7.11 (bảng chọn, danh sách đã chọn) |
-| ĐX-WF-21 | Đăng nhập web (SCR-CM-02) chia hai cột: trái là tên hệ thống và biểu mẫu; phải là khối chứa ảnh minh họa trang trí. Trang chủ NV (SCR-NV-01) trình bày phòng được cấp quyền thành hàng thẻ; lối vào chức năng ở cả hai trang chủ là lưới thẻ ba cột. Không thêm nội dung hay chức năng mới. | `Design-System.md` ĐX-DS-17; `UI-Screens.md` 4.5, 6.1, 7.1 |
+| ĐX-WF-21 | Đăng nhập web (SCR-CM-02) chia hai cột: trái là logo, tên hệ thống và biểu mẫu; phải là khối giới thiệu nền xanh lá đậm kèm hình minh họa SVG trang trí. Trang chủ NV (SCR-NV-01) có lời chào, ba thẻ số liệu (`tongSo` máy chủ trả) và phòng được cấp quyền; lối vào chức năng ở cả hai trang chủ là lưới thẻ ba cột có biểu tượng. Không thêm chức năng nghiệp vụ mới. | `Design-System.md` ĐX-DS-17; `UI-Screens.md` 4.5, 6.1, 7.1 |
 | ĐX-WF-20 | Nút **Làm mới** nằm ở hàng tiêu đề, bên phải tên màn hình, của mọi màn hình web có danh sách hoặc bảng làm nội dung chính (SCR-NV-02, 11, 12, 13, 14; SCR-QT-02 đến 07, 09, 10, 11). Màn hình quét, biểu mẫu nhập, kết quả thao tác, trang chủ và báo cáo không có nút này. | `UI-Screens.md` 3.1 (nút Làm mới trên web), ĐX-UF-04 |
 
 ---
@@ -429,26 +429,26 @@ Nội dung: `UI-Screens.md` 4.5. Khung: riêng, không có thanh điều hướn
 
 ```text
 ┌───────────────────────────────────┬──────────────────────────────────┐
-│ Quản lý mượn trả thiết bị         │ ┌──────────────────────────────┐ │
+│ [◈] Quản lý mượn trả thiết bị     │ ┌──────────────────────────────┐ │
+│                                   │ │ Mượn trả thiết bị nhanh,     │ │
+│   Chào mừng trở lại               │ │ rõ ràng                      │ │
+│   Đăng nhập để tiếp tục. Dành cho │ │ ✓ Duyệt phiếu, giao, nhận    │ │
+│   NV quản lý thiết bị và QT.      │ │ ✓ Phiếu quá hạn, biên bản    │ │
+│   ⚠ Phiên đăng nhập đã hết hạn,   │ │ ✓ Danh mục, cấu hình, báo cáo│ │
+│     vui lòng đăng nhập lại (chỉ   │ │                              │ │
+│     khi hết hạn; lỗi cùng vị trí) │ │   (hình minh họa SVG: thẻ    │ │
+│   * Bắt buộc                      │ │    phiếu, biểu đồ cột, dấu   │ │
+│   Tên đăng nhập *                 │ │    duyệt; trang trí)         │ │
+│   [ ◯ _________________________ ] │ │                              │ │
+│   Mật khẩu *                      │ │   nền xanh lá đậm,           │ │
+│   [ ▢ ●●●●●●●● ______________ ◎ ] │ │   chữ trắng                  │ │
+│   [          Đăng nhập          ] │ │                              │ │
 │                                   │ │                              │ │
-│                                   │ │                              │ │
-│   Đăng nhập                       │ │                              │ │
-│   ⚠ Phiên đăng nhập đã hết hạn,   │ │                              │ │
-│     vui lòng đăng nhập lại        │ │     (ảnh minh họa, trang     │ │
-│     (chỉ khi phiên hết hạn; lỗi   │ │      trí, canh giữa khối)    │ │
-│     đăng nhập hiện cùng vị trí)   │ │                              │ │
-│   * Bắt buộc                      │ │                              │ │
-│   Tên đăng nhập *                 │ │                              │ │
-│   [ ___________________________ ] │ │                              │ │
-│   Mật khẩu *                      │ │                              │ │
-│   [ ●●●●●●●● __________________ ] │ │                              │ │
-│   [         Đăng nhập          ]  │ │                              │ │
-│                                   │ │                              │ │
-│                                   │ └──────────────────────────────┘ │
+│ © 2026 Nhóm 13 · …                │ └──────────────────────────────┘ │
 └───────────────────────────────────┴──────────────────────────────────┘
 ```
 
-Hai cột (ĐX-WF-21), không có khung điều hướng. Cột trái: tên hệ thống ở góc trên, biểu mẫu canh giữa. Biểu mẫu nằm chính giữa cột trái. Cột phải: khối chứa một ảnh minh họa trang trí, không logo, không thông tin nào khác. Một biểu mẫu chung cho NV và QT; không có liên kết đăng ký, quên hoặc đổi mật khẩu. Lỗi `TAI_KHOAN_BI_KHOA` hiển thị thông báo dùng chung ở cùng vị trí banner.
+Hai cột (ĐX-WF-21), không có khung điều hướng. Cột trái: logo `[◈]` (ĐX-DS-18) và tên hệ thống ở trên, biểu mẫu nằm chính giữa cột, dòng chân trang ở dưới. Ô nhập có biểu tượng ở đầu (`◯` = `person`, `▢` = `lock`); ô mật khẩu có nút hiện/ẩn mật khẩu `◎` (`visibility` / `visibility_off`) ở cuối. Cột phải: khối nền xanh lá đậm gồm tiêu đề, ba dòng giới thiệu chức năng và hình minh họa SVG trang trí; không có thông tin nghiệp vụ. Một biểu mẫu chung cho NV và QT; không có liên kết đăng ký, quên hoặc đổi mật khẩu. Lỗi `TAI_KHOAN_BI_KHOA` hiển thị thông báo dùng chung ở cùng vị trí banner.
 
 
 ### SCR-CM-03 Khởi động và khôi phục phiên
@@ -954,34 +954,37 @@ Nội dung: `UI-Screens.md` 6.1. Khung: mục 2.2.
 
 ```text
 ┌──────────────────────────────┬───────────────────────────────────────────────────────────────────────────┐
-│  Quản lý mượn trả thiết bị   │                      ( Họ tên · Nhân viên quản lý thiết bị )  [Đăng xuất] │
-│▶ Trang chủ                   │ Trang chủ                                                                 │
-│  Phiếu yêu cầu chờ duyệt     │ Họ tên                                                                    │
-│  Giao thiết bị               │ Phòng được cấp quyền                                                      │
-│  Nhận trả thiết bị           │ ┌────────────────────┐ ┌────────────────────┐                             │
-│  Biên bản và thu phạt        │ │ Phòng A1           │ │ Phòng B2           │                             │
-│  Phiếu chưa trả quá 30 ngày  │ │ Cơ sở 1            │ │ Cơ sở 2            │                             │
-│  Danh sách chờ               │ └────────────────────┘ └────────────────────┘                             │
-│  Bảo trì và sửa chữa         │ Chức năng                                                                 │
-│                              │ ┌────────────────────┐ ┌────────────────────┐ ┌────────────────────┐      │
-│                              │ │ Phiếu yêu cầu    › │ │ Giao thiết bị    › │ │ Nhận trả         › │      │
-│                              │ │ chờ duyệt          │ │                    │ │ thiết bị           │      │
-│                              │ └────────────────────┘ └────────────────────┘ └────────────────────┘      │
-│                              │ ┌────────────────────┐ ┌────────────────────┐ ┌────────────────────┐      │
-│                              │ │ Biên bản và      › │ │ Phiếu chưa trả   › │ │ Danh sách chờ    › │      │
-│                              │ │ thu phạt           │ │ quá 30 ngày        │ │                    │      │
-│                              │ └────────────────────┘ └────────────────────┘ └────────────────────┘      │
-│                              │ ┌────────────────────┐                                                    │
-│                              │ │ Bảo trì và       › │                                                    │
-│                              │ │ sửa chữa           │                                                    │
-│                              │ └────────────────────┘                                                    │
+│  [◈] Quản lý mượn trả        │                      ( Họ tên · Nhân viên quản lý thiết bị )  [Đăng xuất] │
+│      thiết bị                │                                                                           │
+│▶ Trang chủ                   │ Thứ Năm, 26/11/2026                                                       │
+│  Phiếu yêu cầu chờ duyệt     │ Chào buổi sáng, Họ tên                                                    │
+│  Giao thiết bị               │ ┌──────────────────────┐ ┌──────────────────────┐ ┌──────────────────────┐│
+│  Nhận trả thiết bị           │ │ Phiếu chờ duyệt  (◎) │ │ Phiếu chưa trả   (◎) │ │ Đăng ký trong    (◎) ││
+│  Biên bản và thu phạt        │ │ 5   (nền chanh)      │ │ quá 30 ngày          │ │ danh sách chờ        ││
+│  Phiếu chưa trả quá 30 ngày  │ │                      │ │ 2                    │ │ 3                    ││
+│  Danh sách chờ               │ └──────────────────────┘ └──────────────────────┘ └──────────────────────┘│
+│  Bảo trì và sửa chữa         │ Phòng được cấp quyền                                                      │
+│                              │ ( ⌂ Phòng A1 · Cơ sở 1 )  ( ⌂ Phòng B2 · Cơ sở 2 )                        │
+│                              │ Chức năng                                                                 │
+│                              │ ┌──────────────────────┐ ┌──────────────────────┐ ┌──────────────────────┐│
+│                              │ │ [▣] Phiếu yêu cầu  › │ │ [▣] Giao thiết bị  › │ │ [▣] Nhận trả       › ││
+│                              │ │     chờ duyệt        │ │                      │ │     thiết bị         ││
+│                              │ └──────────────────────┘ └──────────────────────┘ └──────────────────────┘│
+│                              │ ┌──────────────────────┐ ┌──────────────────────┐ ┌──────────────────────┐│
+│                              │ │ [▣] Biên bản và    › │ │ [▣] Phiếu chưa trả › │ │ [▣] Danh sách chờ  › ││
+│                              │ │     thu phạt         │ │     quá 30 ngày      │ │                      ││
+│                              │ └──────────────────────┘ └──────────────────────┘ └──────────────────────┘│
+│                              │ ┌──────────────────────┐                                                  │
+│                              │ │ [▣] Bảo trì và     › │                                                  │
+│                              │ │     sửa chữa         │                                                  │
+│                              │ └──────────────────────┘                                                  │
 │                              │                                                                           │
-│                              │ ⚠ (khi dsPhong rỗng, thay hàng thẻ phòng) Bạn chưa được cấp quyền         │
-│                              │   phòng thiết bị nào; liên hệ quản trị viên. Các lối vào vẫn hiển thị.    │
+│                              │ ⚠ (khi dsPhong rỗng, thay hàng phòng) Bạn chưa được cấp quyền phòng thiết │
+│                              │   bị nào; liên hệ quản trị viên. Các lối vào và số liệu vẫn hiển thị.     │
 └──────────────────────────────┴───────────────────────────────────────────────────────────────────────────┘
 ```
 
-Phòng được cấp quyền là hàng thẻ tĩnh (tên phòng, cơ sở), xếp lưới ba cột (ĐX-WF-21); cảnh báo thay hàng thẻ khi `dsPhong` rỗng. Bảy lối vào xếp lưới ba cột theo thứ tự ở hình, tương ứng bảy mục chức năng của menu bên. Không có thẻ số liệu vì API không trả số tổng.
+Đầu trang là ngày và lời chào. Ba thẻ số liệu (`Design-System.md` CMP-15 biến thể Số liệu) hiện `tongSo` do máy chủ trả từ các API danh sách hiện có; thẻ "Phiếu chờ duyệt" nền chanh để nổi bật; bấm thẻ mở màn hình tương ứng. Phòng được cấp quyền là các thẻ bo tròn (biểu tượng phòng, tên phòng, cơ sở); cảnh báo thay hàng này khi `dsPhong` rỗng. Bảy lối vào xếp lưới ba cột theo thứ tự ở hình, mỗi lối vào có biểu tượng `[▣]` giống menu bên (ĐX-WF-21).
 
 
 ### SCR-NV-02 Danh sách phiếu yêu cầu chờ duyệt
@@ -1506,9 +1509,9 @@ Nội dung: `UI-Screens.md` 7.1. Khung: mục 2.3.
 
 ```text
 ┌──────────────────────────────┬───────────────────────────────────────────────────────────────────────────┐
-│  Quản lý mượn trả thiết bị   │                                   ( Họ tên · Quản trị viên )  [Đăng xuất] │
-│▶ Trang chủ                   │ Trang chủ                                                                 │
-│  Danh mục                    │ Họ tên                                                                    │
+│  [◈] Quản lý mượn trả        │                                   ( Họ tên · Quản trị viên )  [Đăng xuất] │
+│▶ Trang chủ                   │ Quản trị viên                                                             │
+│  Danh mục                    │ Xin chào, Họ tên                                                          │
 │    Phòng thiết bị            │ Danh mục                                                                  │
 │    Loại thiết bị             │ ┌────────────────────┐ ┌────────────────────┐ ┌────────────────────┐      │
 │    Thiết bị                  │ │ Phòng thiết bị   › │ │ Loại thiết bị    › │ │ Thiết bị         › │      │
@@ -1531,7 +1534,7 @@ Nội dung: `UI-Screens.md` 7.1. Khung: mục 2.3.
 └──────────────────────────────┴───────────────────────────────────────────────────────────────────────────┘
 ```
 
-Lối vào xếp lưới ba cột, chia theo menu bên: nhóm **Danh mục** (3 lối vào), nhóm **Cấu hình** (4 lối vào), rồi các mục đơn lẻ không có tiêu đề nhóm (Tài khoản nhân viên, Biên bản vi phạm, Thanh lý, Báo cáo). Không có lối vào duyệt, giao, nhận, lập biên bản, bảo trì.
+Đầu trang là vai trò và lời chào. Lối vào xếp lưới ba cột, chia theo menu bên: nhóm **Danh mục** (3 lối vào), nhóm **Cấu hình** (4 lối vào), rồi các mục đơn lẻ không có tiêu đề nhóm (Tài khoản nhân viên, Biên bản vi phạm, Thanh lý, Báo cáo); mỗi lối vào có biểu tượng giống menu bên. Không có thẻ số liệu (danh mục QT chưa có API số tổng phù hợp). Không có lối vào duyệt, giao, nhận, lập biên bản, bảo trì.
 
 
 ### SCR-QT-02 Phòng thiết bị
